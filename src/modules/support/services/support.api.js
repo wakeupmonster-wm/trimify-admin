@@ -1,0 +1,51 @@
+/* eslint-disable no-useless-catch */
+import { SUPPORT_ENDPOINTS } from "@/services/api-endpoints/support.endpoints";
+import { apiConnector } from "@/services/axios/axios.connector";
+
+/*============== Creates a new support ticket (User-facing) ==============*/
+export const contactSupportApi = (payload) => {
+  return apiConnector("POST", SUPPORT_ENDPOINTS.CREATE_TICKET, payload);
+};
+
+/*========== Retrieves tickets belonging to the authenticated user ==========*/
+export const getMyTicketsApi = async (page, limit, search, status, category) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(status && { status }),
+    ...(category && { category }),
+  };
+  try {
+    const response = await apiConnector(
+      "GET",
+      SUPPORT_ENDPOINTS.MY_TICKETS,
+      null,
+      {},
+      queryParams,
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+/*========== Fetches full details and conversation history of a specific ticket ==========*/
+export const getMyTicketByIdApi = (ticketId) => {
+  return apiConnector("GET", SUPPORT_ENDPOINTS.TICKET_DETAILS(ticketId));
+};
+
+/*============ Admin action to respond to a user ticket============*/
+export const replyToTicketApi = (payload) => {
+  return apiConnector("POST", SUPPORT_ENDPOINTS.ADMIN_REPLY, payload);
+};
+
+/*============ Admin action to fetch the global support queue============*/
+export const getAllTicketsApi = (params) => {
+  return apiConnector("GET", SUPPORT_ENDPOINTS.GET_ALL_TICKETS, null, params);
+};
+
+/*============ Admin action to delete a specific ticket============*/
+export const deleteTicketApi = (ticketId) => {
+  return apiConnector("DELETE", SUPPORT_ENDPOINTS.DELETE_TICKET(ticketId));
+};

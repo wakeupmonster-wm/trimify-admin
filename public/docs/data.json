@@ -1,0 +1,1131 @@
+[
+  {
+    "group": "Admin Auth",
+    "apis": [
+      {
+        "endpoint": "/admin/login",
+        "method": "POST",
+        "request_body": {
+          "email": "required|email",
+          "password": "required|string"
+        },
+        "response": {
+          "status": "pending_otp",
+          "message": "OTP has been sent to your email. Please verify to continue.",
+          "admin_id": 1,
+          "email": "admin@example.com"
+        },
+        "status_codes": [200, 401, 422],
+        "edge_cases": "401 if email not registered or incorrect password. 422 for validation errors."
+      },
+      {
+        "endpoint": "/admin/verify-login-otp",
+        "method": "POST",
+        "request_body": {
+          "email": "required|email",
+          "otp": "required|numeric|digits:6"
+        },
+        "response": {
+          "status": "success",
+          "token": "1|abcdef1234567890",
+          "token_type": "bearer",
+          "message": "Logged in Successfully",
+          "admin": {
+            "name": "Admin User",
+            "email": "admin@example.com"
+          }
+        },
+        "status_codes": [200, 400, 401, 422],
+        "edge_cases": "400 for invalid/expired OTP. 401 if email not found."
+      },
+      {
+        "endpoint": "/admin/logout",
+        "method": "POST",
+        "request_body": {},
+        "response": {
+          "message": "Successfully logged out",
+          "status": 200
+        },
+        "status_codes": [200],
+        "edge_cases": "Requires Bearer token in header."
+      }
+    ]
+  },
+  {
+    "group": "Account Settings",
+    "apis": [
+      {
+        "endpoint": "/admin/change-password",
+        "method": "POST",
+        "request_body": {
+          "old_password": "required",
+          "new_password": "required|string|min:6"
+        },
+        "response": {
+          "status": "success",
+          "message": "Your password has been updated successfully.",
+          "data": {
+            "id": 1,
+            "name": "Admin",
+            "email": "admin@example.com",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:09:50.000000Z"
+          }
+        },
+        "status_codes": [200, 401, 403, 422],
+        "edge_cases": "401 if old password is incorrect. 403 if unauthorized."
+      },
+      {
+        "endpoint": "/admin/update-email",
+        "method": "POST",
+        "request_body": {
+          "email": "required|email (must be different from current)"
+        },
+        "response": {
+          "status": "success",
+          "message": "OTP has been sent to your email."
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "422 if new email is same as current email."
+      },
+      {
+        "endpoint": "/admin/verify-otp",
+        "method": "POST",
+        "request_body": {
+          "otp": "required|numeric|digits:6",
+          "email": "required|email"
+        },
+        "response": {
+          "status": "success",
+          "message": "Email updated successfully. Please log in again."
+        },
+        "status_codes": [200, 400, 422],
+        "edge_cases": "400 if OTP is invalid."
+      }
+    ]
+  },
+  {
+    "group": "SubAdmin Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-subadmin",
+        "method": "POST",
+        "request_body": {
+          "name": "required|string",
+          "email": "required|email|unique",
+          "hospital": "required|string",
+          "location": "required",
+          "phone": "required|digits:10",
+          "designation": "required|string",
+          "password": "required|string|min:8",
+          "role": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Sub-Admin added successfully",
+          "subAdmin": {
+            "id": 1,
+            "name": "John",
+            "email": "john@gmail.com",
+            "hospital": "City Hospital",
+            "location": "NY",
+            "phone": "1234567890",
+            "designation": "Manager",
+            "role": 1,
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:09:50.000000Z"
+          }
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Email uniqueness is validated."
+      },
+      {
+        "endpoint": "/admin/view-subadmin",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "subAdmins": [
+            {
+              "id": 15,
+              "name": "Rajat",
+              "email": "rajatkhoware@gmail.com",
+              "hospital": "Rajat Medical",
+              "location": "Australia",
+              "phone": "9999999888",
+              "designation": "manager",
+              "password": "$2y$10$XnrbOwxLgeZP98gWp1AS6uvHwjg4xOXIC/kpzzqZtYBr7dt98wFL6",
+              "profile_image": "profile/1781089790_download.png",
+              "otp": null,
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:09:50.000000Z",
+              "role": 1,
+              "profile": null
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns paginated data (50 per page)."
+      },
+      {
+        "endpoint": "/admin/update-subadmin/{id}",
+        "method": "POST",
+        "request_body": {
+          "id": "required",
+          "name": "string",
+          "email": "email",
+          "hospital": "string",
+          "location": "string",
+          "phone": "string",
+          "designation": "string",
+          "role": "string",
+          "newPassword": "optional string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Sub-admin updated successfully."
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if SubAdmin not found."
+      },
+      {
+        "endpoint": "/admin/toggle-status/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string (Active/Inactive)"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status updated successfully",
+          "updated_status": "Inactive"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if ID not found."
+      },
+      {
+        "endpoint": "/admin/delete-subadmin/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Sub-admin deleted successfully"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if user not found."
+      }
+    ]
+  },
+  {
+    "group": "FAQ Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-faqs",
+        "method": "POST",
+        "request_body": {
+          "question": "required|string|max:100|min:4",
+          "answer": "required|string|max:250|min:4"
+        },
+        "response": {
+          "message": "FAQ added successfully",
+          "data": {
+            "id": 1,
+            "question": "How to reset password?",
+            "answer": "Go to settings.",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          }
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Length validations for question and answer."
+      },
+      {
+        "endpoint": "/admin/view-faqs",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "faqs": [
+            {
+              "id": 1,
+              "question": "How to reset password?",
+              "answer": "Go to settings.",
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns paginated data (50 items)."
+      },
+      {
+        "endpoint": "/admin/update-faqs/{editId}",
+        "method": "PUT",
+        "request_body": {
+          "question": "required|string|max:100|min:4",
+          "answer": "required|string|max:250|min:4"
+        },
+        "response": {
+          "message": "FAQ updated successfully",
+          "data": {
+            "id": 1,
+            "question": "How to reset password updated?",
+            "answer": "Go to settings updated.",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          }
+        },
+        "status_codes": [200, 404, 422],
+        "edge_cases": "404 if FAQ not found."
+      },
+      {
+        "endpoint": "/admin/toggle-status-faq/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status Updated! The Faq is now Active!",
+          "updated_status": "Active"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if FAQ not found."
+      },
+      {
+        "endpoint": "/admin/delete-faq/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Faq deleted successfully"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if FAQ not found."
+      }
+    ]
+  },
+  {
+    "group": "Notification Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-notification",
+        "method": "POST",
+        "request_body": {
+          "message": "required|string|max:1000"
+        },
+        "response": {
+          "status": "success",
+          "message": "Notification sent successfully!",
+          "notification": {
+            "id": 1,
+            "title": "Notification From Admin",
+            "message": "Update available",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          }
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Dispatches jobs to send bulk push notifications."
+      },
+      {
+        "endpoint": "/admin/get-notification",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "notification": [
+            {
+              "id": 1,
+              "title": "Notification From Admin",
+              "message": "Update available",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated 50 items."
+      }
+    ]
+  },
+  {
+    "group": "CMS Management",
+    "apis": [
+      {
+        "endpoint": "/admin/get_pages",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "Cms": [
+            {
+              "id": 1,
+              "page_name": "Terms and Conditions",
+              "description": "<p>Content</p>",
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated list."
+      },
+      {
+        "endpoint": "/admin/update-page-content/{id}",
+        "method": "PUT",
+        "request_body": {
+          "page_name": "required|string|max:255",
+          "description": "required|string"
+        },
+        "response": {
+          "message": "Page content updated successfully."
+        },
+        "status_codes": [200, 500],
+        "edge_cases": "500 if database save fails."
+      },
+      {
+        "endpoint": "/admin/toggle-status-cms/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status updated successfully",
+          "updated_status": "Inactive"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if CMS page not found."
+      }
+    ]
+  },
+  {
+    "group": "Blog Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-blogcategory",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|min:2|max:100",
+          "description": "required|string|min:2|max:500",
+          "icon": "required|file|mimes:jpg,jpeg,png,gif,webp"
+        },
+        "response": {
+          "message": "Blog Category added successfully",
+          "data": {
+            "id": 1,
+            "title": "Health Tips",
+            "description": "Category for health tips",
+            "icon": "images/blogcategory/icon.png",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "File upload validation."
+      },
+      {
+        "endpoint": "/admin/get-blogcategories",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "blogs": [
+            {
+              "id": 1,
+              "title": "Health Tips",
+              "description": "Category for health tips",
+              "icon": "images/blogcategory/icon.png",
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated list."
+      },
+      {
+        "endpoint": "/admin/toggle-status-blog-category/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status Updated! The blog category is now Active!",
+          "updated_status": "Active"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if category not found."
+      },
+      {
+        "endpoint": "/admin/delete-blogcategories/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Blog Category deleted successfully"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if not found."
+      },
+      {
+        "endpoint": "/admin/update-blogcategory/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|min:2|max:100",
+          "description": "required|string|min:2|max:500",
+          "icon": "optional|file|mimes:jpg,jpeg,png,gif,webp,pdf|max:6144"
+        },
+        "response": {
+          "message": "Blog Category updated successfully",
+          "data": {
+            "id": 1,
+            "title": "Health Tips",
+            "description": "Category for health tips",
+            "icon": "images/blogcategory/icon.png",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Deletes old icon if new is provided."
+      },
+      {
+        "endpoint": "/admin/add-blog",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|min:3|max:100",
+          "content": "required|string|min:5",
+          "category_id": "required|integer",
+          "status": "required|string",
+          "image": "optional|file"
+        },
+        "response": {
+          "message": "Blog Added Successfully",
+          "data": {
+            "id": 1,
+            "title": "How to lose weight",
+            "description": "Content of the blog",
+            "blog_category_id": 1,
+            "visibility_status": "Public",
+            "image": "images/blog/img.png",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Handles image upload."
+      },
+      {
+        "endpoint": "/admin/view-blog",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "blogs": [
+            {
+              "id": 1,
+              "title": "How to lose weight",
+              "description": "Content of the blog",
+              "blog_category_id": 1,
+              "visibility_status": "Public",
+              "image": "images/blog/img.png",
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z",
+              "category": {
+                "id": 1,
+                "title": "Health Tips",
+                "description": "Category for health tips",
+                "icon": "images/blogcategory/icon.png",
+                "status": "Active",
+                "created_at": "2026-06-10T11:01:59.000000Z",
+                "updated_at": "2026-06-10T11:01:59.000000Z"
+              }
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns blogs with category relation."
+      },
+      {
+        "endpoint": "/admin/update-blog/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|min:3|max:100",
+          "content": "required|string",
+          "category_id": "required|integer",
+          "status": "required|string",
+          "image": "optional|file"
+        },
+        "response": {
+          "message": "Blog Updated Successfully",
+          "data": {
+            "id": 1,
+            "title": "How to lose weight updated",
+            "description": "Content of the blog",
+            "blog_category_id": 1,
+            "visibility_status": "Public",
+            "image": "images/blog/img.png",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Handles old image replacement."
+      },
+      {
+        "endpoint": "/admin/delete-blog/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Blog deleted successfully"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if not found."
+      }
+    ]
+  },
+  {
+    "group": "Program Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-program",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|max:255",
+          "description": "required|string",
+          "duration": "required",
+          "image": "required|file|mimes:jpeg,png,gif,webp|max:6144"
+        },
+        "response": {
+          "message": "Program Added Successfully",
+          "data": {
+            "id": 1,
+            "title": "Weight Loss Program",
+            "description": "Program description",
+            "image": "images/manage_programs/img.png",
+            "duration": "30 days",
+            "status": "Active",
+            "is_approve_nonapproved_foods_show": 1,
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Image upload logic."
+      },
+      {
+        "endpoint": "/admin/update-program/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|max:255",
+          "description": "required|string",
+          "duration": "required",
+          "image": "nullable|file|mimes:jpeg,png,gif,webp|max:6144"
+        },
+        "response": {
+          "message": "Program updated successfully",
+          "data": {
+            "id": 1,
+            "title": "Weight Loss Program",
+            "description": "Program description",
+            "image": "images/manage_programs/img.png",
+            "duration": "30 days",
+            "status": "Active",
+            "is_approve_nonapproved_foods_show": 1,
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Updates image if provided, deletes old one."
+      },
+      {
+        "endpoint": "/admin/view-programs",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "programs": [
+            {
+              "id": 1,
+              "title": "Weight Loss Program",
+              "description": "Program description",
+              "image": "images/manage_programs/img.png",
+              "duration": "30 days",
+              "status": "Active",
+              "is_approve_nonapproved_foods_show": 1,
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated list."
+      },
+      {
+        "endpoint": "/admin/delete-program/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Program deleted successfully"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if program not found."
+      },
+      {
+        "endpoint": "/admin/toggle-status-program/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status Updated! The program is now Active!",
+          "updated_status": "Active"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if program not found."
+      },
+      {
+        "endpoint": "/admin/toggle-status-food-visibility/{id}",
+        "method": "PATCH",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Food visibility status updated successfully!",
+          "new_status": true
+        },
+        "status_codes": [200, 404, 500],
+        "edge_cases": "Toggles boolean field is_approve_nonapproved_foods_show."
+      },
+      {
+        "endpoint": "/admin/replicate/{id}",
+        "method": "POST",
+        "request_body": {},
+        "response": {
+          "message": "Program duplicated successfully",
+          "status": "success",
+          "new_program": {
+            "id": 2,
+            "title": "Weight Loss Program - Copy",
+            "description": "Program description",
+            "image": "images/manage_programs/img.png",
+            "duration": "30 days",
+            "status": "Active",
+            "is_approve_nonapproved_foods_show": 1,
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          }
+        },
+        "status_codes": [200, 404, 400],
+        "edge_cases": "Duplicates program and related intro, food, and diet plans."
+      }
+    ]
+  },
+  {
+    "group": "Nutrition / Diet Meal Data",
+    "apis": [
+      {
+        "endpoint": "/admin/nutrition",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "nutrition": [
+            {
+              "id": 1,
+              "Meal_title": "Oats",
+              "Meal_Protien_In_gm": 10,
+              "Meal_Carbs_In_gm": 20,
+              "Meal_Calories_In_gm": 150,
+              "Meal_Fats_In_gm": 5,
+              "Meal_Description": "Healthy oats",
+              "Meal_Image_url": "image.png",
+              "Meal_instructions": "[\"Boil water\"]",
+              "Meal_ingredients": "[\"Oats\"]",
+              "Meal_Serving": 1,
+              "Meal_Type": "Breakfast",
+              "Meal_Status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200, 500],
+        "edge_cases": "Fetches DietMealData where status is active."
+      },
+      {
+        "endpoint": "/admin/add-nutrition",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|max:255",
+          "protein": "required|numeric|min:0",
+          "carbs": "required|numeric|min:0",
+          "calories": "required|numeric|min:0",
+          "fats": "required|numeric|min:0",
+          "description": "nullable|string|max:500",
+          "image": "string",
+          "Meal_Serving": "required|numeric",
+          "Meal_Type": "required",
+          "meal_description": "optional text (newline separated array)",
+          "meal_ingredients": "optional text (newline separated array)"
+        },
+        "response": {
+          "message": "Added! Nutrition Added Successfully",
+          "data": {
+            "id": 1,
+            "Meal_title": "Oats",
+            "Meal_Protien_In_gm": 10,
+            "Meal_Carbs_In_gm": 20,
+            "Meal_Calories_In_gm": 150,
+            "Meal_Fats_In_gm": 5,
+            "Meal_Description": "Healthy oats",
+            "Meal_Image_url": "image.png",
+            "Meal_instructions": "[\"Boil water\"]",
+            "Meal_ingredients": "[\"Oats\"]",
+            "Meal_Serving": 1,
+            "Meal_Type": "Breakfast",
+            "Meal_Status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Converts multiline strings to JSON arrays for ingredients/instructions."
+      },
+      {
+        "endpoint": "/admin/update-nutrition/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|max:255|unique",
+          "protein": "required|numeric|min:0",
+          "carbs": "required|numeric|min:0",
+          "calories": "required|numeric|min:0",
+          "fats": "required|numeric|min:0",
+          "description": "nullable|string|max:500",
+          "image": "string",
+          "Meal_Serving": "required|numeric",
+          "Meal_Type": "optional string"
+        },
+        "response": {
+          "message": "Nutrition updated successfully!",
+          "data": {
+            "id": 1,
+            "Meal_title": "Oats",
+            "Meal_Protien_In_gm": 10,
+            "Meal_Carbs_In_gm": 20,
+            "Meal_Calories_In_gm": 150,
+            "Meal_Fats_In_gm": 5,
+            "Meal_Description": "Healthy oats",
+            "Meal_Image_url": "image.png",
+            "Meal_instructions": "[\"Boil water\"]",
+            "Meal_ingredients": "[\"Oats\"]",
+            "Meal_Serving": 1,
+            "Meal_Type": "Breakfast",
+            "Meal_Status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Replaces existing values."
+      },
+      {
+        "endpoint": "/admin/upload-nutrition",
+        "method": "POST",
+        "request_body": {
+          "data": "array of objects with Meal details"
+        },
+        "response": {
+          "success": true,
+          "message": "Nutrition data uploaded successfully",
+          "status": "success"
+        },
+        "status_codes": [200, 422, 400],
+        "edge_cases": "Bulk upload loop. Checks if title exists before creating."
+      }
+    ]
+  },
+  {
+    "group": "Users",
+    "apis": [
+      {
+        "endpoint": "/admin/users",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "users": [
+            {
+              "id": 1,
+              "user_id": "ABC12",
+              "name": "John Doe",
+              "email": "john@example.com",
+              "mobileNo": "1234567890",
+              "dob": "1990-01-01",
+              "height": "180",
+              "weight": "75",
+              "gender": "Male",
+              "status": "Active",
+              "subadmin_id": 1,
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z",
+              "subAdmin": null,
+              "plan": null,
+              "transactions": []
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200, 500],
+        "edge_cases": "Returns users with relations (subAdmin, plan, transactions)."
+      }
+    ]
+  },
+  {
+    "group": "Dashboard",
+    "apis": [
+      {
+        "endpoint": "/admin/dashboard",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "subadminCount": 10,
+          "subadmin": []
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns subadmin counts."
+      },
+      {
+        "endpoint": "/admin/userscount",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "usersCount": 50,
+          "users": []
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns user counts."
+      }
+    ]
+  },
+  {
+    "group": "Fitzone Management",
+    "apis": [
+      {
+        "endpoint": "/admin/add-fitzone",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string|max:255|unique:fitzones,title",
+          "description": "required|string",
+          "workout_heading": "required|string",
+          "workout_sub_heading": "required|string",
+          "image": "required|mimes:jpeg,jpg,png,gif,webp|image"
+        },
+        "response": {
+          "message": "Fitzone Added Successfully",
+          "data": {
+            "id": 1,
+            "title": "Yoga Basics",
+            "description": "Yoga for beginners",
+            "image": "images/fitzone/yoga.png",
+            "workout_heading": "Yoga Heading",
+            "workout_sub_heading": "Yoga Sub",
+            "status": "Active",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Handles image upload."
+      },
+      {
+        "endpoint": "/admin/view-fitzone",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "fitzones": [
+            {
+              "id": 1,
+              "title": "Yoga Basics",
+              "description": "Yoga for beginners",
+              "image": "images/fitzone/yoga.png",
+              "workout_heading": "Yoga Heading",
+              "workout_sub_heading": "Yoga Sub",
+              "status": "Active",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated list."
+      }
+    ]
+  },
+  {
+    "group": "Transactions",
+    "apis": [
+      {
+        "endpoint": "/admin/transactions",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "transactions": [
+            {
+              "transaction_id": "TX123",
+              "amount": "99.99",
+              "status": "Success",
+              "invoice_url": "https://apibackend.trimify.com.au/public/invoice.pdf",
+              "user_id": 1,
+              "plan_id": 1,
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "user": {
+                "id": 1,
+                "name": "John Doe",
+                "plan": {
+                  "id": 1,
+                  "name": "Pro"
+                }
+              },
+              "plan": {
+                "id": 1,
+                "name": "Pro"
+              }
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200, 500],
+        "edge_cases": "Appends API_URL to invoice_url if exists."
+      },
+      {
+        "endpoint": "/admin/subscription",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "plans": [
+            {
+              "id": 1,
+              "price": "99.99",
+              "features": "Pro features",
+              "created_at": "2026-06-10T11:01:59.000000Z",
+              "updated_at": "2026-06-10T11:01:59.000000Z"
+            }
+          ],
+          "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "total": 1
+          }
+        },
+        "status_codes": [200, 500],
+        "edge_cases": "Returns subscription plans."
+      },
+      {
+        "endpoint": "/admin/update-subscription/{id}",
+        "method": "POST",
+        "request_body": {
+          "price": "required|string",
+          "features": "required|string"
+        },
+        "response": {
+          "message": "Subscription Updated Successfully",
+          "data": {
+            "id": 1,
+            "price": "99.99",
+            "features": "Pro features",
+            "created_at": "2026-06-10T11:01:59.000000Z",
+            "updated_at": "2026-06-10T11:01:59.000000Z"
+          },
+          "status": "success"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Updates price and features for a plan."
+      }
+    ]
+  }
+]

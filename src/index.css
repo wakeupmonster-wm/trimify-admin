@@ -1,0 +1,467 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 215, 20%, 65%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 182 59% 54%;
+    /* Using brand-aqua */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --brand-aqua: 182 59% 54%;
+    --hover-aqua: 182 45% 47%;
+    /* #46C7CD */
+    --brand-bg: 198 100% 96%;
+    /* #AAE1FE at low opacity */
+
+    /* Main Brand Color (#46C7CD) */
+    --brand-aqua: 182 59% 54%;
+
+    /* Alerts */
+    --info: 182 59% 54%;
+    /* #46C7CD (same as main) */
+    --success: 151 72% 46%;
+    --success-dark: 151, 72%, 37%;
+    /* #1AA260 */
+    /* #12D18E */
+    --warning: 45 98% 54%;
+    --warning-dark: 45 98% 26%;
+    /* #FACC15 */
+    --error: 0 100% 65%;
+    --error-dark: 0, 58%, 52%;
+    /* #CC3D3D */
+    /* #F75555 */
+    --light-dis: 0, 0%, 85%;
+    --light-dis-dark: 0, 0%, 26%;
+    /* #D8D8D8 */
+    --dark-dis: 0, 0%, 13%;
+    --dark-dis-dark: 0, 0%, 85%;
+    /* #212121 */
+    --button-dis: 274, 88%, 43%;
+    --button-dis-dark: 274, 88%, 26%;
+    /* #780DCC */
+
+    --bg-info: 182, 90%, 92%;
+    /* #d7fcfd */
+    --bg-success: 160, 81%, 89%;
+    /* #cefaeb*/
+    --bg-warning: 49, 91%, 91%;
+    /* #fdf5d3 */
+    --bg-error: 0, 70%, 94%;
+    /* #fae5e5 */
+
+    /* Greyscale Mapping */
+    --grey-900: 240 6% 21%;
+    /* #33343A approximation */
+    --grey-800: 240 5% 31%;
+    --grey-700: 240 4% 41%;
+    --grey-600: 240 3% 51%;
+    --grey-500: 240 2% 61%;
+    --grey-400: 240 2% 71%;
+    --grey-300: 240 2% 81%;
+    --grey-200: 240 2% 87%;
+    --grey-100: 240 2% 93%;
+    --grey-50: 240 2% 98%;
+
+    /* Backgrounds */
+    --aqua-gradient-start: 200 98% 83%;
+    /* #AAE1FE */
+    --aqua-gradient-end: 182 100% 95%;
+    /* #E6FFFD */
+    --bg-gray: 0 0% 98%;
+    /* #F8F8F8 */
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+
+  /* * {
+    @apply border-border;
+  } */
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+
+  /* Global Focus Reset to prevent black border blink */
+  input,
+  textarea,
+  select,
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card/95 backdrop-blur-xl border border-slate-200 shadow-md rounded-xl;
+  }
+
+  /* 
+  .glow-border {
+    box-shadow: 0 0 0 1px hsl(var(--border)),
+      0 0 20px -5px hsl(var(--card-glow) / 0.15);
+  } */
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg,
+        hsl(var(--gradient-from)),
+        hsl(var(--gradient-to)));
+  }
+
+  .stat-glow {
+    box-shadow: 0 4px 24px -4px hsl(var(--card-glow) / 0.2);
+  }
+}
+
+.svg {
+  width: 0.8rem !important;
+  height: 0.8rem !important;
+}
+
+/* ::-webkit-scrollbar {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background-color: #0e0e0e; /* or add it to the track
+} */
+
+/* Fix Preview Typography (The standard Tailwind reset fix) */
+.preview-content {
+  color: #334155;
+  /* slate-700 */
+  line-height: 1.6;
+  font-size: 1rem;
+
+  background: #000000;
+
+  /* This forces the text to wrap even if there are no spaces */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+
+  /* Ensures the container itself doesn't expand horizontally */
+  max-width: 100%;
+}
+
+.preview-content p {
+  margin-bottom: 1.25rem;
+}
+
+.preview-content strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.preview-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.preview-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.preview-content h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+}
+
+.preview-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.25rem;
+}
+
+.preview-content a {
+  color: #2563eb;
+  /* blue-600 */
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Container styling */
+.quill-modern-container .ql-toolbar.ql-snow {
+  border: 1px solid #e2e8f0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #fafafa;
+  padding: 12px;
+}
+
+.quill-modern-container .ql-container.ql-snow {
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  min-height: 260px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+}
+
+.quill-modern-container .ql-editor {
+  min-height: 200px;
+  color: var(--grey-800);
+  line-height: 1.8;
+}
+
+/* Customizing the toolbar button active state */
+.quill-modern-container .ql-snow.ql-toolbar button:hover,
+.quill-modern-container .ql-snow.ql-toolbar button.ql-active {
+  color: #7c3aed !important;
+}
+
+.quill-modern-container .ql-snow.ql-toolbar button:hover .ql-stroke,
+.quill-modern-container .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+  stroke: #7c3aed !important;
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth Sidebar Scrollbar */
+[data-sidebar="content"]::-webkit-scrollbar {
+  width: 2px;
+}
+
+[data-sidebar="content"]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-sidebar="content"]::-webkit-scrollbar-thumb {
+  background: hsl(var(--secondary-foreground) / 2);
+  border-radius: 2px;
+}
+
+[data-sidebar="content"]::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--secondary-foreground) / 0.4);
+}
+
+/* Smooth transitions for sidebar */
+[data-sidebar="sidebar"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Badge pulse animation */
+@keyframes badge-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+}
+
+.animate-pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.95;
+    transform: scale(0.98);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ===== Leaflet Map Custom Styles ===== */
+.custom-map-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none !important;
+}
+
+/* ===== Date Range Picker — Brand Color Override ===== */
+/* Override range start and end button colors to brand teal */
+button[data-range-start="true"],
+button[data-range-end="true"] {
+  background-color: #46c7cd !important;
+  color: #ffffff !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Support Ticket Reply Editor Styling */
+.quill-wrapper .ql-container.ql-snow {
+  border: none !important;
+  font-family: inherit;
+}
+
+.quill-wrapper .ql-editor {
+  min-height: 140px;
+  max-height: 300px;
+  font-size: 14px;
+  padding: 12px 16px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+/* Scoped to .quill-wrapper only (support ticket editor).
+   DO NOT make these global — they break the T&C editor at .tc-quill-wrapper */
+.quill-wrapper .ql-editor ol {
+  padding-left: 0 !important;
+}
+
+.quill-wrapper .ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+  padding-left: 3.5em !important;
+}
+
+.quill-wrapper .ql-editor li {
+  text-align: justify;
+}
+
+.quill-wrapper .ql-editor.ql-blank::before {
+  font-style: normal;
+  color: #94a3b8;
+  left: 16px;
+}
+
+/* Custom Scrollbar for Editor */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  display: block !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  cursor: pointer !important;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+/* Google Places Autocomplete Modal Fix */
+.pac-container {
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+}

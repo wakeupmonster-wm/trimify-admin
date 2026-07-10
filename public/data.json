@@ -1,0 +1,605 @@
+{
+    "success": true,
+    "meta": {
+        "dateRange": {
+            "from": "2026-05-26T18:30:00.000Z",
+            "to": "2026-05-27T04:47:12.219Z"
+        },
+        "preset": "today",
+        "periodLabel": "Today",
+        "contextLabel": "vs yesterday"
+    },
+    "data": {
+        "zoneA": {
+            "title": "Today at a glance",
+            "stats": [
+                {
+                    "label": "Revenue",
+                    "value": "$0.00",
+                    "sub": "vs yesterday",
+                    "trend": "-100.0%",
+                    "isPositive": true,
+                    "icon": "Sparkles",
+                    "color": "emerald",
+                    "route": "/admin/management/subscription-management"
+                },
+                {
+                    "label": "Supercharge driving",
+                    "value": "0%",
+                    "sub": "of revenue",
+                    "trend": "0%",
+                    "isPositive": true,
+                    "icon": "TrendingUp",
+                    "color": "blue"
+                },
+                {
+                    "label": "Female signups",
+                    "value": "0",
+                    "sub": "vs yesterday",
+                    "trend": "+0.0%",
+                    "isPositive": true,
+                    "icon": "Users",
+                    "color": "orange",
+                    "route": "/admin/management/users-management"
+                },
+                {
+                    "label": "KYC pending",
+                    "value": "1",
+                    "sub": "Review now →",
+                    "isPositive": false,
+                    "icon": "ShieldAlert",
+                    "color": "cyan",
+                    "isActionable": true,
+                    "route": "/admin/management/kyc-verifications"
+                },
+                {
+                    "label": "Users flagged",
+                    "value": "0",
+                    "sub": "Review now →",
+                    "trend": "-100.0%",
+                    "isPositive": false,
+                    "icon": "Flag",
+                    "color": "sky",
+                    "isActionable": true,
+                    "route": "/admin/management/profile-reports"
+                }
+            ]
+        },
+        "zoneB": {
+            "alerts": [
+                {
+                    "id": "kyc",
+                    "label": "KYC Verification",
+                    "value": "1 profile waiting for approval",
+                    "sub": "Review to activate new users",
+                    "badge": "Low",
+                    "badgeColor": "red",
+                    "icon": "ShieldCheck",
+                    "route": "/admin/management/kyc-verifications"
+                },
+                {
+                    "id": "reported",
+                    "label": "High Reported Users",
+                    "value": "0 users with 5+ reports today",
+                    "sub": "Investigate and take action",
+                    "badge": "Medium",
+                    "badgeColor": "orange",
+                    "icon": "AlertTriangle",
+                    "route": "/admin/management/profile-reports"
+                },
+                {
+                    "id": "ghosting",
+                    "label": "Ghosted Users",
+                    "value": "146 users have ghosted in the last 2 months",
+                    "sub": "146 out of 11k total users have no login activity.",
+                    "badge": "Ghosted",
+                    "badgeColor": "blue",
+                    "icon": "Activity",
+                    "route": "/admin/management/users-management"
+                }
+            ]
+        },
+        "zoneC": {
+            "metrics": [
+                {
+                    "label": "Match Liquidity",
+                    "value": "0.0%",
+                    "sub": "0 matches / 0 swipes",
+                    "subtitle": "Match rate for today",
+                    "trend": "-100.0%",
+                    "isPositive": false,
+                    "chartData": [
+                        0
+                    ]
+                },
+                {
+                    "label": "Gender Ratio",
+                    "value": "0 : 100",
+                    "subtitle": "Distribution of male vs female signups for today",
+                    "sub": "Male : Female",
+                    "isRatio": true,
+                    "ratioValue": 0,
+                    "maleCount": 0,
+                    "femaleCount": 0
+                }
+            ]
+        },
+        "revenueBreakdown": {
+            "subtitle": "Today revenue by source",
+            "total": "$0.00",
+            "insight": "Subscriptions contribute 0% of revenue.",
+            "categories": [
+                {
+                    "label": "Subscriptions",
+                    "value": 0,
+                    "displayValue": "$0.00",
+                    "percentage": 0,
+                    "color": "hsl(182 59% 75%)"
+                },
+                {
+                    "label": "Super Charge",
+                    "value": 0,
+                    "displayValue": "$0.00",
+                    "percentage": 0,
+                    "color": "hsl(182 59% 54%)"
+                },
+                {
+                    "label": "Superkeen",
+                    "value": 0,
+                    "displayValue": "$0.00",
+                    "percentage": 0,
+                    "color": "hsl(182 59% 35%)"
+                }
+            ]
+        },
+        "conversionFunnel": {
+            "subtitle": "Where users drop off",
+            "insight": "Conversion funnel tracks user journey from install to sub.",
+            "stages": [
+                {
+                    "label": "App Installs",
+                    "value": 0,
+                    "dropOff": 0,
+                    "color": "hsl(182 100% 88%)"
+                },
+                {
+                    "label": "Signups",
+                    "value": 0,
+                    "dropOff": 0,
+                    "color": "hsl(182 85% 78%)"
+                },
+                {
+                    "label": "Profile Complete",
+                    "value": 0,
+                    "dropOff": 0,
+                    "color": "hsl(182 70% 68%)"
+                },
+                {
+                    "label": "First Swipe",
+                    "value": 0,
+                    "dropOff": 0,
+                    "color": "hsl(182 60% 54%)"
+                },
+                {
+                    "label": "Subscribed",
+                    "value": 0,
+                    "dropOff": 0,
+                    "color": "hsl(182 60% 45%)"
+                }
+            ]
+        },
+        "performanceInsights": {
+            "subtitle": "What's working, what needs focus",
+            "insight": "Supercharge and 4+ photo users drive the best results.",
+            "metrics": [
+                {
+                    "label": "Supercharge ROI",
+                    "value": "0x",
+                    "percentage": 0,
+                    "color": "hsl(182 59% 54%)"
+                },
+                {
+                    "label": "Super Keen rate",
+                    "value": "0%",
+                    "percentage": 0,
+                    "color": "hsl(182 59% 65%)"
+                },
+                {
+                    "label": "Normal match rate",
+                    "value": "0%",
+                    "percentage": 0,
+                    "color": "hsl(215 20% 65%)"
+                },
+                {
+                    "label": "4+ photo users",
+                    "value": "7%",
+                    "percentage": 7,
+                    "color": "hsl(182 59% 54%)"
+                },
+                {
+                    "label": "Deep connections",
+                    "value": "58%",
+                    "percentage": 58,
+                    "color": "hsl(182 59% 65%)"
+                }
+            ]
+        },
+        "activityHeatmap": {
+            "subtitle": "Yearly User Activity",
+            "insight": "Activity trends for 2026 calendar year",
+            "days": [
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+                "Sun"
+            ],
+            "times": [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec"
+            ],
+            "data": [
+                {
+                    "date": "2026-04-23",
+                    "slot": 2,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-23",
+                    "slot": 3,
+                    "count": 1,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-23",
+                    "slot": 4,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-23",
+                    "slot": 5,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-24",
+                    "slot": 0,
+                    "count": 5,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-24",
+                    "slot": 1,
+                    "count": 4,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-24",
+                    "slot": 4,
+                    "count": 5,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-25",
+                    "slot": 0,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-25",
+                    "slot": 1,
+                    "count": 8,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-25",
+                    "slot": 2,
+                    "count": 34,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-04-25",
+                    "slot": 3,
+                    "count": 4,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-25",
+                    "slot": 5,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-26",
+                    "slot": 1,
+                    "count": 7,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-26",
+                    "slot": 2,
+                    "count": 49,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-04-26",
+                    "slot": 4,
+                    "count": 80,
+                    "intensity": 2
+                },
+                {
+                    "date": "2026-04-28",
+                    "slot": 4,
+                    "count": 1,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-29",
+                    "slot": 0,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-04-29",
+                    "slot": 3,
+                    "count": 18,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-04-29",
+                    "slot": 4,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-01",
+                    "slot": 5,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-02",
+                    "slot": 2,
+                    "count": 35,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-03",
+                    "slot": 2,
+                    "count": 1,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-05",
+                    "slot": 1,
+                    "count": 9,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-05",
+                    "slot": 2,
+                    "count": 20,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-05",
+                    "slot": 3,
+                    "count": 15,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-05",
+                    "slot": 5,
+                    "count": 2,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-06",
+                    "slot": 3,
+                    "count": 2,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-07",
+                    "slot": 4,
+                    "count": 14,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-08",
+                    "slot": 0,
+                    "count": 2,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-08",
+                    "slot": 1,
+                    "count": 4,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-11",
+                    "slot": 2,
+                    "count": 30,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-11",
+                    "slot": 3,
+                    "count": 32,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 0,
+                    "count": 2,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 1,
+                    "count": 612,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 2,
+                    "count": 3092,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 3,
+                    "count": 2930,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 4,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-12",
+                    "slot": 5,
+                    "count": 1,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-14",
+                    "slot": 3,
+                    "count": 29,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-15",
+                    "slot": 1,
+                    "count": 14,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-16",
+                    "slot": 1,
+                    "count": 16,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-20",
+                    "slot": 1,
+                    "count": 9731,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-20",
+                    "slot": 2,
+                    "count": 9691,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-20",
+                    "slot": 3,
+                    "count": 2051,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-21",
+                    "slot": 1,
+                    "count": 111,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-21",
+                    "slot": 2,
+                    "count": 52,
+                    "intensity": 2
+                },
+                {
+                    "date": "2026-05-21",
+                    "slot": 3,
+                    "count": 2134,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-23",
+                    "slot": 1,
+                    "count": 565,
+                    "intensity": 3
+            },
+                {
+                    "date": "2026-05-24",
+                    "slot": 3,
+                    "count": 3,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-25",
+                    "slot": 3,
+                    "count": 7,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-25",
+                    "slot": 4,
+                    "count": 7,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-25",
+                    "slot": 5,
+                    "count": 280,
+                    "intensity": 3
+                },
+                {
+                    "date": "2026-05-26",
+                    "slot": 1,
+                    "count": 31,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-26",
+                    "slot": 2,
+                    "count": 5,
+                    "intensity": 0
+                },
+                {
+                    "date": "2026-05-26",
+                    "slot": 3,
+                    "count": 23,
+                    "intensity": 1
+                },
+                {
+                    "date": "2026-05-26",
+                    "slot": 4,
+                    "count": 3,
+                    "intensity": 0
+                }
+            ]
+        },
+        "genderGrowth": {
+            "subtitle": "Daily signups for Today",
+            "insight": "Male signups are dominant at 54%",
+            "data": [
+                {
+                    "day": "Wed",
+                    "fullDate": "2026-05-27",
+                    "male": 0,
+                    "female": 0
+                }
+            ]
+        }
+    }
+}

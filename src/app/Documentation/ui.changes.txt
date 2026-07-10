@@ -1,0 +1,54 @@
+1. In dashboard- >
+   - Conversion Funnel is now not rounded or design % chips with decrease/increase icon, bg color, border, border radius. 
+   - Update all heading icons with their bg, and color.
+
+2. In User Management-> 
+   - Separated filters with gender, account status, plan, activity and jab filter select hai toh users count right me visible hoo.
+   - Structurea and align left all columns in table according to the design.
+   - Update status Active chip.
+
+3. View profile Page:-
+   - Update all icons color same.
+   - Decrease tabs border radius.
+   - Remove verification section top border.
+   - In verification card all 3 buttons size should same like inspector, active and reject.
+   - Improve profile, attribute, discovery, activity, financial, and setting tabs design as it is in Html design "Attribute tabs" provide by Rajat sir.
+   - 
+
+4. Profile Reports Page:-
+   - What is use case report status: [new, resolved, in_progress] 
+
+5. Support Tickets Page:-
+   - Update view ticket page UI design. 
+   
+6. All Admin panel tables:-
+   - Separated filters with gender, account status, plan, activity and jab filter select hai toh users count right me visible hoo.
+   - Structurea and align left all columns in table according to the design.
+   - Update all chips in table acording to designs.
+
+7. 
+
+
+
+
+Minor Issues:
+1. Dashboard user distribution mese decrease bottom padding align properly with left card platform visitor card. ✅
+2. User management me jo free plan wali chip hai vo best hai humko sabhi places pe same krni hai. ✅
+3. Attribute tab me religion ke font color same nhi hai baki ke comparision me. ✅
+4. Activity tab me stats wavy animation best hn I think. ⚠️ Q. asked by rajat sir.
+5. Recent connection ke card me empty message or icon proper consistent nhi hai. ✅
+6. Cards ki Heading chip design same with proper consistent nhi hai. [Financial and Setting Tab] me. ✅
+7. Setting Tab ke Account Management tab ki bottom padding decrease honi chahiye. ✅
+8. In all cards me icon, icon bg, and their heading, subheading colors + hover state same nhi hai. ✅
+9. Remove edit detail feature from core attributes card section. ✅
+10. Check all card section border roundness same with proper consistent nhi hai. [hint: profile top card section.] ✅
+11. Jese email fake profile ki table me truncate ho rhi hn wese baki sabhi me honi chahiye. ✅
+12. In KYC verification if user ne onboarding process complete nhi hai toh not_started status display hai. Then document upload nhi hai toh action bhi visible nhi hone chahiye. [Approve or Reject] ⚠️ Q. asked by rajat sir. ✅
+13. In subscription dashboard remove unused or extra spacing gapping from cards sections. ⚠️ Q. asked by rajat sir.
+14. Can we improve this cards analytics in [Plan distribution or Last 24Hr Activity]⚠️ Q. asked by rajat sir.
+15. Winner page me stats card ki border roundness decrease krni hai. ✅
+
+
+1. Activity tab me stats wavy animation best hn I think. ⚠️ Q. asked by rajat sir.
+2. In subscription dashboard remove unused or extra spacing gapping from cards sections. ⚠️ Q. asked by rajat sir.
+3. Can we improve this cards analytics in [Plan distribution or Last 24Hr Activity]⚠️ Q. asked by rajat sir.

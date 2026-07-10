@@ -1,0 +1,782 @@
+[
+  {
+    "group": "Blog Management (Additional)",
+    "apis": [
+      {
+        "endpoint": "/admin/get-blogcategoriesdrop",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "categories": [
+            {
+              "id": 1,
+              "title": "Health Tips"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Used for dropdowns."
+      },
+      {
+        "endpoint": "/admin/edit-blog-category/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "category": {
+            "id": 1,
+            "title": "Health Tips",
+            "description": "...",
+            "icon": "..."
+          }
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "404 if not found."
+      },
+      {
+        "endpoint": "/admin/toggle-status-blog/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status Updated!",
+          "updated_status": "Active"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Toggles blog active/inactive."
+      },
+      {
+        "endpoint": "/admin/toggle-publish-private/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "visibility_status": "required|string (Public/Private)"
+        },
+        "response": {
+          "status": "success",
+          "message": "Visibility Updated!"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Toggles public/private."
+      }
+    ]
+  },
+  {
+    "group": "Program Management (Additional)",
+    "apis": [
+      {
+        "endpoint": "/admin/edit-program/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "program": {
+            "id": 1,
+            "title": "Weight Loss",
+            "duration": "30 days"
+          }
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Fetches specific program for editing."
+      },
+      {
+        "endpoint": "/admin/view-programassigneduser/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "users": [
+            {
+              "id": 1,
+              "name": "John Doe",
+              "email": "john@example.com"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Users assigned to a program."
+      },
+      {
+        "endpoint": "/admin/program-food-visibility/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "is_visible": 1
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Gets current food visibility state."
+      }
+    ]
+  },
+  {
+    "group": "Program Introduction",
+    "apis": [
+      {
+        "endpoint": "/admin/program-intro/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "intro": {
+            "id": 1,
+            "program_id": 1,
+            "title": "Intro",
+            "description": "..."
+          }
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Gets intro for a program."
+      },
+      {
+        "endpoint": "/admin/program-intro",
+        "method": "POST",
+        "request_body": {
+          "program_id": "required|integer",
+          "title": "required|string",
+          "description": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Intro added!"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Validates inputs."
+      },
+      {
+        "endpoint": "/admin/program-intro/update/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string",
+          "description": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Intro updated!"
+        },
+        "status_codes": [200, 422, 404],
+        "edge_cases": "Updates existing intro."
+      }
+    ]
+  },
+  {
+    "group": "Food & Categories Management",
+    "apis": [
+      {
+        "endpoint": "/admin/get-foodcategories",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "categories": [
+            {
+              "id": 1,
+              "title": "Fruits"
+            }
+          ],
+          "pagination": {}
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated food categories."
+      },
+      {
+        "endpoint": "/admin/get-foodcategoriesdrop",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "categories": [
+            {
+              "id": 1,
+              "title": "Fruits"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Dropdown list."
+      },
+      {
+        "endpoint": "/admin/add-foodcategory",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added!"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds category."
+      },
+      {
+        "endpoint": "/admin/update-foodcategory/{editId}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated!"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates category."
+      },
+      {
+        "endpoint": "/admin/delete-foodcategory/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Deleted!"
+        },
+        "status_codes": [200, 404],
+        "edge_cases": "Deletes category."
+      },
+      {
+        "endpoint": "/admin/add-food",
+        "method": "POST",
+        "request_body": {
+          "program_id": "required",
+          "category_id": "required",
+          "title": "required|string",
+          "type": "required|string (Approved/Unapproved)"
+        },
+        "response": {
+          "status": "success",
+          "message": "Food Added"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds food item."
+      },
+      {
+        "endpoint": "/admin/update-food/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required|string",
+          "type": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Food Updated"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates food."
+      },
+      {
+        "endpoint": "/admin/get-food/{program_id}/{foodCategoryId}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "foods": [
+            {
+              "id": 1,
+              "title": "Apple",
+              "type": "Approved"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets foods for a program and category."
+      },
+      {
+        "endpoint": "/admin/toggle-status-approveunapprove/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status updated"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggles status."
+      },
+      {
+        "endpoint": "/admin/delete-food/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Deleted"
+        },
+        "status_codes": [200],
+        "edge_cases": "Deletes food."
+      }
+    ]
+  },
+  {
+    "group": "Diet Plan Management",
+    "apis": [
+      {
+        "endpoint": "/admin/get-dietmeal/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "diet_meals": [
+            {
+              "id": 1,
+              "day": 1,
+              "meal_id": 1
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets diet meals for program ID."
+      },
+      {
+        "endpoint": "/admin/add-dietmeal",
+        "method": "POST",
+        "request_body": {
+          "program_id": "required",
+          "day": "required",
+          "meal_ids": "array"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds multiple meals."
+      },
+      {
+        "endpoint": "/admin/update-dietmeal/{id}",
+        "method": "POST",
+        "request_body": {
+          "day": "required",
+          "meal_ids": "array"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates diet meal."
+      },
+      {
+        "endpoint": "/admin/delete-dietmeal/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Deleted"
+        },
+        "status_codes": [200],
+        "edge_cases": "Deletes."
+      },
+      {
+        "endpoint": "/admin/getprogramduration/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "duration": 30
+        },
+        "status_codes": [200],
+        "edge_cases": "Returns duration of a program."
+      },
+      {
+        "endpoint": "/admin/getsearchfood",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "foods": []
+        },
+        "status_codes": [200],
+        "edge_cases": "Searches food database."
+      },
+      {
+        "endpoint": "/admin/toggle-status-diet-meal/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Status toggled"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggles active/inactive."
+      }
+    ]
+  },
+  {
+    "group": "Fitzone Management (Additional)",
+    "apis": [
+      {
+        "endpoint": "/admin/getworkouttitle/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "title": "Yoga Basics"
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets fitzone title."
+      },
+      {
+        "endpoint": "/admin/toggle-status-fitzone/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Toggled"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggle."
+      },
+      {
+        "endpoint": "/admin/delete-fitzone/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "message": "Deleted"
+        },
+        "status_codes": [200],
+        "edge_cases": "Deletes fitzone."
+      }
+    ]
+  },
+  {
+    "group": "Fitzone Workouts & Sessions",
+    "apis": [
+      {
+        "endpoint": "/admin/fitzone-intro/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "intro": {
+            "id": 1,
+            "fitzone_id": 1,
+            "title": "Intro"
+          }
+        },
+        "status_codes": [200],
+        "edge_cases": "Intro for fitzone."
+      },
+      {
+        "endpoint": "/admin/fitzone-intro",
+        "method": "POST",
+        "request_body": {
+          "fitzone_id": "required",
+          "title": "required",
+          "description": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds intro."
+      },
+      {
+        "endpoint": "/admin/fitzone-intro/update/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required",
+          "description": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates intro."
+      },
+      {
+        "endpoint": "/admin/fitzone-workoutcat/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "categories": [
+            {
+              "id": 1,
+              "title": "Warmup"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets workout categories."
+      },
+      {
+        "endpoint": "/admin/add-workoutcat",
+        "method": "POST",
+        "request_body": {
+          "fitzone_id": "required",
+          "title": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds workout cat."
+      },
+      {
+        "endpoint": "/admin/update-workoutcat/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates workout cat."
+      },
+      {
+        "endpoint": "/admin/toggle-status-worksession/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggles."
+      },
+      {
+        "endpoint": "/admin/delete-worksession/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200],
+        "edge_cases": "Deletes."
+      },
+      {
+        "endpoint": "/admin/workout/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "workouts": [
+            {
+              "id": 1,
+              "title": "Pushups",
+              "reps": 10
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets workouts for category."
+      },
+      {
+        "endpoint": "/admin/workout",
+        "method": "POST",
+        "request_body": {
+          "category_id": "required",
+          "title": "required",
+          "video_url": "url"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds workout."
+      },
+      {
+        "endpoint": "/admin/workout-update/{id}",
+        "method": "PUT",
+        "request_body": {
+          "title": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates workout."
+      },
+      {
+        "endpoint": "/admin/fitzone-session/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "sessions": [
+            {
+              "id": 1,
+              "title": "Day 1"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets sessions."
+      },
+      {
+        "endpoint": "/admin/add-fitzonesession",
+        "method": "POST",
+        "request_body": {
+          "fitzone_id": "required",
+          "title": "required"
+        },
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds session."
+      },
+      {
+        "endpoint": "/admin/update-fitzonesession/{id}",
+        "method": "POST",
+        "request_body": {
+          "title": "required"
+        },
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Updates session."
+      },
+      {
+        "endpoint": "/admin/toggle-status-fitzonesession/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggles."
+      },
+      {
+        "endpoint": "/admin/fitzone-workoutsession/{id}",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "workout_session": [
+            {
+              "id": 1
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Gets relations."
+      },
+      {
+        "endpoint": "/admin/delete-fitzonesession/{id}",
+        "method": "DELETE",
+        "request_body": {},
+        "response": {
+          "status": "success"
+        },
+        "status_codes": [200],
+        "edge_cases": "Deletes."
+      }
+    ]
+  },
+  {
+    "group": "Dashboard (Additional)",
+    "apis": [
+      {
+        "endpoint": "/admin/blog",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "count": 10
+        },
+        "status_codes": [200],
+        "edge_cases": "Blog counts."
+      },
+      {
+        "endpoint": "/admin/manageprogram",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "count": 5
+        },
+        "status_codes": [200],
+        "edge_cases": "Program counts."
+      },
+      {
+        "endpoint": "/admin/fitzonesession",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "count": 20
+        },
+        "status_codes": [200],
+        "edge_cases": "Fitzone session counts."
+      }
+    ]
+  },
+  {
+    "group": "Diet Meal Management",
+    "apis": [
+      {
+        "endpoint": "/admin/diet_meal_data",
+        "method": "GET",
+        "request_body": {},
+        "response": {
+          "status": "success",
+          "meals": [
+            {
+              "id": 1,
+              "Meal_title": "Oats"
+            }
+          ]
+        },
+        "status_codes": [200],
+        "edge_cases": "Paginated diet meals."
+      },
+      {
+        "endpoint": "/admin/toggle-status-Diet-Meal/{id}",
+        "method": "PATCH",
+        "request_body": {
+          "status": "required"
+        },
+        "response": {
+          "status": "success",
+          "message": "Updated"
+        },
+        "status_codes": [200],
+        "edge_cases": "Toggle status."
+      },
+      {
+        "endpoint": "/admin/upload-diet-meal",
+        "method": "POST",
+        "request_body": {
+          "file": "required|file"
+        },
+        "response": {
+          "status": "success",
+          "message": "Uploaded"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Bulk upload from file."
+      },
+      {
+        "endpoint": "/admin/add-dietmealbulkupload",
+        "method": "POST",
+        "request_body": {
+          "data": "required|array"
+        },
+        "response": {
+          "status": "success",
+          "message": "Added in bulk"
+        },
+        "status_codes": [200, 422],
+        "edge_cases": "Adds multiple meals."
+      }
+    ]
+  }
+]
