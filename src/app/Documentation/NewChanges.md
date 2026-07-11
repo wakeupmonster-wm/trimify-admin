@@ -1,4 +1,4 @@
-# Keen As Mustard Admin Panel Issue.
+# Trimify Admin Admin Panel Issue.
 
 ## Login Page.
 

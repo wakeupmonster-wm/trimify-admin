@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  bannedUserProfile,
-  fetchUsers,
-  suspendUserProfile,
-  unbanUserProfile,
-  unsuspendUserProfile,
-} from "@/modules/users/store/user.slice";
-import { fetchDashboardData, fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
+// import {
+//   bannedUserProfile,
+//   fetchUsers,
+//   suspendUserProfile,
+//   unbanUserProfile,
+//   unsuspendUserProfile,
+// } from "@/modules/users/store/user.slice";
+// import { fetchDashboardData, fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -49,7 +49,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserActionModal } from "@/modules/users/components/UserActionModal";
+// import { UserActionModal } from "@/modules/users/components/UserActionModal";
 
 import { toast } from "sonner";
 
@@ -103,12 +103,14 @@ export function RecentUsersTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, loading } = useSelector((state) => state.users);
-  const dashboardState = useSelector((state) => state.dashboard);
+  // const { items, loading } = useSelector((state) => state.users);
+  // const dashboardState = useSelector((state) => state.dashboard);
+  const items = [];
+  const loading = false;
 
   const refreshDashboard = () => {
-    if (!dashboardState) return;
-    const dateObj = dashboardState.dateRange || { preset: "today" };
+    // if (!dashboardState) return;
+    const dateObj = { preset: "today" };
     const preset = dateObj?.preset || "today";
     const apiParams = {
       preset,
@@ -142,7 +144,7 @@ export function RecentUsersTable() {
   });
 
   useEffect(() => {
-    dispatch(fetchUsers({ page: 1, limit: 10 }));
+    // dispatch(fetchUsers({ page: 1, limit: 10 }));
   }, [dispatch]);
 
   const handleActionClick = (e, type, user) => {
@@ -155,46 +157,46 @@ export function RecentUsersTable() {
       if (actionModal.type === "ban") {
         const reason = arg1;
         const category = arg2 || "Administrative";
-        await dispatch(
-          bannedUserProfile({
-            userId: actionModal.user?._id,
-            category,
-            reason,
-          }),
-        ).unwrap();
+        // await dispatch(
+        //   bannedUserProfile({
+        //     userId: actionModal.user?._id,
+        //     category,
+        //     reason,
+        //   }),
+        // ).unwrap();
         toast.success("User has been banned");
       } else if (actionModal.type === "suspend") {
         const reason = arg1;
         const duration = arg2;
-        await dispatch(
-          suspendUserProfile({
-            userId: actionModal.user?._id,
-            reason,
-            durationHours: Number(duration),
-          }),
-        ).unwrap();
+        // await dispatch(
+        //   suspendUserProfile({
+        //     userId: actionModal.user?._id,
+        //     reason,
+        //     durationHours: Number(duration),
+        //   }),
+        // ).unwrap();
         toast.success("User Suspended", {
           description: `Access restricted for ${duration} hours.`,
         });
       } else if (actionModal.type === "unban") {
         const reason = arg1;
-        await dispatch(
-          unbanUserProfile({
-            userId: actionModal.user?._id,
-            category: "Administrative",
-            reason,
-          }),
-        ).unwrap();
+        // await dispatch(
+        //   unbanUserProfile({
+        //     userId: actionModal.user?._id,
+        //     category: "Administrative",
+        //     reason,
+        //   }),
+        // ).unwrap();
         toast.success("User account activated");
       } else if (actionModal.type === "unsuspend") {
         const reason = arg1;
-        await dispatch(
-          unsuspendUserProfile({
-            userId: actionModal.user?._id,
-            category: "Administrative",
-            reason,
-          }),
-        ).unwrap();
+        // await dispatch(
+        //   unsuspendUserProfile({
+        //     userId: actionModal.user?._id,
+        //     category: "Administrative",
+        //     reason,
+        //   }),
+        // ).unwrap();
         toast.success("User suspension lifted");
       }
       refreshDashboard();
@@ -203,8 +205,6 @@ export function RecentUsersTable() {
       toast.error(error || "Action failed");
     }
   };
-
-
 
   const recentUsers = useMemo(() => {
     return [...(items || [])]
@@ -670,14 +670,14 @@ export function RecentUsersTable() {
           </div>
         </CardContent>
       </Card>
-
+{/* 
       <UserActionModal
         type={actionModal.type}
         isOpen={actionModal.isOpen}
         onClose={() => setActionModal((prev) => ({ ...prev, isOpen: false }))}
         onConfirm={handleActionConfirm}
         userName={actionModal.user?.profile?.nickname || "User"}
-      />
+      /> */}
 
 
 

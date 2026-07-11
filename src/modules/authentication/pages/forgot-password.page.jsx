@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
             <div className="space-y-2 max-w-96">
               <h1 className="text-white text-5xl xl:text-6xl font-normal leading-[1.5] tracking-tight">
                 Welcome to <br />
-                Keen As Mustard{" "}
+                Trimify Admin{" "}
                 <span className="inline-block animate-wave origin-bottom text-4xl xl:text-5xl">
                   👋
                 </span>

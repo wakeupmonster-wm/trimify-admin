@@ -5,7 +5,6 @@ import {
   format,
   subDays,
 } from "date-fns";
-import { LuUsersRound } from "react-icons/lu";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -370,7 +369,7 @@ function buildZoneCMetrics(periodLabel, preset) {
         label: "Gender Ratio",
         value: `${randomize(180, 20)} : ${randomize(120, 20)}`,
         subtitle: "Distribution of male vs female signups",
-        Icon: LuUsersRound,
+        iconName: "LuUsersRound",
         iconColor: "text-indigo-600",
         iconBg: "bg-indigo-50",
         sub: "Male : Female",

@@ -22,9 +22,9 @@ export const termsContent = [
         list: true,
         listType: "alpha",
         items: [
-          "Welcome to <b>Keen As Mustard</b> dating application (App).",
+          "Welcome to <b>Trimify Admin</b> dating application (App).",
           "The Application is operated by Match At First Swipe Pty Ltd. Access to and use of the App, or any of its associated Services, is provided by Match At First Swipe Pty Ltd. Please read these terms and conditions (<b>Terms</b>) carefully. By using, browsing and/or reading the App, this signifies that you have read, understood and agree to be bound by the Terms. If you do not agree with the Terms, you must cease usage of the Application, or any of Services, immediately.",
-          "Match At First Swipe Pty Ltd operating as Keen As Mustard reserves the right to review and change any of the Terms by updating this page at its sole discretion. When Match At First Swipe Pty Ltd operating as Keen As Mustard updates the Terms, it will use reasonable endeavours to provide you with notice of updates to the Terms. Any changes to the Terms take immediate effect from the date of their publication. Before you continue, we recommend you keep a copy of the Terms for your records.",
+          "Match At First Swipe Pty Ltd operating as Trimify Admin reserves the right to review and change any of the Terms by updating this page at its sole discretion. When Match At First Swipe Pty Ltd operating as Trimify Admin updates the Terms, it will use reasonable endeavours to provide you with notice of updates to the Terms. Any changes to the Terms take immediate effect from the date of their publication. Before you continue, we recommend you keep a copy of the Terms for your records.",
         ],
       },
     ],
@@ -35,7 +35,7 @@ export const termsContent = [
     title: "2. Acceptance of the Terms",
     content: [
       {
-        text: "You accept the Terms by remaining on the App. You may also accept the Terms by clicking to accept or agree to the Terms where this option is made available to you by <b>Keen As Mustard operated by Match At First Swipe Pty Ltd</b> in the user interface <b>(referred to as Keen As Mustard in this document)</b>.",
+        text: "You accept the Terms by remaining on the App. You may also accept the Terms by clicking to accept or agree to the Terms where this option is made available to you by <b>Trimify Admin operated by Match At First Swipe Pty Ltd</b> in the user interface <b>(referred to as Trimify Admin in this document)</b>.",
       },
     ],
   },
@@ -49,14 +49,14 @@ export const termsContent = [
         listType: "alpha",
         items: [
           "In order to access the App Services, you must first register as a user of the App. As part of the registration process, or as part of your continued use of the App Services, you may be required to provide personal information about yourself (such as identification or contact details), including but not limited to: Name, Date of Birth, Email, and/or phone number.",
-          "You warrant that any information you give to Keen As Mustard in the course of completing the registration process will always be accurate, correct and up to date.",
+          "You warrant that any information you give to Trimify Admin in the course of completing the registration process will always be accurate, correct and up to date.",
           "Once you have completed the registration process, you will be a registered member of the App (<b>Member</b>) and agree to be bound by the Terms. As a Member you will be granted immediate access to the App Services.",
           {
             text: "You may not use the App Services and may not accept the Terms if:",
             subList: {
               listType: "roman",
               items: [
-                "you are not of legal age to form a binding contract with Keen As Mustard; or",
+                "you are not of legal age to form a binding contract with Trimify Admin; or",
                 "you are a person barred from receiving the App Services under the laws of Australia or other countries including the country in which you are resident or from which you use the App Services.",
               ],
             },
@@ -79,19 +79,19 @@ export const termsContent = [
         items: [
           "any applicable law, regulation or generally accepted practices or guidelines in the relevant jurisdictions;",
           "you have the sole responsibility for protecting the confidentiality of your password and/or email address. Use of your password by any other person may result in the immediate cancellation of the App Services;",
-          "any use of your registration information by any other person, or third parties, is strictly prohibited. You agree to immediately notify Keen As Mustard of any unauthorised use of your password or email address or any breach of security of which you have become aware;",
-          "access and use of the App is limited, non-transferable and allows for the sole use of the App by you for the purposes of Keen As Mustard providing the App Services;",
+          "any use of your registration information by any other person, or third parties, is strictly prohibited. You agree to immediately notify Trimify Admin of any unauthorised use of your password or email address or any breach of security of which you have become aware;",
+          "access and use of the App is limited, non-transferable and allows for the sole use of the App by you for the purposes of Trimify Admin providing the App Services;",
           "you will not use the App Services or Website for any illegal and/or unauthorised use which includes collecting email addresses of Members by electronic or other means for the purpose of sending unsolicited email or unauthorised framing of or linking to the App.",
-          "you agree that commercial advertisements, affiliate links, and other forms of solicitation may be removed from the App without notice and may result in termination of the App Services. Appropriate legal action will be taken by Keen As Mustard for any illegal or unauthorised use of the App.",
+          "you agree that commercial advertisements, affiliate links, and other forms of solicitation may be removed from the App without notice and may result in termination of the App Services. Appropriate legal action will be taken by Trimify Admin for any illegal or unauthorised use of the App.",
           "you acknowledge and agree that any automated use of the App or its App Services is prohibited.",
           "You must be at least 18 years of age to use the App.",
           "Members must not upload any illegal or defamatory information or content. Breaching this requirement constitutes a breach of the app and community standards.",
-          "Users acknowledge that <b>Keen As Mustard</b> is not responsible for any meet-ups or interactions that occur outside the app. You are solely responsible for taking necessary precautions when meeting other users. <b>Keen As Mustard</b> is not liable for any offline interaction and provides no warranty regarding the conduct or actions of any user.",
+          "Users acknowledge that <b>Trimify Admin</b> is not responsible for any meet-ups or interactions that occur outside the app. You are solely responsible for taking necessary precautions when meeting other users. <b>Trimify Admin</b> is not liable for any offline interaction and provides no warranty regarding the conduct or actions of any user.",
           "you will not attempt to reverse engineer, decompile, or disassemble any part of the App Services, or attempt to derive the source code or underlying ideas or algorithms of any part of the App Services.",
         ],
       },
       {
-        text: "<b>Keen As Mustard</b> may suspend, restrict or terminate your account if your conduct breaches these terms.",
+        text: "<b>Trimify Admin</b> may suspend, restrict or terminate your account if your conduct breaches these terms.",
       },
     ],
   },
@@ -101,13 +101,13 @@ export const termsContent = [
     title: "5. Subscription Tiers and Access Levels",
     content: [
       {
-        text: "<u>Free Membership</u><br/><br/>Upon registration, you will automatically receive a Free Membership which grants you access to basic features of the App, including: the ability to create and maintain a user profile; a limited number of swipes per day (as determined by Match At First Swipe Pty Ltd from time to time); the ability to match with other users who have also swiped positively on your profile; basic messaging functionality with your matches; and limited access to profile visibility settings. Free Membership does not include access to premium features, or member offers and discounts. <b>Keen As Mustard</b> reserves the right to modify the features available under Free Membership at any time without prior notice.",
+        text: "<u>Free Membership</u><br/><br/>Upon registration, you will automatically receive a Free Membership which grants you access to basic features of the App, including: the ability to create and maintain a user profile; a limited number of swipes per day (as determined by Match At First Swipe Pty Ltd from time to time); the ability to match with other users who have also swiped positively on your profile; basic messaging functionality with your matches; and limited access to profile visibility settings. Free Membership does not include access to premium features, or member offers and discounts. <b>Trimify Admin</b> reserves the right to modify the features available under Free Membership at any time without prior notice.",
       },
       {
-        text: "<u>Paid Subscription</u><br/><br/>You may upgrade to a Paid Subscription at any time by selecting a subscription plan through the App and completing the payment process. Paid Subscription includes all Free Membership features plus additional benefits, including but not limited to: unlimited daily swipes; the ability to see who has liked your profile before swiping; boost profile visibility exposure; unlimited rewinds to reconsider previous swipes; access to exclusive member offers and discounts from partner businesses; and ad-free experience within the App.<br/><br/>Subscription fees are charged in advance on a recurring basis (monthly, or quarterly, depending on your selected plan) and are non-refundable except as required by law. Your Paid Subscription will automatically renew at the end of each billing cycle unless you cancel your subscription before your next billing date. You may cancel your Paid Subscription at any time through your account settings. <u>Upon cancellation, you will retain access to Paid Subscription features until the end of your current billing period, after which your account will revert to Free Membership.</u> <b>Keen As Mustard</b> reserves the right to modify subscription pricing, features, and benefits at any time. Any changes to your existing subscription will take effect upon your next renewal date.",
+        text: "<u>Paid Subscription</u><br/><br/>You may upgrade to a Paid Subscription at any time by selecting a subscription plan through the App and completing the payment process. Paid Subscription includes all Free Membership features plus additional benefits, including but not limited to: unlimited daily swipes; the ability to see who has liked your profile before swiping; boost profile visibility exposure; unlimited rewinds to reconsider previous swipes; access to exclusive member offers and discounts from partner businesses; and ad-free experience within the App.<br/><br/>Subscription fees are charged in advance on a recurring basis (monthly, or quarterly, depending on your selected plan) and are non-refundable except as required by law. Your Paid Subscription will automatically renew at the end of each billing cycle unless you cancel your subscription before your next billing date. You may cancel your Paid Subscription at any time through your account settings. <u>Upon cancellation, you will retain access to Paid Subscription features until the end of your current billing period, after which your account will revert to Free Membership.</u> <b>Trimify Admin</b> reserves the right to modify subscription pricing, features, and benefits at any time. Any changes to your existing subscription will take effect upon your next renewal date.",
       },
       {
-        text: "<u>Payment Terms for Subscriptions</u><br/><br/>All subscription fees must be paid through the Payment Gateway Provider specified in the App. You authorise <b>Match At First Swipe Pty Ltd operating as Keen As Mustard</b> to charge your nominated payment method for all subscription fees on a recurring basis. If payment cannot be processed for any reason, Keen As Mustard may suspend or downgrade your account to Free Membership until payment is successfully completed. <u>All prices are displayed in Australian dollars and include GST where applicable.</u>",
+        text: "<u>Payment Terms for Subscriptions</u><br/><br/>All subscription fees must be paid through the Payment Gateway Provider specified in the App. You authorise <b>Match At First Swipe Pty Ltd operating as Trimify Admin</b> to charge your nominated payment method for all subscription fees on a recurring basis. If payment cannot be processed for any reason, Trimify Admin may suspend or downgrade your account to Free Membership until payment is successfully completed. <u>All prices are displayed in Australian dollars and include GST where applicable.</u>",
       },
     ],
   },
@@ -121,7 +121,7 @@ export const termsContent = [
         listType: "alpha",
         items: [
           {
-            text: 'You acknowledge and agree that <b>"Keen As Mustard"</b> makes no guarantee, warranty, representation, or promise that you will:',
+            text: 'You acknowledge and agree that <b>"Trimify Admin"</b> makes no guarantee, warranty, representation, or promise that you will:',
             subList: {
               listType: "disc",
               items: [
@@ -132,9 +132,9 @@ export const termsContent = [
               ],
             },
           },
-          "<b>Keen As Mustard</b> makes no representations or warranties regarding the quality, suitability, compatibility, or intentions of other users on the App.",
-          "Your success in finding matches or forming relationships depends on numerous factors outside the control of <b>Keen As Mustard</b>, including but not limited to your profile content, communication skills, personal preferences, and the actions of other users.",
-          "<b>Keen As Mustard</b> shall not be liable for any disappointment, emotional distress, or other consequences arising from your inability to find matches or form relationships through the App.",
+          "<b>Trimify Admin</b> makes no representations or warranties regarding the quality, suitability, compatibility, or intentions of other users on the App.",
+          "Your success in finding matches or forming relationships depends on numerous factors outside the control of <b>Trimify Admin</b>, including but not limited to your profile content, communication skills, personal preferences, and the actions of other users.",
+          "<b>Trimify Admin</b> shall not be liable for any disappointment, emotional distress, or other consequences arising from your inability to find matches or form relationships through the App.",
         ],
       },
     ],
@@ -150,7 +150,7 @@ export const termsContent = [
         items: [
           "In using the App Services to purchase a subscription or additional features, you will agree to the payment of the purchase price listed for the item/s selected.",
           "Payment of the Purchase Price may be made the Payment Gateway Provider. In using the App Services, you warrant that you have familiarised yourself with, and agree to be bound by, the applicable Terms and Conditions of Use, Privacy Policy and other relevant legal documentation provided by the Payment Gateway Providers.",
-          "Following payment of the Purchase Price being confirmed by Keen As Mustard, you will be issued with a receipt to confirm that the payment has been received and Keen As Mustard may record your purchase details for future use.",
+          "Following payment of the Purchase Price being confirmed by Trimify Admin, you will be issued with a receipt to confirm that the payment has been received and Trimify Admin may record your purchase details for future use.",
         ],
       },
     ],
@@ -164,20 +164,20 @@ export const termsContent = [
         list: true,
         listType: "alpha",
         items: [
-          "The Website, the App Services and all of the related products of Keen As Mustard are subject to copyright. The material on the App is protected by copyright under the laws of Australia and through international treaties. Unless otherwise indicated, all rights (including copyright) in the site content and compilation of the website and App (including text, graphics, logos, button icons, video images, audio clips and software) (<b>Content</b>) are owned or controlled for these purposes, and are reserved by Keen As Mustard or its contributors.",
+          "The Website, the App Services and all of the related products of Trimify Admin are subject to copyright. The material on the App is protected by copyright under the laws of Australia and through international treaties. Unless otherwise indicated, all rights (including copyright) in the site content and compilation of the website and App (including text, graphics, logos, button icons, video images, audio clips and software) (<b>Content</b>) are owned or controlled for these purposes, and are reserved by Trimify Admin or its contributors.",
           {
-            text: "Keen As Mustard retains all rights, title and interest in and to the App and all related content. Nothing you do on or in relation to the App will transfer to you:",
+            text: "Trimify Admin retains all rights, title and interest in and to the App and all related content. Nothing you do on or in relation to the App will transfer to you:",
             subList: {
               listType: "alpha",
               items: [
-                "the business name, trading name, domain name, trademark, industrial design, patent, registered design or copyright of Keen As Mustard; or",
+                "the business name, trading name, domain name, trademark, industrial design, patent, registered design or copyright of Trimify Admin; or",
                 "the right to use or exploit a business name, trading name, domain name, trade mark or industrial design; or",
                 "a system or process that is the subject of a patent, registered design or copyright (or an adaptation or modification of such a system or process).",
               ],
             },
           },
-          "You may not, without the prior written permission of Keen As Mustard and the permission of any other relevant rights owners: broadcast, republish, up-load to a third party, transmit, post, distribute, show or play in public, adapt or change in any way the Content or third party content for any purpose. This prohibition does not extend to materials on the Website, which are freely available for re-use or are in the public domain.",
-          "You agree to promptly notify <b>info@keenasmustard.com.au</b> of any actual or suspected infringement of Keen As Mustard's intellectual property rights that comes to your attention. In the event of any unauthorised use of Keen As Mustard's intellectual property, we reserve the right to seek all available legal and equitable remedies, including injunctive relief.",
+          "You may not, without the prior written permission of Trimify Admin and the permission of any other relevant rights owners: broadcast, republish, up-load to a third party, transmit, post, distribute, show or play in public, adapt or change in any way the Content or third party content for any purpose. This prohibition does not extend to materials on the Website, which are freely available for re-use or are in the public domain.",
+          "You agree to promptly notify <b>info@keenasmustard.com.au</b> of any actual or suspected infringement of Trimify Admin's intellectual property rights that comes to your attention. In the event of any unauthorised use of Trimify Admin's intellectual property, we reserve the right to seek all available legal and equitable remedies, including injunctive relief.",
         ],
       },
     ],
@@ -188,7 +188,7 @@ export const termsContent = [
     title: "9. Privacy",
     content: [
       {
-        text: "Keen As Mustard takes your privacy seriously and any information provided through your use of the Website and/or the App Services are subject to Keen As Mustard's Privacy Policy, which is available on the App and Website.",
+        text: "Trimify Admin takes your privacy seriously and any information provided through your use of the Website and/or the App Services are subject to Trimify Admin's Privacy Policy, which is available on the App and Website.",
       },
     ],
   },
@@ -201,8 +201,8 @@ export const termsContent = [
         list: true,
         listType: "alpha",
         items: [
-          "You acknowledge that Keen As Mustard does not make any terms, guarantees, warranties, representations or conditions whatsoever regarding the Services other than provided for pursuant to these Terms.",
-          "Keen As Mustard will make every effort to ensure services are accurately depicted on the Website and in the App.",
+          "You acknowledge that Trimify Admin does not make any terms, guarantees, warranties, representations or conditions whatsoever regarding the Services other than provided for pursuant to these Terms.",
+          "Trimify Admin will make every effort to ensure services are accurately depicted on the Website and in the App.",
           "Nothing in these Terms limits or excludes any guarantees, warranties, representations or conditions implied or imposed by law, including the Australian Consumer Law (or any liability under them) which by law may not be limited or excluded.",
           {
             text: "Subject to this clause, and to the extent permitted by law:",
@@ -210,13 +210,13 @@ export const termsContent = [
               listType: "roman",
               items: [
                 "all terms, guarantees, warranties, representations or conditions which are not expressly stated in these Terms are excluded; and",
-                "Keen As Mustard will not be liable for any special, indirect or consequential loss or damage (unless such loss or damage is reasonably foreseeable resulting from our failure to meet an applicable Consumer Guarantee), loss of profit or opportunity, or damage to goodwill arising out of or in connection with the App Services or these Terms (including as a result of not being able to use the App Services or the late supply of the App Services), whether at common law, under contract, tort (including negligence), in equity, pursuant to statute or otherwise..",
+                "Trimify Admin will not be liable for any special, indirect or consequential loss or damage (unless such loss or damage is reasonably foreseeable resulting from our failure to meet an applicable Consumer Guarantee), loss of profit or opportunity, or damage to goodwill arising out of or in connection with the App Services or these Terms (including as a result of not being able to use the App Services or the late supply of the App Services), whether at common law, under contract, tort (including negligence), in equity, pursuant to statute or otherwise..",
               ],
             },
           },
           {
             text: `
-            Use of the Website, the App Services, and any of the services of Keen As Mustard, is at your own risk. Everything on the Website, the App Services, and the services of Keen As Mustard, are provided to you on an "as is" and "as available" basis, without warranty or condition of any kind. None of the affiliates, directors, officers, employees, agents, contributors, third party content providers or licensors of Keen As Mustard make any express or implied representation or warranty about its Content or App Services (including the products or App Services of Keen As Mustard) referred to on the Website. This includes (but is not restricted to) loss or damage you might suffer as a result of any of the following:`,
+            Use of the Website, the App Services, and any of the services of Trimify Admin, is at your own risk. Everything on the Website, the App Services, and the services of Trimify Admin, are provided to you on an "as is" and "as available" basis, without warranty or condition of any kind. None of the affiliates, directors, officers, employees, agents, contributors, third party content providers or licensors of Trimify Admin make any express or implied representation or warranty about its Content or App Services (including the products or App Services of Trimify Admin) referred to on the Website. This includes (but is not restricted to) loss or damage you might suffer as a result of any of the following:`,
             subList: {
               listType: "roman",
               items: [
@@ -242,9 +242,9 @@ export const termsContent = [
         list: true,
         listType: "alpha",
         items: [
-          "Keen As Mustard's total liability arising out of or in connection with the App Services or these Terms, however arising, including under contract, tort (including negligence), in equity, under statute or otherwise, will not exceed the most recent Purchase Price paid by you under these Terms or where you have not paid the Purchase Price, then the total liability of Keen As Mustard is the resupply of information or App Services to you.",
-          "You expressly understand and agree that Keen As Mustard, its affiliates, employees, agents, contributors, third party content providers and licensors shall not be liable to you for any direct, indirect, incidental, special consequential or exemplary damages which may be incurred by you, however caused and under any theory of liability. This shall include, but is not limited to, any loss of profit (whether incurred directly or indirectly), any loss of goodwill or business reputation and any other intangible loss.",
-          "Keen As Mustard is not responsible or liable in any manner for any site content (including the Content and Third Party Content) posted on the Website or in connection with the App Services, whether posted or caused by users of the website of Keen As Mustard, by third parties or by any of the App Services offered by Keen As Mustard."
+          "Trimify Admin's total liability arising out of or in connection with the App Services or these Terms, however arising, including under contract, tort (including negligence), in equity, under statute or otherwise, will not exceed the most recent Purchase Price paid by you under these Terms or where you have not paid the Purchase Price, then the total liability of Trimify Admin is the resupply of information or App Services to you.",
+          "You expressly understand and agree that Trimify Admin, its affiliates, employees, agents, contributors, third party content providers and licensors shall not be liable to you for any direct, indirect, incidental, special consequential or exemplary damages which may be incurred by you, however caused and under any theory of liability. This shall include, but is not limited to, any loss of profit (whether incurred directly or indirectly), any loss of goodwill or business reputation and any other intangible loss.",
+          "Trimify Admin is not responsible or liable in any manner for any site content (including the Content and Third Party Content) posted on the Website or in connection with the App Services, whether posted or caused by users of the website of Trimify Admin, by third parties or by any of the App Services offered by Trimify Admin."
         ]
       }
     ]
@@ -258,31 +258,31 @@ export const termsContent = [
         list: true,
         listType: "alpha",
         items: [
-          "The Terms will continue to apply until terminated by either you or by Keen As Mustard as set out below.",
+          "The Terms will continue to apply until terminated by either you or by Trimify Admin as set out below.",
           {
             text: "If you want to terminate the Terms, you may do so by:",
             subList: {
               listType: "roman",
               items: [
-                "closing your accounts for all of the App Services which you use, where Keen As Mustard has made this option available to you."
+                "closing your accounts for all of the App Services which you use, where Trimify Admin has made this option available to you."
               ]
             }
           },
           {
-            text: "Keen As Mustard may at any time, terminate the Terms with you if:",
+            text: "Trimify Admin may at any time, terminate the Terms with you if:",
             subList: {
               listType: "roman",
               items: [
                 "you have breached any provision of the Terms or intend to breach any provision;",
-                "Keen As Mustard is required to do so by law;",
-                "a third party that offers the app services has terminated its relationship with Keen As Mustard;",
-                "Keen As Mustard is transitioning to no longer providing the App Services to Users in the country in which you are resident or from which you use the service; or",
-                "the provision of the App Services to you by Keen As Mustard is, in the opinion of Keen As Mustard, no longer commercially viable."
+                "Trimify Admin is required to do so by law;",
+                "a third party that offers the app services has terminated its relationship with Trimify Admin;",
+                "Trimify Admin is transitioning to no longer providing the App Services to Users in the country in which you are resident or from which you use the service; or",
+                "the provision of the App Services to you by Trimify Admin is, in the opinion of Trimify Admin, no longer commercially viable."
               ]
             }
           },
-          "Subject to local applicable laws, Keen As Mustard reserves the right to discontinue or cancel your membership to the App at any time and may suspend or deny, in its sole discretion, your access to all or any portion of the Website or the App Services without notice if you breach any provision of the Terms or any applicable law or if your conduct impacts Keen As Mustard's name or reputation or violates the rights of those of another party.",
-          "When the Terms come to an end, all of the legal rights, obligations and liabilities that you and Keen As Mustard have benefited from, been subject to (or which have accrued over time whilst the Terms have been in force) or which are expressed to continue indefinitely, shall be unaffected by this cessation, and the provisions of this clause shall continue to apply to such rights, obligations and liabilities indefinitely."
+          "Subject to local applicable laws, Trimify Admin reserves the right to discontinue or cancel your membership to the App at any time and may suspend or deny, in its sole discretion, your access to all or any portion of the Website or the App Services without notice if you breach any provision of the Terms or any applicable law or if your conduct impacts Trimify Admin's name or reputation or violates the rights of those of another party.",
+          "When the Terms come to an end, all of the legal rights, obligations and liabilities that you and Trimify Admin have benefited from, been subject to (or which have accrued over time whilst the Terms have been in force) or which are expressed to continue indefinitely, shall be unaffected by this cessation, and the provisions of this clause shall continue to apply to such rights, obligations and liabilities indefinitely."
         ]
       }
     ]
@@ -297,7 +297,7 @@ export const termsContent = [
         listType: "alpha",
         items: [
           {
-            text: "You agree to indemnify Keen As Mustard, its affiliates, employees, agents, contributors, third party content providers and licensors from and against:",
+            text: "You agree to indemnify Trimify Admin, its affiliates, employees, agents, contributors, third party content providers and licensors from and against:",
             subList: {
               listType: "roman",
               items: [
@@ -354,7 +354,7 @@ export const termsContent = [
     title: "15. Venue and Jurisdiction",
     content: [
       {
-        text: "The App Services offered by Keen As Mustard are intended to be used by residents of Australia. In the event of any dispute arising out of or in relation to the Website, you agree that the exclusive venue for resolving any dispute shall be in the courts of <b>New South Wales</b>, Australia."
+        text: "The App Services offered by Trimify Admin are intended to be used by residents of Australia. In the event of any dispute arising out of or in relation to the Website, you agree that the exclusive venue for resolving any dispute shall be in the courts of <b>New South Wales</b>, Australia."
       }
     ]
   },
@@ -384,7 +384,7 @@ export const termsContent = [
     title: "18. Giveaways and Promotions",
     content: [
       {
-        text: "From time to time, Keen As Mustard may offer giveaways, competitions, or promotional offers (<b>Promotions</b>) to Members through the App."
+        text: "From time to time, Trimify Admin may offer giveaways, competitions, or promotional offers (<b>Promotions</b>) to Members through the App."
       },
       {
         list: true,
@@ -413,7 +413,7 @@ export const termsContent = [
               ]
             }
           },
-          "Keen As Mustard reserves the right to verify subscription status at any time and to disqualify any entrant who does not meet the eligibility requirements.",
+          "Trimify Admin reserves the right to verify subscription status at any time and to disqualify any entrant who does not meet the eligibility requirements.",
           {
             text: "Prizes are non-transferable and cannot be exchanged for cash or other alternatives unless otherwise specified in the specific Promotion terms.",
             subList: {
@@ -423,7 +423,7 @@ export const termsContent = [
               ]
             }
           },
-          "Keen As Mustard reserves the right to cancel, modify, or suspend any Promotion at any time where it's required by law or reasonably necessary.",
+          "Trimify Admin reserves the right to cancel, modify, or suspend any Promotion at any time where it's required by law or reasonably necessary.",
           {
             text: `Users must not attempt to manipulate, game, or artificially influence match outcomes or eligibility. This includes but is not limited to:`,
             subList: {
@@ -437,8 +437,8 @@ export const termsContent = [
           },
           "Winners will be notified via the App and prizes will be delivered by email.",
           "Each Promotion may be governed by specific Promotion Terms displayed in the App (including entry periods, prize details, draw mechanics, and any permit). In the event of any inconsistency between these Terms and the specific Promotion Terms, the specific Promotion Terms will prevail to the extent of the inconsistency.",
-          "Keen As Mustard may seek your consent to publish your name, state and/or feedback as a giveaway recipient.",
-          "If a prize is not available or cannot be delivered in the state where the winner resides, Keen As Mustard will issue a gift card of equivalent value instead.",
+          "Trimify Admin may seek your consent to publish your name, state and/or feedback as a giveaway recipient.",
+          "If a prize is not available or cannot be delivered in the state where the winner resides, Trimify Admin will issue a gift card of equivalent value instead.",
           "Apple is not a sponsor of, nor involved in any way with the promotions and giveaways."
         ]
       }

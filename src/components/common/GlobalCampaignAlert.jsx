@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { isSameWeek } from "date-fns";
-import { getAllCampaignsApi } from "@/modules/giveaway/services/giveaway.api";
+// import { getAllCampaignsApi } from "@/modules/giveaway/services/giveaway.api";
 
 export default function GlobalCampaignAlert() {
   const alertToastIdRef = useRef(null);

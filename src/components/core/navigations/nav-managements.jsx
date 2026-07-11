@@ -29,12 +29,12 @@ export function NavManagements({ items }) {
     // but for top-level items, we do want to highlight the parent section.
     if (!isSubItem && currentPath.startsWith(targetPath + "/")) {
       if (
-        targetPath.endsWith("users-management") &&
-        currentPath.includes("/view-profile") &&
-        (location.state?.source === "fake-profiles" ||
-          location.state?.source === "giveaway" ||
-          location.state?.source === "transactions" ||
-          location.state?.from === "/admin/dashboard") ||
+        (targetPath.endsWith("users-management") &&
+          currentPath.includes("/view-profile") &&
+          (location.state?.source === "fake-profiles" ||
+            location.state?.source === "giveaway" ||
+            location.state?.source === "transactions" ||
+            location.state?.from === "/admin/dashboard")) ||
         location.state?.source === "support"
       ) {
         return false;
@@ -46,13 +46,30 @@ export function NavManagements({ items }) {
     const segments = targetPath.split("/");
     const lastSegment = segments[segments.length - 1];
 
-    if (lastSegment === "fake-profiles" && currentPath.includes("/view-profile") && location.state?.source === "fake-profiles") return true;
+    if (
+      lastSegment === "fake-profiles" &&
+      currentPath.includes("/view-profile") &&
+      location.state?.source === "fake-profiles"
+    )
+      return true;
 
-    if (lastSegment === "transactions" && (currentPath.includes("/transactions/view") || (currentPath.includes("/view-profile") && location.state?.source === "transactions"))) return true;
+    if (
+      lastSegment === "transactions" &&
+      (currentPath.includes("/transactions/view") ||
+        (currentPath.includes("/view-profile") &&
+          location.state?.source === "transactions"))
+    )
+      return true;
 
-    if (lastSegment === "manage-subscribers" && currentPath.includes("/view-subscription")) return true;
+    if (
+      lastSegment === "manage-subscribers" &&
+      currentPath.includes("/view-subscription")
+    )
+      return true;
 
-    if (lastSegment === "users-management" && currentPath.includes("users-management/view-profile") &&
+    if (
+      lastSegment === "users-management" &&
+      currentPath.includes("users-management/view-profile") &&
       location.state?.source !== "fake-profiles" &&
       location.state?.source !== "giveaway" &&
       location.state?.source !== "transactions" &&
@@ -60,9 +77,19 @@ export function NavManagements({ items }) {
       location.state?.from !== "/admin/dashboard"
     )
       return true;
-    if (lastSegment === "users-management" && currentPath.includes("/ghosting-users")) return true;
-    if (lastSegment === "support" && currentPath.includes("/view-ticket")) return true;
-    if (lastSegment === "support" && currentPath.includes("/view-profile") && location.state?.source === "support") return true
+    if (
+      lastSegment === "users-management" &&
+      currentPath.includes("/ghosting-users")
+    )
+      return true;
+    if (lastSegment === "support" && currentPath.includes("/view-ticket"))
+      return true;
+    if (
+      lastSegment === "support" &&
+      currentPath.includes("/view-profile") &&
+      location.state?.source === "support"
+    )
+      return true;
   };
 
   if (!items || items.length === 0) {
@@ -89,7 +116,7 @@ export function NavManagements({ items }) {
               isPathActive(location.pathname, subItem.url, true),
             );
           const getBadgeStyles = (count, active) => {
-            if (active) return "bg-brand-aqua text-white";
+            if (active) return "bg-brand-blue text-white";
             const num = parseInt(count);
             if (isNaN(num)) return "bg-slate-100/50 text-slate-600";
             if (num > 10)
@@ -111,7 +138,7 @@ export function NavManagements({ items }) {
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                       (isActive || hasActiveChild) &&
-                      "bg-brand-aqua/[0.08] hover:bg-brand-aqua/[0.09]",
+                        "bg-brand-blue hover:bg-brand-hoverBlue",
                     )}
                   >
                     <Link
@@ -119,14 +146,14 @@ export function NavManagements({ items }) {
                       className="flex items-center gap-3 w-full"
                     >
                       {(isActive || hasActiveChild) && (
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-aqua" />
+                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
                       )}
 
                       <div
                         className={cn(
                           "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                           isActive || hasActiveChild
-                            ? "text-brand-aqua"
+                            ? "text-brand-blue"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
@@ -177,7 +204,7 @@ export function NavManagements({ items }) {
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                     isActive &&
-                    "!bg-brand-aqua/[0.08] !hover:bg-brand-aqua/[0.12]",
+                      "!bg-brand-blue/[0.08] !hover:bg-brand-hoverBlue",
                   )}
                 >
                   <Link
@@ -185,7 +212,7 @@ export function NavManagements({ items }) {
                     className="flex items-center gap-3 w-full"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-aqua" />
+                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
                     )}
 
                     <div
@@ -241,7 +268,7 @@ export function NavManagements({ items }) {
                             className={cn(
                               "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
                               isSubActive
-                                ? "!text-brand-aqua font-semibold !bg-brand-aqua/5"
+                                ? "!text-brand-blue font-semibold !bg-brand-blue"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >
@@ -251,7 +278,7 @@ export function NavManagements({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-aqua" />
+                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-blue" />
                               )}
                               <span className="text-[12.5px] tracking-tight">
                                 {subItem.title}

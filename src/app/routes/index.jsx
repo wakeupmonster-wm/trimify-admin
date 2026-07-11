@@ -9,29 +9,47 @@ import RootLayout from "../layouts/RootLayout";
 import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
 
+// ======== New trimify imports =========
+import SubDdminManagementPage from "@/modules/subAdmin/pages/subadmin.page";
+import UsersManagementPage from "@/modules/userManagement/pages/users.management.page";
+import AccountSettingsPage from "@/modules/accountSettings/pages/account.settings.page";
+import FaqManagementPage from "@/modules/faqManagement/pages/faq.management.page";
+import NotificationManagePage from "@/modules/notificationManage/pages/notification.manage.page";
+import CMSManagementPage from "@/modules/cmsManagement/pages/cms.management.page";
+import TransactionManagementPage from "@/modules/transactionManagement/pages/transaction.management.page";
+import SubscriptionManagementPage from "@/modules/subscriptionManagement/pages/subscription.management.page";
+import ManageCategoryPage from "@/modules/blogSection/pages/manage.category.page";
+import ManageBlogsPage from "@/modules/blogSection/pages/manage.blogs.page";
+import DataManagementPage from "@/modules/dataManagement/pages/data.management.page";
+import FitzoneManagementPage from "@/modules/fitzoneManagement/pages/fitzone.management.page";
+import AddFitzonePage from "@/modules/fitzoneManagement/pages/add.fitzone.page";
+import ManageProgramPage from "@/modules/manageProgram/pages/manage.program.page";
+import AddProgramPage from "@/modules/manageProgram/pages/add.program.page";
+import AddCategoryPage from "@/modules/blogSection/pages/add.category.page";
+import AddPostPage from "@/modules/blogSection/pages/add.post.page";
+
+
+// ======== New trimify imports =========
+
 // 2. LAZY LOAD COMPONENTS
 const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
 const App = lazy(() => import("@/App"));
 const NotFoundPage = lazy(
   () => import("@/modules/not-found/Pages/not-found.page"),
 );
-const PendingVerifications = lazy(
-  () => import("@/modules/users/pages/PendingVerifications"),
-);
-const UserManagementPage = lazy(
-  () => import("@/modules/users/pages/user-management.Page"),
-);
-const ViewProfilePage = lazy(
-  () => import("@/modules/users/pages/view-profile.Page"),
-);
-const GhostingUsersPage = lazy(
-  () => import("@/modules/users/pages/ghosting-users.Page"),
-);
+// const PendingVerifications = lazy(
+//   () => import("@/modules/users/pages/PendingVerifications"),
+// );
+// const UserManagementPage = lazy(
+//   () => import("@/modules/users/pages/user-management.Page"),
+// );
+// const ViewProfilePage = lazy(
+//   () => import("@/modules/users/pages/view-profile.Page"),
+// );
+// const GhostingUsersPage = lazy(
+//   () => import("@/modules/users/pages/ghosting-users.Page"),
+// );
 
-// Giveaway Modules
-const GiveawayManagement = lazy(
-  () => import("@/modules/giveaway/pages/GiveawayManagement"),
-);
 const ChatReportedList = lazy(
   () => import("@/modules/chatManagement/pages/ChatReportedList"),
 );
@@ -89,9 +107,9 @@ const SubscriptionsPage = lazy(
 const SubscriptionDashboardPage = lazy(
   () => import("@/modules/subsciptions/pages/subscription.dashboard"),
 );
-const EntitlementPage = lazy(
-  () => import("@/modules/membership/pages/entitlements.page"),
-);
+// const EntitlementPage = lazy(
+//   () => import("@/modules/membership/pages/entitlements.page"),
+// );
 const ViewSubscriptionsPage = lazy(
   () => import("@/modules/subsciptions/pages/view.subscription.detail.page"),
 );
@@ -119,22 +137,6 @@ const FakeProfileManagementPage = lazy(
 );
 const AccountsPage = lazy(
   () => import("@/modules/accounts/page/accounts.page"),
-);
-const PrizePage = lazy(() => import("@/modules/giveaway/pages/prizes.page"));
-const CampaignsPage = lazy(
-  () => import("@/modules/giveaway/pages/campaigns.page"),
-);
-const BulkCampaignsPage = lazy(
-  () => import("@/modules/giveaway/pages/bulk.campaign.page"),
-);
-const PendingDeliveriesPage = lazy(
-  () => import("@/modules/giveaway/pages/pending.deliveries.page"),
-);
-const ParticipantsPage = lazy(
-  () => import("@/modules/giveaway/pages/participants.page"),
-);
-const ViewCampaignDetailPage = lazy(
-  () => import("@/modules/giveaway/pages/view.campaign.detail.page"),
 );
 
 // import { PreLoader } from "../loader/preloader";
@@ -214,6 +216,188 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      /*====================== New Tirimfy Tabs ======================*/
+      {
+        path: "sub-admin-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <SubDdminManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "users",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <UsersManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "manage-program",
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <ManageProgramPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add-program",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddProgramPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "edit-program",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddProgramPage />
+              </Suspense>
+            ),
+          },
+        ]
+      },
+      {
+        path: "fitzone-management",
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <FitzoneManagementPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add-fitzone",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddFitzonePage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "edit-fitzone",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddFitzonePage />
+              </Suspense>
+            ),
+          },
+        ]
+      },
+      {
+        path: "data-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <DataManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "blog-section",
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <Navigate to="manage-category" replace />
+              </Suspense>
+            ),
+          },
+          {
+            path: "manage-category",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <ManageCategoryPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "manage-blogs",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <ManageBlogsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add-category",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddCategoryPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add-post",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddPostPage />
+              </Suspense>
+            ),
+          },
+        ]
+      },
+      {
+        path: "subscription-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <SubscriptionManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "transaction-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <TransactionManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "cms-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <CMSManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "notification-manage",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <NotificationManagePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "faq-management",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <FaqManagementPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "account-settings",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <AccountSettingsPage />
+          </Suspense>
+        ),
+      },
+
+
+
+
+
+      /*====================== Old Tabs ======================*/
       { path: "analytics", element: <AnalyticsPage /> },
       { path: "kpi", element: <>KPI's</> },
       { path: "quick-actions", element: <>Quick Actions</> },
@@ -222,44 +406,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="users-management" replace />
-          },
-          {
-            path: "users-management",
-            children: [
-              {
-                index: true,
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <UserManagementPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "view-profile",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ViewProfilePage />
-                  </Suspense>
-                ),
-              },
-            ],
-          },
-          {
-            path: "ghosting-users",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <GhostingUsersPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "pending-verifications",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <PendingVerifications />
-              </Suspense>
-            ),
+            element: <Navigate to="users-management" />
           },
           {
             path: "fake-profiles",
@@ -277,91 +424,6 @@ export const router = createBrowserRouter([
                 <KYCVerificationPage />
               </Suspense>
             ),
-          },
-          {
-            path: "entitlements",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <EntitlementPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "giveaway",
-            children: [
-              {
-                index: true,
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <GiveawayManagement />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "prizes",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <PrizePage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "campaigns",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <CampaignsPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "bulk-campaigns",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <BulkCampaignsPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "winner",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <PendingDeliveriesPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "pending-deliveries",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <PendingDeliveriesPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "participants",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ParticipantsPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "view-campaign/:campaignId",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ViewCampaignDetailPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "view-profile",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ViewProfilePage />
-                  </Suspense>
-                ),
-              },
-            ],
           },
           {
             path: "support",
@@ -610,8 +672,6 @@ export const router = createBrowserRouter([
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-      { path: "get-help", element: <>Get-Help</> },
-      { path: "search", element: <>Search</> },
       {
         path: "accounts",
         element: (

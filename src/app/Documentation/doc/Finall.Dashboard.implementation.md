@@ -1,8 +1,8 @@
-# Keen as Mustard Admin Dashboard: Detailed Analytics Documentation
+# Trimify Admin Admin Dashboard: Detailed Analytics Documentation
 
 ## 📌 Overview
 
-Is document mein hum **Keen as Mustard** ke naye Admin Dashboard design ko
+Is document mein hum **Trimify Admin** ke naye Admin Dashboard design ko
 samjhenge. Yeh dashboard ek **admin panel / analytics dashboard** hai jisme
 platform ki overall activity, user behavior, revenue aur performance insights
 dikhaye gaye hain. Iska purpose hai ki admin easily sab kuch ek jagah se monitor

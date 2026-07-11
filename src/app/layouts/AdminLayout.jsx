@@ -60,25 +60,25 @@ function GlobalSocketHandler() {
 
 export default function AdminLayout() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, token } = useSelector((state) => state.auth);
+  // const { user, isAuthenticated, token } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const mainRef = useRef(null);
 
-  useEffect(() => {
-    if (mainRef.current) {
-      mainRef.current.scrollTo(0, 0);
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (mainRef.current) {
+  //     mainRef.current.scrollTo(0, 0);
+  //   }
+  // }, [pathname]);
 
-  if (!isAuthenticated || user?.role !== ROLES.ADMIN) {
-    return navigate("/");
-  }
+  // if (!isAuthenticated || user?.role !== ROLES.ADMIN) {
+  //   return navigate("/");
+  // }
 
   return (
-    <SocketProvider token={token}>
-      <GlobalSocketHandler />
+    // <SocketProvider token={token}>
+      // <GlobalSocketHandler />
       <SidebarProvider>
-        <GlobalCampaignAlert />
+        {/* <GlobalCampaignAlert /> */}
         {/* 1. The Sidebar remains fixed on the left */}
         <AppSidebar />
 
@@ -96,6 +96,6 @@ export default function AdminLayout() {
           </main>
         </SidebarInset>
       </SidebarProvider>
-    </SocketProvider>
+    // </SocketProvider>
   );
 }

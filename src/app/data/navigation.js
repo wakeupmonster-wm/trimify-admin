@@ -1,32 +1,26 @@
 import {
   IconLayoutDashboard,
+  IconUsersGroup,
   IconUsers,
-  IconShieldCheck,
+  IconClipboardCheck,
+  IconYoga,
+  IconDatabaseCog,
+  IconNews,
   IconCreditCard,
-  IconGift,
+  IconReceipt,
+  IconDeviceDesktop,
   IconBell,
-  IconTicket,
-  IconFileText,
-  IconUserCheck,
-  IconUserPlus,
-  IconSettings,
+  IconInfoCircle,
+  IconUserCog,
 } from "@tabler/icons-react";
-import { LuUserRoundCheck, LuUserRoundPlus, LuUsersRound } from "react-icons/lu";
 
 const navigationData = {
   user: {
     name: "Admin",
-    email: "admin@keenasmustard.com",
+    email: "admin@trimify.com.au",
     avatar: "/assets/web/dummyImg.webp",
   },
-  navMain: [
-    // {
-    //   title: "Analytics",
-    //   url: "/admin/analytics",
-    //   icon: IconChartLine,
-    //   badge: null,
-    // },
-  ],
+  navMain: [],
   navManagement: [
     {
       title: "Dashboard",
@@ -35,191 +29,96 @@ const navigationData = {
       badge: null,
     },
     {
-      title: "User management",
-      url: "/admin/management/users-management",
-      icon: LuUsersRound,
+      title: "Sub Admin Management",
+      url: "/admin/sub-admin-management",
+      icon: IconUsersGroup,
       badge: null,
     },
     {
-      title: "Fake profiles",
-      url: "/admin/management/fake-profiles",
-      icon: LuUserRoundPlus,
+      title: "Users",
+      url: "/admin/users",
+      icon: IconUsers,
       badge: null,
     },
     {
-      title: "Profile reports",
-      url: "/admin/management/profile-reports",
-      icon: LuUserRoundCheck,
+      title: "Manage Program",
+      url: "/admin/manage-program",
+      icon: IconClipboardCheck,
       badge: null,
-      badgeVariant: "destructive",
     },
     {
-      title: "KYC Verification",
-      url: "/admin/management/kyc-verifications",
-      icon: IconShieldCheck,
+      title: "Fitzone Management",
+      url: "/admin/fitzone-management",
+      icon: IconYoga,
       badge: null,
-      badgeVariant: "destructive",
     },
     {
-      title: "Subscriptions",
-      url: "/admin/management/subscription-management",
-      icon: IconCreditCard,
+      title: "Data Management",
+      url: "/admin/data-management",
+      icon: IconDatabaseCog,
       badge: null,
       items: [
         {
-          title: "Dashboard",
-          url: "/admin/management/subscription-management",
-        },
-        // {
-        //   title: "Subscribers",
-        //   url: "/admin/management/subscription-management/subscribers",
-        // },
-        {
-          title: "Manage Subscribers",
-          url: "/admin/management/subscription-management/manage-subscribers",
-        },
-        {
-          title: "Products",
-          url: "/admin/management/subscription-management/products",
-        },
-        {
-          title: "Config",
-          url: "/admin/management/subscription-management/config",
-        },
-        {
-          title: "Transactions",
-          url: "/admin/management/subscription-management/transactions",
+          title: "Overview",
+          url: "/admin/data-management/overview",
         },
       ],
     },
     {
-      title: "Notifications",
-      url: "/admin/management/all-notifications",
+      title: "Blog Section",
+      url: "/admin/blog-section",
+      icon: IconNews,
+      badge: null,
+      items: [
+        {
+          title: "Manage Category",
+          url: "/admin/blog-section/manage-category",
+        },
+        {
+          title: "Manage Blogs",
+          url: "/admin/blog-section/manage-blogs",
+        },
+      ],
+    },
+    {
+      title: "Subscription Management",
+      url: "/admin/subscription-management",
+      icon: IconCreditCard,
+      badge: null,
+    },
+    {
+      title: "Transaction Management",
+      url: "/admin/transaction-management",
+      icon: IconReceipt,
+      badge: null,
+    },
+    {
+      title: "CMS Management",
+      url: "/admin/cms-management",
+      icon: IconDeviceDesktop,
+      badge: null,
+    },
+    {
+      title: "Notification Manage",
+      url: "/admin/notification-manage",
       icon: IconBell,
       badge: null,
     },
     {
-      title: "Support Tickets",
-      url: "/admin/management/support",
-      icon: IconTicket,
+      title: "FAQ Management",
+      url: "/admin/faq-management",
+      icon: IconInfoCircle,
       badge: null,
-      badgeVariant: "premium",
     },
     {
-      title: "Giveaways",
-      url: "/admin/management/giveaway",
-      icon: IconGift,
+      title: "Account Settings",
+      url: "/admin/account-settings",
+      icon: IconUserCog,
       badge: null,
-      // items: [
-      //   {
-      //     title: "Prizes",
-      //     url: "/admin/management/giveaway/prizes",
-      //     icon: Trophy,
-      //   },
-      //   {
-      //     title: "Campaigns",
-      //     url: "/admin/management/giveaway/campaigns",
-      //     icon: Trophy,
-      //   },
-      //   {
-      //     title: "Bulk",
-      //     url: "/admin/management/giveaway/bulk-campaigns",
-      //     icon: Trophy,
-      //   },
-      //   {
-      //     title: "Winners",
-      //     url: "/admin/management/giveaway/winner",
-      //     icon: Trophy,
-      //   },
-      //   {
-      //     title: "Pending Deliveries",
-      //     url: "/admin/management/giveaway/pending-deliveries",
-      //     icon: Trophy,
-      //   },
-      //   {
-      //     title: "Participants",
-      //     url: "/admin/management/giveaway/participants",
-      //     icon: Trophy,
-      //   },
-      // ],
     },
   ],
-  navPlateform: [
-    {
-      title: "CMS",
-      url: "/admin/cms/faqs",
-      icon: IconFileText,
-      items: [
-        {
-          title: "FAQ's",
-          url: "/admin/cms/faqs",
-        },
-        {
-          title: "Privacy Policy",
-          url: "/admin/cms/privacy-policy",
-        },
-        {
-          title: "Terms & Conditions",
-          url: "/admin/cms/terms-conditions",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/admin/settings/general",
-      icon: IconSettings,
-      items: [
-        {
-          title: "General",
-          url: "/admin/settings/general",
-        },
-        // {
-        //   title: "Social Media",
-        //   url: "/admin/settings/social-media",
-        // },
-        {
-          title: "Email",
-          url: "/admin/settings/email",
-        },
-        {
-          title: "Ads",
-          url: "/admin/settings/ads-mob",
-        },
-        // {
-        //   title: "Storage",
-        //   url: "/admin/settings/storage",
-        // },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      icon: IconSettings,
-      items: [
-        {
-          title: "General",
-          url: "/admin/settings/general",
-        },
-        {
-          title: "Social Media",
-          url: "/admin/settings/social-media",
-        },
-        {
-          title: "Email",
-          url: "/admin/settings/email",
-        },
-        {
-          title: "Ads",
-          url: "/admin/settings/ads",
-        },
-        {
-          title: "Storage",
-          url: "/admin/settings/storage",
-        },
-      ],
-    },
-  ],
+  navPlateform: [],
+  navSecondary: [],
 };
 
 export default navigationData;

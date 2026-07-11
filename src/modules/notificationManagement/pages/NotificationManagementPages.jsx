@@ -673,7 +673,7 @@ export default function NotificationManagementPages() {
                                       />
                                     </div>
                                     <span className="font-medium text-slate-700">
-                                      Keen As Mustard
+                                      Trimify Admin
                                     </span>
                                     <span>•</span>
                                     <span>now</span>
@@ -718,7 +718,7 @@ export default function NotificationManagementPages() {
                                 </div>
                                 <div className="leading-tight">
                                   <p className="text-[13px] font-semibold text-slate-900">
-                                    Keen As Mustard
+                                    Trimify Admin
                                   </p>
                                   <p className="text-[11px] text-slate-500">
                                     support@keenasmustard.com

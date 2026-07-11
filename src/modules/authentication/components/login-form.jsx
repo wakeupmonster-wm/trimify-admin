@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/auth.schemas";
-import { loginThunk } from "../store/auth.slice";
+// import { loginThunk } from "../store/auth.slice";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { ROLES } from "@/constants/roles";
 import { useState } from "react";
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  // const { loading, error } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -37,19 +37,19 @@ export function LoginForm({ className, ...props }) {
 
   const onSubmit = async (data) => {
     try {
-      const user = await dispatch(loginThunk(data)).unwrap();
+      // const user = await dispatch(loginThunk(data)).unwrap();
 
-      // STRICT ROLE CONTROL
-      if (user?.role === ROLES.ADMIN) {
-        navigate(user.screen || "/admin/dashboard", { replace: true });
+      // // STRICT ROLE CONTROL
+      // if (user?.role === ROLES.ADMIN) {
+      //   navigate(user.screen || "/admin/dashboard", { replace: true });
 
-        // Clean and simple call
-        toast.success(user.message || "Login successful", {
-          description: `Welcome back, ${user.nickname}!`,
-        });
-      } else {
-        navigate("/", { replace: true });
-      }
+      //   // Clean and simple call
+      //   toast.success(user.message || "Login successful", {
+      //     description: `Welcome back, ${user.nickname}!`,
+      //   });
+      // } else {
+      //   navigate("/", { replace: true });
+      // }
     } catch (err) {
       resetField("password");
       toast.error(err || "Server error while login");
@@ -74,7 +74,7 @@ export function LoginForm({ className, ...props }) {
           </div>
           <h1 className="text-4xl font-medium text-gray-900">Welcome Back</h1>
           <p className="text-gray-600 mt-2 text-xs sm:text-sm text-pretty sm:text-balance">
-            Login to manage the Keen As Mustard ecosystem
+            Login to manage the Trimify Admin ecosystem
           </p>
         </div>
 
@@ -169,18 +169,19 @@ export function LoginForm({ className, ...props }) {
         <Field>
           <Button
             type="submit"
-            disabled={loading}
+            // disabled={loading}
             className={
               "py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-aqua hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
             }
           >
-            {loading ? (
+            {/* {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" /> Logged in...
               </>
             ) : (
               "Log In"
-            )}
+            )} */}
+            Log In
           </Button>
         </Field>
         {/* <FieldSeparator>Or continue with</FieldSeparator> */}

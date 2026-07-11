@@ -61,8 +61,7 @@ export function NavMain({ items }) {
                 className={cn(
                   "relative h-11 w-full transition-all duration-300 px-4 rounded-none border-none",
                   "hover:bg-slate-100/50 active:scale-[0.98]",
-                  isActive &&
-                    "!bg-brand-aqua/[0.06] !hover:bg-brand-aqua/[0.12]",
+                  isActive && "!bg-brand-blue !hover:bg-brand-hoverBlue",
                 )}
               >
                 <Link to={item.url} className="flex items-center gap-3 w-full">
@@ -70,7 +69,7 @@ export function NavMain({ items }) {
                   {isActive && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-aqua"
+                      className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue"
                       transition={{
                         type: "spring",
                         stiffness: 300,
@@ -82,9 +81,7 @@ export function NavMain({ items }) {
                   <div
                     className={cn(
                       "flex size-5 items-center justify-center transition-all duration-300",
-                      isActive
-                        ? "text-brand-aqua"
-                        : "text-slate-400",
+                      isActive ? "text-brand-aqua" : "text-slate-400",
                     )}
                   >
                     <Icon className="size-5" />
@@ -107,7 +104,7 @@ export function NavMain({ items }) {
                       className={cn(
                         "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm",
                         isActive
-                          ? "bg-brand-aqua text-white"
+                          ? "bg-brand-blue text-white"
                           : "bg-slate-100 text-slate-500",
                       )}
                     >

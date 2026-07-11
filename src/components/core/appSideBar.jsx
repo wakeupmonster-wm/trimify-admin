@@ -19,13 +19,13 @@ import navigationData from "@/app/data/navigation";
 import { Link, useLocation } from "react-router-dom";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile } from "@/modules/accounts/store/account.slice";
+// import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
 import mustardLogo from "@/assets/web/mustardLogo2.webp";
 import { cn } from "@/lib/utils";
-import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
-import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
-import { fetchMyTickets } from "@/modules/support/store/support.slice";
+// import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
+// import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
+// import { fetchMyTickets } from "@/modules/support/store/support.slice";
 
 export function AppSidebar({ ...props }) {
   const dispatch = useDispatch();
@@ -37,48 +37,57 @@ export function AppSidebar({ ...props }) {
       setOpenMobile(false);
     }
   }, [pathname, isMobile, setOpenMobile]);
-  const { account } = useSelector((state) => state.account);
+  // const { account } = useSelector((state) => state.account);
 
   // --- Dynamic Badge Stats ---
-  const { kpiStats: reportStats } = useSelector((state) => state.profileReview);
-  const { kpiStats: kycStats } = useSelector((state) => state.verification);
-  const { kpiStats: supportStats } = useSelector((state) => state.support);
+  // const { kpiStats: reportStats = {} } = useSelector((state) => state.profileReview);
+  // const { kpiStats: kycStats  = {} } = useSelector((state) => state.verification);
+  // const { kpiStats: supportStats  = {} } = useSelector((state) => state.support);
 
   useEffect(() => {
-    dispatch(fetchProfile());
-    // Fetch counts for badges
-    dispatch(fetchReportedProfiles({ limit: 1 }));
-    dispatch(fetchPendingVerifications({ limit: 1 }));
-    dispatch(fetchMyTickets({ limit: 1 }));
+    // dispatch(fetchProfile());
+    // // Fetch counts for badges
+    // dispatch(fetchReportedProfiles({ limit: 1 }));
+    // dispatch(fetchPendingVerifications({ limit: 1 }));
+    // dispatch(fetchMyTickets({ limit: 1 }));
   }, [dispatch]);
 
-  const navUser = useMemo(
+  // const navUser = useMemo(
+  //   () => ({
+  //     name: account?.nickname || "Admin",
+  //     email: account?.email || "admin@keenasmustard.com",
+  //     avatar: account?.avatar?.url || dummyImg,
+  //   }),
+  //   [account],
+  // );
+
+    const navUser = useMemo(
     () => ({
-      name: account?.nickname || "Admin",
-      email: account?.email || "admin@keenasmustard.com",
-      avatar: account?.avatar?.url || dummyImg,
+      name: "Admin",
+      email: "admin@keenasmustard.com",
+      avatar: dummyImg,
     }),
-    [account],
+    [],
   );
 
   // --- Optimized Navigation Data with Dynamic Badges ---
-  const dynamicNavigation = useMemo(() => {
-    return {
-      ...navigationData,
-      navManagement: navigationData.navManagement.map((item) => {
-        if (item.title === "Profile reports") {
-          return { ...item, badge: reportStats?.newReports || null };
-        }
-        if (item.title === "KYC Verification") {
-          return { ...item, badge: kycStats?.pending || null };
-        }
-        if (item.title === "Support Tickets") {
-          return { ...item, badge: supportStats?.openTickets || null };
-        }
-        return item;
-      }),
-    };
-  }, [reportStats, kycStats, supportStats]);
+  // const dynamicNavigation = useMemo(() => {
+  //   return {
+  //     ...navigationData,
+  //     navManagement: navigationData.navManagement.map((item) => {
+  //       if (item.title === "Profile reports") {
+  //         return { ...item, badge: reportStats?.newReports || null };
+  //       }
+  //       if (item.title === "KYC Verification") {
+  //         return { ...item, badge: kycStats?.pending || null };
+  //       }
+  //       if (item.title === "Support Tickets") {
+  //         return { ...item, badge: supportStats?.openTickets || null };
+  //       }
+  //       return item;
+  //     }),
+  //   };
+  // }, [reportStats, kycStats, supportStats]);
 
   return (
     <Sidebar
@@ -130,19 +139,19 @@ export function AppSidebar({ ...props }) {
       {/* --- CONTENT: Navigation Sections --- */}
       <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin pt-4 gap-0 bg-white">
         {/* Overview Section */}
-        {dynamicNavigation.navMain && (
-          <NavMain items={dynamicNavigation.navMain} />
-        )}
+        {/* {dynamicNavigation.navMain && ( */}
+          <NavMain items={navigationData.navMain} />
+        {/* )} */}
 
         {/* Management Section */}
-        {dynamicNavigation.navManagement && (
-          <NavManagements items={dynamicNavigation.navManagement} />
-        )}
+        {/* {dynamicNavigation.navManagement && ( */}
+          <NavManagements items={navigationData.navManagement} />
+        {/* )} */}
 
         {/* Platform Section */}
-        {dynamicNavigation.navPlateform && (
-          <NavPlateform items={dynamicNavigation.navPlateform} />
-        )}
+        {/* {dynamicNavigation.navPlateform && ( */}
+          <NavPlateform items={navigationData.navPlateform} />
+        {/* )} */}
 
         {/* {dynamicNavigation.navSecondary && (
           <NavSecondary items={dynamicNavigation.navSecondary} />

@@ -12,7 +12,7 @@ import {
 
 export function AdminProfileNav() {
   const navigate = useNavigate();
-  const { account } = useSelector((state) => state.account);
+  // const { account } = useSelector((state) => state.account);
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -25,12 +25,12 @@ export function AdminProfileNav() {
             {/* Avatar with fallback logic */}
             <Avatar className="h-8 w-8 rounded-full border-2 border-white shadow-sm transition-transform group-hover:scale-105 overflow-hidden">
               <AvatarImage
-                src={account?.avatar?.url || dummyImg}
-                alt={account?.nickname}
+                src={dummyImg}
+                alt="Admin"
                 className="object-cover"
               />
               <AvatarFallback className="bg-[#00A99D] text-white font-bold text-[13px]">
-                {account?.nickname?.charAt(0).toUpperCase() || "A"}
+                A
               </AvatarFallback>
             </Avatar>
             <div className="flex items-center gap-1 leading-none">
@@ -38,7 +38,7 @@ export function AdminProfileNav() {
                 Admin
               </span>
               <span className="text-[13px] font-bold text-[#00A99D]">
-                {account?.nickname}
+                Admin
               </span>
             </div>
           </div>
@@ -49,8 +49,8 @@ export function AdminProfileNav() {
           side="bottom"
           className="flex flex-col gap-1 p-3 bg-white border-slate-200 shadow-xl"
         >
-          <p className="font-bold text-brand-aqua">{account?.nickname}</p>
-          <p className="text-xs text-slate-500">{account?.email}</p>
+          <p className="font-bold text-brand-aqua">Admin</p>
+          <p className="text-xs text-slate-500">[EMAIL_ADDRESS]</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -8,7 +8,7 @@ const ADMIN = `${BASE_URL}/admin`;
 
 // ──────────────────────── SubAdmin CRUD ─────────────────────────────────────────
 
-export const SUBADMIN = {
+export const SUBADMIN_ENPOINTS = {
   /** POST — Create a new sub-admin account */
   SUBADMIN_ADD: `${ADMIN}/add-subadmin`,
 

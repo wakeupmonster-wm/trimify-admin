@@ -1,4 +1,4 @@
-# Keen As Mustard Admin Panel Issue.
+# Trimify Admin Admin Panel Issue.
 
 ## User Management
 
@@ -121,7 +121,7 @@
 6. blockedContact and blockedUser data in object ( provided to raj ) ✅
 7. support email sending (completed). ✅
 8. Remove Comming soon page ✅
-9. Header Change Keen as mustard with logo ✅
+9. Header Change Trimify Admin with logo ✅
 10. Remove Login with google ✅
 
 ## Featues need to integrate ⌛

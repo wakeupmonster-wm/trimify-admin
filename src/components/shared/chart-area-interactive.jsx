@@ -5,7 +5,7 @@ import { PreLoader } from "@/app/loader/preloader";
 import ErrorState from "./ErrorState";
 import DashboardHead from "./dashboard.head";
 import { PiDeviceTabletCameraLight } from "react-icons/pi";
-import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
+// import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 import { format } from "date-fns";
 import { VisitorTopCounters, VisitorBottomLegends } from "./VisitorCounters";
 import { VisitorChart } from "./VisitorChart";
@@ -61,7 +61,7 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
       from: selectedDate.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null,
       to: selectedDate.to ? format(new Date(selectedDate.to), "yyyy-MM-dd") : null,
     };
-    dispatch(fetchDashboardKPIs(apiParams));
+    // dispatch(fetchDashboardKPIs(apiParams));
   };
 
   const chartData = useMemo(() => {

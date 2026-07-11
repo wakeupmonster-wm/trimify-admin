@@ -39,14 +39,14 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --brand-aqua: 182 59% 54%;
-    --hover-aqua: 182 45% 47%;
+    --brand-: 212, 100%, 45%;
+    --hover-blue: 212, 100%, 50%;
     /* #46C7CD */
     --brand-bg: 198 100% 96%;
     /* #AAE1FE at low opacity */
 
     /* Main Brand Color (#46C7CD) */
-    --brand-aqua: 182 59% 54%;
+    --brand-blue: 212, 100%, 45%;
 
     /* Alerts */
     --info: 182 59% 54%;

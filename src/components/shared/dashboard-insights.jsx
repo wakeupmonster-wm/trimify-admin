@@ -23,9 +23,9 @@ import {
   Target,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
-import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
-import { fetchMyTickets } from "@/modules/support/store/support.slice";
+// import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
+// import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
+// import { fetchMyTickets } from "@/modules/support/store/support.slice";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -75,9 +75,9 @@ export function DashboardInsights() {
   );
 
   useEffect(() => {
-    dispatch(fetchPendingVerifications({ page: 1, limit: 5 }));
-    dispatch(fetchReportedProfiles({ page: 1, limit: 5 }));
-    dispatch(fetchMyTickets({ page: 1, limit: 5 }));
+    // dispatch(fetchPendingVerifications({ page: 1, limit: 5 }));
+    // dispatch(fetchReportedProfiles({ page: 1, limit: 5 }));
+    // dispatch(fetchMyTickets({ page: 1, limit: 5 }));
   }, [dispatch]);
 
   const activeData = useMemo(() => {

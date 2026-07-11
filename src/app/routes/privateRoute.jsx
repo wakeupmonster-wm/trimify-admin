@@ -5,21 +5,21 @@ import { ROLES } from "@/constants/roles";
 
 export default function PrivateRoute({ children }) {
   const location = useLocation();
-  const { isAuthenticated, user, initialized } = useSelector(
-    (state) => state.auth
-  );
+  // const { isAuthenticated, user, initialized } = useSelector(
+  //   (state) => state.auth
+  // );
 
-  if (!initialized) return null;
+  // if (!initialized) return null;
 
-  // 1️⃣ Not logged in → login
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
-  }
+  // // 1️⃣ Not logged in → login
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/auth/login" state={{ from: location }} replace />;
+  // }
 
-  // 2️⃣ Logged in but USER → landing page
-  if (user?.role !== ROLES.ADMIN) {
-    return <Navigate to="/" replace />;
-  }
+  // // 2️⃣ Logged in but USER → landing page
+  // if (user?.role !== ROLES.ADMIN) {
+  //   return <Navigate to="/" replace />;
+  // }
 
   return children ?? <Outlet />;
 }

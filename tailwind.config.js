@@ -75,11 +75,11 @@ export default {
           accent: "hsl(var(--sidebar-accent))",
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--brand-aqua))",
+          ring: "hsl(var(--brand-blue))",
         },
         brand: {
-          aqua: "hsl(var(--brand-aqua))",
-          hoverAqua: "hsl(var(--hover-aqua))",
+          blue: "hsl(var(--brand-blue))",
+          hoverBlue: "hsl(var(--hover-blue))",
           bg: "hsl(var(--bg-gray))",
         },
         grey: {

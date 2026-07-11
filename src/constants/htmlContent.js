@@ -169,7 +169,7 @@ export const htmlContent = ({ pageTitle, cleanedHtml }) => {
               <div class="footer">
                   This is a live preview of the Privacy Policy document.
                   <br/>
-                  &copy; ${new Date().getFullYear()} KEEN AS MUSTARD APP.
+                  &copy; ${new Date().getFullYear()} Trimify Admin APP.
               </div>
           </div>
       </body>
