@@ -7,7 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable } from '@/components/shared/datatable';
 import { getManageProgramColumns } from '@/components/columns/manage.program.columns';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProgramList } from '../store/program.slice';
+import { 
+  fetchProgramList, 
+  toggleProgramStatus, 
+  toggleFoodVisibility, 
+  deleteProgram,
+  replicateProgram
+} from '../store/program.slice';
 import { Button } from '@/components/ui/button';
 
 
@@ -30,13 +36,14 @@ const ManageProgramPage = () => {
       }));
     }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
 
-    const handleAction = (row, action, value) => {
+    const handleAction = async (row, action, value) => {
       if (action === "toggle-status") {
         console.log("Toggle status for:", row.id, "to", value);
-        // TODO: Dispatch action to call toggle status API
+        const status = value ? "Active" : "Inactive";
+        dispatch(toggleProgramStatus({ id: row.id, status }));
       } else if (action === "toggle-food-visibility") {
         console.log("Toggle food visibility for:", row.id, "to", value);
-        // TODO: Dispatch action to call toggle food visibility API
+        dispatch(toggleFoodVisibility(row.id));
       } else if (action === "view-user") {
         console.log("View users for program:", row.id);
       } else if (action === "open-program") {
@@ -45,6 +52,24 @@ const ManageProgramPage = () => {
         navigate("edit-program", { state: { editData: row } });
       } else if (action === "delete") {
         console.log("Delete program:", row);
+        const result = await dispatch(deleteProgram(row.id));
+        if (deleteProgram.fulfilled.match(result)) {
+          dispatch(fetchProgramList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: globalFilter
+          }));
+        }
+      } else if (action === "replicate") {
+        console.log("Replicate program:", row.id);
+        const result = await dispatch(replicateProgram(row.id));
+        if (replicateProgram.fulfilled.match(result)) {
+          dispatch(fetchProgramList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: globalFilter
+          }));
+        }
       }
     };
 

@@ -23,7 +23,7 @@ export const getTransactionManagementColumns = (onAction) => [
     },
   },
   {
-    accessorKey: "transactionId",
+    accessorKey: "transaction_id",
     header: () => (
       <div className="text-[11px] font-bold text-foreground text-left">
         Transaction Id
@@ -34,14 +34,14 @@ export const getTransactionManagementColumns = (onAction) => [
     cell: ({ row }) => (
       <div
         className="max-w-[200px] truncate text-[11px] font-medium text-slate-700 tracking-tight"
-        title={row.getValue("transactionId")}
+        title={row.getValue("transaction_id")}
       >
-        {row.getValue("transactionId") || "-"}
+        {row.getValue("transaction_id") || "-"}
       </div>
     ),
   },
   {
-    accessorKey: "amountPaid",
+    accessorKey: "amount",
     header: () => (
       <div className="text-[11px] font-bold text-foreground text-left">
         Amount Paid
@@ -51,12 +51,12 @@ export const getTransactionManagementColumns = (onAction) => [
     minSize: 130,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
-        {row.getValue("amountPaid") ? `$${row.getValue("amountPaid")}` : "-"}
+        {row.getValue("amount") ? `$${row.getValue("amount")}` : "-"}
       </span>
     ),
   },
   {
-    accessorKey: "subscriptionPlan",
+    id: "subscriptionPlan",
     header: () => (
       <div className="text-[11px] font-bold text-foreground text-left">
         Subscription Plan
@@ -66,12 +66,12 @@ export const getTransactionManagementColumns = (onAction) => [
     minSize: 160,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
-        {row.getValue("subscriptionPlan") || "-"}
+        {row.original.plan?.title || "-"}
       </span>
     ),
   },
   {
-    accessorKey: "userName",
+    id: "userName",
     header: () => (
       <div className="text-[11px] font-bold text-foreground text-left">
         User Name
@@ -81,12 +81,12 @@ export const getTransactionManagementColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
-        {row.getValue("userName") || ""}
+        {row.original.user?.name || "-"}
       </span>
     ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: () => (
       <div className="text-[11px] font-bold text-foreground text-left">
         Created At
@@ -94,11 +94,16 @@ export const getTransactionManagementColumns = (onAction) => [
     ),
     size: 120,
     minSize: 120,
-    cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-700">
-        {row.getValue("createdAt") || "-"}
-      </span>
-    ),
+    cell: ({ row }) => {
+      // Optional: Format date here using date-fns if desired
+      const rawDate = row.getValue("created_at");
+      const displayDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : "-";
+      return (
+        <span className="text-[11px] font-medium text-slate-700">
+          {displayDate}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -109,13 +114,17 @@ export const getTransactionManagementColumns = (onAction) => [
     ),
     size: 100,
     minSize: 100,
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Badge className="bg-[#1ea82c] hover:bg-[#1ea82c]/90 text-white rounded text-[10px] px-2 py-0.5 font-semibold shadow-none border-none pointer-events-none">
-          {row.getValue("status") || "Success"}
-        </Badge>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status") || "Success";
+      const isSuccess = status.toLowerCase() === "success";
+      return (
+        <div className="flex justify-center">
+          <Badge className={`${isSuccess ? "bg-[#1ea82c] hover:bg-[#1ea82c]/90" : "bg-red-500 hover:bg-red-600"} text-white rounded text-[10px] px-2 py-0.5 font-semibold shadow-none border-none pointer-events-none capitalize`}>
+            {status}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     id: "invoice",

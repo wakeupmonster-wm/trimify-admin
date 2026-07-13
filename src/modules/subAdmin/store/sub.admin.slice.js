@@ -1,80 +1,109 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { getSubAdminManagementAPI } from "../services/sub.admin.services";
+import { 
+  getSubAdminManagementAPI, 
+  addSubAdminAPI, 
+  updateSubAdminAPI, 
+  toggleSubAdminStatusAPI, 
+  deleteSubAdminAPI 
+} from "../services/sub.admin.services";
 
-const dummySubAdmins = [
-  {
-    _id: "1",
-    createdAt: "2026-06-10T00:00:00.000Z",
-    userName: "Rajat",
-    emailId: "rajatkhoware2002@gmail.com",
-    hospitalName: "Rajat Medical",
-    designation: "Manager",
-    country: "Australia",
-    role: "WhiteListing User",
-    status: true,
-  },
-  {
-    _id: "2",
-    createdAt: "2024-12-27T00:00:00.000Z",
-    userName: "Omaid Zamani",
-    emailId: "app@trimify.com.au",
-    hospitalName: "DESA Consulting",
-    designation: "Manager",
-    country: "Australia",
-    role: "Sub-Admin User",
-    status: true,
-  },
-  {
-    _id: "3",
-    createdAt: "2024-12-27T00:00:00.000Z",
-    userName: "Reception",
-    emailId: "reception@desaconsulting.com.au",
-    hospitalName: "DESA Consulting",
-    designation: "Reception",
-    country: "Australia",
-    role: "Sub-Admin User",
-    status: true,
-  }
-];
-
-// Async Thunk for getting the list
+// Fetch List
 export const fetchSubAdminList = createAsyncThunk(
   "subAdmin/fetchList",
   async (params = {}, { rejectWithValue }) => {
-    // Returning dummy data based on the provided screenshot
-    return {
-      subAdmins: dummySubAdmins,
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: dummySubAdmins.length,
-        totalPages: 1,
-      },
-    };
-
-    /*
     try {
       const response = await getSubAdminManagementAPI(params);
-
-      if (response && response.success) {
-        // Adjust these field names based on your actual API response structure
+      console.log("res: ", response);
+      
+      if (response && response.status === "success") {
         return {
-          subAdmins: response.data || response.subAdmins || [],
-          pagination: response.pagination || {
-            page: 1,
-            limit: 10,
-            total: 0,
-            totalPages: 0,
+          subAdmins: response.subAdmins || [],
+          pagination: {
+            page: response.pagination?.current_page || 1,
+            limit: 50, // API docs state 50 per page
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
           },
         };
       }
-      return rejectWithValue(response.message || "Failed to fetch sub admins");
+      return rejectWithValue("Failed to fetch sub admins");
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch sub admins"
       );
     }
-    */
+  }
+);
+
+// Add
+export const addSubAdmin = createAsyncThunk(
+  "subAdmin/add",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await addSubAdminAPI(data);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to add sub admin");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add sub admin"
+      );
+    }
+  }
+);
+
+// Update
+export const updateSubAdmin = createAsyncThunk(
+  "subAdmin/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await updateSubAdminAPI(id, data);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to update sub admin");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update sub admin"
+      );
+    }
+  }
+);
+
+// Toggle Status
+export const toggleSubAdminStatus = createAsyncThunk(
+  "subAdmin/toggleStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await toggleSubAdminStatusAPI(id, { status });
+      if (response && response.status === "success") {
+        return { id, status: response.updated_status };
+      }
+      return rejectWithValue(response.message || "Failed to toggle status");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle status"
+      );
+    }
+  }
+);
+
+// Delete
+export const deleteSubAdmin = createAsyncThunk(
+  "subAdmin/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteSubAdminAPI(id);
+      if (response && response.status === "success") {
+        return id;
+      }
+      return rejectWithValue(response.message || "Failed to delete sub admin");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete sub admin"
+      );
+    }
   }
 );
 
@@ -86,9 +115,9 @@ const subAdminSlice = createSlice({
     error: null,
     pagination: {
       page: 1,
-      limit: 10,
+      limit: 50,
       total: 0,
-      totalPages: 0,
+      totalPages: 1,
     },
   },
   reducers: {
@@ -115,6 +144,47 @@ const subAdminSlice = createSlice({
       .addCase(fetchSubAdminList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      
+      // Handle Add
+      .addCase(addSubAdmin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addSubAdmin.fulfilled, (state) => {
+        state.loading = false;
+        // Let the component dispatch fetch again to get accurate pagination
+      })
+      .addCase(addSubAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+      // Handle Update
+      .addCase(updateSubAdmin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateSubAdmin.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateSubAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Handle Toggle Status
+      .addCase(toggleSubAdminStatus.fulfilled, (state, action) => {
+        const { id, status } = action.payload;
+        const index = state.subAdmins.findIndex(admin => admin.id === id || admin._id === id);
+        if (index !== -1) {
+          state.subAdmins[index].status = status;
+        }
+      })
+
+      // Handle Delete
+      .addCase(deleteSubAdmin.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.subAdmins = state.subAdmins.filter(admin => admin.id !== id && admin._id !== id);
+        if (state.pagination.total > 0) state.pagination.total -= 1;
       });
   },
 });

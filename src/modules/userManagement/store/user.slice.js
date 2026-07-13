@@ -8,14 +8,14 @@ export const fetchUsersList = createAsyncThunk(
     try {
       const response = await getUserManagementAPI(params);
 
-      if (response && response.success) {
+      if (response && response.status === "success") {
         return {
-          users: response.data || response.users || [],
-          pagination: response.pagination || {
-            page: 1,
-            limit: 10,
-            total: 0,
-            totalPages: 0,
+          users: response.users || [],
+          pagination: {
+            page: response.pagination?.current_page || 1,
+            limit: 10, // default limit if not specified
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
           },
         };
       }

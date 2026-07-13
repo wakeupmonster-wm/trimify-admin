@@ -13,7 +13,7 @@ export const FAQ_CRUD = {
   FAQ_ADD: `${ADMIN}/add-faq`,
 
   /** GET — Retrieve all FAQ entries (paginated) */
-  FAQ_LIST: `${ADMIN}/get-faqs`,
+  FAQ_LIST: `${ADMIN}/view-faqs`,
 
   /** POST — Update an existing FAQ entry */
   FAQ_UPDATE: (id) => `${ADMIN}/update-faq/${id}`,

@@ -14,6 +14,7 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { ROLES } from "@/constants/roles";
 import { useState } from "react";
 import { toast } from "sonner";
+import { loginThunk } from "../store/auth.slice";
 
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
@@ -37,19 +38,14 @@ export function LoginForm({ className, ...props }) {
 
   const onSubmit = async (data) => {
     try {
-      // const user = await dispatch(loginThunk(data)).unwrap();
+      const { user } = await dispatch(loginThunk(data)).unwrap();
 
-      // // STRICT ROLE CONTROL
-      // if (user?.role === ROLES.ADMIN) {
-      //   navigate(user.screen || "/admin/dashboard", { replace: true });
+      // Navigate to dashboard upon successful login without strict role check
+      navigate(user?.screen || "/admin/dashboard", { replace: true });
 
-      //   // Clean and simple call
-      //   toast.success(user.message || "Login successful", {
-      //     description: `Welcome back, ${user.nickname}!`,
-      //   });
-      // } else {
-      //   navigate("/", { replace: true });
-      // }
+      toast.success(user?.message || "Login successful", {
+        description: `Welcome back, ${user?.nickname || "Admin"}!`,
+      });
     } catch (err) {
       resetField("password");
       toast.error(err || "Server error while login");

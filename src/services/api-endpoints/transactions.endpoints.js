@@ -10,14 +10,14 @@ const ADMIN = `${BASE_URL}/admin`;
 
 export const TRANSACTION = {
   /** GET — Retrieve paginated list of all transactions */
-  TRANSACTION_LIST: `${ADMIN}/get-transactions`,
+  TRANSACTION_LIST: `${ADMIN}/transactions`,
 }
 
 // ──────────────────────── Subscription Plans ────────────────────────────────────
 
 export const SUBSCRIPTION_PLAN = {
   /** GET — Retrieve all subscription plans */
-  SUBSCRIPTION_PLAN_LIST: `${ADMIN}/get-subscription-plans`,
+  SUBSCRIPTION_PLAN_LIST: `${ADMIN}/subscription`,
 
   /** POST — Update a subscription plan's details */
   SUBSCRIPTION_PLAN_UPDATE: (id) => `${ADMIN}/update-subscription-plan/${id}`,

@@ -28,7 +28,6 @@ import AddProgramPage from "@/modules/manageProgram/pages/add.program.page";
 import AddCategoryPage from "@/modules/blogSection/pages/add.category.page";
 import AddPostPage from "@/modules/blogSection/pages/add.post.page";
 
-
 // ======== New trimify imports =========
 
 // 2. LAZY LOAD COMPONENTS
@@ -132,9 +131,6 @@ const AnalyticsPage = lazy(
   () => import("@/modules/dashboard/pages/analytics.page"),
 );
 
-const FakeProfileManagementPage = lazy(
-  () => import("@/modules/fake-profiles/pages/fake-profile-management.Page"),
-);
 const AccountsPage = lazy(
   () => import("@/modules/accounts/page/accounts.page"),
 );
@@ -260,7 +256,7 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
           },
-        ]
+        ],
       },
       {
         path: "fitzone-management",
@@ -289,7 +285,7 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
           },
-        ]
+        ],
       },
       {
         path: "data-management",
@@ -342,7 +338,7 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
           },
-        ]
+        ],
       },
       {
         path: "subscription-management",
@@ -393,10 +389,6 @@ export const router = createBrowserRouter([
         ),
       },
 
-
-
-
-
       /*====================== Old Tabs ======================*/
       { path: "analytics", element: <AnalyticsPage /> },
       { path: "kpi", element: <>KPI's</> },
@@ -406,15 +398,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to="users-management" />
-          },
-          {
-            path: "fake-profiles",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <FakeProfileManagementPage />
-              </Suspense>
-            ),
+            element: <Navigate to="users-management" />,
           },
           // ======================================================
           {

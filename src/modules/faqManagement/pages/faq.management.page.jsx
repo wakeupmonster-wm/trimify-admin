@@ -9,6 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Send, HelpCircle } from 'lucide-react';
 import Header from '@/components/common/header';
 import { PageHeader } from '@/components/common/headSubhead';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFaqList, addFaq } from '../store/faq.slice';
+import { useEffect } from 'react';
 
 const dummyFaqs = [
   {
@@ -74,22 +77,31 @@ const dummyFaqs = [
 ];
 
 const FaqManagementPage = () => {
+    const dispatch = useDispatch();
+    const { faqs, loading, pagination: serverPagination } = useSelector((state) => state.faqManagement);
+
     const [globalFilter, setGlobalFilter] = useState("");
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
     const [formData, setFormData] = useState({ question: "", answer: "" });
     
-    // Fallback to dummy data
-    const displayData = dummyFaqs;
+    useEffect(() => {
+      dispatch(
+        fetchFaqList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: globalFilter,
+        })
+      );
+    }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
       setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log("Add FAQ:", formData);
-      // TODO: Dispatch action to add FAQ
+      await dispatch(addFaq(formData));
       setFormData({ question: "", answer: "" }); // Reset form
     };
 
@@ -163,14 +175,17 @@ const FaqManagementPage = () => {
           <div className="bg-white rounded-md shadow-sm border border-slate-100 p-4">
             <DataTable
               columns={columns}
-              data={displayData}
-              rowCount={displayData.length}
+              data={faqs || []}
+              rowCount={serverPagination ? serverPagination.total : (faqs?.length || 0)}
               pagination={pagination}
               onPaginationChange={setPagination}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
               searchPlaceholder="Search faqs..."
               itemName="entries"
+              isLoading={loading}
+              manualPagination={!!serverPagination}
+              manualFiltering={!!serverPagination}
             />
           </div>
         </div>

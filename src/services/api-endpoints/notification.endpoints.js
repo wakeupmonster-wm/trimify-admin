@@ -13,5 +13,5 @@ export const NOTIFICATION = {
   NOTIFICATION_SEND: `${ADMIN}/send-notification`,
   
   /** GET — Retrieve list of sent notifications (paginated) */
-  NOTIFICATION_LIST: `${ADMIN}/get-notifications`,
+  NOTIFICATION_LIST: `${ADMIN}/get-notification`,
 }

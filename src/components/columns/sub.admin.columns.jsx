@@ -22,7 +22,8 @@ export const getSubAdminColumns = (onAction) => [
     size: 60,
     minSize: 50,
     cell: ({ row, table }) => {
-      const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
+      const { pageIndex = 0, pageSize = 10 } =
+        table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
@@ -44,7 +45,7 @@ export const getSubAdminColumns = (onAction) => [
     size: 100,
     minSize: 100,
     cell: ({ row }) => {
-      const dateValue = row.original.createdAt;
+      const dateValue = row.original.created_at;
       if (!dateValue || isNaN(new Date(dateValue).getTime())) {
         return <span className="text-slate-400 text-xs">-</span>;
       }
@@ -66,7 +67,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 130,
     cell: ({ row }) => (
       <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
-        {row.original.userName || "-"}
+        {row.original.name || "-"}
       </div>
     ),
   },
@@ -81,7 +82,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 140,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.emailId || "-"}
+        {row.original.email || "-"}
       </span>
     ),
   },
@@ -96,7 +97,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 120,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.hospitalName || "-"}
+        {row.original.hospital || "-"}
       </span>
     ),
   },
@@ -126,7 +127,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.country || "-"}
+        {row.original.location || "-"}
       </span>
     ),
   },
@@ -139,11 +140,22 @@ export const getSubAdminColumns = (onAction) => [
     ),
     size: 80,
     minSize: 80,
-    cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.role || "-"}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const roleVal = row.original.role;
+      let displayRole = "-";
+      if (roleVal == 1) {
+        displayRole = "WhiteListing User";
+      } else if (roleVal == 0) {
+        displayRole = "Sub-Admin User";
+      } else if (roleVal) {
+        displayRole = roleVal;
+      }
+      return (
+        <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+          {displayRole}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -157,11 +169,13 @@ export const getSubAdminColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Switch
-          checked={row.original.status === "active" || row.original.status === true}
+          checked={
+            row.original.status === "Active" || row.original.status === true
+          }
           onCheckedChange={(checked) =>
             onAction && onAction(row.original, "toggle-status", checked)
           }
-          className="data-[state=checked]:bg-brand-aqua"
+          className="data-[state=checked]:bg-brand-blue"
         />
       </div>
     ),
@@ -186,7 +200,10 @@ export const getSubAdminColumns = (onAction) => [
               <MoreVertical className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm">
+          <DropdownMenuContent
+            align="end"
+            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+          >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>

@@ -7,16 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/components/shared/datatable";
 import { getFitzoneManagementColumns } from "@/components/columns/fitzone.management.columns";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFitzoneList } from "../store/fitzone.slice";
+import { fetchFitzoneList, toggleFitzoneStatus, deleteFitzone } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
-
-const dummyData = [
-  {
-    id: 1,
-    fitzoneName: "Fitzone",
-    status: true,
-  },
-];
 
 const FitzoneManagementPage = () => {
   const navigate = useNavigate();
@@ -30,9 +22,6 @@ const FitzoneManagementPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  // Fallback to dummy data if API returns nothing (useful for development/preview)
-  const displayData = fitzones && fitzones.length > 0 ? fitzones : dummyData;
-
   useEffect(() => {
     dispatch(
       fetchFitzoneList({
@@ -43,16 +32,25 @@ const FitzoneManagementPage = () => {
     );
   }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
 
-  const handleAction = (row, action, value) => {
+  const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
       console.log("Toggle status for:", row.id, "to", value);
-      // TODO: Dispatch action to call toggle status API
+      const status = value ? "Active" : "Inactive";
+      dispatch(toggleFitzoneStatus({ id: row.id, status }));
     } else if (action === "open-program") {
       console.log("Open program:", row.id);
     } else if (action === "edit") {
       navigate("edit-fitzone", { state: { editData: row } });
     } else if (action === "delete") {
-      console.log("Delete fitzone:", row);
+      console.log("Delete fitzone:", row.id);
+      const result = await dispatch(deleteFitzone(row.id));
+      if (deleteFitzone.fulfilled.match(result)) {
+        dispatch(fetchFitzoneList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: globalFilter
+        }));
+      }
     }
   };
 
@@ -87,9 +85,9 @@ const FitzoneManagementPage = () => {
 
         <DataTable
           columns={columns}
-          data={displayData}
+          data={fitzones || []}
           rowCount={
-            isManual ? serverPagination.total : displayData?.length || 0
+            isManual ? serverPagination.total : (fitzones?.length || 0)
           }
           pagination={pagination}
           onPaginationChange={setPagination}

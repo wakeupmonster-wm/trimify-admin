@@ -34,7 +34,7 @@ export const getManageProgramColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "programName",
+    accessorKey: "title",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Program Name
@@ -44,12 +44,12 @@ export const getManageProgramColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
-        {row.original.programName || "-"}
+        {row.original.title || "-"}
       </span>
     ),
   },
   {
-    accessorKey: "programDuration",
+    accessorKey: "duration",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Program Duration
@@ -59,7 +59,7 @@ export const getManageProgramColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-slate-700 font-medium text-[11px] tracking-tight">
-        {row.original.programDuration || "-"}
+        {row.original.duration ? `${row.original.duration} Weeks` : "-"}
       </span>
     ),
   },
@@ -129,7 +129,7 @@ export const getManageProgramColumns = (onAction) => [
     },
   },
   {
-    accessorKey: "foodVisibility",
+    accessorKey: "is_approve_nonapproved_foods_show",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Food Visibility
@@ -139,8 +139,9 @@ export const getManageProgramColumns = (onAction) => [
     minSize: 130,
     cell: ({ row }) => {
       const isVisible =
-        row.original.foodVisibility === true ||
-        row.original.foodVisibility === "true";
+        row.original.is_approve_nonapproved_foods_show === 1 ||
+        row.original.is_approve_nonapproved_foods_show === true ||
+        row.original.is_approve_nonapproved_foods_show === "1";
       return (
         <div className="flex justify-center">
           <Switch

@@ -1,5 +1,5 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -9,23 +9,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const getFitzoneManagementColumns = (onAction) => [
+export const getSubscriptionColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[10px] font-bold uppercase tracking-wider">
+      <div className="w-10 text-center text-[10px] font-bold uppercase tracking-wider">
         S.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 50,
     cell: ({ row, table }) => {
-      const { pageIndex = 0, pageSize = 10 } =
-        table.getState().pagination || {};
+      const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-10 text-left font-bold text-[11px] text-foreground/90">
+        <div className="w-10 text-center font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -34,64 +33,79 @@ export const getFitzoneManagementColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "fitzoneName",
+    accessorKey: "title",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Fitzone Name
+        Plan Title
       </div>
     ),
-    size: 350,
-    minSize: 350,
+    size: 130,
+    minSize: 130,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-700 tracking-tight">
+      <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.title || "-"}
-      </span>
+      </div>
     ),
   },
   {
-    id: "manage",
+    accessorKey: "duration",
     header: () => (
-      <div className="text-[10px] text-left font-bold uppercase tracking-wider">
-        Manage
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Duration
       </div>
     ),
-    size: 300,
-    minSize: 300,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => (
-      <div className="flex">
-        <Button
-          onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-brand-blue hover:bg-brand-hoverBlue text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
-        >
-          Open Program
-        </Button>
+      <div className="capitalize font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
+        {row.original.duration ? `${row.original.duration} Months` : "-"}
       </div>
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "price",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Status
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Price
       </div>
     ),
-    size: 300,
-    minSize: 300,
-    cell: ({ row }) => {
-      const isActive =
-        row.original.status === "Active" || row.original.status === true;
-      return (
-        <div className="flex justify-center">
-          <Switch
-            checked={isActive}
-            onCheckedChange={(checked) =>
-              onAction && onAction(row.original, "toggle-status", checked)
-            }
-            className="data-[state=checked]:bg-brand-blue"
-          />
-        </div>
-      );
-    },
+    size: 100,
+    minSize: 100,
+    cell: ({ row }) => (
+      <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
+        {row.original.price ? `$${row.original.price}` : "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "subtitle",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Sub Title
+      </div>
+    ),
+    size: 150,
+    minSize: 150,
+    cell: ({ row }) => (
+      <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
+        {row.original.subtitle || "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "features",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Features
+      </div>
+    ),
+    size: 250,
+    minSize: 200,
+    cell: ({ row }) => (
+      <div className="font-medium text-slate-600 text-[11px] tracking-tight truncate max-w-[250px]">
+        {row.original.features || "-"}
+      </div>
+    ),
   },
   {
     id: "actions",
@@ -100,8 +114,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 200,
-    minSize: 200,
+    size: 60,
+    minSize: 60,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>
@@ -113,10 +127,7 @@ export const getFitzoneManagementColumns = (onAction) => [
               <MoreVertical className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
-          >
+          <DropdownMenuContent align="end" className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm">
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>

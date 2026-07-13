@@ -15,7 +15,7 @@ export const PROGRAM = {
   PROGRAM_ADD: `${ADMIN}/add-program`,
 
   /** GET — Retrieve paginated list of all programs */
-  PROGRAM_LIST: `${ADMIN}/get-programs`,
+  PROGRAM_LIST: `${ADMIN}/view-programs`,
 
   /** GET — Retrieve full details of a single program (for edit form) */
   PROGRAM_GET_BY_ID: (id) => `${ADMIN}/edit-program/${id}`,

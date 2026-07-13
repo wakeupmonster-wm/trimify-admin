@@ -1,138 +1,212 @@
-import { Container } from '@/components/common/container'
-import { PageHeader } from '@/components/common/headSubhead'
-import { UserCog, Plus, FileText } from 'lucide-react'
-import Header from '@/components/common/header'
-import React, { useState, useMemo, useEffect } from 'react'
-import { DataTable } from '@/components/shared/datatable'
-import { getSubAdminColumns } from '@/components/columns/sub.admin.columns'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchSubAdminList } from '../store/sub.admin.slice'
-import { Button } from '@/components/ui/button'
-import { AddSubAdminDialog } from '../components/add.subadmin.dialog'
+import { Container } from "@/components/common/container";
+import { PageHeader } from "@/components/common/headSubhead";
+import { UserCog, Plus, FileText } from "lucide-react";
+import Header from "@/components/common/header";
+import React, { useState, useMemo, useEffect } from "react";
+import { DataTable } from "@/components/shared/datatable";
+import { getSubAdminColumns } from "@/components/columns/sub.admin.columns";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchSubAdminList,
+  addSubAdmin,
+  updateSubAdmin,
+  toggleSubAdminStatus,
+  deleteSubAdmin,
+} from "../store/sub.admin.slice";
+import { Button } from "@/components/ui/button";
+import { AddSubAdminDialog } from "../components/add.subadmin.dialog";
+import { EditSubAdminDialog } from "../components/edit.subadmin.dialog";
 
 // Simple utility to convert an array of objects to CSV
-const downloadCSV = (data, filename = 'sub_admins.csv') => {
+const downloadCSV = (data, filename = "sub_admins.csv") => {
   if (!data || !data.length) return;
-  const headers = ['S.No', 'Created At', 'User Name', 'Email ID', 'Hospital/Clinic Name', 'Designation', 'Country', 'Role', 'Status'];
+  const headers = [
+    "S.No",
+    "Created At",
+    "User Name",
+    "Email ID",
+    "Hospital/Clinic Name",
+    "Designation",
+    "Country",
+    "Role",
+    "Status",
+  ];
   const rows = data.map((item, index) => [
     index + 1,
-    item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-',
-    item.userName || '-',
-    item.emailId || '-',
-    item.hospitalName || '-',
-    item.designation || '-',
-    item.country || '-',
-    item.role || '-',
-    item.status ? 'Active' : 'Inactive'
+    item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
+    item.userName || "-",
+    item.emailId || "-",
+    item.hospitalName || "-",
+    item.designation || "-",
+    item.country || "-",
+    item.role || "-",
+    item.status ? "Active" : "Inactive",
   ]);
-  
-  const csvContent = [
-    headers.join(','),
-    ...rows.map(row => row.map(str => `"${str}"`).join(','))
-  ].join('\n');
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) => row.map((str) => `"${str}"`).join(",")),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
   link.setAttribute("download", filename);
-  link.style.visibility = 'hidden';
+  link.style.visibility = "hidden";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
 const SubAdminManagementPage = () => {
-    const dispatch = useDispatch();
-    const { subAdmins, loading, pagination: serverPagination } = useSelector((state) => state.subAdmin);
+  const dispatch = useDispatch();
+  const {
+    subAdmins,
+    loading,
+    pagination: serverPagination,
+  } = useSelector((state) => state.subAdmin);
 
-    const [globalFilter, setGlobalFilter] = useState("");
-    const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
 
-    useEffect(() => {
-      dispatch(fetchSubAdminList({
+  useEffect(() => {
+    dispatch(
+      fetchSubAdminList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter
-      }));
-    }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+        search: globalFilter,
+      }),
+    );
+  }, [dispatch, pagination.pageIndex, pagination.pageSize]);
 
-    const handleAction = (row, action, checked) => {
-      if (action === "toggle-status") {
-        console.log("Toggle status for:", row.id || row._id, "to", checked);
-        // TODO: Dispatch action to call toggle status API
-      } else if (action === "edit") {
-        console.log("Edit row:", row);
-      } else if (action === "delete") {
-        console.log("Delete row:", row);
+  const handleAction = async (row, action, checked) => {
+    const rowId = row.id || row._id;
+    if (action === "toggle-status") {
+      console.log("Toggle status for:", rowId, "to", checked);
+      const status = checked ? "Active" : "Inactive";
+      dispatch(toggleSubAdminStatus({ id: rowId, status }));
+    } else if (action === "edit") {
+      setEditData(row);
+      setIsEditDialogOpen(true);
+    } else if (action === "delete") {
+      console.log("Delete row:", rowId);
+      const result = await dispatch(deleteSubAdmin(rowId));
+      if (deleteSubAdmin.fulfilled.match(result)) {
+        dispatch(
+          fetchSubAdminList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: globalFilter,
+          }),
+        );
       }
-    };
+    }
+  };
 
-    const handleAddSubAdmin = (formData) => {
-      console.log("Adding Sub Admin with data:", formData);
-      // TODO: Dispatch action to add sub admin API
-    };
+  const handleAddSubAdmin = async (formData) => {
+    console.log("Adding Sub Admin with data:", formData);
+    const result = await dispatch(addSubAdmin(formData));
+    if (addSubAdmin.fulfilled.match(result)) {
+      setIsAddDialogOpen(false);
+      dispatch(
+        fetchSubAdminList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: globalFilter,
+        }),
+      );
+    }
+  };
 
-    const columns = useMemo(() => getSubAdminColumns(handleAction), []);
+  const handleEditSubAdmin = async (formData) => {
+    console.log("Updating Sub Admin with data:", formData);
+    const result = await dispatch(
+      updateSubAdmin({ id: editData.id || editData._id, data: formData }),
+    );
+    if (updateSubAdmin.fulfilled.match(result)) {
+      setIsEditDialogOpen(false);
+      setEditData(null);
+      dispatch(
+        fetchSubAdminList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: globalFilter,
+        }),
+      );
+    }
+  };
 
-    // Check if the backend is doing manual pagination. 
-    // If serverPagination.total exists, it's server-paginated.
-    const isManual = !!(serverPagination && serverPagination.total > 0);
+  const columns = useMemo(() => getSubAdminColumns(handleAction), []);
 
-    return (
-      <Container>
-        <div className='space-y-8'>
-          <Header>
-            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <PageHeader
-                heading="Sub Admin Management"
-                icon={<UserCog className="w-9 h-9 text-white" />}
-                color="bg-brand-blue shadow-brand-aqua/30"
-                subheading="Manage sub-administrators and their access roles."
-              />
-              <div className="flex flex-wrap items-center gap-3">
-                <Button 
-                  onClick={() => setIsAddDialogOpen(true)}
-                  className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Sub Admin
-                </Button>
-                <Button 
-                  onClick={() => downloadCSV(subAdmins)}
-                  className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
-                >
-                  <FileText className="w-4 h-4" />
-                  Download CSV
-                </Button>
-              </div>
+  // Check if the backend is doing manual pagination.
+  // If serverPagination.total exists, it's server-paginated.
+  const isManual = !!(serverPagination && serverPagination.total > 0);
+
+  return (
+    <Container>
+      <div className="space-y-8">
+        <Header>
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <PageHeader
+              heading="Sub Admin Management"
+              icon={<UserCog className="w-9 h-9 text-white" />}
+              color="bg-brand-blue shadow-brand-aqua/30"
+              subheading="Manage sub-administrators and their access roles."
+            />
+
+            <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+              <Button
+                onClick={() => setIsAddDialogOpen(true)}
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                Add Sub Admin
+              </Button>
+              <Button
+                onClick={() => downloadCSV(subAdmins)}
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+              >
+                <FileText className="w-4 h-4" />
+                Download CSV
+              </Button>
             </div>
-          </Header>
+          </div>
+        </Header>
 
-          <DataTable
-            columns={columns}
-            data={subAdmins || []}
-            rowCount={isManual ? serverPagination.total : (subAdmins?.length || 0)}
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search sub admins..."
-            itemName="entries"
-            isLoading={loading}
-            manualPagination={isManual}
-            manualFiltering={isManual}
-          />
-        </div>
-
-        <AddSubAdminDialog 
-          open={isAddDialogOpen} 
-          onOpenChange={setIsAddDialogOpen}
-          onAdd={handleAddSubAdmin}
+        <DataTable
+          columns={columns}
+          data={subAdmins || []}
+          rowCount={isManual ? serverPagination.total : subAdmins?.length || 0}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          searchPlaceholder="Search sub admins..."
+          itemName="entries"
+          isLoading={loading}
+          manualPagination={isManual}
+          manualFiltering={isManual}
         />
-      </Container>
-    )
-}
+      </div>
 
-export default SubAdminManagementPage
+      <AddSubAdminDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onAdd={handleAddSubAdmin}
+      />
+
+      <EditSubAdminDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onEdit={handleEditSubAdmin}
+        editData={editData}
+      />
+    </Container>
+  );
+};
+
+export default SubAdminManagementPage;
