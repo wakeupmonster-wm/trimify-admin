@@ -16,14 +16,14 @@ const downloadCSV = (data, filename = 'sub_admins.csv') => {
   const headers = ['S.No', 'Created At', 'User Name', 'Email ID', 'Hospital/Clinic Name', 'Designation', 'Country', 'Role', 'Status'];
   const rows = data.map((item, index) => [
     index + 1,
-    item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-',
-    item.userName || '-',
-    item.emailId || '-',
-    item.hospitalName || '-',
+    item.created_at ? new Date(item.created_at).toLocaleDateString() : '-',
+    item.name || '-',
+    item.email || '-',
+    item.hospital || '-',
     item.designation || '-',
-    item.country || '-',
-    item.role || '-',
-    item.status ? 'Active' : 'Inactive'
+    item.location || '-',
+    item.role === 1 ? 'WhiteListing User' : 'Sub-Admin User',
+    item.status === 'Active' ? 'Active' : 'Inactive'
   ]);
   
   const csvContent = [

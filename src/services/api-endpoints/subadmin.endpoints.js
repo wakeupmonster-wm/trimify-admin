@@ -13,7 +13,7 @@ export const SUBADMIN_ENPOINTS = {
   SUBADMIN_ADD: `${ADMIN}/add-subadmin`,
 
   /** GET — Retrieve the list of all sub-admins */
-  SUBADMIN_LIST: `${ADMIN}/get-subadmins`,
+  SUBADMIN_LIST: `${ADMIN}/view-subadmin`,
 
   /** POST — Update an existing sub-admin's details */
   SUBADMIN_UPDATE: (id) => `${ADMIN}/update-subadmin/${id}`,

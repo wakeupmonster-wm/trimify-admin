@@ -11,6 +11,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 
+const ROLE_LABELS = {
+  0: "Sub-Admin User",
+  1: "WhiteListing User",
+};
+
 export const getSubAdminColumns = (onAction) => [
   {
     id: "sno",
@@ -35,7 +40,7 @@ export const getSubAdminColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Created At
@@ -44,7 +49,7 @@ export const getSubAdminColumns = (onAction) => [
     size: 100,
     minSize: 100,
     cell: ({ row }) => {
-      const dateValue = row.original.createdAt;
+      const dateValue = row.original.created_at;
       if (!dateValue || isNaN(new Date(dateValue).getTime())) {
         return <span className="text-slate-400 text-xs">-</span>;
       }
@@ -56,7 +61,7 @@ export const getSubAdminColumns = (onAction) => [
     },
   },
   {
-    accessorKey: "userName",
+    accessorKey: "name",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         User Name
@@ -66,12 +71,12 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 130,
     cell: ({ row }) => (
       <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
-        {row.original.userName || "-"}
+        {row.original.name || "-"}
       </div>
     ),
   },
   {
-    accessorKey: "emailId",
+    accessorKey: "email",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Email ID
@@ -81,12 +86,12 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 140,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.emailId || "-"}
+        {row.original.email || "-"}
       </span>
     ),
   },
   {
-    accessorKey: "hospitalName",
+    accessorKey: "hospital",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Hospital/Clinic Name
@@ -96,7 +101,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 120,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.hospitalName || "-"}
+        {row.original.hospital || "-"}
       </span>
     ),
   },
@@ -116,7 +121,7 @@ export const getSubAdminColumns = (onAction) => [
     ),
   },
   {
-    accessorKey: "country",
+    accessorKey: "location",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Country
@@ -126,7 +131,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.country || "-"}
+        {row.original.location || "-"}
       </span>
     ),
   },
@@ -141,7 +146,7 @@ export const getSubAdminColumns = (onAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.role || "-"}
+        {ROLE_LABELS[row.original.role] || "-"}
       </span>
     ),
   },
@@ -157,7 +162,7 @@ export const getSubAdminColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Switch
-          checked={row.original.status === "active" || row.original.status === true}
+          checked={row.original.status === "Active"}
           onCheckedChange={(checked) =>
             onAction && onAction(row.original, "toggle-status", checked)
           }

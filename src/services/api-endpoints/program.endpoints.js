@@ -15,7 +15,7 @@ export const PROGRAM = {
   PROGRAM_ADD: `${ADMIN}/add-program`,
 
   /** GET — Retrieve paginated list of all programs */
-  PROGRAM_LIST: `${ADMIN}/get-programs`,
+  PROGRAM_LIST: `${ADMIN}/view-programs`,
 
   /** GET — Retrieve full details of a single program (for edit form) */
   PROGRAM_GET_BY_ID: (id) => `${ADMIN}/edit-program/${id}`,
@@ -30,13 +30,13 @@ export const PROGRAM = {
   PROGRAM_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-program/${id}`,
 
   /** PATCH — Toggle food visibility for a program */
-  PROGRAM_TOGGLE_FOOD_VISIBILITY: (id) => `${ADMIN}/toggle-food-visibility/${id}`,
+  PROGRAM_TOGGLE_FOOD_VISIBILITY: (id) => `${ADMIN}/toggle-status-food-visibility/${id}`,
 
   /** GET — Get the current food visibility state for a program */
   PROGRAM_GET_FOOD_VISIBILITY: (id) => `${ADMIN}/program-food-visibility/${id}`,
 
   /** POST — Replicate (clone) an existing program */
-  PROGRAM_REPLICATE: (id) => `${ADMIN}/replicate-program/${id}`,
+  PROGRAM_REPLICATE: (id) => `${ADMIN}/replicate/${id}`,
 
   /** GET — Retrieve list of users assigned to a program */
   PROGRAM_VIEW_ASSIGNED_USERS: (id) => `${ADMIN}/view-programassigneduser/${id}`,

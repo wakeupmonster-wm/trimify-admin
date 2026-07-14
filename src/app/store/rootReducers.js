@@ -7,6 +7,7 @@ import userManagementReducer from "@/modules/userManagement/store/user.slice";
 import manageProgramReducer from "@/modules/manageProgram/store/program.slice";
 import fitzoneManagementReducer from "@/modules/fitzoneManagement/store/fitzone.slice";
 import blogSectionReducer from "@/modules/blogSection/store/blog.slice";
+import nutritionManagementReducer from "@/modules/dataManagement/store/nutrition.slice";
 
 export const rootReducer = combineReducers({
   // auth: authReducer,
@@ -18,4 +19,5 @@ export const rootReducer = combineReducers({
   manageProgram: manageProgramReducer,
   fitzoneManagement: fitzoneManagementReducer,
   blogSection: blogSectionReducer,
+  nutritionManagement: nutritionManagementReducer,
 });

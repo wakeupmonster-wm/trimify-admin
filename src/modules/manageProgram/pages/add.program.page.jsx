@@ -6,6 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import { addProgram, updateProgram } from '../store/program.slice';
 import {
   Select,
   SelectContent,
@@ -14,20 +17,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+const MAX_IMAGE_SIZE_KB = 6144;
+
 const AddProgramPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
     const editData = location.state?.editData;
     const isEditMode = !!editData;
 
     const [formData, setFormData] = useState({
       title: editData?.programName || "",
-      description: "",
+      description: editData?.description || "",
       duration: editData?.programDuration || "",
       bannerImage: null
     });
 
     const [isDragging, setIsDragging] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -64,17 +72,58 @@ const AddProgramPage = () => {
       }
     };
 
+    const validateImage = (file) => {
+      if (!file) return true;
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        toast.error("Only JPEG, PNG, GIF or WEBP images are allowed");
+        return false;
+      }
+      if (file.size > MAX_IMAGE_SIZE_KB * 1024) {
+        toast.error("Image size must not exceed 6MB");
+        return false;
+      }
+      return true;
+    };
+
     const handleSubmit = (e) => {
       e.preventDefault();
-      console.log(isEditMode ? "Update Program:" : "Submit Program:", formData);
-      // TODO: Dispatch action to create/update program API
+
+      if (!isEditMode && !formData.bannerImage) {
+        toast.error("Please upload a program cover image");
+        return;
+      }
+
+      if (!validateImage(formData.bannerImage)) return;
+
+      const payload = new FormData();
+      payload.append("title", formData.title);
+      payload.append("description", formData.description);
+      payload.append("duration", formData.duration);
+      if (formData.bannerImage) {
+        payload.append("image", formData.bannerImage);
+      }
+
+      setIsSubmitting(true);
+
+      const action = isEditMode
+        ? updateProgram({ id: editData.id, formData: payload })
+        : addProgram(payload);
+
+      dispatch(action)
+        .unwrap()
+        .then(() => {
+          toast.success(isEditMode ? "Program updated successfully" : "Program added successfully");
+          navigate(-1);
+        })
+        .catch((err) => toast.error(err || "Something went wrong"))
+        .finally(() => setIsSubmitting(false));
     };
 
     return (
       <Container>
         {/* Top Header Section */}
         <div className="flex w-full mb-6 mt-2">
-           <Button 
+           <Button
              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
              onClick={() => navigate(-1)}
            >
@@ -90,7 +139,7 @@ const AddProgramPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            
+
             {/* Program Title */}
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">Program Title</Label>
@@ -99,6 +148,7 @@ const AddProgramPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
+                maxLength={255}
                 className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300/80"
                 required
               />
@@ -124,23 +174,27 @@ const AddProgramPage = () => {
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">Upload Banner Image</Label>
-              <div 
+              <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging ? 'border-brand-aqua bg-brand-aqua/5' : 'border-slate-200 hover:border-slate-300'}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => document.getElementById('banner-upload').click()}
               >
-                <input 
-                  id="banner-upload" 
-                  type="file" 
-                  className="hidden" 
-                  accept="image/*"
+                <input
+                  id="banner-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                   onChange={handleFileSelect}
                 />
                 <UploadCloud className="w-12 h-12 text-slate-300 mb-3" />
                 <p className="text-sm font-medium text-slate-400">
-                  {formData.bannerImage ? formData.bannerImage.name : "Drag and drop a file here or click"}
+                  {formData.bannerImage
+                    ? formData.bannerImage.name
+                    : isEditMode && editData?.image
+                      ? `Current image: ${editData.image.split('/').pop()} (click to replace)`
+                      : "Drag and drop a file here or click"}
                 </p>
               </div>
               <div className="text-xs text-slate-500 font-medium mt-1">
@@ -168,10 +222,13 @@ const AddProgramPage = () => {
             <div className="pt-6 flex justify-center">
               <Button
                 type="submit"
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-10 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-md"
+                disabled={isSubmitting}
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-10 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-md disabled:opacity-60"
                >
                 <Send size={16} />
-                {isEditMode ? "Update Program" : "Add Program"}
+                {isSubmitting
+                  ? (isEditMode ? "Updating..." : "Adding...")
+                  : (isEditMode ? "Update Program" : "Add Program")}
               </Button>
             </div>
 

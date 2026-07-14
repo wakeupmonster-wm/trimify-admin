@@ -24,6 +24,13 @@ export const DIET_MEAL = {
 }
 
 
+// ────────────── Nutrition (Bulk Food Upload Data) ───────────────────
+export const NUTRITION = {
+  /** GET — Retrieve list of nutrition/food records */
+  NUTRITION_LIST: `${ADMIN}/nutrition`,
+}
+
+
 // ────────────── Diet Plan (Program Day Meal Assignments) ──────────────
 export const DIET_PLAN = {
   /** GET — Retrieve all diet meal assignments for a specific program */

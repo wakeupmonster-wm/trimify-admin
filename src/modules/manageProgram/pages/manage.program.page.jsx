@@ -7,8 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable } from '@/components/shared/datatable';
 import { getManageProgramColumns } from '@/components/columns/manage.program.columns';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProgramList } from '../store/program.slice';
+import {
+  fetchProgramList,
+  deleteProgram,
+  toggleProgramStatus,
+  toggleProgramFoodVisibility,
+} from '../store/program.slice';
 import { Button } from '@/components/ui/button';
+import ConfirmModal from '@/components/common/ConfirmModal';
+import { toast } from 'sonner';
 
 
 const ManageProgramPage = () => {
@@ -18,25 +25,37 @@ const ManageProgramPage = () => {
 
     const [globalFilter, setGlobalFilter] = useState("");
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-    
+    const [confirmDelete, setConfirmDelete] = useState({ open: false, row: null });
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
     // Fallback to empty array if no data
     const displayData = programs || [];
 
-    useEffect(() => {
+    const loadPrograms = () => {
       dispatch(fetchProgramList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: globalFilter
       }));
+    };
+
+    useEffect(() => {
+      loadPrograms();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
 
     const handleAction = (row, action, value) => {
       if (action === "toggle-status") {
-        console.log("Toggle status for:", row.id, "to", value);
-        // TODO: Dispatch action to call toggle status API
+        const newStatus = value ? "Active" : "Inactive";
+        dispatch(toggleProgramStatus({ id: row.id, status: newStatus }))
+          .unwrap()
+          .then(() => toast.success(`Program marked as ${newStatus}`))
+          .catch((err) => toast.error(err || "Failed to update status"));
       } else if (action === "toggle-food-visibility") {
-        console.log("Toggle food visibility for:", row.id, "to", value);
-        // TODO: Dispatch action to call toggle food visibility API
+        dispatch(toggleProgramFoodVisibility(row.id))
+          .unwrap()
+          .then(() => toast.success("Food visibility updated successfully"))
+          .catch((err) => toast.error(err || "Failed to update food visibility"));
       } else if (action === "view-user") {
         console.log("View users for program:", row.id);
       } else if (action === "open-program") {
@@ -44,20 +63,33 @@ const ManageProgramPage = () => {
       } else if (action === "edit") {
         navigate("edit-program", { state: { editData: row } });
       } else if (action === "delete") {
-        console.log("Delete program:", row);
+        setConfirmDelete({ open: true, row });
       }
+    };
+
+    const handleConfirmDelete = () => {
+      if (!confirmDelete.row) return;
+      setDeleteLoading(true);
+      dispatch(deleteProgram(confirmDelete.row.id))
+        .unwrap()
+        .then(() => {
+          toast.success("Program deleted successfully");
+          setConfirmDelete({ open: false, row: null });
+        })
+        .catch((err) => toast.error(err || "Failed to delete program"))
+        .finally(() => setDeleteLoading(false));
     };
 
     const columns = useMemo(() => getManageProgramColumns(handleAction), []);
 
-    // Check if the backend is doing manual pagination. 
+    // Check if the backend is doing manual pagination.
     // If serverPagination.total exists, it's server-paginated.
     const isManual = !!(serverPagination && serverPagination.total > 0);
 
     return (
       <Container>
         {/* Top Header Section outside of the white card */}
-       
+
 
         <div className='space-y-8'>
           <Header>
@@ -69,7 +101,7 @@ const ManageProgramPage = () => {
               />
 
               <div className="flex flex-wrap items-center gap-3">
-                <Button 
+                <Button
                   className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
                   onClick={() => navigate("add-program")}
                 >
@@ -94,6 +126,17 @@ const ManageProgramPage = () => {
             manualFiltering={isManual}
           />
         </div>
+
+        <ConfirmModal
+          isOpen={confirmDelete.open}
+          onClose={() => setConfirmDelete({ open: false, row: null })}
+          onConfirm={handleConfirmDelete}
+          title="Delete Program"
+          message={`Are you sure you want to delete "${confirmDelete.row?.programName}"? This action cannot be undone.`}
+          confirmText="Delete"
+          type="danger"
+          loading={deleteLoading}
+        />
       </Container>
     );
 };

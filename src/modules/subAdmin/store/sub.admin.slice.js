@@ -1,80 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { getSubAdminManagementAPI } from "../services/sub.admin.services";
-
-const dummySubAdmins = [
-  {
-    _id: "1",
-    createdAt: "2026-06-10T00:00:00.000Z",
-    userName: "Rajat",
-    emailId: "rajatkhoware2002@gmail.com",
-    hospitalName: "Rajat Medical",
-    designation: "Manager",
-    country: "Australia",
-    role: "WhiteListing User",
-    status: true,
-  },
-  {
-    _id: "2",
-    createdAt: "2024-12-27T00:00:00.000Z",
-    userName: "Omaid Zamani",
-    emailId: "app@trimify.com.au",
-    hospitalName: "DESA Consulting",
-    designation: "Manager",
-    country: "Australia",
-    role: "Sub-Admin User",
-    status: true,
-  },
-  {
-    _id: "3",
-    createdAt: "2024-12-27T00:00:00.000Z",
-    userName: "Reception",
-    emailId: "reception@desaconsulting.com.au",
-    hospitalName: "DESA Consulting",
-    designation: "Reception",
-    country: "Australia",
-    role: "Sub-Admin User",
-    status: true,
-  }
-];
+import { getSubAdminManagementAPI } from "../services/sub.admin.services";
 
 // Async Thunk for getting the list
 export const fetchSubAdminList = createAsyncThunk(
   "subAdmin/fetchList",
   async (params = {}, { rejectWithValue }) => {
-    // Returning dummy data based on the provided screenshot
-    return {
-      subAdmins: dummySubAdmins,
-      pagination: {
-        page: 1,
-        limit: 10,
-        total: dummySubAdmins.length,
-        totalPages: 1,
-      },
-    };
-
-    /*
     try {
       const response = await getSubAdminManagementAPI(params);
 
-      if (response && response.success) {
-        // Adjust these field names based on your actual API response structure
+      if (response && response.status === "success") {
+        const list = response.subAdmins || [];
+        const meta = response.pagination || {};
+
         return {
-          subAdmins: response.data || response.subAdmins || [],
-          pagination: response.pagination || {
-            page: 1,
-            limit: 10,
-            total: 0,
-            totalPages: 0,
+          subAdmins: list,
+          pagination: {
+            page: meta.current_page || params.page || 1,
+            limit: params.limit || 10,
+            total: meta.total ?? list.length,
+            totalPages: meta.last_page || 1,
           },
         };
       }
-      return rejectWithValue(response.message || "Failed to fetch sub admins");
+      return rejectWithValue(response?.message || "Failed to fetch sub admins");
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch sub admins"
       );
     }
-    */
   }
 );
 
