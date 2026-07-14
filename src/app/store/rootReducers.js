@@ -12,6 +12,7 @@ import transactionManagementReducer from "@/modules/transactionManagement/store/
 import notificationManageReducer from "@/modules/notificationManage/store/notification.slice";
 import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
 import nutritionReducer from "@/modules/dataManagement/store/nutrition.slice";
+import cmsManagementReducer from "@/modules/cmsManagement/store/cms.management.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -28,4 +29,5 @@ export const rootReducer = combineReducers({
   notificationManage: notificationManageReducer,
   faqManagement: faqManagementReducer,
   nutrition: nutritionReducer,
+  cmsManagement: cmsManagementReducer,
 });

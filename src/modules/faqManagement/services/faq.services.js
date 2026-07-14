@@ -8,3 +8,15 @@ export const getFaqListAPI = async (params = {}) => {
 export const addFaqAPI = async (data) => {
   return apiConnector("POST", FAQ_CRUD.FAQ_ADD, data);
 };
+
+export const updateFaqAPI = async (id, data) => {
+  return apiConnector("PUT", FAQ_CRUD.FAQ_UPDATE(id), data);
+};
+
+export const toggleStatusFaqAPI = async (id, data) => {
+  return apiConnector("PATCH", FAQ_CRUD.FAQ_TOGGLE_STATUS(id), data);
+};
+
+export const deleteFaqAPI = async (id) => {
+  return apiConnector("DELETE", FAQ_CRUD.FAQ_DELETE(id));
+};

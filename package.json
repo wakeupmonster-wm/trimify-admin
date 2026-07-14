@@ -36,6 +36,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.36.1",
     "@tanstack/react-table": "^8.21.3",
+    "@tinymce/tinymce-react": "^6.3.0",
     "axios": "^1.13.2",
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",

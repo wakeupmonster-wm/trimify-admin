@@ -2082,7 +2082,7 @@ Required — Bearer Token
 
 ---
 
-# 8. Program Management
+# 8. Program Matnagement
 
 Manages health and fitness programs, including diet plans, program replication, and food visibility settings.
 

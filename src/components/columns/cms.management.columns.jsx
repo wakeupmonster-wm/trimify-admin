@@ -19,7 +19,8 @@ export const getCmsManagementColumns = (onAction) => [
     size: 120,
     minSize: 120,
     cell: ({ row, table }) => {
-      const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
+      const { pageIndex = 0, pageSize = 10 } =
+        table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
         <div className="w-14 text-left font-medium text-[11px] text-slate-700">
@@ -63,7 +64,10 @@ export const getCmsManagementColumns = (onAction) => [
               <MoreVertical className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm">
+          <DropdownMenuContent
+            align="end"
+            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+          >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>

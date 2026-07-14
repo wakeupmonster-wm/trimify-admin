@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getFaqListAPI, addFaqAPI } from "../services/faq.services";
+import { getFaqListAPI, addFaqAPI, updateFaqAPI, toggleStatusFaqAPI, deleteFaqAPI } from "../services/faq.services";
 
 export const fetchFaqList = createAsyncThunk(
   "faq/fetchFaqList",
@@ -30,7 +30,50 @@ export const addFaq = createAsyncThunk(
     try {
       const response = await addFaqAPI(data);
       if (response && response.status === "success") {
-        // Option to refresh list right after adding
+        dispatch(fetchFaqList());
+        return response;
+      }
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateFaq = createAsyncThunk(
+  "faq/updateFaq",
+  async ({ id, data }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await updateFaqAPI(id, data);
+      if (response && response.status === "success") {
+        dispatch(fetchFaqList());
+        return response;
+      }
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const toggleFaqStatus = createAsyncThunk(
+  "faq/toggleFaqStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await toggleStatusFaqAPI(id, { status });
+      return { id, status, ...response };
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const deleteFaq = createAsyncThunk(
+  "faq/deleteFaq",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await deleteFaqAPI(id);
+      if (response && response.status === "success") {
         dispatch(fetchFaqList());
         return response;
       }
@@ -81,6 +124,36 @@ const faqSlice = createSlice({
         state.loading = false;
       })
       .addCase(addFaq.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update FAQ handling
+      .addCase(updateFaq.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateFaq.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateFaq.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Toggle FAQ status
+      .addCase(toggleFaqStatus.fulfilled, (state, action) => {
+        const { id, updated_status } = action.payload;
+        const index = state.faqs.findIndex(faq => faq.id === id);
+        if (index !== -1 && updated_status) {
+          state.faqs[index].status = updated_status;
+        }
+      })
+      // Delete FAQ
+      .addCase(deleteFaq.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteFaq.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteFaq.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

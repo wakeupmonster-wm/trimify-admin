@@ -29,6 +29,9 @@ import ManageProgramPage from "@/modules/manageProgram/pages/manage.program.page
 import AddProgramPage from "@/modules/manageProgram/pages/add.program.page";
 import AddCategoryPage from "@/modules/blogSection/pages/add.category.page";
 import AddPostPage from "@/modules/blogSection/pages/add.post.page";
+import PrivacyAndPolicyPage from "@/modules/cmsManagement/pages/privacy-policy.page";
+import TermAndConditionsPage from "@/modules/cmsManagement/pages/terms-conditions.page";
+import AboutUsPage from "@/modules/cmsManagement/pages/about-us.page";
 
 // ======== New trimify imports =========
 
@@ -80,12 +83,7 @@ const FAQSPage = lazy(() => import("@/modules/cms/pages/faqs.page"));
 const FAQEditView = lazy(
   () => import("@/modules/cms/components/faqs-edit-view.page"),
 );
-const PrivacyAndPolicyPage = lazy(
-  () => import("@/modules/cms/pages/privacy-policy.page"),
-);
-const TermAndConditionsPage = lazy(
-  () => import("@/modules/cms/pages/terms-conditions.page"),
-);
+
 
 const ReportsProfilesPage = lazy(
   () => import("@/modules/profileReview/pages/reports.profiles.page"),
@@ -381,11 +379,40 @@ export const router = createBrowserRouter([
       },
       {
         path: "cms-management",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <CMSManagementPage />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <CMSManagementPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "privacy-policy",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <PrivacyAndPolicyPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "terms-conditions",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <TermAndConditionsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "about-us",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AboutUsPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "notification-manage",
