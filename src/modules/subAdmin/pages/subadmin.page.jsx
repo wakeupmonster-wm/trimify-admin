@@ -36,9 +36,9 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
     item.userName || "-",
     item.emailId || "-",
-    item.hospitalName || "-",
+    item.hospital || item.hospitalName || "-",
     item.designation || "-",
-    item.country || "-",
+    item.location || item.country || "-",
     item.role || "-",
     item.status ? "Active" : "Inactive",
   ]);

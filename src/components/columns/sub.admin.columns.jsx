@@ -87,7 +87,7 @@ export const getSubAdminColumns = (onAction) => [
     ),
   },
   {
-    accessorKey: "hospitalName",
+    accessorKey: "hospital",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Hospital/Clinic Name
@@ -117,7 +117,7 @@ export const getSubAdminColumns = (onAction) => [
     ),
   },
   {
-    accessorKey: "country",
+    accessorKey: "location",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Country

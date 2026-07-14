@@ -54,13 +54,13 @@ const navigationData = {
     },
     {
       title: "Data Management",
-      url: "/admin/data-management",
+      url: "/admin/data-management/nutrition-food",
       icon: IconDatabaseCog,
       badge: null,
       items: [
         {
-          title: "Overview",
-          url: "/admin/data-management/overview",
+          title: "Bulk Food Upload",
+          url: "/admin/data-management/nutrition-food",
         },
       ],
     },

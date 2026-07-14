@@ -10,13 +10,13 @@ const ADMIN = `${BASE_URL}/admin`;
 
 export const FAQ_CRUD = {
   /** POST — Create a new FAQ entry */
-  FAQ_ADD: `${ADMIN}/add-faq`,
+  FAQ_ADD: `${ADMIN}/add-faqs`,
 
   /** GET — Retrieve all FAQ entries (paginated) */
   FAQ_LIST: `${ADMIN}/view-faqs`,
 
   /** POST — Update an existing FAQ entry */
-  FAQ_UPDATE: (id) => `${ADMIN}/update-faq/${id}`,
+  FAQ_UPDATE: (id) => `${ADMIN}/update-faqs/${id}`,
 
   /** PATCH — Toggle a FAQ's active/inactive status */
   FAQ_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-faq/${id}`,

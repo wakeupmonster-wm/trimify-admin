@@ -11,6 +11,7 @@ import subscriptionManagementReducer from "@/modules/subscriptionManagement/stor
 import transactionManagementReducer from "@/modules/transactionManagement/store/transaction.slice";
 import notificationManageReducer from "@/modules/notificationManage/store/notification.slice";
 import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
+import nutritionReducer from "@/modules/dataManagement/store/nutrition.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -26,4 +27,5 @@ export const rootReducer = combineReducers({
   transactionManagement: transactionManagementReducer,
   notificationManage: notificationManageReducer,
   faqManagement: faqManagementReducer,
+  nutrition: nutritionReducer,
 });

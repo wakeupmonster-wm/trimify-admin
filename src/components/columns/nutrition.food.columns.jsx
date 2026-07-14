@@ -1,0 +1,236 @@
+import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+
+export const getNutritionFoodColumns = (onAction) => [
+  {
+    id: "sno",
+    header: () => (
+      <div className="w-[30px] text-center text-[10px] font-bold uppercase tracking-wider">
+        S.No
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row, table }) => {
+      const { pageIndex = 0, pageSize = 10 } =
+        table.getState().pagination || {};
+      const serialNumber = pageIndex * pageSize + row.index + 1;
+
+      return (
+        <div className="w-[30px] text-center font-bold text-[11px] text-foreground/90">
+          {serialNumber}
+        </div>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "Meal_title",
+    header: () => (
+      <div className="w-[100px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Food Name
+      </div>
+    ),
+    size: 100,
+    minSize: 100,
+    cell: ({ row }) => (
+      <div className="w-[100px] capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate">
+        {row.original.Meal_title || "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Protien_In_gm",
+    header: () => (
+      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Protein
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row }) => (
+      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.Meal_Protien_In_gm || "-"} gm
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Carbs_In_gm",
+    header: () => (
+      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Carbs
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row }) => (
+      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.Meal_Carbs_In_gm || "-"} gm
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Calories_In_gm",
+    header: () => (
+      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Calories
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row }) => (
+      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.Meal_Calories_In_gm || "-"} kcal
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Fats_In_gm",
+    header: () => (
+      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Fats
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row }) => (
+      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.Meal_Fats_In_gm || "-"} gm
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Image_url",
+    header: () => (
+      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-center">
+        Image
+      </div>
+    ),
+    size: 40,
+    minSize: 40,
+    cell: ({ row }) => (
+      <div className="w-[40px] flex justify-center">
+        {row.original.Meal_Image_url ? (
+          <img
+            src={row.original.Meal_Image_url}
+            alt="Food"
+            className="w-8 h-8 rounded-md object-cover border"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-md bg-slate-200 flex items-center justify-center text-[10px] text-slate-500">
+            No img
+          </div>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Type",
+    header: () => (
+      <div className="w-[50px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Meal Type
+      </div>
+    ),
+    size: 50,
+    minSize: 50,
+    cell: ({ row }) => (
+      <div className="w-[50px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.Meal_Type || "-"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_ingredients",
+    header: () => (
+      <div className="w-[80px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Ingredients
+      </div>
+    ),
+    size: 80,
+    minSize: 80,
+    cell: ({ row }) => (
+      <div className="w-[80px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+        {row.original.Meal_ingredients || "Not Available"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_instructions",
+    header: () => (
+      <div className="w-[120px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Instructions
+      </div>
+    ),
+    size: 120,
+    minSize: 120,
+    cell: ({ row }) => (
+      <div className="w-[120px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+        {row.original.Meal_instructions || "Not Available"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "Meal_Description",
+    header: () => (
+      <div className="w-[120px] text-[10px] font-bold uppercase tracking-wider text-left">
+        Description
+      </div>
+    ),
+    size: 120,
+    minSize: 120,
+    cell: ({ row }) => (
+      <div className="w-[120px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+        {row.original.Meal_Description || "Not Available"}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    header: () => (
+      <div className="w-[50px] text-center text-[10px] font-bold uppercase tracking-wider">
+        Action
+      </div>
+    ),
+    size: 50,
+    minSize: 50,
+    cell: ({ row }) => {
+      return (
+        <div className="w-[50px] flex justify-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-full transition-colors"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 rounded-xl shadow-lg border-slate-100">
+              <DropdownMenuItem
+                onClick={() => onAction(row.original, "edit")}
+                className="text-xs font-medium cursor-pointer py-2 hover:bg-slate-50 hover:text-brand-blue"
+              >
+                <Edit className="w-3.5 h-3.5 mr-2" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onAction(row.original, "delete")}
+                className="text-xs font-medium cursor-pointer py-2 text-red-600 focus:text-red-600 hover:bg-red-50"
+              >
+                <Trash2 className="w-3.5 h-3.5 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
+  },
+];

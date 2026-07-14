@@ -10,7 +10,7 @@ import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
 
 // ======== New trimify imports =========
-import SubDdminManagementPage from "@/modules/subAdmin/pages/subadmin.page";
+import SubAdminManagementPage from "@/modules/subAdmin/pages/subadmin.page";
 import UsersManagementPage from "@/modules/userManagement/pages/users.management.page";
 import AccountSettingsPage from "@/modules/accountSettings/pages/account.settings.page";
 import FaqManagementPage from "@/modules/faqManagement/pages/faq.management.page";
@@ -21,6 +21,8 @@ import SubscriptionManagementPage from "@/modules/subscriptionManagement/pages/s
 import ManageCategoryPage from "@/modules/blogSection/pages/manage.category.page";
 import ManageBlogsPage from "@/modules/blogSection/pages/manage.blogs.page";
 import DataManagementPage from "@/modules/dataManagement/pages/data.management.page";
+import NutritionFoodPage from "@/modules/dataManagement/pages/nutrition.food.page";
+import AddNutritionPage from "@/modules/dataManagement/pages/add.nutrition.page";
 import FitzoneManagementPage from "@/modules/fitzoneManagement/pages/fitzone.management.page";
 import AddFitzonePage from "@/modules/fitzoneManagement/pages/add.fitzone.page";
 import ManageProgramPage from "@/modules/manageProgram/pages/manage.program.page";
@@ -217,7 +219,7 @@ export const router = createBrowserRouter([
         path: "sub-admin-management",
         element: (
           <Suspense fallback={<PreLoader />}>
-            <SubDdminManagementPage />
+            <SubAdminManagementPage />
           </Suspense>
         ),
       },
@@ -289,11 +291,32 @@ export const router = createBrowserRouter([
       },
       {
         path: "data-management",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <DataManagementPage />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <Navigate to="nutrition-food" replace />
+              </Suspense>
+            ),
+          },
+          {
+            path: "nutrition-food",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <NutritionFoodPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add-nutrition",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddNutritionPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "blog-section",
