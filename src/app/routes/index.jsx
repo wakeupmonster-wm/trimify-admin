@@ -10,32 +10,7 @@ import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
 
 
-// ======== New trimify imports =========
-import SubAdminManagementPage from "@/modules/subAdmin/pages/subadmin.page";
-import UsersManagementPage from "@/modules/userManagement/pages/users.management.page";
-import AccountSettingsPage from "@/modules/accountSettings/pages/account.settings.page";
-import FaqManagementPage from "@/modules/faqManagement/pages/faq.management.page";
-import NotificationManagePage from "@/modules/notificationManage/pages/notification.manage.page";
-import CMSManagementPage from "@/modules/cmsManagement/pages/cms.management.page";
-import TransactionManagementPage from "@/modules/transactionManagement/pages/transaction.management.page";
-import SubscriptionDashboardTabPage from "@/modules/subscriptionManagement/pages/subscription.dashboard.page";
-import SubscriptionConfigTabPage from "@/modules/subscriptionManagement/pages/subscription.config.page";
-import SubscriptionSubscribersTabPage from "@/modules/subscriptionManagement/pages/subscription.subscribers.page";
-import SubscriptionTransactionsTabPage from "@/modules/subscriptionManagement/pages/subscription.transactions.page";
-import ManageCategoryPage from "@/modules/blogSection/pages/manage.category.page";
-import ManageBlogsPage from "@/modules/blogSection/pages/manage.blogs.page";
-import DataManagementPage from "@/modules/dataManagement/pages/data.management.page";
-import NutritionFoodPage from "@/modules/dataManagement/pages/nutrition.food.page";
-import AddNutritionPage from "@/modules/dataManagement/pages/add.nutrition.page";
-import FitzoneManagementPage from "@/modules/fitzoneManagement/pages/fitzone.management.page";
-import AddFitzonePage from "@/modules/fitzoneManagement/pages/add.fitzone.page";
-import ManageProgramPage from "@/modules/manageProgram/pages/manage.program.page";
-import AddProgramPage from "@/modules/manageProgram/pages/add.program.page";
-import AddCategoryPage from "@/modules/blogSection/pages/add.category.page";
-import AddPostPage from "@/modules/blogSection/pages/add.post.page";
-import PrivacyAndPolicyPage from "@/modules/cmsManagement/pages/privacy-policy.page";
-import TermAndConditionsPage from "@/modules/cmsManagement/pages/terms-conditions.page";
-import AboutUsPage from "@/modules/cmsManagement/pages/about-us.page";
+// ======== New trimify imports ===========//
 const AccountsPage = lazy(() => import("@/modules/accounts/page/accounts.page"));
 const SubAdminManagementPage = lazy(() => import("@/modules/subAdmin/pages/subadmin.page"));
 const UsersManagementPage = lazy(() => import("@/modules/userManagement/pages/users.management.page"));
@@ -44,7 +19,10 @@ const FaqManagementPage = lazy(() => import("@/modules/faqManagement/pages/faq.m
 const NotificationManagePage = lazy(() => import("@/modules/notificationManage/pages/notification.manage.page"));
 const CMSManagementPage = lazy(() => import("@/modules/cmsManagement/pages/cms.management.page"));
 const TransactionManagementPage = lazy(() => import("@/modules/transactionManagement/pages/transaction.management.page"));
-const SubscriptionManagementPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.management.page"));
+const SubscriptionDashboardTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.dashboard.page"));
+const SubscriptionConfigTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.config.page"));
+const SubscriptionSubscribersTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.subscribers.page"));
+const SubscriptionTransactionsTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.transactions.page"));
 const ManageCategoryPage = lazy(() => import("@/modules/blogSection/pages/manage.category.page"));
 const ManageBlogsPage = lazy(() => import("@/modules/blogSection/pages/manage.blogs.page"));
 const NutritionFoodPage = lazy(() => import("@/modules/dataManagement/pages/nutrition.food.page"));

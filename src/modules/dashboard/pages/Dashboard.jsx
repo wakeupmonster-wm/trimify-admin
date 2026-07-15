@@ -256,12 +256,13 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <UserGrowthChart data={dashboardData?.engagementChartsData} selectedDate={selectedDate} />
+                <UserGrowthChart
+                  data={dashboardData?.engagementChartsData}
+                  selectedDate={selectedDate}
+                />
                 <LiveActivity
                   data={
-                    dashboardData
-                      ? dashboardData.recentActivityData
-                      : undefined
+                    dashboardData ? dashboardData.recentActivityData : undefined
                   }
                 />
               </div>
@@ -271,15 +272,14 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
               {/* Left Column: Revenue Breakdown */}
               <div className="lg:col-span-4 h-full">
-                <RevenueBreakdown 
-                  data={dashboardData?.revenueBreakdown} 
-                  revenueChartsData={dashboardData?.revenueChartsData} 
+                <RevenueBreakdown
+                  data={dashboardData?.revenueBreakdown}
+                  revenueChartsData={dashboardData?.revenueChartsData}
                 />
               </div>
 
               {/* Right Column: Stats & Heatmap */}
               <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
-
                 <div className="flex-1">
                   <ActivityHeatmap data={dashboardData?.engagementChartsData} />
                 </div>
@@ -291,11 +291,11 @@ export default function Dashboard() {
                 <RevenueTrendChart data={dashboardData?.revenueChartsData} />
               </div>
               <div className="flex-1 min-w-0 flex flex-col h-full w-full">
-                <ChartUserDistribution 
+                <ChartUserDistribution
                   data={{
                     active: dashboardData?.summaryData?.activeUsers || 0,
-                    inactive: dashboardData?.summaryData?.inactiveUsers || 0
-                  }} 
+                    inactive: dashboardData?.summaryData?.inactiveUsers || 0,
+                  }}
                 />
               </div>
             </div>
@@ -310,7 +310,9 @@ export default function Dashboard() {
             {/* Recent Joined Users */}
             <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
               <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
-                <RecentUsersTable recentActivityData={dashboardData?.recentActivityData} />
+                <RecentUsersTable
+                  recentActivityData={dashboardData?.recentActivityData}
+                />
               </div>
             </div>
           </div>
