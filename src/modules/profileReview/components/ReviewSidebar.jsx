@@ -80,11 +80,12 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
     p?.reportCount >= 5 ? "High" : p?.reportCount >= 2 ? "Medium" : "Low";
 
   const nickname = p?.profile?.nickname || "User";
-  
+
   // Bugfix: Handle when photos is an array of objects or strings, or single string
-  const userPhoto = (Array.isArray(p?.profile?.photos) 
-    ? (p?.profile?.photos[0]?.url || p?.profile?.photos[0]) 
-    : p?.profile?.photos) || dummyImg;
+  const userPhoto =
+    (Array.isArray(p?.profile?.photos)
+      ? p?.profile?.photos[0]?.url || p?.profile?.photos[0]
+      : p?.profile?.photos) || dummyImg;
 
   const lastActivity = p?.reports?.[0]?.createdAt;
   const memberSince = p?.profile?.createdAt;
@@ -99,7 +100,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
           userId: p?.userId,
           category: "Administrative",
           reason: reason || "Immediate ban from Profile Review investigation",
-        })
+        }),
       ).unwrap();
       if (res) {
         toast.success("User banned successfully");
@@ -128,7 +129,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
           category: unsuspendData.category || "Administrative",
           reason:
             unsuspendData.reason || "Suspension lifted from Profile Review",
-        })
+        }),
       ).unwrap();
       if (res) {
         toast.success("User suspension lifted");
@@ -156,7 +157,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
           userId: p?.userId,
           category: category || "Administrative",
           reason: reason || "Unbanned from Profile Review",
-        })
+        }),
       ).unwrap();
       if (res) {
         toast.success("User unbanned successfully");
@@ -205,7 +206,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                       ? "bg-orange-50 border-orange-200 text-orange-700"
                       : pendingCount === 0
                         ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                        : "bg-amber-50 border-amber-200 text-amber-700"
+                        : "bg-amber-50 border-amber-200 text-amber-700",
                 )}
               >
                 {p?.accountStatus === "banned" ? (
@@ -231,43 +232,41 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
               {/* Status Details (If Banned/Suspended) */}
               {(p?.banDetails?.isBanned ||
                 p?.suspensionDetails?.isSuspended) && (
-                  <div className="w-full mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                      <ShieldAlert className="w-3 h-3" />
-                      Restriction Details
-                    </h4>
-                    <div className="space-y-1.5 w-full">
-                      <div className="flex flex-col items-start justify-start gap-1 text-[11px] font-medium text-slate-500 w-full break-words whitespace-pre-wrap">
-                        <span className="font-bold text-slate-700">
-                          Reason
-                        </span>
-                        <span
-                          className="text-start"
-                          title={
-                            p?.banDetails?.reason ||
-                            p?.suspensionDetails?.reason ||
-                            "No reason specified"
-                          }
-                        >
-                          {p?.banDetails?.reason ||
-                            p?.suspensionDetails?.reason ||
-                            "No reason specified"}
-                        </span>
-                      </div>
-                      {p?.suspensionDetails?.isSuspended &&
-                        p?.suspensionDetails?.endsAt && (
-                          <p className="text-[11px] font-bold text-orange-600 flex items-center gap-1.5 pt-1">
-                            <Clock className="w-3 h-3" />
-                            Ends:{" "}
-                            {safeFormatDate(
-                              p.suspensionDetails.endsAt,
-                              "dd MMM, hh:mm aa"
-                            )}
-                          </p>
-                        )}
+                <div className="w-full mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <ShieldAlert className="w-3 h-3" />
+                    Restriction Details
+                  </h4>
+                  <div className="space-y-1.5 w-full">
+                    <div className="flex flex-col items-start justify-start gap-1 text-[11px] font-medium text-slate-500 w-full break-words whitespace-pre-wrap">
+                      <span className="font-bold text-slate-700">Reason</span>
+                      <span
+                        className="text-start"
+                        title={
+                          p?.banDetails?.reason ||
+                          p?.suspensionDetails?.reason ||
+                          "No reason specified"
+                        }
+                      >
+                        {p?.banDetails?.reason ||
+                          p?.suspensionDetails?.reason ||
+                          "No reason specified"}
+                      </span>
                     </div>
+                    {p?.suspensionDetails?.isSuspended &&
+                      p?.suspensionDetails?.endsAt && (
+                        <p className="text-[11px] font-bold text-orange-600 flex items-center gap-1.5 pt-1">
+                          <Clock className="w-3 h-3" />
+                          Ends:{" "}
+                          {safeFormatDate(
+                            p.suspensionDetails.endsAt,
+                            "dd MMM, hh:mm aa",
+                          )}
+                        </p>
+                      )}
                   </div>
-                )}
+                </div>
+              )}
 
               <div className="border-t border-slate-200 w-full mb-3" />
 
@@ -346,13 +345,17 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                       <ShieldAlert
                         className={cn(
                           "w-4 h-4",
-                          riskLevel === "High" ? "text-red-500" : "text-amber-500"
+                          riskLevel === "High"
+                            ? "text-red-500"
+                            : "text-amber-500",
                         )}
                       />
                       <p
                         className={cn(
                           "text-sm font-semibold",
-                          riskLevel === "High" ? "text-red-500" : "text-amber-500"
+                          riskLevel === "High"
+                            ? "text-red-500"
+                            : "text-amber-500",
                         )}
                       >
                         {riskLevel} —{" "}
@@ -381,19 +384,22 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                 <div className="space-y-2">
                   <Button
                     onClick={() =>
-                      navigate("/admin/management/users-management/view-profile", {
-                        state: {
-                          userId: p?.userId,
-                          from: `/admin/management/profile-reports/review/${p?.userId}`,
+                      navigate(
+                        "/admin/management/users-management/view-profile",
+                        {
+                          state: {
+                            userId: p?.userId,
+                            from: `/admin/management/profile-reports/review/${p?.userId}`,
+                          },
                         },
-                      })
+                      )
                     }
-                    className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-brand-aqua/30 hover:bg-brand-aqua/5 transition-all text-left group shadow-none"
+                    className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-brand-blue hover:bg-brand-hoverBlue transition-all text-left group shadow-none"
                   >
                     <div className="w-7 h-7 shrink-0 flex items-center justify-center bg-slate-50 rounded-full transition-colors">
-                      <LuUserRound className="w-4 h-4 text-slate-400 group-hover:text-brand-aqua" />
+                      <LuUserRound className="w-4 h-4 text-slate-400 group-hover:text-brand-blue" />
                     </div>
-                    <span className="text-xs font-medium text-slate-800 group-hover:text-brand-aqua transition-colors">
+                    <span className="text-xs font-medium text-slate-800 group-hover:text-brand-blue transition-colors">
                       View Full Profile
                     </span>
                   </Button>

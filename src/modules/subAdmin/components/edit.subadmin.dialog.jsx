@@ -40,7 +40,12 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
         phone: editData.phone || "",
         designation: editData.designation || "",
         password: "", // Leave blank unless they want to update it
-        role: editData.role === 1 ? "WhiteListing User" : (editData.role === 0 ? "Sub-Admin User" : String(editData.role || "")),
+        role:
+          editData.role === 1
+            ? "WhiteListing User"
+            : editData.role === 0
+              ? "Sub-Admin User"
+              : String(editData.role || ""),
       });
     }
   }, [editData, open]);
@@ -61,12 +66,12 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
       const submitData = { ...formData };
       if (submitData.role === "WhiteListing User") submitData.role = 1;
       else if (submitData.role === "Sub-Admin User") submitData.role = 0;
-      
+
       // If password is not modified, you might want to remove it from the payload
       if (!submitData.password) {
         delete submitData.password;
       }
-      
+
       onEdit(submitData);
     }
     onOpenChange(false);
@@ -91,41 +96,47 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
                 placeholder="Enter Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
-            
+
             {/* Email address */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Email address</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Email address
+              </Label>
               <Input
                 type="email"
                 name="email"
                 placeholder="Enter email"
                 value={formData.email}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Hospital/Clinic Name */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Hospital/Clinic Name</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Hospital/Clinic Name
+              </Label>
               <Input
                 name="hospital"
                 placeholder="Enter Hospital/Clinic name"
                 value={formData.hospital}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Country */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Country</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Country
+              </Label>
               <Input
                 name="location"
                 value={formData.location}
@@ -136,34 +147,40 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
 
             {/* Phone Number */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Phone Number</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Phone Number
+              </Label>
               <Input
                 type="tel"
                 name="phone"
                 placeholder="Enter Number"
                 value={formData.phone}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Designation */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Designation</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Designation
+              </Label>
               <Input
                 name="designation"
                 placeholder="Enter Designation"
                 value={formData.designation}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Password */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Password</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Password
+              </Label>
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
@@ -171,7 +188,7 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
                   placeholder="Leave blank to keep current"
                   value={formData.password}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300 pr-10"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 pr-10"
                 />
                 <button
                   type="button"
@@ -186,13 +203,19 @@ export function EditSubAdminDialog({ open, onOpenChange, onEdit, editData }) {
             {/* Role */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Role</Label>
-              <Select value={formData.role} onValueChange={handleRoleChange} required>
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300">
+              <Select
+                value={formData.role}
+                onValueChange={handleRoleChange}
+                required
+              >
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Sub-Admin User">Sub-Admin User</SelectItem>
-                  <SelectItem value="WhiteListing User">WhiteListing User</SelectItem>
+                  <SelectItem value="WhiteListing User">
+                    WhiteListing User
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>

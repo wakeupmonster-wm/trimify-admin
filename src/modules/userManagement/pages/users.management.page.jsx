@@ -8,6 +8,7 @@ import { getUserManagementColumns } from "@/components/columns/user.management.c
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
 import { ViewUserDialog } from "../components/view.user.dialog";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const UsersManagementPage = () => {
   } = useSelector((state) => state.usersManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [viewData, setViewData] = useState(null);
@@ -27,10 +29,15 @@ const UsersManagementPage = () => {
       fetchUsersList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
+        search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleAction = (row, action) => {
     if (action === "view") {
@@ -49,13 +56,13 @@ const UsersManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+     <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0">
             <PageHeader
               heading="User Management"
               icon={<Users className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-aqua/30"
+              color="bg-brand-blue shadow-brand-blue"
               subheading="Manage application users, view their active plans, and modify their statuses."
             />
           </div>
@@ -64,9 +71,7 @@ const UsersManagementPage = () => {
         <DataTable
           columns={columns}
           data={users || []}
-          rowCount={
-            isManual ? serverPagination.total : (users?.length || 0)
-          }
+          rowCount={isManual ? serverPagination.total : users?.length || 0}
           pagination={pagination}
           onPaginationChange={setPagination}
           globalFilter={globalFilter}

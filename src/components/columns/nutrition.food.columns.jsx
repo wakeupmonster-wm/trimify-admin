@@ -12,7 +12,7 @@ export const getNutritionFoodColumns = (onAction) => [
     id: "sno",
     header: () => (
       <div className="w-[30px] text-center text-[10px] font-bold uppercase tracking-wider">
-        S.No
+        SR.No
       </div>
     ),
     size: 40,
@@ -207,12 +207,15 @@ export const getNutritionFoodColumns = (onAction) => [
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 w-8 p-0 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-full transition-colors"
+                className="h-8 w-8 p-0 text-slate-400 hover:text-brand-blue hover:bg-brand-hoverBlue rounded-full transition-colors"
               >
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 rounded-xl shadow-lg border-slate-100">
+            <DropdownMenuContent
+              align="end"
+              className="w-40 rounded-xl shadow-lg border-slate-100"
+            >
               <DropdownMenuItem
                 onClick={() => onAction(row.original, "edit")}
                 className="text-xs font-medium cursor-pointer py-2 hover:bg-slate-50 hover:text-brand-blue"

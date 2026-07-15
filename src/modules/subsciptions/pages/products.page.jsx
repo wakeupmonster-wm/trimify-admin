@@ -62,7 +62,7 @@ const EMPTY_PRODUCT = {
 const CATEGORY_MAP = {
   PREMIUM_PLAN: {
     label: "Premium Plan",
-    color: "text-brand-aqua",
+    color: "text-brand-blue",
   },
   SUPER_KEEN: { label: "Super Keen", color: "text-amber-600" },
   SUPERCHARGE: {
@@ -110,7 +110,7 @@ export default function ProductsPage() {
   }, [dispatch]);
 
   const allProducts = products || [];
-  
+
   const stats = useMemo(() => {
     return {
       total: allProducts.length,
@@ -199,8 +199,8 @@ export default function ProductsPage() {
         (product.type === "SUBSCRIPTION"
           ? "PREMIUM_PLAN"
           : product.consumableType === "BOOST"
-          ? "SUPERCHARGE"
-          : product.consumableType || "SUPER_KEEN"),
+            ? "SUPERCHARGE"
+            : product.consumableType || "SUPER_KEEN"),
     });
     setIsFormOpen(true);
   };
@@ -318,7 +318,7 @@ export default function ProductsPage() {
               icon={
                 <GrCatalog strokeWidth={2} className="w-9 h-9 text-white" />
               }
-              color="bg-brand-aqua shadow-brand-aqua/30"
+              color="bg-brand-blue shadow-brand-blue"
               subheading="Manage subscription plans & consumable packs."
             />
             <div className="flex items-center gap-2 w-full lg:w-auto">
@@ -327,7 +327,7 @@ export default function ProductsPage() {
                 size="sm"
                 onClick={() => dispatch(fetchProducts({ page: 1, limit: 100 }))}
                 disabled={productsLoading}
-                className="h-9 flex-1 lg:flex-none border border-slate-200 hover:bg-brand-aqua text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-200 hover:bg-brand-hoverBlue text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn(
@@ -340,7 +340,7 @@ export default function ProductsPage() {
               <Button
                 size="sm"
                 onClick={handleOpenCreate}
-                className="h-9 flex-1 lg:flex-none border border-slate-200 shadow-sm bg-slate-50 hover:bg-brand-aqua text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-200 shadow-sm bg-slate-50 hover:bg-brand-hoverBlue text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <Plus className="mr-1.5 h-4 w-4" />
                 Add Product
@@ -380,7 +380,7 @@ export default function ProductsPage() {
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
               <Input
                 placeholder="Search by name, key or product ID..."
-                className="pl-9 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-aqua rounded-md w-full transition-all outline-none"
+                className="pl-9 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -416,7 +416,7 @@ export default function ProductsPage() {
                       <SelectItem
                         key={tab.key}
                         value={tab.key}
-                        className="text-[10px] font-black uppercase tracking-widest focus:bg-brand-aqua/5 focus:text-brand-aqua"
+                        className="text-[10px] font-black uppercase tracking-widest focus:bg-brand-blue focus:text-brand-blue"
                       >
                         <div className="flex flex-1 items-center justify-between w-full gap-8">
                           <span>{tab.label}</span>
@@ -442,7 +442,7 @@ export default function ProductsPage() {
                     className={cn(
                       "px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-2 whitespace-nowrap",
                       activeTab === tab.key
-                        ? "bg-brand-aqua text-white shadow-md shadow-brand-aqua/20"
+                        ? "bg-brand-blue text-white shadow-md shadow-brand-blue"
                         : "text-slate-400 hover:text-slate-600 hover:bg-slate-50",
                     )}
                   >
@@ -451,7 +451,7 @@ export default function ProductsPage() {
                       className={cn(
                         "text-[9px] font-black px-1.5 py-0.5 rounded-full transition-colors",
                         activeTab === tab.key
-                          ? "bg-white text-brand-aqua"
+                          ? "bg-white text-brand-blue"
                           : "bg-slate-100 text-slate-400",
                       )}
                     >

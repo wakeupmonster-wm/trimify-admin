@@ -46,19 +46,20 @@ export function MatchLiquidity({ data, preset }) {
   const value = totalSwipesCount > 0 ? parseFloat(metric.value) || 0 : 0;
   const remaining = totalSwipesCount > 0 ? 100 - value : 0;
 
-  const chartData = totalSwipesCount > 0
-    ? [
-      { name: "Matched", value: value, color: "#258A8E" },
-      { name: "Remaining", value: remaining, color: "#9AE2E5" }, // Matches the legend indicator dot color
-    ]
-    : [
-      { name: "Empty", value: 100, color: "#9AE2E5" } // Clean light gray placeholder ring when there are no swipes
-    ];
+  const chartData =
+    totalSwipesCount > 0
+      ? [
+          { name: "Matched", value: value, color: "#258A8E" },
+          { name: "Remaining", value: remaining, color: "#9AE2E5" }, // Matches the legend indicator dot color
+        ]
+      : [
+          { name: "Empty", value: 100, color: "#9AE2E5" }, // Clean light gray placeholder ring when there are no swipes
+        ];
 
   const trendValue = parseFloat(metric.trend) || 0;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-3 shadow-sm hover:border-brand-aqua/50 transition-all duration-300">
+    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-3 shadow-sm hover:border-blue-200 transition-all duration-300">
       {/* Header */}
       <div className="flex items-start gap-3 px-6 pb-4 border-b border-slate-200">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100/50">
@@ -70,7 +71,7 @@ export function MatchLiquidity({ data, preset }) {
             <ShadTooltipProvider>
               <ShadTooltip delayDuration={200}>
                 <ShadTooltipTrigger asChild>
-                  <div className="cursor-help text-slate-400 hover:text-brand-aqua transition-colors">
+                  <div className="cursor-help text-slate-400 hover:text-brand-blue transition-colors">
                     <Info size={14} strokeWidth={2.5} />
                   </div>
                 </ShadTooltipTrigger>
@@ -78,7 +79,9 @@ export function MatchLiquidity({ data, preset }) {
                   className="bg-slate-900 border-slate-800 text-slate-100 max-w-[250px] p-2.5 rounded-lg text-[11px] font-medium leading-relaxed shadow-xl"
                   side="right"
                 >
-                  Percentage of total user swipes (likes and superlikes) that successfully resulted in a mutual match during the selected period.
+                  Percentage of total user swipes (likes and superlikes) that
+                  successfully resulted in a mutual match during the selected
+                  period.
                 </ShadTooltipContent>
               </ShadTooltip>
             </ShadTooltipProvider>
@@ -172,7 +175,7 @@ export function MatchLiquidity({ data, preset }) {
                 ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                 : trendValue < 0
                   ? "bg-rose-50 text-rose-600 border-rose-100"
-                  : "bg-slate-50 text-slate-500 border-slate-200"
+                  : "bg-slate-50 text-slate-500 border-slate-200",
             )}
           >
             <div className="flex items-center gap-2">

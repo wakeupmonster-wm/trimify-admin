@@ -83,7 +83,10 @@ export const SubscriptionDashboardSkeleton = () => {
             </div>
             <div className="flex-1 flex items-end gap-4 px-4 pt-6 pb-2">
               {[50, 80, 45, 90, 60, 75, 40].map((h, idx) => (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+                <div
+                  key={idx}
+                  className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                >
                   <Skeleton
                     className="w-full rounded-t-lg"
                     style={{ height: `${h}%` }}
@@ -105,7 +108,10 @@ export const SubscriptionDashboardSkeleton = () => {
             </div>
             <div className="flex-1 py-6 space-y-4">
               {[1, 2].map((i) => (
-                <div key={i} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
+                <div
+                  key={i}
+                  className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3"
+                >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                       <Skeleton className="h-9 w-9 rounded-lg" />
@@ -139,7 +145,10 @@ export const SubscriptionDashboardSkeleton = () => {
             </div>
             <div className="flex-1 flex items-end gap-6 px-4 pt-6 pb-2">
               {[40, 70, 55, 85, 60].map((h, idx) => (
-                <div key={idx} className="flex-1 flex items-end justify-center gap-1.5 h-full">
+                <div
+                  key={idx}
+                  className="flex-1 flex items-end justify-center gap-1.5 h-full"
+                >
                   <Skeleton
                     className="w-4 rounded-t-lg bg-indigo-200/50"
                     style={{ height: `${h}%` }}
@@ -169,7 +178,7 @@ export const SubscriptionDashboardSkeleton = () => {
             <div className="flex-1 flex items-center justify-center py-6">
               {/* Circular Pie Chart Skeleton */}
               <div className="relative flex items-center justify-center h-48 w-48 rounded-full border-[16px] border-slate-100 animate-pulse">
-                <div className="absolute inset-0 rounded-full border-[16px] border-transparent border-t-brand-aqua/20 border-r-brand-aqua/30 rotate-45" />
+                <div className="absolute inset-0 rounded-full border-[16px] border-transparent border-t-brand-blue border-r-brand-blue rotate-45" />
                 <div className="space-y-1.5 text-center">
                   <Skeleton className="h-6 w-16 mx-auto" />
                   <Skeleton className="h-3.5 w-12 mx-auto" />
@@ -192,7 +201,10 @@ export const SubscriptionDashboardSkeleton = () => {
             </div>
             <div className="flex-1 py-4 space-y-3.5 overflow-hidden">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-100 bg-white shadow-sm">
+                <div
+                  key={i}
+                  className="flex items-center gap-3.5 p-3.5 rounded-xl border border-slate-100 bg-white shadow-sm"
+                >
                   <Skeleton className="w-8 h-8 rounded-lg flex-shrink-0" />
                   <div className="flex-1 space-y-1.5">
                     <Skeleton className="h-3.5 w-32" />

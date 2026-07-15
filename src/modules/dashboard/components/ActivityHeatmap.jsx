@@ -127,7 +127,7 @@ export function ActivityHeatmap({ data }) {
   }, [peakCell, viewMonth, viewYear]);
 
   return (
-    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
+    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
       <CardHeader className="px-0">
         <div className="flex items-start justify-between pb-4 px-5 border-b border-slate-200">
           <DashboardHead
@@ -145,7 +145,7 @@ export function ActivityHeatmap({ data }) {
               value={viewMonth.toString()}
               onValueChange={(val) => setViewMonth(parseInt(val))}
             >
-              <SelectTrigger className="h-9 w-full md:w-[125px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-aqua focus:ring-0 focus-visible:border-brand-aqua focus-visible:ring-0">
+              <SelectTrigger className="h-9 w-full md:w-[125px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-blue focus:ring-0 focus-visible:border-brand-blue focus-visible:ring-0">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                   <SelectValue placeholder="Month" />
@@ -158,7 +158,7 @@ export function ActivityHeatmap({ data }) {
                     value={idx.toString()}
                     className={`text-xs font-semibold py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
                       viewMonth === idx
-                        ? "!bg-brand-aqua/15 !text-brand-aqua !data-[highlighted]:bg-brand-aqua/15 !data-[highlighted]:text-brand-aqua"
+                        ? "!bg-brand-blue !text-brand-blue !data-[highlighted]:bg-brand-blue !data-[highlighted]:text-brand-blue"
                         : "text-slate-500 hover:!bg-white hover:text-slate-900"
                     }`}
                   >
@@ -173,7 +173,7 @@ export function ActivityHeatmap({ data }) {
               value={viewYear.toString()}
               onValueChange={(val) => setViewYear(parseInt(val))}
             >
-              <SelectTrigger className="h-9 w-full md:w-[95px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-aqua focus:ring-0 focus-visible:border-brand-aqua focus-visible:ring-0">
+              <SelectTrigger className="h-9 w-full md:w-[95px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-blue focus:ring-0 focus-visible:border-brand-blue focus-visible:ring-0">
                 <SelectValue placeholder="Year" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border border-slate-100/80 bg-white p-1.5 shadow-xl min-w-[100px]">
@@ -183,7 +183,7 @@ export function ActivityHeatmap({ data }) {
                     value={year.toString()}
                     className={`text-xs font-semibold py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
                       viewYear === year
-                        ? "!bg-brand-aqua/15 !text-brand-aqua !data-[highlighted]:bg-brand-aqua/15 !data-[highlighted]:text-brand-aqua"
+                        ? "!bg-brand-blue !text-brand-blue !data-[highlighted]:bg-brand-blue !data-[highlighted]:text-brand-blue"
                         : "text-slate-500 hover:!bg-white hover:text-slate-900"
                     }`}
                   >
@@ -236,8 +236,8 @@ export function ActivityHeatmap({ data }) {
                       <Tooltip key={dIdx}>
                         <TooltipTrigger asChild>
                           <div
-                            className={`flex-1 aspect-square rounded-[3px] border border-slate-100 transition-all duration-200 cursor-pointer hover:ring-2 hover:ring-brand-aqua/40 hover:scale-110 ${getIntensityColor(intensity)} ${
-                              isPeak ? "ring-2 ring-brand-aqua" : ""
+                            className={`flex-1 aspect-square rounded-[3px] border border-slate-100 transition-all duration-200 cursor-pointer hover:ring-2 hover:ring-brand-blue hover:scale-110 ${getIntensityColor(intensity)} ${
+                              isPeak ? "ring-2 ring-brand-blue" : ""
                             }`}
                           />
                         </TooltipTrigger>
@@ -257,7 +257,7 @@ export function ActivityHeatmap({ data }) {
                               👥 {formatCompactNumber(count)} users
                             </span>
                             {isPeak && (
-                              <span className="text-[10px] font-bold text-brand-aqua">
+                              <span className="text-[10px] font-bold text-brand-blue">
                                 ✨ Highest for this slot
                               </span>
                             )}
@@ -296,9 +296,9 @@ export function ActivityHeatmap({ data }) {
             </div> */}
 
             {/* Insight Box */}
-            <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
+            <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
               <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                <Info size={12} className="text-brand-aqua" />
+                <Info size={12} className="text-brand-blue" />
               </div>
               {dynamicInsight}
             </div>

@@ -1,0 +1,94 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Container } from "@/components/common/container";
+import Header from "@/components/common/header";
+import { PageHeader } from "@/components/common/headSubhead";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/shared/datatable";
+import { Plus, Layers } from "lucide-react";
+import { getManageFitzoneCategoryColumns } from "@/components/columns/fitzone.category.columns";
+import {
+  getFitzoneCategories,
+  deleteFitzoneCategory,
+} from "../store/fitzone.category.slice";
+import { toast } from "sonner";
+
+const ManageFitzoneCategoryPage = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { categories, loading } = useSelector((state) => state.fitzoneCategory);
+
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getFitzoneCategories(id));
+    }
+  }, [dispatch, id]);
+
+  const handleAction = (row, action) => {
+    if (action === "edit") {
+      navigate(
+        `/admin/fitzone-management/manage/category/edit-category/${id}/${row.id}`,
+        { state: { editData: row } },
+      );
+    } else if (action === "delete") {
+      if (window.confirm("Are you sure you want to delete this category?")) {
+        dispatch(deleteFitzoneCategory(row.id))
+          .unwrap()
+          .then(() => {
+            toast.success("Category deleted successfully!");
+            dispatch(getFitzoneCategories(id));
+          })
+          .catch((err) => {
+            toast.error(err || "Failed to delete category");
+          });
+      }
+    }
+  };
+
+  const columns = useMemo(
+    () => getManageFitzoneCategoryColumns(handleAction),
+    [],
+  );
+
+  const openAddModal = () => {
+    navigate(`/admin/fitzone-management/manage/category/add-category/${id}`);
+  };
+
+  return (
+    <Container>
+      <div className="space-y-8">
+        <Header>
+          <PageHeader
+            heading="WorkOut Sessions Management"
+            icon={<Layers className="w-9 h-9 text-white" />}
+            color="bg-brand-blue shadow-blue-200"
+            subheading="Manage categories for workout sessions."
+          />
+          <Button
+            onClick={openAddModal}
+            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add Session Category
+          </Button>
+        </Header>
+
+        <DataTable
+          data={categories || []}
+          columns={columns}
+          searchable={true}
+          searchPlaceholder="Search..."
+          pagination={pagination}
+          onPaginationChange={setPagination}
+        />
+      </div>
+    </Container>
+  );
+};
+
+export default ManageFitzoneCategoryPage;

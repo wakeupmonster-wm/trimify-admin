@@ -133,8 +133,6 @@ export function RecentUsersTable() {
     user: null,
   });
 
-
-
   // Image preview modal state
   const [imageModal, setImageModal] = useState({
     open: false,
@@ -220,7 +218,7 @@ export function RecentUsersTable() {
 
   return (
     <>
-      <Card className="rounded-xl shadow-sm gap-4 pb-2 bg-white border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 overflow-hidden flex flex-col h-full">
+      <Card className="rounded-xl shadow-sm gap-4 pb-2 bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 overflow-hidden flex flex-col h-full">
         <CardHeader className="px-5">
           <div className="flex items-center justify-between">
             <DashboardHead
@@ -235,7 +233,7 @@ export function RecentUsersTable() {
               size="sm"
               onClick={() => navigate("/admin/management/users-management")}
               className={cn(
-                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-200 hover:bg-brand-aqua transition-all duration-300 group overflow-hidden",
+                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-200 hover:bg-brand-hoverBlue transition-all duration-300 group overflow-hidden",
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -350,7 +348,10 @@ export function RecentUsersTable() {
                           navigate(
                             "/admin/management/users-management/view-profile",
                             {
-                              state: { userId: user._id, from: location.pathname || "/admin/dashboard" },
+                              state: {
+                                userId: user._id,
+                                from: location.pathname || "/admin/dashboard",
+                              },
                             },
                           )
                         }
@@ -366,13 +367,17 @@ export function RecentUsersTable() {
                             title={nickname}
                           >
                             <Avatar
-                              className="h-8 w-8 border border-slate-100 shadow-sm cursor-pointer hover:ring-2 hover:ring-brand-aqua/40 transition-all"
+                              className="h-8 w-8 border border-slate-100 shadow-sm cursor-pointer hover:ring-2 hover:ring-brand-blue transition-all"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const photoUrl = Array.isArray(user?.photos)
                                   ? user.photos[0]?.url || user?.photos
                                   : user?.photos;
-                                const imgSrc = photoUrl || user.avatar?.url || user.avatar || null;
+                                const imgSrc =
+                                  photoUrl ||
+                                  user.avatar?.url ||
+                                  user.avatar ||
+                                  null;
                                 if (imgSrc) {
                                   setImageModal({
                                     open: true,
@@ -387,7 +392,10 @@ export function RecentUsersTable() {
                                 src={
                                   Array.isArray(user.photos)
                                     ? user.photos[0]?.url || user.photos[0]
-                                    : (user.photos || user.avatar?.url || user.avatar || dummyImg)
+                                    : user.photos ||
+                                      user.avatar?.url ||
+                                      user.avatar ||
+                                      dummyImg
                                 }
                                 className="object-cover"
                               />
@@ -443,7 +451,7 @@ export function RecentUsersTable() {
                             </span>
                             <div className="h-1.5 w-full bg-slate-300/60 rounded-full overflow-hidden">
                               <div
-                                className="h-full bg-brand-aqua rounded-full transition-all duration-500"
+                                className="h-full bg-brand-blue rounded-full transition-all duration-500"
                                 style={{ width: `${completion}%` }}
                               />
                             </div>
@@ -532,18 +540,23 @@ export function RecentUsersTable() {
                                   navigate(
                                     "/admin/management/users-management/view-profile",
                                     {
-                                      state: { userId: user._id, from: location.pathname|| "/admin/dashboard" },
+                                      state: {
+                                        userId: user._id,
+                                        from:
+                                          location.pathname ||
+                                          "/admin/dashboard",
+                                      },
                                     },
                                   );
                                 }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-brand-aqua/10 transition-colors group"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-brand-hoverBlue transition-colors group"
                               >
                                 <Eye
                                   size={14}
                                   strokeWidth={2.5}
-                                  className="text-slate-500 group-hover:text-brand-aqua"
+                                  className="text-slate-500 group-hover:text-brand-blue"
                                 />
-                                <span className="text-xs font-semibold text-slate-700 group-hover:text-brand-aqua">
+                                <span className="text-xs font-semibold text-slate-700 group-hover:text-brand-blue">
                                   View Profile
                                 </span>
                               </DropdownMenuItem>
@@ -670,7 +683,7 @@ export function RecentUsersTable() {
           </div>
         </CardContent>
       </Card>
-{/* 
+      {/* 
       <UserActionModal
         type={actionModal.type}
         isOpen={actionModal.isOpen}
@@ -678,8 +691,6 @@ export function RecentUsersTable() {
         onConfirm={handleActionConfirm}
         userName={actionModal.user?.profile?.nickname || "User"}
       /> */}
-
-
 
       <Dialog
         open={imageModal.open}

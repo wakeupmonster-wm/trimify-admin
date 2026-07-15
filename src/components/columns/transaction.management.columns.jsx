@@ -7,7 +7,7 @@ export const getTransactionManagementColumns = (onAction) => [
     id: "sno",
     header: () => (
       <div className="w-10 text-left text-[11px] font-bold text-foreground">
-        S.No
+        SR.No
       </div>
     ),
     size: 60,
@@ -97,7 +97,13 @@ export const getTransactionManagementColumns = (onAction) => [
     cell: ({ row }) => {
       // Optional: Format date here using date-fns if desired
       const rawDate = row.getValue("created_at");
-      const displayDate = rawDate ? new Date(rawDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : "-";
+      const displayDate = rawDate
+        ? new Date(rawDate).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+        : "-";
       return (
         <span className="text-[11px] font-medium text-slate-700">
           {displayDate}
@@ -119,7 +125,9 @@ export const getTransactionManagementColumns = (onAction) => [
       const isSuccess = status.toLowerCase() === "success";
       return (
         <div className="flex justify-center">
-          <Badge className={`${isSuccess ? "bg-[#1ea82c] hover:bg-[#1ea82c]/90" : "bg-red-500 hover:bg-red-600"} text-white rounded text-[10px] px-2 py-0.5 font-semibold shadow-none border-none pointer-events-none capitalize`}>
+          <Badge
+            className={`${isSuccess ? "bg-[#1ea82c] hover:bg-[#1ea82c]/90" : "bg-red-500 hover:bg-red-600"} text-white rounded text-[10px] px-2 py-0.5 font-semibold shadow-none border-none pointer-events-none capitalize`}
+          >
             {status}
           </Badge>
         </div>

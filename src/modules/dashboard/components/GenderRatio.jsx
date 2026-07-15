@@ -43,7 +43,7 @@ export function GenderRatio({ data }) {
   const femaleProgressWidth = femaleRatioText;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-0 shadow-sm hover:border-brand-aqua/50 transition-all duration-300">
+    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-0 shadow-sm hover:border-blue-200 transition-all duration-300">
       {/* Header */}
       <div className="flex items-start gap-3 px-6 pb-3.5 border-b border-slate-200">
         <div className="flex items-start gap-4">
@@ -89,8 +89,11 @@ export function GenderRatio({ data }) {
           <div className="absolute inset-0 flex justify-between items-center px-3 pointer-events-none">
             {maleProgressWidth > 0 ? (
               <span
-                className={`text-[10px] font-black whitespace-nowrap ${maleProgressWidth > 15 ? "text-white drop-shadow-sm" : "text-brand-aqua"
-                  }`}
+                className={`text-[10px] font-black whitespace-nowrap ${
+                  maleProgressWidth > 15
+                    ? "text-white drop-shadow-sm"
+                    : "text-brand-blue"
+                }`}
               >
                 {maleRatioText}%
               </span>
@@ -98,7 +101,7 @@ export function GenderRatio({ data }) {
               <div />
             )}
             {femaleProgressWidth > 0 ? (
-              <span className="text-[10px] font-black whitespace-nowrap text-brand-aqua">
+              <span className="text-[10px] font-black whitespace-nowrap text-brand-blue">
                 {femaleRatioText}%
               </span>
             ) : (

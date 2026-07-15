@@ -129,7 +129,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-brand-aqua focus-visible:ring-0",
+              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-brand-blue focus-visible:ring-0",
               compact ? "h-8 text-xs px-2 gap-2" : "h-10 text-xs gap-3",
               !date && "text-slate-400",
             )}
@@ -172,7 +172,7 @@ export function CalendarDateRangePicker({
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-md text-[11px] sm:text-xs font-semibold transition-all duration-300",
                   presetValue === p.value
-                    ? "bg-brand-aqua/15 text-brand-aqua"
+                    ? "bg-blue-50 text-brand-blue"
                     : "text-muted-foreground/90 hover:bg-slate-50 hover:text-foreground",
                 )}
               >
@@ -212,13 +212,13 @@ export function CalendarDateRangePicker({
                     day: "relative p-0 flex-1 aspect-square flex items-center justify-center",
                     day_button:
                       "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-[11px] sm:text-xs font-semibold rounded-xl transition-all",
-                    range_start: "bg-brand-aqua text-white rounded-l-xl my-0.5",
-                    range_end: "bg-brand-aqua text-white rounded-r-xl my-0.5",
+                    range_start: "bg-brand-blue text-white rounded-l-xl my-0.5",
+                    range_end: "bg-brand-blue text-white rounded-r-xl my-0.5",
                     range_middle:
-                      "bg-brand-aqua/10 text-brand-aqua rounded-none my-0.5",
-                    selected: "bg-brand-aqua text-white",
+                      "bg-brand-blue text-brand-blue rounded-none my-0.5",
+                    selected: "bg-brand-blue text-white",
                     today:
-                      "text-brand-aqua font-bold underline decoration-2 underline-offset-4",
+                      "text-brand-blue font-bold underline decoration-2 underline-offset-4",
                     outside: "text-slate-300 opacity-50",
                   }}
                 />
@@ -231,7 +231,7 @@ export function CalendarDateRangePicker({
           <div className="border-t border-slate-300/80 my-2 pt-2 flex justify-end px-2">
             <Button
               onClick={handleApply}
-              className="w-20 bg-brand-aqua hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
+              className="w-20 bg-brand-blue hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
             >
               Apply Filter
             </Button>
@@ -241,7 +241,7 @@ export function CalendarDateRangePicker({
             <div className="border-t border-slate-300/80 my-2 pt-2 flex justify-end px-2">
               <Button
                 onClick={handleApply}
-                className="w-20 bg-brand-aqua hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
+                className="w-20 bg-brand-blue hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
               >
                 Apply Filter
               </Button>

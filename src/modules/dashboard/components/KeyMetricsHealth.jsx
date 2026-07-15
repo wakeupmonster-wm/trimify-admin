@@ -76,8 +76,9 @@ const GenderRatioBar = ({ ratio, maleCount, femaleCount, value }) => {
         <div className="absolute inset-0 flex justify-between items-center px-3 pointer-events-none">
           {ratio > 0 ? (
             <span
-              className={`text-[10px] font-black whitespace-nowrap ${ratio > 15 ? "text-white drop-shadow-sm" : "text-brand-aqua"
-                }`}
+              className={`text-[10px] font-black whitespace-nowrap ${
+                ratio > 15 ? "text-white drop-shadow-sm" : "text-brand-blue"
+              }`}
             >
               {ratio}%
             </span>
@@ -85,7 +86,7 @@ const GenderRatioBar = ({ ratio, maleCount, femaleCount, value }) => {
             <div />
           )}
           {femaleRatio > 0 ? (
-            <span className="text-[10px] font-black whitespace-nowrap text-brand-aqua">
+            <span className="text-[10px] font-black whitespace-nowrap text-brand-blue">
               {femaleRatio}%
             </span>
           ) : (
@@ -264,80 +265,82 @@ export function KeyMetricsHealth({ data }) {
   return (
     <div className="mb-1">
       <div className="grid grid-cols-1 gap-6">
-        {Array.isArray(data.metrics) && data.metrics.map((metric, idx) => {
-          if (metric.label === "Match Liquidity") {
+        {Array.isArray(data.metrics) &&
+          data.metrics.map((metric, idx) => {
+            if (metric.label === "Match Liquidity") {
+              return (
+                <div
+                  key={idx}
+                  className="bg-white border border-slate-200 rounded-xl py-5 shadow-sm hover:border-brand-blue transition-all duration-300"
+                >
+                  <MatchLiquidityCard metric={metric} />
+                </div>
+              );
+            }
+
             return (
               <div
                 key={idx}
-                className="bg-white border border-slate-200 rounded-xl py-5 shadow-sm hover:border-brand-aqua/50 transition-all duration-300"
+                className="bg-white border border-slate-200 rounded-xl py-5 hover:border-brand-blue transition-all duration-300 shadow-sm"
               >
-                <MatchLiquidityCard metric={metric} />
+                <div className="flex items-start gap-2 pb-4 px-5 border-b border-slate-200">
+                  <DashboardHead
+                    title={metric.label}
+                    subtitle={metric.subtitle}
+                    Icon={metric.Icon || LuUsersRound}
+                    iconColor="text-slate-600"
+                    iconBg="bg-slate-100/50"
+                  />
+                </div>
+
+                <div className="relative flex flex-col justify-between items-start mx-5 mt-3">
+                  <div className="w-full flex flex-col justify-between items-start space-y-1">
+                    <h3 className="text-xl font-bold text-foreground leading-none">
+                      {metric.value}
+                    </h3>
+                    <p className="text-[11px] font-medium text-muted-foreground">
+                      {metric.sub}
+                    </p>
+                  </div>
+
+                  <div className="w-full flex items-start justify-between gap-2">
+                    {!metric.isRatio ? (
+                      <Sparkline
+                        data={metric.chartData}
+                        isPositive={metric.isPositive}
+                      />
+                    ) : (
+                      <div className="w-full mt-2">
+                        <GenderRatioBar
+                          ratio={metric.ratioValue}
+                          maleCount={metric.maleCount}
+                          femaleCount={metric.femaleCount}
+                          value={metric.value}
+                        />
+                      </div>
+                    )}
+
+                    {metric.trend && (
+                      <div
+                        className={`flex items-center gap-1.5 px-2 py-1 rounded-[6px] text-[12px] font-bold ${
+                          metric.isPositive
+                            ? "bg-[#f0fdf4] text-[#16a34a]"
+                            : "bg-[#fef2f2] text-[#dc2626]"
+                        }`}
+                      >
+                        {metric.isPositive ? (
+                          <TrendingUp size={14} />
+                        ) : (
+                          <TrendingDown size={14} />
+                        )}
+                        {metric.trend}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             );
-          }
-
-          return (
-            <div
-              key={idx}
-              className="bg-white border border-slate-200 rounded-xl py-5 hover:border-brand-aqua/50 transition-all duration-300 shadow-sm"
-            >
-              <div className="flex items-start gap-2 pb-4 px-5 border-b border-slate-200">
-                <DashboardHead
-                  title={metric.label}
-                  subtitle={metric.subtitle}
-                  Icon={metric.Icon || LuUsersRound}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                />
-              </div>
-
-              <div className="relative flex flex-col justify-between items-start mx-5 mt-3">
-                <div className="w-full flex flex-col justify-between items-start space-y-1">
-                  <h3 className="text-xl font-bold text-foreground leading-none">
-                    {metric.value}
-                  </h3>
-                  <p className="text-[11px] font-medium text-muted-foreground">
-                    {metric.sub}
-                  </p>
-                </div>
-
-                <div className="w-full flex items-start justify-between gap-2">
-                  {!metric.isRatio ? (
-                    <Sparkline
-                      data={metric.chartData}
-                      isPositive={metric.isPositive}
-                    />
-                  ) : (
-                    <div className="w-full mt-2">
-                      <GenderRatioBar
-                        ratio={metric.ratioValue}
-                        maleCount={metric.maleCount}
-                        femaleCount={metric.femaleCount}
-                        value={metric.value}
-                      />
-                    </div>
-                  )}
-
-                  {metric.trend && (
-                    <div
-                      className={`flex items-center gap-1.5 px-2 py-1 rounded-[6px] text-[12px] font-bold ${metric.isPositive
-                        ? "bg-[#f0fdf4] text-[#16a34a]"
-                        : "bg-[#fef2f2] text-[#dc2626]"
-                        }`}
-                    >
-                      {metric.isPositive ? (
-                        <TrendingUp size={14} />
-                      ) : (
-                        <TrendingDown size={14} />
-                      )}
-                      {metric.trend}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+          })}
       </div>
     </div>
   );

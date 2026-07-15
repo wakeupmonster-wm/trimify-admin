@@ -9,15 +9,19 @@ import { Button } from "@/components/ui/button";
 import { getNutritionFoodColumns } from "@/components/columns/nutrition.food.columns";
 import { fetchNutritionList } from "../store/nutrition.slice";
 import { useNavigate } from "react-router-dom";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const NutritionFoodPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { nutrition, loading, pagination: serverPagination } = useSelector(
-    (state) => state.nutrition
-  );
+  const {
+    nutrition,
+    loading,
+    pagination: serverPagination,
+  } = useSelector((state) => state.nutrition);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   useEffect(() => {
@@ -25,27 +29,37 @@ const NutritionFoodPage = () => {
       fetchNutritionList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
-      })
+        search: debouncedSearchTerm,
+      }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleAction = (row, action) => {
-    console.log(`Action ${action} triggered for row`, row);
-    // TODO: Connect edit and delete actions
+    if (action === "edit") {
+      navigate(`/admin/data-management/edit-nutrition/${row.id}`, {
+        state: { editData: row },
+      });
+    } else if (action === "delete") {
+      console.log("Delete nutrition food", row);
+    }
   };
 
   const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
               heading="Nutrition Food"
               icon={<Apple className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-aqua/30"
+              color="bg-brand-blue shadow-brand-blue"
               subheading="Manage all nutrition food items and recipes."
             />
 

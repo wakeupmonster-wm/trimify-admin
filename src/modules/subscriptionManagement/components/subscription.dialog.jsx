@@ -68,36 +68,41 @@ export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            
             {/* Plan Title */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Plan Title</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Plan Title
+              </Label>
               <Input
                 name="title"
                 placeholder="e.g. Premium"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Sub Title */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Sub Title</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Sub Title
+              </Label>
               <Input
                 name="subtitle"
                 placeholder="e.g. Package details here"
                 value={formData.subtitle}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Price */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Price ($)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Price ($)
+              </Label>
               <Input
                 type="number"
                 step="0.01"
@@ -105,34 +110,38 @@ export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
                 placeholder="e.g. 50.00"
                 value={formData.price}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Duration */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Duration (in Months)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Duration (in Months)
+              </Label>
               <Input
                 type="number"
                 name="duration"
                 placeholder="e.g. 2"
                 value={formData.duration}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Features */}
             <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-bold text-slate-800">Features (comma separated)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Features (comma separated)
+              </Label>
               <Textarea
                 name="features"
                 placeholder="e.g. Unlimited Projects, Priority Support, Advanced Analytics"
                 value={formData.features}
                 onChange={handleChange}
-                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300 resize-none p-3"
+                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
                 required
               />
             </div>

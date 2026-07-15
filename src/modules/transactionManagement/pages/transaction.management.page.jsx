@@ -7,6 +7,7 @@ import { DataTable } from "@/components/shared/datatable";
 import { getTransactionManagementColumns } from "@/components/columns/transaction.management.columns";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTransactionsList } from "../store/transaction.slice";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const TransactionManagementPage = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const TransactionManagementPage = () => {
   } = useSelector((state) => state.transactionManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   useEffect(() => {
@@ -24,11 +26,11 @@ const TransactionManagementPage = () => {
       // fetchTransactionsList({
       //   page: pagination.pageIndex + 1,
       //   limit: pagination.pageSize,
-      //   search: globalFilter,
+      //   search: debouncedSearchTerm,
       // })
       fetchTransactionsList(),
     );
-    // }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+    // }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm]);
   }, [dispatch]);
 
   const displayData = transactions || [];
@@ -46,7 +48,7 @@ const TransactionManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0">
             <PageHeader

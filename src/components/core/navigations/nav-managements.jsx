@@ -98,9 +98,9 @@ export function NavManagements({ items }) {
 
   return (
     <SidebarGroup className="px-0">
-      <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
+      {/* <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
         Management
-      </SidebarGroupLabel>
+      </SidebarGroupLabel> */}
       <SidebarMenu className="group-data-[collapsible=icon]:!items-start gap-0.5">
         {items.map((item) => {
           const isActive =
@@ -138,7 +138,7 @@ export function NavManagements({ items }) {
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                       (isActive || hasActiveChild) &&
-                        "bg-brand-blue hover:bg-brand-hoverBlue",
+                        "bg-blue-100/50 hover:bg-brand-hoverBlue",
                     )}
                   >
                     <Link
@@ -162,9 +162,9 @@ export function NavManagements({ items }) {
 
                       <span
                         className={cn(
-                          "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
+                          "flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
                           isActive || hasActiveChild
-                            ? "text-brand-aqua font-bold"
+                            ? "text-brand-blue font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
                         )}
                       >
@@ -203,8 +203,7 @@ export function NavManagements({ items }) {
                     "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
-                    isActive &&
-                      "!bg-brand-blue/[0.08] !hover:bg-brand-hoverBlue",
+                    isActive && "!bg-blue-100/50 !hover:bg-brand-hoverBlue",
                   )}
                 >
                   <Link
@@ -219,7 +218,7 @@ export function NavManagements({ items }) {
                       className={cn(
                         "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                         isActive
-                          ? "text-brand-aqua"
+                          ? "text-brand-blue"
                           : "text-slate-400 hover:text-foreground/80",
                       )}
                     >
@@ -228,9 +227,9 @@ export function NavManagements({ items }) {
 
                     <span
                       className={cn(
-                        "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
+                        "group-data-[collapsible=icon]:hidden flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
                         isActive
-                          ? "text-brand-aqua font-bold"
+                          ? "text-brand-blue font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
                       )}
                     >
@@ -268,7 +267,7 @@ export function NavManagements({ items }) {
                             className={cn(
                               "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
                               isSubActive
-                                ? "!text-brand-blue font-semibold !bg-brand-blue"
+                                ? "!text-brand-blue font-semibold !bg-blue-100/50"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >
@@ -280,7 +279,7 @@ export function NavManagements({ items }) {
                               {isSubActive && (
                                 <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-blue" />
                               )}
-                              <span className="text-[12.5px] tracking-tight">
+                              <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}
                               </span>
                             </Link>

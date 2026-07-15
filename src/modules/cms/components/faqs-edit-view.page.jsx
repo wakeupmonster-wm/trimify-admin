@@ -83,8 +83,8 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-aqua/10 border border-brand-aqua/20">
-              <HelpCircle className="h-6 w-6 text-brand-aqua" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+              <HelpCircle className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -161,7 +161,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
                 className={cn(
                   "h-10 pl-10 text-xs font-semibold rounded-md border-slate-200 bg-white shadow-sm focus-visible:border-slate-500 transition-all placeholder:font-medium placeholder:text-slate-400",
                   errors.question &&
-                  "border-red-400 focus-visible:border-red-400",
+                    "border-red-400 focus-visible:border-red-400",
                 )}
               />
             </div>
@@ -209,7 +209,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
           <Button
             onClick={handleSave}
             disabled={loading}
-            className="bg-brand-aqua hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
+            className="bg-brand-blue hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
           >
             {loading ? (
               <>

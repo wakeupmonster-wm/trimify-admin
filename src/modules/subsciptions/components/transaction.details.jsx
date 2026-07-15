@@ -48,18 +48,26 @@ export default function TransactionDetails({ transaction, onBack }) {
     color: "bg-slate-100 text-slate-600",
   };
 
-  const status = transaction.status || 
-    (transaction.eventType === "REFUND" ? "REFUNDED" : transaction.eventType === "CANCEL" ? "FAILED" : "SUCCESS");
+  const status =
+    transaction.status ||
+    (transaction.eventType === "REFUND"
+      ? "REFUNDED"
+      : transaction.eventType === "CANCEL"
+        ? "FAILED"
+        : "SUCCESS");
 
-  const isSuccess = status === "SUCCESS" || status === "COMPLETED" || status === "GRANTED";
+  const isSuccess =
+    status === "SUCCESS" || status === "COMPLETED" || status === "GRANTED";
   const isFailed = status === "FAILED" || status === "CANCELLED";
   const isRefunded = status === "REFUNDED";
 
   const statusBadgeColor = isSuccess
     ? "bg-emerald-500 text-white shadow-[0_2px_4px_rgba(16,185,129,0.2)]"
-    : isFailed ? "bg-rose-500 text-white shadow-[0_2px_4px_rgba(244,63,63,0.2)]"
-    : isRefunded ? "bg-amber-500 text-white shadow-[0_2px_4px_rgba(245,158,11,0.2)]"
-    : "bg-slate-500 text-white";
+    : isFailed
+      ? "bg-rose-500 text-white shadow-[0_2px_4px_rgba(244,63,63,0.2)]"
+      : isRefunded
+        ? "bg-amber-500 text-white shadow-[0_2px_4px_rgba(245,158,11,0.2)]"
+        : "bg-slate-500 text-white";
 
   const dateStr = transaction.date || transaction.occurredAt;
   const formattedDate = dateStr
@@ -86,10 +94,13 @@ export default function TransactionDetails({ transaction, onBack }) {
     setIsDownloading(true);
 
     try {
-      const userName = transaction.user?.nickname || transaction.user?.email || "User";
+      const userName =
+        transaction.user?.nickname || transaction.user?.email || "User";
       const dateObj = new Date();
       const fileDateStr = format(dateObj, "yyyy-MM-dd");
-      const filename = `Receipt_${userName}_${fileDateStr}`.replace(/[^a-zA-Z0-9_-]/g, "_") + ".pdf";
+      const filename =
+        `Receipt_${userName}_${fileDateStr}`.replace(/[^a-zA-Z0-9_-]/g, "_") +
+        ".pdf";
 
       // Clone dedicated invoice template for printing
       const printArea = document.getElementById("invoice-template");
@@ -106,11 +117,11 @@ export default function TransactionDetails({ transaction, onBack }) {
       document.body.appendChild(tempContainer);
 
       const opt = {
-        margin:       10,
-        filename:     filename,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 10,
+        filename: filename,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       };
 
       html2pdf()
@@ -123,7 +134,9 @@ export default function TransactionDetails({ transaction, onBack }) {
           }
           setIsDownloading(false);
           setHasDownloaded(true);
-          toast.success("Receipt downloaded successfully!", { id: "download-receipt" });
+          toast.success("Receipt downloaded successfully!", {
+            id: "download-receipt",
+          });
         })
         .catch((err) => {
           console.error("PDF download error:", err);
@@ -131,7 +144,9 @@ export default function TransactionDetails({ transaction, onBack }) {
             document.body.removeChild(tempContainer);
           }
           setIsDownloading(false);
-          toast.error("Failed to download receipt.", { id: "download-receipt" });
+          toast.error("Failed to download receipt.", {
+            id: "download-receipt",
+          });
         });
     } catch (error) {
       console.error("Prepare PDF error:", error);
@@ -184,7 +199,7 @@ export default function TransactionDetails({ transaction, onBack }) {
            .main-print-grid {
              display: block !important;
            }
-           .bg-white, .bg-slate-100, .bg-slate-50, .bg-brand-aqua\\/10, .bg-emerald-100, .bg-amber-100 {
+           .bg-white, .bg-slate-100, .bg-slate-50, .bg-brand-blue\\/10, .bg-emerald-100, .bg-amber-100 {
              print-color-adjust: exact !important;
              -webkit-print-color-adjust: exact !important;
            }
@@ -239,7 +254,12 @@ export default function TransactionDetails({ transaction, onBack }) {
           >
             <IconDownload
               size={16}
-              className={cn("transition-colors", hasDownloaded ? "text-slate-400" : "text-slate-400 group-hover:text-brand-aqua")}
+              className={cn(
+                "transition-colors",
+                hasDownloaded
+                  ? "text-slate-400"
+                  : "text-slate-400 group-hover:text-brand-blue",
+              )}
             />
             {hasDownloaded ? "Downloaded" : "Download Receipt"}
           </Button>
@@ -257,8 +277,8 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Payment Details"
                 subtitle="Transaction amount and payment gateway info"
                 Icon={IconReceipt}
-                iconColor="text-brand-aqua"
-                iconBg="bg-brand-aqua/10"
+                iconColor="text-brand-blue"
+                iconBg="bg-brand-blue"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -330,8 +350,8 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Product Details"
                 subtitle="Purchased plan or consumable item information"
                 Icon={IconBox}
-                iconColor="text-brand-aqua"
-                iconBg="bg-brand-aqua/10"
+                iconColor="text-brand-blue"
+                iconBg="bg-brand-blue"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -386,13 +406,21 @@ export default function TransactionDetails({ transaction, onBack }) {
             <div className="flex items-center gap-4 p-4 bg-slate-100/60 rounded-xl border border-slate-200 mb-4 shadow-sm">
               <div
                 className={cn(
-                  "w-11 h-11 rounded-full text-brand-aqua flex items-center justify-center text-lg font-black shrink-0 shadow-sm border-2 border-white overflow-hidden",
-                  transaction.user?.selfieUrl ? "cursor-pointer" : "bg-brand-aqua/10"
+                  "w-11 h-11 rounded-full text-brand-blue flex items-center justify-center text-lg font-black shrink-0 shadow-sm border-2 border-white overflow-hidden",
+                  transaction.user?.selfieUrl
+                    ? "cursor-pointer"
+                    : "bg-brand-blue",
                 )}
-                onClick={() => transaction.user?.selfieUrl && setIsSelfieOpen(true)}
+                onClick={() =>
+                  transaction.user?.selfieUrl && setIsSelfieOpen(true)
+                }
               >
                 {transaction.user?.selfieUrl ? (
-                  <img src={transaction.user.selfieUrl} alt="User selfie" className="w-full h-full object-cover" />
+                  <img
+                    src={transaction.user.selfieUrl}
+                    alt="User selfie"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   (transaction.user?.nickname || transaction.user?.email || "U")
                     .charAt(0)
@@ -442,11 +470,11 @@ export default function TransactionDetails({ transaction, onBack }) {
                     userId: transaction.user?._id,
                     source: "transactions",
                     from: location.pathname,
-                    returnState: { transaction }
+                    returnState: { transaction },
                   },
                 })
               }
-              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-aqua hover:text-white rounded-lg border-slate-200 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
+              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-hoverBlue hover:text-white rounded-lg border-slate-200 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
             >
               <IconUserCircle className="w-4 h-4 text-slate-400 group-hover:text-white transition-all duration-300 ease-in-out" />
               View Full Profile
@@ -460,8 +488,8 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Timeline"
                 subtitle="Step-by-step transaction processing history"
                 Icon={IconClock}
-                iconColor="text-brand-aqua"
-                iconBg="bg-brand-aqua/10"
+                iconColor="text-brand-blue"
+                iconBg="bg-brand-blue"
               />
             </div>
 
@@ -536,7 +564,9 @@ export default function TransactionDetails({ transaction, onBack }) {
                       ? "Apple App Store"
                       : transaction.platform?.toLowerCase() === "android"
                         ? "Google Play Store"
-                        : transaction.platform?.toLowerCase() === "admin" || transaction.platform?.toLowerCase() === "admin_granted"
+                        : transaction.platform?.toLowerCase() === "admin" ||
+                            transaction.platform?.toLowerCase() ===
+                              "admin_granted"
                           ? "Admin Console"
                           : transaction.platform || "Unknown"}
                   </div>
@@ -568,43 +598,63 @@ export default function TransactionDetails({ transaction, onBack }) {
       </Dialog>
 
       {/* Dedicated Clean Invoice/Receipt Template for Export */}
-      <div id="invoice-template" className="hidden bg-white w-full h-auto p-4 text-slate-800 relative mx-auto max-w-5xl">
-
+      <div
+        id="invoice-template"
+        className="hidden bg-white w-full h-auto p-4 text-slate-800 relative mx-auto max-w-5xl"
+      >
         {/* ── Logo + Payment Receipt Heading ── */}
         <div className="text-center pb-6 mb-6 border-b border-slate-200">
           {logoUrl ? (
-            <img src="https://res.cloudinary.com/dew7qscdq/image/upload/v1780388090/mustardLogo2_qanbxz.webp" alt="App Logo" className="w-16 h-16 object-contain mx-auto mb-3 rounded-xl" />
+            <img
+              src="https://res.cloudinary.com/dew7qscdq/image/upload/v1780388090/mustardLogo2_qanbxz.webp"
+              alt="App Logo"
+              className="w-16 h-16 object-contain mx-auto mb-3 rounded-xl"
+            />
           ) : (
-            <div className="w-16 h-16 rounded-xl bg-brand-aqua/10 flex items-center justify-center mx-auto mb-3">
-              <IconReceipt size={28} className="text-brand-aqua" />
+            <div className="w-16 h-16 rounded-xl bg-brand-blue flex items-center justify-center mx-auto mb-3">
+              <IconReceipt size={28} className="text-brand-blue" />
             </div>
           )}
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Payment Receipt</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            Payment Receipt
+          </h1>
         </div>
 
         {/* ── Generated On ── */}
         <div className="flex justify-end mb-6">
           <div className="text-right">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Generated On</div>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
+              Generated On
+            </div>
             <div className="text-sm font-bold text-slate-800">
               {format(new Date(), "MM-dd-yyyy")}
-              <span className="text-xs font-semibold text-slate-400 ml-1.5">{format(new Date(), "hh:mm a")}</span>
+              <span className="text-xs font-semibold text-slate-400 ml-1.5">
+                {format(new Date(), "hh:mm a")}
+              </span>
             </div>
           </div>
         </div>
 
         {/* ── Customer Info ── */}
         <div className="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50/50">
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">Customer Information</div>
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">
+            Customer Information
+          </div>
           <div className="grid grid-cols-[90px_1fr] gap-y-2 text-sm">
             <div className="text-slate-400 font-medium">Name:</div>
-            <div className="font-bold text-slate-800">{transaction.user?.nickname || transaction.user?.email || "—"}</div>
+            <div className="font-bold text-slate-800">
+              {transaction.user?.nickname || transaction.user?.email || "—"}
+            </div>
 
             <div className="text-slate-400 font-medium">User ID:</div>
-            <div className="font-mono text-xs font-medium text-slate-600 break-all">{transaction.user?._id || "—"}</div>
+            <div className="font-mono text-xs font-medium text-slate-600 break-all">
+              {transaction.user?._id || "—"}
+            </div>
 
             <div className="text-slate-400 font-medium">Email:</div>
-            <div className="font-medium text-slate-700">{transaction.user?.email || "—"}</div>
+            <div className="font-medium text-slate-700">
+              {transaction.user?.email || "—"}
+            </div>
           </div>
         </div>
 
@@ -615,7 +665,9 @@ export default function TransactionDetails({ transaction, onBack }) {
           </div>
           <div className="grid grid-cols-[130px_1fr] gap-y-2 text-sm px-1">
             <div className="text-slate-400 font-medium">Plan:</div>
-            <div className="font-bold text-slate-800">{getProductDisplayName(transaction.productId)}</div>
+            <div className="font-bold text-slate-800">
+              {getProductDisplayName(transaction.productId)}
+            </div>
 
             <div className="text-slate-400 font-medium">Purchased:</div>
             <div className="font-bold text-slate-800">
@@ -632,12 +684,25 @@ export default function TransactionDetails({ transaction, onBack }) {
                   transaction.subscription?.endDate ||
                   transaction.user?.expiresAt;
 
-                return expiryStr ? format(new Date(expiryStr), "dd MMM yyyy") : "—";
+                return expiryStr
+                  ? format(new Date(expiryStr), "dd MMM yyyy")
+                  : "—";
               })()}
             </div>
 
             <div className="text-slate-400 font-medium">Status:</div>
-            <div className={cn("font-bold", isSuccess ? "text-emerald-600" : isFailed ? "text-rose-600" : isRefunded ? "text-amber-600" : "text-slate-600")}>
+            <div
+              className={cn(
+                "font-bold",
+                isSuccess
+                  ? "text-emerald-600"
+                  : isFailed
+                    ? "text-rose-600"
+                    : isRefunded
+                      ? "text-amber-600"
+                      : "text-slate-600",
+              )}
+            >
               {isSuccess ? "Active" : status}
             </div>
           </div>
@@ -651,19 +716,37 @@ export default function TransactionDetails({ transaction, onBack }) {
           <div className="grid grid-cols-[130px_1fr] gap-y-2 text-sm px-1">
             <div className="text-slate-400 font-medium">Transaction ID:</div>
             <div className="font-mono text-xs font-bold text-slate-700 break-all">
-              {transaction.transactionId || transaction.orderId || transaction._id || "—"}
+              {transaction.transactionId ||
+                transaction.orderId ||
+                transaction._id ||
+                "—"}
             </div>
 
             <div className="text-slate-400 font-medium">Payment Method:</div>
-            <div className="font-bold text-slate-800 capitalize">{platformLabel}</div>
+            <div className="font-bold text-slate-800 capitalize">
+              {platformLabel}
+            </div>
 
             <div className="text-slate-400 font-medium">Gateway Ref:</div>
             <div className="font-mono text-xs font-medium text-slate-600 break-all">
-              {transaction.gatewayTransactionId || transaction.originalTransactionId || "—"}
+              {transaction.gatewayTransactionId ||
+                transaction.originalTransactionId ||
+                "—"}
             </div>
 
             <div className="text-slate-400 font-medium">Status:</div>
-            <div className={cn("font-bold", isSuccess ? "text-emerald-600" : isFailed ? "text-rose-600" : isRefunded ? "text-amber-600" : "text-slate-600")}>
+            <div
+              className={cn(
+                "font-bold",
+                isSuccess
+                  ? "text-emerald-600"
+                  : isFailed
+                    ? "text-rose-600"
+                    : isRefunded
+                      ? "text-amber-600"
+                      : "text-slate-600",
+              )}
+            >
               {isSuccess ? "Successful" : status}
             </div>
           </div>

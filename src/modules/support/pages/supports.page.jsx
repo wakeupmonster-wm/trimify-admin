@@ -104,8 +104,14 @@ export default function SupportTicketsPage() {
       sessionStorage.removeItem("supportManagementCategoryFilter");
     }
 
-    if (pagination && (pagination.pageIndex !== 0 || pagination.pageSize !== 10)) {
-      sessionStorage.setItem("supportManagementPagination", JSON.stringify(pagination));
+    if (
+      pagination &&
+      (pagination.pageIndex !== 0 || pagination.pageSize !== 10)
+    ) {
+      sessionStorage.setItem(
+        "supportManagementPagination",
+        JSON.stringify(pagination),
+      );
     } else {
       sessionStorage.removeItem("supportManagementPagination");
     }
@@ -291,7 +297,7 @@ export default function SupportTicketsPage() {
             <PageHeader
               heading="Support Management"
               icon={<Inbox className="w-9 h-9 text-white" />}
-              color="bg-brand-aqua shadow-brand-aqua-500/20"
+              color="bg-brand-blue shadow-brand-blue-500/20"
               subheading="Track and manage customer queries."
             />
           </div>

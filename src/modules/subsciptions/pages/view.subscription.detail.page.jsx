@@ -145,8 +145,9 @@ export default function ViewSubscriptionDetailPage() {
 
     return {
       availableBoosts: adminBoosts === -1 ? "Unlimited" : adminBoosts,
-      availableSuperKeens: adminSuperKeens === -1 ? "Unlimited" : adminSuperKeens,
-      details
+      availableSuperKeens:
+        adminSuperKeens === -1 ? "Unlimited" : adminSuperKeens,
+      details,
     };
   }, [wallet]);
 
@@ -244,8 +245,8 @@ export default function ViewSubscriptionDetailPage() {
               className={cn(
                 "group flex items-center gap-2 bg-slate-50 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-slate-200 transition-all active:scale-95 shadow-sm",
                 copied
-                  ? "text-brand-aqua border-brand-aqua/30 bg-brand-aqua/5"
-                  : "text-slate-500 hover:border-brand-aqua/50 hover:text-brand-aqua hover:bg-white",
+                  ? "text-brand-blue border-brand-blue bg-brand-blue"
+                  : "text-slate-500 hover:border-brand-blue hover:text-brand-blue hover:bg-white",
               )}
             >
               <Hash className="w-3 h-3 opacity-50" />
@@ -272,7 +273,7 @@ export default function ViewSubscriptionDetailPage() {
                   className="rounded-lg object-cover"
                   src={user?.photo || user?.avatar?.url || dummyImg}
                 />
-                <AvatarFallback className="text-2xl font-black bg-brand-aqua/10 text-brand-aqua rounded-lg">
+                <AvatarFallback className="text-2xl font-black bg-brand-blue text-brand-blue rounded-lg">
                   {user?.nickname?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
@@ -310,7 +311,7 @@ export default function ViewSubscriptionDetailPage() {
           <div className="flex items-center gap-3">
             {/* <Button
               size="sm"
-              className="h-10 px-4 gap-2 rounded-lg shadow-sm text-white font-bold text-xs bg-brand-aqua hover:bg-brand-hoverAqua transition-all active:scale-95"
+              className="h-10 px-4 gap-2 rounded-lg shadow-sm text-white font-bold text-xs bg-brand-blue hover:bg-brand-hoverAqua transition-all active:scale-95"
               onClick={() => setIsExtendOpen(true)}
             >
               <CalendarPlus className="h-4 w-4" />
@@ -356,11 +357,23 @@ export default function ViewSubscriptionDetailPage() {
             subtext={
               stats.details?.superKeens ? (
                 <div className="flex items-center gap-1.5 text-[10px] tracking-normal font-medium mt-1 normal-case">
-                  <span className="text-slate-400">Base: <span className="text-slate-600">{stats.details.superKeens.baseLimit}</span></span>
+                  <span className="text-slate-400">
+                    Base:{" "}
+                    <span className="text-slate-600">
+                      {stats.details.superKeens.baseLimit}
+                    </span>
+                  </span>
                   <span className="text-slate-300">•</span>
-                  <span className="text-slate-400">Granted: <span className="text-brand-aqua font-bold">{stats.details.superKeens.granted}</span></span>
+                  <span className="text-slate-400">
+                    Granted:{" "}
+                    <span className="text-brand-blue font-bold">
+                      {stats.details.superKeens.granted}
+                    </span>
+                  </span>
                 </div>
-              ) : "Total Balance"
+              ) : (
+                "Total Balance"
+              )
             }
             color="bg-violet-500"
             onGrant={() => setIsSuperKeenOpen(true)}
@@ -371,11 +384,23 @@ export default function ViewSubscriptionDetailPage() {
             subtext={
               stats.details?.boosts ? (
                 <div className="flex items-center gap-1.5 text-[10px] tracking-normal font-medium mt-1 normal-case">
-                  <span className="text-slate-400">Base: <span className="text-slate-600">{stats.details.boosts.baseLimit}</span></span>
+                  <span className="text-slate-400">
+                    Base:{" "}
+                    <span className="text-slate-600">
+                      {stats.details.boosts.baseLimit}
+                    </span>
+                  </span>
                   <span className="text-slate-300">•</span>
-                  <span className="text-slate-400">Granted: <span className="text-brand-aqua font-bold">{stats.details.boosts.granted}</span></span>
+                  <span className="text-slate-400">
+                    Granted:{" "}
+                    <span className="text-brand-blue font-bold">
+                      {stats.details.boosts.granted}
+                    </span>
+                  </span>
                 </div>
-              ) : "Total Balance"
+              ) : (
+                "Total Balance"
+              )
             }
             color="bg-orange-500"
             onGrant={() => setIsBoostOpen(true)}
@@ -391,8 +416,8 @@ export default function ViewSubscriptionDetailPage() {
                 title="Access Cycle"
                 subtitle="Entitlement Roadmap"
                 Icon={Clock}
-                iconColor="text-brand-aqua"
-                iconBg="bg-brand-aqua/10"
+                iconColor="text-brand-blue"
+                iconBg="bg-brand-blue"
                 titleSizeClass="text-[15px]"
               />
             </div>
@@ -405,7 +430,9 @@ export default function ViewSubscriptionDetailPage() {
                     </div>
                     <div>
                       <p className="text-[13px] font-bold text-slate-900 leading-tight">
-                        {sub?.planType ? getProductDisplayName(sub.planType) : "No Active Plan"}
+                        {sub?.planType
+                          ? getProductDisplayName(sub.planType)
+                          : "No Active Plan"}
                       </p>
                       <p className="text-[11px] font-bold text-slate-400 tracking-wide mt-0.5">
                         Billing via{" "}
@@ -440,7 +467,7 @@ export default function ViewSubscriptionDetailPage() {
                           : "—"}
                       </span>
                     </span>
-                    <span className="text-[11px] font-semibold text-brand-aqua">
+                    <span className="text-[11px] font-semibold text-brand-blue">
                       {sub?.expiresAt
                         ? `${Math.max(0, Math.ceil((new Date(sub.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)))} Days Remaining`
                         : "No expiry"}
@@ -448,7 +475,7 @@ export default function ViewSubscriptionDetailPage() {
                   </div>
                   <div className="h-2.5 bg-slate-100 border border-slate-200/60 rounded-full overflow-hidden shadow-inner p-[1px]">
                     <div
-                      className="h-full bg-gradient-to-r from-brand-aqua to-blue-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,217,214,0.3)]"
+                      className="h-full bg-gradient-to-r from-brand-blue to-blue-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,217,214,0.3)]"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -506,11 +533,10 @@ export default function ViewSubscriptionDetailPage() {
                       </p>
                       <div className="flex items-center gap-2">
                         <p className="text-[10px] font-mono font-bold text-slate-500 truncate">
-                          {sub?.planType ? getProductDisplayName(sub.planType) : "No Active Plan" ||
-                            "—"}
-
+                          {sub?.planType
+                            ? getProductDisplayName(sub.planType)
+                            : "No Active Plan" || "—"}
                         </p>
-
                       </div>
                     </div>
                   </div>
@@ -541,7 +567,7 @@ export default function ViewSubscriptionDetailPage() {
                     value={consumableType}
                     onValueChange={setConsumableType}
                   >
-                    <SelectTrigger className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-aqua shadow-sm">
+                    <SelectTrigger className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm">
                       <SelectValue placeholder="Select Asset" />
                     </SelectTrigger>
                     <SelectContent className="rounded-lg border-slate-200 shadow-xl">
@@ -568,7 +594,7 @@ export default function ViewSubscriptionDetailPage() {
                     type="number"
                     value={consumableAmount}
                     onChange={(e) => setConsumableAmount(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-aqua shadow-sm"
+                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -579,17 +605,22 @@ export default function ViewSubscriptionDetailPage() {
                     placeholder="Admin Grant"
                     value={consumableReason}
                     onChange={(e) => setConsumableReason(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-aqua shadow-sm placeholder:text-slate-300"
+                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm placeholder:text-slate-300"
                   />
                 </div>
                 <Button
                   onClick={() => setIsConfirmGrantOpen(true)}
-                  disabled={actionLoading || grantSuccess || !consumableAmount || Number(consumableAmount) <= 0}
+                  disabled={
+                    actionLoading ||
+                    grantSuccess ||
+                    !consumableAmount ||
+                    Number(consumableAmount) <= 0
+                  }
                   className={cn(
                     "w-full font-bold h-10 rounded-md transition-all duration-300 text-xs shadow-sm mt-2 flex items-center justify-center gap-2",
                     grantSuccess
                       ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                      : "bg-brand-aqua hover:bg-brand-hoverAqua text-white"
+                      : "bg-brand-blue hover:bg-brand-hoverAqua text-white",
                   )}
                 >
                   {actionLoading ? (
@@ -623,8 +654,8 @@ export default function ViewSubscriptionDetailPage() {
                 title="Subscription History"
                 subtitle="Past entitlement logs"
                 Icon={History}
-                iconColor="text-brand-aqua"
-                iconBg="bg-brand-aqua/10"
+                iconColor="text-brand-blue"
+                iconBg="bg-brand-blue"
                 titleSizeClass="text-[15px]"
               />
               <Badge className="bg-white border border-slate-200 rounded-lg text-slate-500 shadow-sm px-3 py-1 font-black text-[10px] uppercase tracking-widest">
@@ -687,9 +718,9 @@ export default function ViewSubscriptionDetailPage() {
                               <span className="text-[11px] font-bold text-slate-700">
                                 {h.startedAt
                                   ? format(
-                                    new Date(h.startedAt),
-                                    "dd MMM, yyyy",
-                                  )
+                                      new Date(h.startedAt),
+                                      "dd MMM, yyyy",
+                                    )
                                   : "—"}
                               </span>
                               <span className="text-[10px] font-medium text-slate-400">
@@ -704,9 +735,9 @@ export default function ViewSubscriptionDetailPage() {
                               <span className="text-[11px] font-bold text-slate-700">
                                 {h.expiresAt
                                   ? format(
-                                    new Date(h.expiresAt),
-                                    "dd MMM, yyyy",
-                                  )
+                                      new Date(h.expiresAt),
+                                      "dd MMM, yyyy",
+                                    )
                                   : "Lifetime"}
                               </span>
                               <span className="text-[10px] font-medium text-slate-400">
@@ -809,9 +840,9 @@ export default function ViewSubscriptionDetailPage() {
                               <span className="text-[11px] font-bold text-slate-700">
                                 {txn?.occurredAt
                                   ? format(
-                                    new Date(txn.occurredAt),
-                                    "dd MMM, yyyy",
-                                  )
+                                      new Date(txn.occurredAt),
+                                      "dd MMM, yyyy",
+                                    )
                                   : "—"}
                               </span>
                               <span className="text-[10px] font-medium text-slate-400">
@@ -826,7 +857,10 @@ export default function ViewSubscriptionDetailPage() {
                               {txn.transactionId || "—"}
                             </div>
                           </TableCell>
-                          <TableCell className="px-4 py-3.5 text-left text-[11px] block truncate max-w-[160px] font-bold text-slate-700 font-mono uppercase tracking-tight whitespace-nowrap" title={getProductDisplayName(txn.productId || "")}>
+                          <TableCell
+                            className="px-4 py-3.5 text-left text-[11px] block truncate max-w-[160px] font-bold text-slate-700 font-mono uppercase tracking-tight whitespace-nowrap"
+                            title={getProductDisplayName(txn.productId || "")}
+                          >
                             {getProductDisplayName(txn.productId)}
                           </TableCell>
                           <TableCell className="px-4 py-3.5 text-left text-xs font-black text-slate-700 uppercase tracking-tight whitespace-nowrap">
@@ -855,7 +889,7 @@ export default function ViewSubscriptionDetailPage() {
                               ) {
                                 icon = <FaUserTie className="size-3.5" />;
                                 style =
-                                  "text-brand-aqua border-brand-aqua/20 bg-brand-aqua/5";
+                                  "text-brand-blue border-brand-blue bg-brand-blue";
                               }
 
                               return (
@@ -873,7 +907,10 @@ export default function ViewSubscriptionDetailPage() {
                             })()}
                           </TableCell>
                           <TableCell className="px-4 py-3.5 text-left text-[10px] font-bold text-slate-400 uppercase tracking-tight">
-                            <span className="block truncate max-w-[90px]" title={txn.reason || ""}>
+                            <span
+                              className="block truncate max-w-[90px]"
+                              title={txn.reason || ""}
+                            >
                               {txn.reason || "—"}
                             </span>
                           </TableCell>
@@ -984,7 +1021,6 @@ export default function ViewSubscriptionDetailPage() {
         onExtend={async (days, reason) => {
           const res = await dispatch(
             extendSubscription({
-
               userId,
               data: { days, reason },
             }),
@@ -1094,7 +1130,7 @@ const LocalPagination = ({
                 className={cn(
                   "h-8 w-8 text-xs font-bold rounded-md transition-all",
                   isActive
-                    ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-aqua/20 border-none"
+                    ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
                     : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
                 )}
               >
@@ -1123,7 +1159,7 @@ const KPICard = ({ label, value, subtext, color, onGrant, hasPulse }) => (
     {onGrant && (
       <button
         onClick={onGrant}
-        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 transition-all hover:bg-brand-aqua hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
+        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 transition-all hover:bg-brand-hoverBlue hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
       >
         <Plus className="h-4 w-4" strokeWidth={3} />
       </button>

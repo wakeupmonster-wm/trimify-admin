@@ -77,41 +77,47 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
                 placeholder="Enter Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
-            
+
             {/* Email address */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Email address</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Email address
+              </Label>
               <Input
                 type="email"
                 name="email"
                 placeholder="Enter email"
                 value={formData.email}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Hospital/Clinic Name */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Hospital/Clinic Name</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Hospital/Clinic Name
+              </Label>
               <Input
                 name="hospital"
                 placeholder="Enter Hospital/Clinic name"
                 value={formData.hospital}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Country */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Country</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Country
+              </Label>
               <Input
                 name="location"
                 value={formData.location}
@@ -122,34 +128,40 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
 
             {/* Phone Number */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Phone Number</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Phone Number
+              </Label>
               <Input
                 type="tel"
                 name="phone"
                 placeholder="Enter Number"
                 value={formData.phone}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Designation */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Designation</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Designation
+              </Label>
               <Input
                 name="designation"
                 placeholder="Enter Designation"
                 value={formData.designation}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Password */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Password</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Password
+              </Label>
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
@@ -157,7 +169,7 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
                   placeholder="Enter Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300 pr-10"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 pr-10"
                   required
                 />
                 <button
@@ -173,13 +185,19 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
             {/* Role */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Role</Label>
-              <Select value={formData.role} onValueChange={handleRoleChange} required>
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300">
+              <Select
+                value={formData.role}
+                onValueChange={handleRoleChange}
+                required
+              >
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select Role" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Sub-Admin User">Sub-Admin User</SelectItem>
-                  <SelectItem value="WhiteListing User">WhiteListing User</SelectItem>
+                  <SelectItem value="WhiteListing User">
+                    WhiteListing User
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>

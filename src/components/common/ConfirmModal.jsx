@@ -1,6 +1,13 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import { AlertTriangle, X, Trash2, CheckCircle2, Check, Loader2 } from "lucide-react";
+import {
+  AlertTriangle,
+  X,
+  Trash2,
+  CheckCircle2,
+  Check,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -22,21 +29,20 @@ const ConfirmModal = ({
     type === "danger"
       ? "bg-red-600 text-white"
       : type === "brand"
-        ? "bg-brand-aqua text-white"
+        ? "bg-brand-blue text-white"
         : type === "success"
           ? "bg-emerald-600 text-white"
           : "bg-orange-500 text-white";
 
-  const buttonStyle =
-    success
-      ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-      : type === "danger"
-        ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-100"
-        : type === "brand"
-          ? "bg-brand-aqua hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-aqua/20"
-          : type === "success"
-            ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-100"
-            : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-100";
+  const buttonStyle = success
+    ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
+    : type === "danger"
+      ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-100"
+      : type === "brand"
+        ? "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue"
+        : type === "success"
+          ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-100"
+          : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-100";
 
   return createPortal(
     <div
@@ -95,7 +101,7 @@ const ConfirmModal = ({
             disabled={loading || success}
             className={cn(
               "min-w-[120px] text-[13px] font-semibold h-9 flex items-center justify-center gap-2 transition-all duration-300",
-              buttonStyle
+              buttonStyle,
             )}
           >
             {loading ? (

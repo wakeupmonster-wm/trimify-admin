@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AddSubAdminDialog } from "../components/add.subadmin.dialog";
 import { EditSubAdminDialog } from "../components/edit.subadmin.dialog";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 // Simple utility to convert an array of objects to CSV
 const downloadCSV = (data, filename = "sub_admins.csv") => {
@@ -68,6 +69,7 @@ const SubAdminManagementPage = () => {
   } = useSelector((state) => state.subAdmin);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -78,10 +80,15 @@ const SubAdminManagementPage = () => {
       fetchSubAdminList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
+        search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleAction = async (row, action, checked) => {
     const rowId = row.id || row._id;
@@ -100,7 +107,7 @@ const SubAdminManagementPage = () => {
           fetchSubAdminList({
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
-            search: globalFilter,
+            search: debouncedSearchTerm,
           }),
         );
       }
@@ -116,7 +123,7 @@ const SubAdminManagementPage = () => {
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
-          search: globalFilter,
+          search: debouncedSearchTerm,
         }),
       );
     }
@@ -134,7 +141,7 @@ const SubAdminManagementPage = () => {
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
-          search: globalFilter,
+          search: debouncedSearchTerm,
         }),
       );
     }
@@ -148,13 +155,13 @@ const SubAdminManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+     <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
               heading="Sub Admin Management"
               icon={<UserCog className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-aqua/30"
+              color="bg-brand-blue shadow-brand-blue"
               subheading="Manage sub-administrators and their access roles."
             />
 

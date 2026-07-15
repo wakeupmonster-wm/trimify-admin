@@ -7,7 +7,7 @@ import { Mail, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { schema } from "../schemas/auth.schemas";
 import { useDispatch } from "react-redux";
-import { requestOtpThunk } from "../store/auth.slice";
+// import { requestOtpThunk } from "../store/auth.slice";
 import { toast } from "sonner";
 
 export default function RequestResetEmailForm() {
@@ -25,9 +25,13 @@ export default function RequestResetEmailForm() {
   const onSubmit = async (data) => {
     try {
       // Ensure 'data.email' is what your API expects
-      const response = await dispatch(
-        requestOtpThunk({ email: data.email }),
-      ).unwrap();
+      // const response = await dispatch(
+      //   requestOtpThunk({ email: data.email }),
+      // ).unwrap();
+      const response = {
+        screen: "/auth/forgot-password",
+        message: "OTP sent successfully!",
+      };
 
       // Pass the email to the next route
       navigate(response.screen || "/auth/forgot-password", {
@@ -57,13 +61,13 @@ export default function RequestResetEmailForm() {
 
       <FieldGroup>
         <Field>
-          <FieldLabel>Email Address</FieldLabel>
+          <FieldLabel className="text-sm">Email Address</FieldLabel>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-blue" />
             <Input
               {...register("email")}
-              placeholder="keenasmustard@gmail.com.au"
-              className="pl-10 py-6"
+              placeholder="info@trimify.com.au"
+              className="pl-10 py-5"
             />
           </div>
           {errors.email && (
@@ -75,7 +79,7 @@ export default function RequestResetEmailForm() {
 
         <Button
           type="submit"
-          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-aqua hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
+          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Sending..." : "Send Reset Link"}
@@ -83,7 +87,7 @@ export default function RequestResetEmailForm() {
 
         <Link
           to="/auth/login"
-          className="flex items-center justify-center gap-2 text-sm text-slate-700 hover:text-brand-aqua transition-colors"
+          className="flex items-center justify-center gap-2 text-sm text-slate-700 hover:text-brand-blue transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Login
         </Link>

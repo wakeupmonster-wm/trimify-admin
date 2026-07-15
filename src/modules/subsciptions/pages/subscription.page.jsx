@@ -204,7 +204,7 @@ export default function SubscriptionPage() {
             heading="Subscription Analytics"
             subheading="Unified intelligence for products, revenue, and subscribers."
             icon={<CreditCard className="w-10 h-10 text-white" />}
-            color="bg-brand-aqua shadow-indigo-100"
+            color="bg-brand-blue shadow-indigo-100"
           />
           <Button
             variant="ghost"
@@ -264,7 +264,7 @@ export default function SubscriptionPage() {
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-1">
                 <CardTitle className="text-base font-black flex items-center gap-2">
-                  <BarChart3 className="w-6 h-6 text-brand-aqua" />
+                  <BarChart3 className="w-6 h-6 text-brand-blue" />
                   Revenue Trend
                 </CardTitle>
                 <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest leading-relaxed">
@@ -274,7 +274,7 @@ export default function SubscriptionPage() {
 
               <div className="flex items-center">
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-hoverBlue border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -603,12 +603,12 @@ export default function SubscriptionPage() {
                 <div className="flex items-center justify-between px-2">
                   <div className="space-y-1">
                     <h3 className="text-sm font-black flex items-center gap-2 text-slate-900">
-                      <Layers className="w-4 h-4 text-brand-aqua" />
+                      <Layers className="w-4 h-4 text-brand-blue" />
                       Best Selling Products
                     </h3>
                     <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
                       Top products by sales volume ·{" "}
-                      <span className="text-brand-aqua">
+                      <span className="text-brand-blue">
                         {totalSales.toLocaleString()} total sales
                       </span>
                     </p>
@@ -647,7 +647,7 @@ export default function SubscriptionPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.08 }}
                         className={cn(
-                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-brand-aqua/5",
+                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-brand-hoverBlue",
                           idx % 2 === 0 ? "bg-slate-50/60" : "bg-transparent",
                         )}
                       >
@@ -655,7 +655,7 @@ export default function SubscriptionPage() {
                         <span
                           className={cn(
                             "text-sm font-black tabular-nums",
-                            idx === 0 ? "text-brand-aqua" : "text-slate-400",
+                            idx === 0 ? "text-brand-blue" : "text-slate-400",
                           )}
                         >
                           {String(idx + 1).padStart(2, "0")}
@@ -679,14 +679,14 @@ export default function SubscriptionPage() {
                                 ease: "easeOut",
                                 delay: idx * 0.1,
                               }}
-                              className="h-full rounded-full bg-brand-aqua"
+                              className="h-full rounded-full bg-brand-blue"
                             />
                           </div>
                         </div>
 
                         {/* Market Share */}
                         <div className="text-right">
-                          <Badge className="bg-brand-aqua/10 text-brand-aqua border-brand-aqua/20 font-black text-[9px] px-2 py-0 h-5 rounded-md">
+                          <Badge className="bg-brand-blue text-brand-blue border-brand-blue font-black text-[9px] px-2 py-0 h-5 rounded-md">
                             {marketShare.toFixed(1)}%
                           </Badge>
                         </div>

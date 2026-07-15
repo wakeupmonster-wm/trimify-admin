@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Apple, ArrowLeft, Send } from "lucide-react";
@@ -16,11 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addNutrition } from "../store/nutrition.slice";
+import { addNutrition, updateNutrition } from "../store/nutrition.slice";
 
 const AddNutritionPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams();
+
+  const isEdit = Boolean(id);
+  const editData = location.state?.editData || null;
   const { loading } = useSelector((state) => state.nutrition);
 
   const [formData, setFormData] = useState({
@@ -37,6 +42,40 @@ const AddNutritionPage = () => {
     Meal_Serving: "",
   });
 
+  console.log("editData: ", editData)
+
+  const parseArrayToString = (val) => {
+    try {
+      if (typeof val === "string") {
+        const parsed = JSON.parse(val);
+        if (Array.isArray(parsed)) {
+          return parsed.map((item) => item.replace(/\r/g, "")).join("\n");
+        }
+      }
+      return val || "";
+    } catch (e) {
+      return val || "";
+    }
+  };
+
+  useEffect(() => {
+    if (isEdit && editData) {
+      setFormData({
+        title: editData.Meal_title || editData.title || "",
+        image: editData.Meal_Image_url && editData.Meal_Image_url !== "none" ? editData.Meal_Image_url : editData.image || "",
+        protein: editData.Meal_Protien_In_gm || editData.protein || "",
+        carbs: editData.Meal_Carbs_In_gm || editData.carbs || "",
+        calories: editData.Meal_Calories_In_gm || editData.calories || "",
+        fats: editData.Meal_Fats_In_gm || editData.fats || "",
+        description: editData.Meal_Description || editData.description || "",
+        Meal_Type: editData.Meal_Type || "",
+        meal_description: parseArrayToString(editData.Meal_instructions) || editData.meal_description || "",
+        meal_ingredients: parseArrayToString(editData.Meal_ingredients) || editData.meal_ingredients || "",
+        Meal_Serving: editData.Meal_Serving || "",
+      });
+    }
+  }, [isEdit, editData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -48,22 +87,27 @@ const AddNutritionPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(
-      addNutrition({
-        ...formData,
-        protein: Number(formData.protein),
-        carbs: Number(formData.carbs),
-        calories: Number(formData.calories),
-        fats: Number(formData.fats),
-        Meal_Serving: Number(formData.Meal_Serving),
-      })
-    )
+    
+    const payloadData = {
+      ...formData,
+      protein: Number(formData.protein),
+      carbs: Number(formData.carbs),
+      calories: Number(formData.calories),
+      fats: Number(formData.fats),
+      Meal_Serving: Number(formData.Meal_Serving),
+    };
+
+    const action = isEdit 
+      ? updateNutrition({ id, data: payloadData })
+      : addNutrition(payloadData);
+
+    dispatch(action)
       .unwrap()
       .then(() => {
         navigate("/admin/data-management/nutrition-food");
       })
       .catch((error) => {
-        console.error("Failed to add nutrition:", error);
+        console.error(`Failed to ${isEdit ? "update" : "add"} nutrition:`, error);
       });
   };
 
@@ -73,10 +117,10 @@ const AddNutritionPage = () => {
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
-              heading="Add Food"
+              heading={isEdit ? "Edit Food" : "Add Food"}
               icon={<Apple className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-aqua/30"
-              subheading="Add new nutrition food items and recipes."
+              color="bg-brand-blue shadow-brand-blue"
+              subheading={isEdit ? "Update existing nutrition food details." : "Add new nutrition food items and recipes."}
             />
 
             <Button
@@ -94,7 +138,12 @@ const AddNutritionPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-xs font-semibold text-slate-700">Food Title</Label>
+                <Label
+                  htmlFor="title"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Food Title
+                </Label>
                 <Input
                   id="title"
                   name="title"
@@ -107,7 +156,12 @@ const AddNutritionPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image" className="text-xs font-semibold text-slate-700">Image URL</Label>
+                <Label
+                  htmlFor="image"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Image URL
+                </Label>
                 <Input
                   id="image"
                   name="image"
@@ -116,11 +170,18 @@ const AddNutritionPage = () => {
                   placeholder="Enter Image URL"
                   className="h-10 text-sm font-normal border-slate-300"
                 />
-                <p className="text-[10px] text-slate-500">Note: Please upload the jpg image here</p>
+                <p className="text-[10px] text-slate-500">
+                  Note: Please upload the jpg image here
+                </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="protein" className="text-xs font-semibold text-slate-700">Proteins (gm)</Label>
+                <Label
+                  htmlFor="protein"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Proteins (gm)
+                </Label>
                 <Input
                   id="protein"
                   name="protein"
@@ -136,7 +197,12 @@ const AddNutritionPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="carbs" className="text-xs font-semibold text-slate-700">Carbs (gm)</Label>
+                <Label
+                  htmlFor="carbs"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Carbs (gm)
+                </Label>
                 <Input
                   id="carbs"
                   name="carbs"
@@ -152,7 +218,12 @@ const AddNutritionPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="calories" className="text-xs font-semibold text-slate-700">Calories (kcal)</Label>
+                <Label
+                  htmlFor="calories"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Calories (kcal)
+                </Label>
                 <Input
                   id="calories"
                   name="calories"
@@ -168,7 +239,12 @@ const AddNutritionPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="fats" className="text-xs font-semibold text-slate-700">Fats (gm)</Label>
+                <Label
+                  htmlFor="fats"
+                  className="text-xs font-semibold text-slate-700"
+                >
+                  Fats (gm)
+                </Label>
                 <Input
                   id="fats"
                   name="fats"
@@ -185,7 +261,12 @@ const AddNutritionPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-xs font-semibold text-slate-700">Description</Label>
+              <Label
+                htmlFor="description"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Description
+              </Label>
               <Textarea
                 id="description"
                 name="description"
@@ -194,13 +275,20 @@ const AddNutritionPage = () => {
                 placeholder="Enter Description"
                 className="min-h-[80px] text-sm resize-y font-normal border-slate-300"
               />
-              <p className="text-[10px] text-slate-500">Character Count: {formData.description.length}</p>
+              <p className="text-[10px] text-slate-500">
+                Character Count: {formData.description.length}
+              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="Meal_Type" className="text-xs font-semibold text-slate-700">Meal Type</Label>
-              <Select 
-                value={formData.Meal_Type} 
+              <Label
+                htmlFor="Meal_Type"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Meal Type
+              </Label>
+              <Select
+                value={formData.Meal_Type}
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
                 required
               >
@@ -215,22 +303,33 @@ const AddNutritionPage = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="meal_description" className="text-xs font-semibold text-slate-700">Meal Instructions</Label>
+              <Label
+                htmlFor="meal_description"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Meal Instructions
+              </Label>
               <Textarea
                 id="meal_description"
                 name="meal_description"
                 value={formData.meal_description}
                 onChange={handleChange}
                 placeholder="Enter Meal Instructions"
-                className="min-h-[100px] text-sm resize-y font-normal border-slate-300"  
+                className="min-h-[100px] text-sm resize-y font-normal border-slate-300"
               />
               <p className="text-[10px] text-slate-500">
-                Character Count: {formData.meal_description.length} Note: Please enter the meal instructions in list format.
+                Character Count: {formData.meal_description.length} Note: Please
+                enter the meal instructions in list format.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="meal_ingredients" className="text-xs font-semibold text-slate-700">Meal Ingredients</Label>
+              <Label
+                htmlFor="meal_ingredients"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Meal Ingredients
+              </Label>
               <Textarea
                 id="meal_ingredients"
                 name="meal_ingredients"
@@ -240,12 +339,18 @@ const AddNutritionPage = () => {
                 className="min-h-[80px] text-sm resize-y font-normal border-slate-300"
               />
               <p className="text-[10px] text-slate-500">
-                Character Count: {formData.meal_ingredients.length} Note: Please enter the meal ingredients in list format.
+                Character Count: {formData.meal_ingredients.length} Note: Please
+                enter the meal ingredients in list format.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="Meal_Serving" className="text-xs font-semibold text-slate-700">Meal Serving</Label>
+              <Label
+                htmlFor="Meal_Serving"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Meal Serving
+              </Label>
               <Input
                 id="Meal_Serving"
                 name="Meal_Serving"
@@ -266,7 +371,7 @@ const AddNutritionPage = () => {
                 className="w-full max-w-sm bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md h-10 flex items-center justify-center gap-2 font-medium"
               >
                 <Send size={16} className="-ml-1" />
-                Add Nutrition
+                {isEdit ? "Update Nutrition" : "Add Nutrition"}
               </Button>
             </div>
           </form>

@@ -29,7 +29,7 @@ export default function PrivacyAndPolicyPage() {
             <Button
               // onClick={handleSaveAll}
               // disabled={isSaving || loading}
-              className="bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
+              className="bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
             >
               {/* {isSaving ? (
                 <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />

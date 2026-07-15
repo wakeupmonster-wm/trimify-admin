@@ -12,7 +12,7 @@ export const SocialInput = ({
     <label className="text-[13px] font-bold text-slate-800 font-jakarta tracking-tight">
       {label}
     </label>
-    <div className="flex items-stretch w-full rounded-lg border border-slate-300 overflow-hidden group focus-within:border-brand-aqua/50 focus-within:ring-4 focus-within:ring-brand-aqua/5 transition-all duration-300">
+    <div className="flex items-stretch w-full rounded-lg border border-slate-300 overflow-hidden group focus-within:border-brand-blue focus-within:ring-4 focus-within:ring-brand-blue transition-all duration-300">
       <div className="bg-slate-100 px-4 flex items-center justify-center border-r border-slate-300 min-w-[60px] group-focus-within:bg-white transition-colors">
         <div className="text-foreground/80">{icon}</div>
       </div>

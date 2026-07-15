@@ -9,7 +9,7 @@ export const colorMap = {
   orange:
     "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
   red: "from-red-500/40 to-red-600/5 text-red-600 border-red-100",
-  aqua: "from-brand-aqua/30 to-brand-aqua/5 text-brand-aqua border-brand-aqua/30",
+  aqua: "from-brand-blue to-brand-blue text-brand-blue border-brand-blue",
 };
 
 export const bgMap = {
@@ -24,5 +24,5 @@ export const bgMap = {
   orange:
     "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
   red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
-  aqua: "from-brand-aqua/20 via-brand-aqua/10 to-transparent text-brand-aqua border-brand-aqua/30 hover:border-brand-aqua/80",
+  aqua: "from-brand-blue via-brand-blue to-transparent text-brand-blue border-brand-blue hover:border-brand-blue",
 };

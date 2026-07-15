@@ -7,7 +7,7 @@
 // }
 
 // src/components/common/GlobalLoader.jsx
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 export default function GlobalLoader() {
   // const { isLoading, loadingText } = useSelector((state) => state.loader);
@@ -17,11 +17,10 @@ export default function GlobalLoader() {
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-4 rounded-lg shadow-lg flex items-center gap-3">
-        <div className="w-8 h-8 border-4 border-brand-aqua border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
 
         {/* <span>{loadingText}</span> */}
       </div>
     </div>
   );
 }
-

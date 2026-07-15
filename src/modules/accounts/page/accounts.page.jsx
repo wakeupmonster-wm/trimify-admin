@@ -35,11 +35,6 @@ export default function AccountsPage() {
   const { account, loading, passwordSuccess } = useSelector(
     (state) => state.account,
   );
-  const [form, setForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
@@ -48,7 +43,6 @@ export default function AccountsPage() {
 
   useEffect(() => {
     if (passwordSuccess) {
-      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setTimeout(() => dispatch(resetPasswordStatus()), 5000);
     }
   }, [passwordSuccess, dispatch]);
@@ -87,7 +81,7 @@ export default function AccountsPage() {
           {/* HERO SECTION */}
           <div className="relative bg-white rounded-lg shadow-sm shadow-gray-200 overflow-hidden border border-gray-200">
             {/* Cover Banner */}
-            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-brand-aqua/35 via-brand-aqua/50 to-brand-aqua/10 relative overflow-hidden">
+            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-brand-blue via-brand-blue to-brand-blue relative overflow-hidden">
               {/* Decorative patterns */}
               <img
                 src={accountBg}
@@ -100,21 +94,17 @@ export default function AccountsPage() {
               <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-end -mt-16 md:-mt-[75px] relative z-10 w-full">
                 {/* Avatar */}
                 <div className="relative group shrink-0">
-                  <div className="absolute inset-0 bg-brand-aqua/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-brand-blue blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Avatar className="relative h-40 w-40 md:h-44 md:w-44 ring-4 ring-white bg-white shadow-lg rounded-full overflow-hidden">
                     <AvatarImage
                       src={account?.avatar?.url}
                       alt={account?.nickname}
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-brand-aqua to-brand-aqua/20 text-white text-5xl font-black">
+                    <AvatarFallback className="bg-gradient-to-br from-brand-blue to-brand-blue text-white text-5xl font-black">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
-                  {/* Status indicator ping */}
-                  {/* <div className="absolute bottom-4 right-4 h-6 w-6 rounded-full border-4 border-white bg-emerald-500 shadow-md">
-                    <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-75" />
-                  </div> */}
                 </div>
 
                 {/* Identity Info */}
@@ -127,13 +117,12 @@ export default function AccountsPage() {
 
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 md:gap-8 text-xs font-semibold text-foreground/50">
                     <span className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3. text-brand-aqua" />
+                      <Calendar className="w-3.5 h-3.5 text-brand-blue" />
                       Joined {formatDateSafe(account?.memberSince)}
                     </span>
                     <span className="flex flex-row items-center gap-2">
-                      {/* <span className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden md:block" /> */}
-                      <Clock className="w-3.5 h-3.5 text-brand-aqua" />
-                      Last login {formatDateSafe(account.lastLoginAt)}
+                      <Clock className="w-3.5 h-3.5 text-brand-blue" />
+                      Last login {formatDateSafe(account?.lastLoginAt)}
                     </span>
                   </div>
                 </div>
@@ -141,7 +130,7 @@ export default function AccountsPage() {
                 {/* Action */}
                 <div className="mb-2 shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <AdminEditDialog currentData={account}>
-                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300 bg-white hover:bg-brand-aqua hover:border-brand-aqua font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
+                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300 bg-white hover:bg-brand-hoverBlue hover:border-brand-blue font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
                       <Edit3 className="w-3.5 h-3.5" strokeWidth={2} />
                       Configure Profile
                     </Button>
@@ -156,7 +145,7 @@ export default function AccountsPage() {
             {/* LEFT COLUMN: Sidebar Info (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
               {/* Contact Details Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-brand-aqua/50 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-5 border-b border-slate-300/50">
                     <DashboardHead
@@ -173,11 +162,11 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Mail
-                        className="w-4 h-4 text-brand-aqua"
+                        className="w-4 h-4 text-brand-blue"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-brand-aqua/10"
+                    bg="bg-blue-100"
                     label="Email Address"
                     value={account?.email}
                     verified={account?.verified?.email}
@@ -185,35 +174,20 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Phone
-                        className="w-4 h-4 text-brand-aqua"
+                        className="w-4 h-4 text-brand-blue"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-brand-aqua/10"
+                    bg="bg-blue-100"
                     label="Phone Number"
                     value={account?.phone}
                     verified={account?.verified?.phone}
                   />
-                  {/* <InfoItem
-                    icon={
-                      <MapPin
-                        className="w-4 h-4 text-purple-600"
-                        strokeWidth={2.5}
-                      />
-                    }
-                    bg="bg-purple-50"
-                    label="Location"
-                    value={
-                      account?.location?.coordinates
-                        ? `${account?.location?.coordinates[0]}, ${account?.location?.coordinates[1]}`
-                        : "Not Set"
-                    }
-                  /> */}
                 </CardContent>
               </Card>
 
               {/* Meta Data Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-brand-aqua/50 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-5 border-b border-slate-300/50">
                     <DashboardHead
@@ -228,28 +202,28 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Calendar
-                        className="w-4 h-4 text-brand-aqua"
+                        className="w-4 h-4 text-brand-blue"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-brand-aqua/10"
+                    bg="bg-blue-100"
                     label="Member Since"
                     value={formatDateSafe(account?.memberSince)}
                   />
                   <InfoItem
                     icon={
                       <Clock
-                        className="w-4 h-4 text-brand-aqua"
+                        className="w-4 h-4 text-brand-blue"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-brand-aqua/10"
+                    bg="bg-blue-100"
                     label="Last Login"
                     value={formatDateSafe(account?.lastLoginAt)}
                   />
 
                   <div className="flex items-center gap-5 p-2 px-4 rounded-lg bg-slate-50 group hover:bg-slate-100/50 transition-colors">
-                    <div className="p-1 rounded-md bg-slate-50 shadow-sm text-slate-700 group-hover:scale-110 transition-transform">
+                    <div className="p-2 rounded-lg bg-blue-100 shadow-sm text-slate-700 group-hover:scale-110 transition-transform">
                       <Hash className="w-5 h-5" strokeWidth={2.5} />
                     </div>
                     <div className="min-w-0">
@@ -267,68 +241,8 @@ export default function AccountsPage() {
 
             {/* RIGHT COLUMN: Stats & Security (8 cols) */}
             <div className="lg:col-span-8 space-y-4">
-              {/* Quick Stats Grid */}
-              {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                {[
-                  {
-                    label: "Privilege",
-                    value: account?.role,
-                    icon: ShieldCheck,
-                    color: "text-indigo-600",
-                    bg: "bg-indigo-50",
-                    ring: "ring-indigo-100",
-                  },
-                  {
-                    label: "Account Status",
-                    value: account?.status,
-                    icon: CheckCircle2,
-                    color: "text-emerald-600",
-                    bg: "bg-emerald-50",
-                    ring: "ring-emerald-100",
-                  },
-                  {
-                    label: "Email Secured",
-                    value: account?.verified?.email ? "Verified" : "Pending",
-                    icon: Mail,
-                    color: "text-brand-aqua",
-                    bg: "bg-brand-aqua/10",
-                    ring: "ring-brand-aqua/20",
-                  },
-                  {
-                    label: "Phone Secured",
-                    value: account?.verified?.phone ? "Verified" : "Pending",
-                    icon: Phone,
-                    color: "text-amber-600",
-                    bg: "bg-amber-50",
-                    ring: "ring-amber-100",
-                  },
-                ].map((stat, i) => (
-                  <div
-                    key={i}
-                    className="rounded-[2rem] p-6 shadow-sm shadow-gray-200 border border-gray-200 hover:border-brand-aqua/50 flex flex-col items-center justify-center text-center group hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div
-                      className={cn(
-                        "p-4 rounded-full mb-4 ring-4 transition-transform duration-500 group-hover:scale-110",
-                        stat.bg,
-                        stat.color,
-                        stat.ring,
-                      )}
-                    >
-                      <stat.icon className="w-6 h-6" strokeWidth={2.5} />
-                    </div>
-                    <p className="text-lg md:text-xl font-black text-slate-800 capitalize leading-tight mb-1">
-                      {stat?.value || "-"}
-                    </p>
-                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest line-clamp-1 break-all">
-                      {stat?.label}
-                    </p>
-                  </div>
-                ))}
-              </div> */}
-
               {/* Security Component wrapper to give it matching styles */}
-              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-brand-aqua/50 overflow-hidden">
+              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden">
                 <SecurityCredentials
                   account={account}
                   loading={loading}

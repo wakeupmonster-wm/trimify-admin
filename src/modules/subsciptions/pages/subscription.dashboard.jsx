@@ -102,11 +102,11 @@ const getSubTrendExplanation = (stat) => {
   const action = diff >= 0 ? "increased" : "decreased";
   if (previous === 0 && current > 0)
     return `${stat.label} spiked to ${fmt(
-      current
+      current,
     )} because there was 0 activity in the previous period.`;
   if (current === 0 && previous > 0)
     return `${stat.label} dropped to zero from ${fmt(
-      previous
+      previous,
     )} in the previous period.`;
   if (current === previous)
     return `${
@@ -117,7 +117,7 @@ const getSubTrendExplanation = (stat) => {
       ? Math.abs(((current - previous) / previous) * 100).toFixed(1) + "%"
       : "N/A";
   return `${stat.label} ${action} by ${pct} from ${fmt(previous)} to ${fmt(
-    current
+    current,
   )}.`;
 };
 
@@ -141,7 +141,7 @@ const containerVariants = {
 export default function SubscriptionDashboard() {
   const dispatch = useDispatch();
   const { subscriptionStats, statsLoading, dateRange, error } = useSelector(
-    (state) => state.subscription
+    (state) => state.subscription,
   );
   const [selectedDate, setSelectedDate] = useState(() => {
     const initial = dateRange || { preset: "today" };
@@ -215,7 +215,7 @@ export default function SubscriptionDashboard() {
           : null,
         to: isValidDate(selectedDate.to) ? selectedDate.to.toISOString() : null,
         preset: selectedDate.preset,
-      })
+      }),
     );
   }, [selectedDate, dispatch, handleRefresh]);
 
@@ -327,8 +327,8 @@ export default function SubscriptionDashboard() {
   }, [kpis]);
 
   const milestoneProgress = Math.min(
-  100,
-    Math.max(0, parseFloat(kpis?.milestone?.percentage) || 0)
+    100,
+    Math.max(0, parseFloat(kpis?.milestone?.percentage) || 0),
   );
 
   // Chart data formatting & filtering
@@ -370,7 +370,7 @@ export default function SubscriptionDashboard() {
           23,
           59,
           59,
-          999
+          999,
         );
       } else if (
         selectedDate?.preset === "today" ||
@@ -451,7 +451,7 @@ export default function SubscriptionDashboard() {
 
         const key = `${format(startOfWeekDate, "dd")} - ${format(
           endOfWeekDate,
-          "dd MMM"
+          "dd MMM",
         )}`.toLowerCase();
         groups[key] = {
           name: key,
@@ -472,7 +472,7 @@ export default function SubscriptionDashboard() {
         if (!isValidDate(d)) return;
         const endOfWeekDate = new Date(d);
         endOfWeekDate.setDate(
-          endOfWeekDate.getDate() + (6 - endOfWeekDate.getDay())
+          endOfWeekDate.getDate() + (6 - endOfWeekDate.getDay()),
         );
 
         const startOfWeekDate = new Date(endOfWeekDate);
@@ -480,7 +480,7 @@ export default function SubscriptionDashboard() {
 
         const key = `${format(startOfWeekDate, "dd")} - ${format(
           endOfWeekDate,
-          "dd MMM"
+          "dd MMM",
         )}`.toLowerCase();
         if (groups[key]) {
           groups[key].subscription +=
@@ -593,8 +593,8 @@ export default function SubscriptionDashboard() {
     revenueTimeframe === "daily"
       ? "Daily view"
       : revenueTimeframe === "weekly"
-      ? "Weekly view"
-      : "Monthly view";
+        ? "Weekly view"
+        : "Monthly view";
 
   const growthData = useMemo(() => {
     let rawData = charts?.subscriberGrowth || [];
@@ -634,7 +634,7 @@ export default function SubscriptionDashboard() {
           23,
           59,
           59,
-          999
+          999,
         );
       } else if (
         selectedDate?.preset === "today" ||
@@ -701,7 +701,7 @@ export default function SubscriptionDashboard() {
 
         const key = `${format(startOfWeekDate, "dd")} - ${format(
           endOfWeekDate,
-          "dd MMM"
+          "dd MMM",
         )}`.toLowerCase();
         groups[key] = {
           name: key,
@@ -719,7 +719,7 @@ export default function SubscriptionDashboard() {
         if (!isValidDate(d)) return;
         const endOfWeekDate = new Date(d);
         endOfWeekDate.setDate(
-          endOfWeekDate.getDate() + (6 - endOfWeekDate.getDay())
+          endOfWeekDate.getDate() + (6 - endOfWeekDate.getDay()),
         );
 
         const startOfWeekDate = new Date(endOfWeekDate);
@@ -727,7 +727,7 @@ export default function SubscriptionDashboard() {
 
         const key = `${format(startOfWeekDate, "dd")} - ${format(
           endOfWeekDate,
-          "dd MMM"
+          "dd MMM",
         )}`.toLowerCase();
         if (groups[key]) {
           groups[key].new += item.newSubscriptions ?? item.new ?? 0;
@@ -775,7 +775,7 @@ export default function SubscriptionDashboard() {
     }
 
     let grouped = Object.values(groups).sort(
-      (a, b) => a.compareDate - b.compareDate
+      (a, b) => a.compareDate - b.compareDate,
     );
     return { data: grouped, timeframe: activeTimeframe };
   }, [charts, selectedDate]);
@@ -812,7 +812,7 @@ export default function SubscriptionDashboard() {
       {
         name: "1 Month Premium",
         subscribers: oneMonthCount,
-        fill: "hsl(var(--brand-aqua))",
+        fill: "hsl(var(--brand-blue))",
       },
       {
         name: "3 Months Premium",
@@ -833,8 +833,8 @@ export default function SubscriptionDashboard() {
             key !== "compareDate" &&
             key !== "total" &&
             typeof value === "number" &&
-            value > 0
-        )
+            value > 0,
+        ),
       )
     );
   }, [revenueTrendChartData]);
@@ -844,7 +844,7 @@ export default function SubscriptionDashboard() {
       !subscriberGrowthChartData ||
       subscriberGrowthChartData.length === 0 ||
       !subscriberGrowthChartData.some(
-        (d) => (d.new || 0) > 0 || (d.cancelled || 0) > 0
+        (d) => (d.new || 0) > 0 || (d.cancelled || 0) > 0,
       )
     );
   }, [subscriberGrowthChartData]);
@@ -869,7 +869,7 @@ export default function SubscriptionDashboard() {
     return (
       charts?.bestSellingProducts?.reduce(
         (acc, p) => acc + (p.revenue || 0),
-        0
+        0,
       ) || 0
     );
   }, [charts]);
@@ -950,7 +950,7 @@ export default function SubscriptionDashboard() {
         >
           <Button
             onClick={handleRefresh}
-            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-brand-aqua text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-brand-aqua/30 transition-all duration-300 active:scale-95 overflow-hidden"
+            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-brand-hoverBlue text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-brand-blue transition-all duration-300 active:scale-95 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-3">
               <RefreshCcw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
@@ -1002,7 +1002,7 @@ export default function SubscriptionDashboard() {
               "sticky top-0 z-[50] px-3 md:px-6 py-3 transition-all duration-300 ease-in-out",
               scrolled
                 ? "backdrop-blur-md bg-white/95 border-b border-slate-200 shadow-sm shadow-slate-300/50"
-                : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none"
+                : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
@@ -1011,11 +1011,11 @@ export default function SubscriptionDashboard() {
                 icon={
                   <TrendingUp strokeWidth={2} className="w-8 h-8 text-white" />
                 }
-                color="bg-brand-aqua shadow-brand-aqua/30"
+                color="bg-brand-blue shadow-brand-blue"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-aqua font-semibold">
+                    <span className="text-brand-blue font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>
@@ -1056,7 +1056,7 @@ export default function SubscriptionDashboard() {
                       <div
                         className={cn(
                           "p-3 rounded-full bg-slate-200/40 shadow-sm transition-all duration-300 group-hover:shadow-md",
-                          colorMap[stat.color]
+                          colorMap[stat.color],
                         )}
                       >
                         {stat.icon}
@@ -1074,7 +1074,7 @@ export default function SubscriptionDashboard() {
                                   className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 cursor-help transition-transform ${
                                     isNegative
                                       ? "text-rose-600 bg-rose-50 border-rose-200"
-                                      : "text-brand-aqua bg-brand-aqua/10 border-brand-aqua/30"
+                                      : "text-brand-blue bg-brand-blue border-brand-blue"
                                   }`}
                                 >
                                   {isTrendingUp && hasTrend ? (
@@ -1086,7 +1086,7 @@ export default function SubscriptionDashboard() {
                                 </div>
                               </ShadTooltipTrigger>
                               <ShadTooltipContent
-                                className="bg-slate-900 border-brand-aqua/40 text-slate-100 shadow-xl shadow-brand-aqua/10 max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium"
+                                className="bg-slate-900 border-brand-blue text-slate-100 shadow-xl shadow-brand-blue max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium"
                                 side="bottom"
                                 align="end"
                               >
@@ -1158,7 +1158,7 @@ export default function SubscriptionDashboard() {
                                         className={
                                           isNegative
                                             ? "text-rose-400"
-                                            : "text-brand-aqua"
+                                            : "text-brand-blue"
                                         }
                                       >
                                         {stat.tooltipData.current -
@@ -1231,7 +1231,7 @@ export default function SubscriptionDashboard() {
                 </div>
                 <div className="h-3 rounded-full bg-[#E2E8F0] m-0 w-full overflow-hidden">
                   <div
-                    className="h-full bg-brand-aqua rounded-full transition-all duration-500"
+                    className="h-full bg-brand-blue rounded-full transition-all duration-500"
                     style={{ width: `${milestoneProgress}%` }}
                   ></div>
                 </div>

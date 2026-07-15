@@ -117,7 +117,7 @@ export default function NotificationManagementPages() {
           limit: paginationState.pageSize,
           channel: channelFilter === "all" ? undefined : channelFilter,
           status: statusFilter === "all" ? undefined : statusFilter,
-        })
+        }),
       );
     }
   }, [dispatch, activeTab, paginationState, channelFilter, statusFilter]);
@@ -148,7 +148,7 @@ export default function NotificationManagementPages() {
 
     if (!form.campaignName || !form.subject || !form.message) {
       toast.error(
-        "Please fill in all required fields (Name, Title/Subject, Message)"
+        "Please fill in all required fields (Name, Title/Subject, Message)",
       );
       return;
     }
@@ -235,7 +235,7 @@ export default function NotificationManagementPages() {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(
         () => dispatch(clearNotificationStatus()),
-        4000
+        4000,
       );
     }
   };
@@ -259,7 +259,7 @@ export default function NotificationManagementPages() {
             <PageHeader
               heading="Campaign Manager"
               icon={<Bell strokeWidth={2} className="w-9 h-9 text-white" />}
-              color="bg-brand-aqua"
+              color="bg-brand-blue"
               subheading="Design and deploy multi-channel engagement."
             />
           </div>
@@ -273,15 +273,15 @@ export default function NotificationManagementPages() {
               className={cn(
                 "pb-4 text-[13px] font-semibold transition-all px-2 relative",
                 activeTab === "new"
-                  ? "text-brand-aqua"
-                  : "text-slate-500 hover:text-slate-600"
+                  ? "text-brand-blue"
+                  : "text-slate-500 hover:text-slate-600",
               )}
             >
               New Campaign
               {activeTab === "new" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0  right-0 h-[2px] bg-brand-aqua"
+                  className="absolute bottom-0 left-0  right-0 h-[2px] bg-brand-blue"
                 />
               )}
             </button>
@@ -290,15 +290,15 @@ export default function NotificationManagementPages() {
               className={cn(
                 "pb-4 text-[13px] font-semibold transition-all px-2 relative",
                 activeTab === "history"
-                  ? "text-brand-aqua"
-                  : "text-slate-500 hover:text-slate-600"
+                  ? "text-brand-blue"
+                  : "text-slate-500 hover:text-slate-600",
               )}
             >
               Campaign History
               {activeTab === "history" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-aqua"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue"
                 />
               )}
             </button>
@@ -321,7 +321,7 @@ export default function NotificationManagementPages() {
                   <div className="px-4 sm:px-6 space-y-8">
                     {/* Channel Type */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-aqua">
+                      <div className="flex items-center gap-2 text-brand-blue">
                         <Monitor size={18} />
                         <span className="text-[13px] font-bold">
                           Channel Type
@@ -342,16 +342,16 @@ export default function NotificationManagementPages() {
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "email"
-                              ? "border-brand-aqua bg-brand-aqua/5"
-                              : "border-slate-100 bg-white hover:border-slate-200"
+                              ? "border-brand-blue bg-brand-blue"
+                              : "border-slate-100 bg-white hover:border-slate-200",
                           )}
                         >
                           <div
                             className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                               form.channel === "email"
-                                ? "bg-brand-aqua text-white"
-                                : "bg-slate-50 text-slate-400"
+                                ? "bg-brand-blue text-white"
+                                : "bg-slate-50 text-slate-400",
                             )}
                           >
                             <Mail size={20} />
@@ -369,22 +369,28 @@ export default function NotificationManagementPages() {
                         <button
                           onClick={() => {
                             setForm((p) => ({
-                              ...p, channel: "push",
-                              notificationType: p.target === "expiring" ? "expiry" : "broadcast"
+                              ...p,
+                              channel: "push",
+                              notificationType:
+                                p.target === "expiring"
+                                  ? "expiry"
+                                  : "broadcast",
                             }));
                             setPreviewType("push");
                           }}
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "push"
-                              ? "border-brand-aqua bg-brand-aqua/5"
-                              : "border-slate-100 bg-white hover:border-slate-200"
+                              ? "border-brand-blue bg-brand-blue"
+                              : "border-slate-100 bg-white hover:border-slate-200",
                           )}
                         >
                           <div
                             className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
-                              form.channel === "push" ? "bg-brand-aqua text-white" : "bg-slate-50 text-slate-400"
+                              form.channel === "push"
+                                ? "bg-brand-blue text-white"
+                                : "bg-slate-50 text-slate-400",
                             )}
                           >
                             <Bell size={20} />
@@ -403,7 +409,7 @@ export default function NotificationManagementPages() {
 
                     {/* Target Audience */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-aqua">
+                      <div className="flex items-center gap-2 text-brand-blue">
                         <LuUsersRound size={18} />
                         <span className="text-[13px] font-bold">
                           Target Audience
@@ -428,9 +434,7 @@ export default function NotificationManagementPages() {
                           <SelectValue placeholder="Select target audience" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">
-                            All App Users
-                          </SelectItem>
+                          <SelectItem value="all">All App Users</SelectItem>
                           <SelectItem value="premium">
                             Premium Tier Only (Subscription Updates)
                           </SelectItem>
@@ -450,7 +454,7 @@ export default function NotificationManagementPages() {
                     {/* Expiry Reminder Schedule (Drip Sequence) */}
                     {form.target === "expiring" && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-brand-aqua">
+                        <div className="flex items-center gap-2 text-brand-blue">
                           <Clock size={18} />
                           <span className="text-[13px] font-bold">
                             Reminder Schedule (Drip Sequence)
@@ -463,21 +467,21 @@ export default function NotificationManagementPages() {
                               className={cn(
                                 "flex items-center gap-2 cursor-pointer border px-4 py-2.5 rounded-lg transition-all",
                                 dripDays.includes(day)
-                                  ? "bg-brand-aqua/10 border-brand-aqua"
-                                  : "bg-white border-slate-200 hover:border-slate-300"
+                                  ? "bg-brand-blue border-brand-blue"
+                                  : "bg-white border-slate-200 hover:border-slate-300",
                               )}
                             >
                               <Checkbox
-                                className="w-4 h-4 border-slate-300 data-[state=checked]:bg-brand-aqua data-[state=checked]:border-brand-aqua data-[state=checked]:text-white rounded-[4px]"
+                                className="w-4 h-4 border-slate-300 data-[state=checked]:bg-brand-blue data-[state=checked]:border-brand-blue data-[state=checked]:text-white rounded-[4px]"
                                 checked={dripDays.includes(day)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
                                     setDripDays(
-                                      [...dripDays, day].sort((a, b) => b - a)
+                                      [...dripDays, day].sort((a, b) => b - a),
                                     );
                                   } else {
                                     setDripDays(
-                                      dripDays.filter((d) => d !== day)
+                                      dripDays.filter((d) => d !== day),
                                     );
                                   }
                                 }}
@@ -486,8 +490,8 @@ export default function NotificationManagementPages() {
                                 className={cn(
                                   "text-[13px] font-bold",
                                   dripDays.includes(day)
-                                    ? "text-brand-aqua"
-                                    : "text-slate-600"
+                                    ? "text-brand-blue"
+                                    : "text-slate-600",
                                 )}
                               >
                                 {day} Days Before
@@ -504,7 +508,7 @@ export default function NotificationManagementPages() {
 
                     {/* Internal Reference */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-aqua">
+                      <div className="flex items-center gap-2 text-brand-blue">
                         <Link2 size={18} />
                         <span className="text-[13px] font-bold">
                           Internal Reference
@@ -522,14 +526,12 @@ export default function NotificationManagementPages() {
 
                     {/* Creative Content */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-aqua">
+                      <div className="flex items-center gap-2 text-brand-blue">
                         <Type size={18} />
                         <span className="text-[13px] font-bold">
-                          {
-                            form.channel === "email"
-                              ? "Email Subject"
-                              : "Notification Title"
-                          }
+                          {form.channel === "email"
+                            ? "Email Subject"
+                            : "Notification Title"}
                         </span>
                       </div>
                       <div className="space-y-3">
@@ -563,7 +565,7 @@ export default function NotificationManagementPages() {
                     {/* Call To Action */}
                     {form.channel === "push" && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-brand-aqua">
+                        <div className="flex items-center gap-2 text-brand-blue">
                           <MousePointer2 size={18} />
                           <span className="text-[13px] font-bold">
                             Call To Action (CTA)
@@ -600,7 +602,7 @@ export default function NotificationManagementPages() {
                       type="button"
                       onClick={handleLaunchClick}
                       disabled={isLoading}
-                      className="w-full h-10 bg-brand-aqua hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-brand-aqua/20 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-10 bg-brand-blue hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {isLoading ? "Launching..." : "Launch Campaign"}
@@ -626,7 +628,7 @@ export default function NotificationManagementPages() {
                         "px-3 py-1 rounded-full text-[11px] font-bold",
                         previewType === "email"
                           ? "bg-[#E0E7FF] text-[#4338CA]"
-                          : "bg-brand-aqua/10 text-brand-aqua"
+                          : "bg-brand-blue text-brand-blue",
                       )}
                     >
                       {previewType === "email" ? "Email" : "Mobile Push"}
@@ -666,7 +668,7 @@ export default function NotificationManagementPages() {
                                   className="bg-white/95 backdrop-blur-md shadow-lg rounded-[16px] p-3 border border-white/20"
                                 >
                                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-500">
-                                    <div className="w-[18px] h-[18px] bg-brand-aqua rounded flex items-center justify-center">
+                                    <div className="w-[18px] h-[18px] bg-brand-blue rounded flex items-center justify-center">
                                       <Bell
                                         className="text-white w-2.5 h-2.5"
                                         strokeWidth={3}
@@ -713,7 +715,7 @@ export default function NotificationManagementPages() {
                                 {form.subject || "(No Subject)"}
                               </h3>
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-aqua to-brand-aqua/80 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                   K
                                 </div>
                                 <div className="leading-tight">
@@ -778,7 +780,7 @@ export default function NotificationManagementPages() {
         message={
           <>
             Are you sure you want to launch the{" "}
-            <strong className="text-brand-aqua font-bold">
+            <strong className="text-brand-blue font-bold">
               {form.campaignName || "Draft"}
             </strong>{" "}
             campaign? This will be dispatched to the{" "}

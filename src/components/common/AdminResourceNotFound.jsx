@@ -42,9 +42,9 @@ export const AdminResourceNotFound = ({
         {/* Visual Element */}
         <div className="relative flex justify-center">
           <div className="relative">
-            <div className="absolute inset-0 bg-brand-aqua/20 blur-3xl rounded-full scale-150 animate-pulse" />
+            <div className="absolute inset-0 bg-brand-blue blur-3xl rounded-full scale-150 animate-pulse" />
             <div className="relative bg-white p-8 rounded-full shadow-md border border-slate-200 flex items-center justify-center">
-              <Icon className="w-16 h-16 text-brand-aqua" strokeWidth={1.5} />
+              <Icon className="w-16 h-16 text-brand-blue" strokeWidth={1.5} />
 
               {/* Decorative Mini-Icon */}
               {/* <div className="absolute -top-2 -right-2 bg-white p-2 rounded-full shadow-md border border-slate-50">
@@ -70,7 +70,7 @@ export const AdminResourceNotFound = ({
         <div className="pt-2 flex justify-center">
           <Button
             onClick={handleBack}
-            className="bg-brand-aqua hover:bg-brand-hoverAqua text-white h-10 px-8 rounded-lg font-bold shadow-lg shadow-brand-aqua/20 transition-all active:scale-95 flex items-center gap-2"
+            className="bg-brand-blue hover:bg-brand-hoverAqua text-white h-10 px-8 rounded-lg font-bold shadow-lg shadow-brand-blue transition-all active:scale-95 flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             {backLabel}

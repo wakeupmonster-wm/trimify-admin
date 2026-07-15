@@ -13,7 +13,7 @@ export const getCmsManagementColumns = (onAction) => [
     id: "sno",
     header: () => (
       <div className="w-10 text-left text-[11px] font-bold text-foreground">
-        S.No
+        SR.No
       </div>
     ),
     size: 120,
@@ -72,7 +72,7 @@ export const getCmsManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-aqua/10 focus:text-brand-aqua font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

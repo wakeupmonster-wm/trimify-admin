@@ -22,10 +22,15 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-100 rounded-[12px] p-[12px_16px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] font-['Plus_Jakarta_Sans'] min-w-[160px]">
-        <p className="text-[12px] font-bold text-slate-800 mb-2 capitalize">{label}</p>
+        <p className="text-[12px] font-bold text-slate-800 mb-2 capitalize">
+          {label}
+        </p>
         <div className="space-y-1.5">
           {payload.map((item, idx) => (
-            <div key={idx} className="flex items-center justify-between gap-6 text-[12px]">
+            <div
+              key={idx}
+              className="flex items-center justify-between gap-6 text-[12px]"
+            >
               <div className="flex items-center gap-2">
                 <span
                   className="w-2 h-2 rounded-full shrink-0"
@@ -98,7 +103,7 @@ export default function RevenueTrendChart({
                     ]);
                   else
                     setActiveSubFilters((prev) =>
-                      prev.filter((f) => f !== "subscription_1_month")
+                      prev.filter((f) => f !== "subscription_1_month"),
                     );
                 }}
               />
@@ -117,7 +122,7 @@ export default function RevenueTrendChart({
                     ]);
                   else
                     setActiveSubFilters((prev) =>
-                      prev.filter((f) => f !== "subscription_3_month")
+                      prev.filter((f) => f !== "subscription_3_month"),
                     );
                 }}
               />
@@ -141,7 +146,7 @@ export default function RevenueTrendChart({
                     ]);
                   else
                     setActiveSubFilters((prev) =>
-                      prev.filter((f) => f !== "consumable_super_keen")
+                      prev.filter((f) => f !== "consumable_super_keen"),
                     );
                 }}
               />
@@ -160,7 +165,7 @@ export default function RevenueTrendChart({
                     ]);
                   else
                     setActiveSubFilters((prev) =>
-                      prev.filter((f) => f !== "consumable_boost")
+                      prev.filter((f) => f !== "consumable_boost"),
                     );
                 }}
               />
@@ -171,7 +176,7 @@ export default function RevenueTrendChart({
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Select value={chartType} onValueChange={setChartType}>
-            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
+            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-brand-hoverBlue border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
               <SelectValue placeholder="Revenue Type" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -298,16 +303,15 @@ export default function RevenueTrendChart({
                     maxBarSize={40}
                   />
                 )}
-              {chartType === "consumable" &&
-                activeSubFilters.length === 0 && (
-                  <Bar
-                    dataKey="consumable"
-                    fill="#f59e0b"
-                    radius={[4, 4, 0, 0]}
-                    name="Consumables"
-                    maxBarSize={40}
-                  />
-                )}
+              {chartType === "consumable" && activeSubFilters.length === 0 && (
+                <Bar
+                  dataKey="consumable"
+                  fill="#f59e0b"
+                  radius={[4, 4, 0, 0]}
+                  name="Consumables"
+                  maxBarSize={40}
+                />
+              )}
               {chartType === "consumable" &&
                 activeSubFilters.includes("consumable_super_keen") && (
                   <Bar

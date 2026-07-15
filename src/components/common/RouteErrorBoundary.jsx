@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { useRouteError, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertOctagon, RefreshCw, ArrowLeft, Home, ChevronDown, ChevronUp, Terminal } from "lucide-react";
+import {
+  AlertOctagon,
+  RefreshCw,
+  ArrowLeft,
+  Home,
+  ChevronDown,
+  ChevronUp,
+  Terminal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function RouteErrorBoundary() {
@@ -10,7 +18,8 @@ export default function RouteErrorBoundary() {
   const [showDetails, setShowDetails] = useState(false);
 
   // Determine if it's a chunk loading / dynamic import failure
-  const errorString = error?.message || (typeof error === "string" ? error : "");
+  const errorString =
+    error?.message || (typeof error === "string" ? error : "");
   const isChunkError =
     /failed to fetch dynamically imported module/i.test(errorString) ||
     /loading chunk/i.test(errorString) ||
@@ -63,7 +72,9 @@ export default function RouteErrorBoundary() {
         {/* Text Content */}
         <div className="space-y-4">
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#212121] tracking-tight">
-            {isChunkError ? "App Update Available" : "Unexpected Application Error"}
+            {isChunkError
+              ? "App Update Available"
+              : "Unexpected Application Error"}
           </h1>
           <p className="text-[#606060] text-lg font-medium leading-relaxed max-w-md mx-auto">
             {isChunkError
@@ -102,7 +113,7 @@ export default function RouteErrorBoundary() {
 
           <Button
             variant="outline"
-            className="border-[#46C7CD] text-brand-aqua hover:bg-[#46C7CD] hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
+            className="border-[#46C7CD] text-brand-blue hover:bg-[#46C7CD] hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
             onClick={handleGoHome}
           >
             <Home className="h-4 w-4" /> Back to Home
@@ -119,7 +130,11 @@ export default function RouteErrorBoundary() {
               <Terminal className="w-4 h-4 text-slate-400" />
               Technical Error Diagnostics
             </span>
-            {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            {showDetails ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
           </button>
 
           <AnimatePresence initial={false}>
@@ -141,7 +156,9 @@ export default function RouteErrorBoundary() {
                         {error.stack}
                       </pre>
                     ) : (
-                      <p className="opacity-60 italic">No stack trace available.</p>
+                      <p className="opacity-60 italic">
+                        No stack trace available.
+                      </p>
                     )}
                   </div>
                 </div>

@@ -15,7 +15,7 @@ export const getUserManagementColumns = (onAction) => [
     id: "sno",
     header: () => (
       <div className="w-10 text-left text-[10px] font-bold uppercase tracking-wider">
-        S.No
+        SR.No
       </div>
     ),
     size: 50,
@@ -71,10 +71,10 @@ export const getUserManagementColumns = (onAction) => [
         Email Id
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-600 tracking-tight">
+      <span className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-[100px]">
         {row.original.email || "-"}
       </span>
     ),
@@ -101,8 +101,8 @@ export const getUserManagementColumns = (onAction) => [
         Active Plan
       </div>
     ),
-    size: 140,
-    minSize: 140,
+    size: 180,
+    minSize: 180,
     cell: ({ row }) => {
       const plan = row.original?.plan?.title;
       if (!plan || plan === "No-Active Plan") {
@@ -243,7 +243,7 @@ export const getUserManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-aqua/10 focus:text-brand-aqua font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

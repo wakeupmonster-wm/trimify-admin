@@ -38,7 +38,7 @@ export default function RootLayout() {
       </main>
 
 
-      {/* <footer className="bg-gray-50 border-t border-brand-aqua/50 py-8">
+      {/* <footer className="bg-gray-50 border-t border-brand-blue py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} Trimify Admin DATING APP ALL RIGHTS

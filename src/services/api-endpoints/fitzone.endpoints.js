@@ -51,6 +51,9 @@ export const FITZONE_WORKOUT_CATEGORY = {
   
   /** POST — Update a workout category */
   FITZONE_WORKOUT_CATEGORY_UPDATE: (id) => `${ADMIN}/update-workoutcat/${id}`,
+
+  /** DELETE — Permanently delete a workout category / work session */
+  FITZONE_WORKOUT_CATEGORY_DELETE: (id) => `${ADMIN}/delete-worksession/${id}`,
 }
 
 // ────────────────── Fitzone Workouts ──────────────────────────

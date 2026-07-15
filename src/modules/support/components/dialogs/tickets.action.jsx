@@ -16,7 +16,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, SendHorizontal, Loader2, X, Info, Check } from "lucide-react";
+import {
+  MessageSquare,
+  SendHorizontal,
+  Loader2,
+  X,
+  Info,
+  Check,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const TicketAction = ({
@@ -66,8 +73,8 @@ export const TicketAction = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-aqua/10 border border-brand-aqua/20">
-              <MessageSquare className="h-6 w-6 text-brand-aqua" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+              <MessageSquare className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -91,7 +98,7 @@ export const TicketAction = ({
               User Inquiry Context
             </Label>
             <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-1 h-full bg-brand-aqua/40" />
+              <div className="absolute top-0 left-0 w-1 h-full bg-brand-blue" />
               <div className="flex gap-3">
                 <Info className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
                 <p className="text-xs font-medium text-slate-600 leading-relaxed italic">
@@ -118,7 +125,11 @@ export const TicketAction = ({
                   </span>
                 )}
               </div>
-              <Select value={statusUpdate} onValueChange={setStatusUpdate} disabled={localLoading || success}>
+              <Select
+                value={statusUpdate}
+                onValueChange={setStatusUpdate}
+                disabled={localLoading || success}
+              >
                 <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all">
                   <SelectValue placeholder="Update status..." />
                 </SelectTrigger>
@@ -198,9 +209,11 @@ export const TicketAction = ({
               "h-10 px-4 text-white font-black text-xs rounded-md shadow-lg disabled:cursor-not-allowed transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 min-w-[140px]",
               success
                 ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
-                : "bg-brand-aqua hover:bg-brand-hoverAqua shadow-brand-aqua/20"
+                : "bg-brand-blue hover:bg-brand-hoverAqua shadow-brand-blue",
             )}
-            disabled={localLoading || success || !statusUpdate || !reply?.trim()}
+            disabled={
+              localLoading || success || !statusUpdate || !reply?.trim()
+            }
           >
             {localLoading ? (
               <>

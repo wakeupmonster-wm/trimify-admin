@@ -26,7 +26,10 @@ export function DataTableFilters({ filterConfig = [] }) {
     <>
       {filterConfig.map((filter, idx) => {
         if (filter.type === "select") {
-          const isActive = filter.value !== undefined && filter.value !== null && filter.value !== "";
+          const isActive =
+            filter.value !== undefined &&
+            filter.value !== null &&
+            filter.value !== "";
           return (
             <div key={filter.id || idx} className="flex-1 md:w-auto">
               <DropdownMenu>
@@ -35,20 +38,26 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-aqua text-brand-aqua"
+                      isActive && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
-                      {isActive && filter.getDisplayValue 
-                        ? filter.getDisplayValue(filter.value) 
+                      {isActive && filter.getDisplayValue
+                        ? filter.getDisplayValue(filter.value)
                         : isActive
-                          ? filter.value.toString().replace("_", " ").replace("-", " ")
+                          ? filter.value
+                              .toString()
+                              .replace("_", " ")
+                              .replace("-", " ")
                           : filter.placeholder || `Select ${filter.label}`}
                     </span>
                     <IconChevronDown className="h-4 w-4 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-auto min-w-36 p-1.5 rounded-xl">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-auto min-w-36 p-1.5 rounded-xl"
+                >
                   <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase px-2 py-1.5">
                     {filter.label}
                   </DropdownMenuLabel>
@@ -56,13 +65,15 @@ export function DataTableFilters({ filterConfig = [] }) {
                     // Support options that are either strings or { label, value } objects
                     const val = typeof opt === "object" ? opt.value : opt;
                     const lbl = typeof opt === "object" ? opt.label : opt;
-                    
+
                     return (
                       <DropdownMenuCheckboxItem
                         key={val}
                         className="rounded-lg capitalize text-xs"
                         checked={filter.value === val}
-                        onCheckedChange={() => filter.onChange(filter.value === val ? "" : val)}
+                        onCheckedChange={() =>
+                          filter.onChange(filter.value === val ? "" : val)
+                        }
                       >
                         {lbl.toString().replace("_", " ").replace("-", " ")}
                       </DropdownMenuCheckboxItem>
@@ -77,7 +88,10 @@ export function DataTableFilters({ filterConfig = [] }) {
         if (filter.type === "date") {
           const isActive = !!filter.value;
           return (
-            <div key={filter.id || idx} className="flex items-center gap-2 w-full md:w-auto">
+            <div
+              key={filter.id || idx}
+              className="flex items-center gap-2 w-full md:w-auto"
+            >
               {isActive && (
                 <Button
                   variant="ghost"
@@ -94,13 +108,15 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant={"outline"}
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-aqua text-brand-aqua"
+                      isActive && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4 text-brand-aqua" />
+                      <CalendarIcon className="h-4 w-4 text-brand-blue" />
                       <span className="text-sm">
-                        {isActive ? format(filter.value, "PPP") : filter.placeholder || "Pick a date"}
+                        {isActive
+                          ? format(filter.value, "PPP")
+                          : filter.placeholder || "Pick a date"}
                       </span>
                     </div>
                     <IconChevronDown className="h-4 w-4 opacity-50 ml-auto md:ml-0" />
@@ -121,7 +137,13 @@ export function DataTableFilters({ filterConfig = [] }) {
 
         // Support for complex multi-checkbox grouping as used in UserDataTables
         if (filter.type === "checkbox-group") {
-          const isActive = filter.options.some(opt => opt.value !== undefined && opt.value !== null && opt.value !== false && opt.value !== "");
+          const isActive = filter.options.some(
+            (opt) =>
+              opt.value !== undefined &&
+              opt.value !== null &&
+              opt.value !== false &&
+              opt.value !== "",
+          );
           return (
             <div key={filter.id || idx} className="flex-1 md:w-auto">
               <DropdownMenu>
@@ -130,18 +152,21 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-aqua text-brand-aqua"
+                      isActive && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
-                      {filter.getDisplayValue 
-                        ? filter.getDisplayValue(filter.options) 
+                      {filter.getDisplayValue
+                        ? filter.getDisplayValue(filter.options)
                         : filter.placeholder || `Select ${filter.label}`}
                     </span>
                     <IconChevronDown className="h-4 w-4 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-full min-w-44 p-1.5 rounded-xl">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-full min-w-44 p-1.5 rounded-xl"
+                >
                   {filter.groups.map((group, gIdx) => (
                     <React.Fragment key={gIdx}>
                       {gIdx > 0 && <DropdownMenuSeparator />}
@@ -151,20 +176,22 @@ export function DataTableFilters({ filterConfig = [] }) {
                         </DropdownMenuLabel>
                       )}
                       {group.options.map((opt) => {
-                         // Similar to select but each option manages its own value and onChange
-                         const val = opt.value;
-                         const isChecked = val === true || (typeof val === "string" && val !== "");
-                         
-                         return (
-                           <DropdownMenuCheckboxItem
-                             key={opt.id}
-                             className="rounded-lg capitalize text-xs"
-                             checked={isChecked}
-                             onCheckedChange={opt.onChange}
-                           >
-                             {opt.label}
-                           </DropdownMenuCheckboxItem>
-                         );
+                        // Similar to select but each option manages its own value and onChange
+                        const val = opt.value;
+                        const isChecked =
+                          val === true ||
+                          (typeof val === "string" && val !== "");
+
+                        return (
+                          <DropdownMenuCheckboxItem
+                            key={opt.id}
+                            className="rounded-lg capitalize text-xs"
+                            checked={isChecked}
+                            onCheckedChange={opt.onChange}
+                          >
+                            {opt.label}
+                          </DropdownMenuCheckboxItem>
+                        );
                       })}
                     </React.Fragment>
                   ))}

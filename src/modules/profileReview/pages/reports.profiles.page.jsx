@@ -17,6 +17,7 @@ import {
 import { Container } from "@/components/common/container";
 import { bgMap, colorMap } from "@/constants/colors";
 import { startOfDay, endOfDay, subDays } from "date-fns";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const getDateRangeFromPreset = (preset) => {
   const today = startOfDay(new Date());
@@ -116,7 +117,7 @@ export default function ReportsProfilesPage() {
       setDebouncedSearch(globalFilter);
     }, 500);
     return () => clearTimeout(timer);
-  }, [globalFilter]);
+  }, [debouncedSearchTerm]);
 
   // Save to sessionStorage whenever filters change
   useEffect(() => {
@@ -143,7 +144,7 @@ export default function ReportsProfilesPage() {
     } else {
       sessionStorage.removeItem("reportsPagination");
     }
-  }, [globalFilter, statusFilter, priorityFilter, pagination]);
+  }, [debouncedSearchTerm, statusFilter, priorityFilter, pagination]);
 
   // Determine status value to send to backend API (Hybrid status parameter)
   const apiStatus = useMemo(() => {

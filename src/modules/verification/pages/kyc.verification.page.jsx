@@ -30,7 +30,12 @@ export default function KYCVerificationPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { pendingVerifications, kpiStats, loading, pagination: reduxPagination } = useSelector((state) => state.verification);
+  const {
+    pendingVerifications,
+    kpiStats,
+    loading,
+    pagination: reduxPagination,
+  } = useSelector((state) => state.verification);
 
   // Determine if we arrived via dashboard navigation (location.state)
   // TodayAtAGlance passes state as { label, preset, from, to } — so compare navState.label
@@ -102,8 +107,14 @@ export default function KYCVerificationPage() {
       sessionStorage.removeItem("kycVerificationGlobalFilter");
     }
 
-    if (pagination && (pagination.pageIndex !== 0 || pagination.pageSize !== 10)) {
-      sessionStorage.setItem("kycVerificationPagination", JSON.stringify(pagination));
+    if (
+      pagination &&
+      (pagination.pageIndex !== 0 || pagination.pageSize !== 10)
+    ) {
+      sessionStorage.setItem(
+        "kycVerificationPagination",
+        JSON.stringify(pagination),
+      );
     } else {
       sessionStorage.removeItem("kycVerificationPagination");
     }
@@ -156,7 +167,7 @@ export default function KYCVerificationPage() {
             setConfirmConfig({ userId, action, nickname, isOpen: false });
             setIsReasonModalOpen(true);
           } else {
-            setConfirmConfig({ isOpen: true, userId, action, nickname, });
+            setConfirmConfig({ isOpen: true, userId, action, nickname });
           }
         },
         (modalConfig) => setImageModal(modalConfig),
@@ -283,13 +294,13 @@ export default function KYCVerificationPage() {
             <PageHeader
               heading="KYC Verifications"
               icon={<ShieldCheck className="w-9 h-9 text-white" />}
-              color="bg-brand-aqua shadow-brand-aqua/30"
+              color="bg-brand-blue shadow-brand-blue"
               subheading="Manage user identity documents."
             />
           </div>
           <Badge
             variant="outline"
-            className="cursor-pointer bg-white hover:bg-brand-aqua text-slate-400 hover:text-white border border-slate-200 hover:border-brand-aqua transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
+            className="cursor-pointer bg-white hover:bg-brand-hoverBlue text-slate-400 hover:text-white border border-slate-200 hover:border-brand-blue transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
           >
             <Users className="h-4 w-4" strokeWidth={2} />
             <span className="whitespace-nowrap">

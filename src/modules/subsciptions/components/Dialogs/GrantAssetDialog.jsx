@@ -63,8 +63,8 @@ export const GrantAssetDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-aqua/10 border border-brand-aqua/20">
-              <Icon className="h-6 w-6 text-brand-aqua" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+              <Icon className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -125,7 +125,7 @@ export const GrantAssetDialog = ({
               "text-[13px] font-bold h-10 px-6 rounded-md gap-2 transition-all duration-300 flex items-center justify-center min-w-[140px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-brand-aqua hover:bg-brand-hoverAqua text-white shadow-sm"
+                : "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-sm",
             )}
           >
             {localLoading ? (

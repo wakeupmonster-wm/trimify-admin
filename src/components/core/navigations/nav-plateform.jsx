@@ -83,7 +83,7 @@ export function NavPlateform({ items }) {
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                       (isActive || hasActiveChild) &&
-                      "bg-brand-aqua/[0.08] hover:bg-brand-aqua/[0.09]",
+                        "bg-blue-100/50 hover:bg-blue-100/90",
                     )}
                   >
                     <Link
@@ -91,14 +91,14 @@ export function NavPlateform({ items }) {
                       className="flex items-center gap-3 w-full"
                     >
                       {(isActive || hasActiveChild) && (
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-aqua" />
+                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
                       )}
 
                       <div
                         className={cn(
                           "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                           isActive || hasActiveChild
-                            ? "text-brand-aqua"
+                            ? "text-brand-blue"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
@@ -109,7 +109,7 @@ export function NavPlateform({ items }) {
                         className={cn(
                           "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
                           isActive || hasActiveChild
-                            ? "text-brand-aqua font-bold"
+                            ? "text-brand-blue font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
                         )}
                       >
@@ -121,7 +121,7 @@ export function NavPlateform({ items }) {
                           className={cn(
                             "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm group-data-[collapsible=icon]:hidden",
                             isActive
-                              ? "bg-brand-aqua text-white"
+                              ? "bg-brand-blue text-white"
                               : "bg-slate-100 text-slate-500",
                           )}
                         >
@@ -144,11 +144,11 @@ export function NavPlateform({ items }) {
                   isActive={isActive}
                   tooltip={item.title}
                   className={cn(
-                     "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                    "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                     isActive &&
-                    "!bg-brand-aqua/[0.08] !hover:bg-brand-aqua/[0.12]",
+                      "!bg-blue-100/50 !hover:bg-blue-100/90",
                   )}
                 >
                   <Link
@@ -156,13 +156,13 @@ export function NavPlateform({ items }) {
                     className="flex items-center gap-3 w-full"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-aqua" />
+                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
                     )}
 
                     <div
                       className={cn(
                         "flex size-5 items-center justify-center transition-all duration-300",
-                        isActive ? "text-brand-aqua" : "text-slate-400",
+                        isActive ? "text-brand-blue" : "text-slate-400",
                       )}
                     >
                       <Icon className="size-5" />
@@ -172,7 +172,7 @@ export function NavPlateform({ items }) {
                       className={cn(
                         "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300 group-data-[collapsible=icon]:hidden",
                         isActive
-                          ? "text-brand-aqua font-bold"
+                          ? "text-brand-blue font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
                       )}
                     >
@@ -184,7 +184,7 @@ export function NavPlateform({ items }) {
                         className={cn(
                           "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm group-data-[collapsible=icon]:hidden",
                           isActive
-                            ? "bg-brand-aqua text-white"
+                            ? "bg-brand-blue text-white"
                             : "bg-slate-100 text-slate-500",
                         )}
                       >
@@ -212,7 +212,7 @@ export function NavPlateform({ items }) {
                             className={cn(
                               "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
                               isSubActive
-                                ? "!text-brand-aqua font-semibold !bg-brand-aqua/5"
+                                ? "!text-brand-blue font-semibold !bg-brand-blue"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >
@@ -222,7 +222,7 @@ export function NavPlateform({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-aqua" />
+                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-blue" />
                               )}
                               <span className="text-[12.5px] tracking-tight">
                                 {subItem.title}

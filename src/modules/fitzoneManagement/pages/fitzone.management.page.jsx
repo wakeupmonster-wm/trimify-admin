@@ -9,6 +9,7 @@ import { getFitzoneManagementColumns } from "@/components/columns/fitzone.manage
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFitzoneList, toggleFitzoneStatus, deleteFitzone } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const FitzoneManagementPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const FitzoneManagementPage = () => {
   } = useSelector((state) => state.fitzoneManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   useEffect(() => {
@@ -27,10 +29,10 @@ const FitzoneManagementPage = () => {
       fetchFitzoneList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
+        search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm]);
 
   const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
@@ -38,7 +40,7 @@ const FitzoneManagementPage = () => {
       const status = value ? "Active" : "Inactive";
       dispatch(toggleFitzoneStatus({ id: row.id, status }));
     } else if (action === "open-program") {
-      console.log("Open program:", row.id);
+      navigate(`manage/${row.id}`);
     } else if (action === "edit") {
       navigate("edit-fitzone", { state: { editData: row } });
     } else if (action === "delete") {
@@ -48,7 +50,7 @@ const FitzoneManagementPage = () => {
         dispatch(fetchFitzoneList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
-          search: globalFilter
+          search: debouncedSearchTerm
         }));
       }
     }
@@ -64,7 +66,7 @@ const FitzoneManagementPage = () => {
     <Container>
       {/* Top Header Section outside of the white card */}
 
-      <div className="space-y-8">
+     <div className="space-y-6">
         <Header>
           <PageHeader
             heading="Fitzone Management"

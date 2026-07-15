@@ -16,7 +16,12 @@ export function ChartUserDistribution({ data: userDistribution }) {
   const suspendedCount = userDistribution?.suspended ?? 0;
   const bannedCount = userDistribution?.banned ?? 0;
 
-  const total = activeCount + deactivatedCount + deletedCount + suspendedCount + bannedCount;
+  const total =
+    activeCount +
+    deactivatedCount +
+    deletedCount +
+    suspendedCount +
+    bannedCount;
 
   const getPercent = (count) => {
     if (total === 0) return 0;
@@ -24,19 +29,40 @@ export function ChartUserDistribution({ data: userDistribution }) {
   };
 
   const data = [
-    { name: "Active Users", value: getPercent(activeCount), color: "hsl(182, 59%, 54%)" }, // Brand aqua main
-    { name: "Deactivated", value: getPercent(deactivatedCount), color: "hsl(160, 60%, 45%)" }, // Deep emerald
-    { name: "Deleted", value: getPercent(deletedCount), color: "hsl(200, 70%, 50%)" }, // Solid sky blue
-    { name: "Suspended", value: getPercent(suspendedCount), color: "hsl(35, 92%, 55%)" }, // Solid orange
-    { name: "Banned", value: getPercent(bannedCount), color: "hsl(348, 83%, 55%)" }, // Deep red
+    {
+      name: "Active Users",
+      value: getPercent(activeCount),
+      color: "hsl(182, 59%, 54%)",
+    }, // Brand aqua main
+    {
+      name: "Deactivated",
+      value: getPercent(deactivatedCount),
+      color: "hsl(160, 60%, 45%)",
+    }, // Deep emerald
+    {
+      name: "Deleted",
+      value: getPercent(deletedCount),
+      color: "hsl(200, 70%, 50%)",
+    }, // Solid sky blue
+    {
+      name: "Suspended",
+      value: getPercent(suspendedCount),
+      color: "hsl(35, 92%, 55%)",
+    }, // Solid orange
+    {
+      name: "Banned",
+      value: getPercent(bannedCount),
+      color: "hsl(348, 83%, 55%)",
+    }, // Deep red
   ];
 
   const [activeIndex, setActiveIndex] = React.useState(0);
 
-  const activeItem = data[activeIndex] || data[0] || { name: "Active Users", value: 0 };
+  const activeItem = data[activeIndex] ||
+    data[0] || { name: "Active Users", value: 0 };
 
   return (
-    <Card className="rounded-xl shadow-sm bg-white gap-0 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 w-full h-full flex flex-col py-5">
+    <Card className="rounded-xl shadow-sm bg-white gap-0 border border-slate-200 hover:border-blue-200 transition-all duration-300 w-full h-full flex flex-col py-5">
       <CardHeader className="px-0 pb-0">
         <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-200">
           <DashboardHead
@@ -52,7 +78,11 @@ export function ChartUserDistribution({ data: userDistribution }) {
       <CardContent className="flex-1 flex flex-col lg:flex-row items-center gap-4 px-8 pt-2">
         {/* Left Side: Doughnut Chart */}
         <div className="relative flex justify-center items-center h-[260px] w-full lg:w-6/12">
-          <ResponsiveContainer width="100%" height="100%" key={data.map(d => d.value).join('-')}>
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            key={data.map((d) => d.value).join("-")}
+          >
             <PieChart style={{ outline: "none" }}>
               <Pie
                 data={data}
@@ -141,9 +171,9 @@ export function ChartUserDistribution({ data: userDistribution }) {
 
       {/* Info Banner Footer */}
       <CardFooter className="pt-1">
-        <div className="mt-6 w-full flex items-center gap-2 px-3 py-2 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
+        <div className="mt-6 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
-            <Info size={14} className="text-brand-aqua shrink-0" />
+            <Info size={14} className="text-brand-blue shrink-0" />
           </div>
           <span>
             {activeItem.name} represent {activeItem.value}% of total users

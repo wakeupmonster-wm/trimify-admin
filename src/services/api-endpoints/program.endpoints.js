@@ -57,3 +57,62 @@ export const PROGRAM_INTRO = {
   /** POST — Update an existing program intro */
   PROGRAM_INTRO_UPDATE: (id) => `${ADMIN}/program-intro/update/${id}`,
 }
+
+// ──────────────────────── Food & Categories Management ────────────────────────
+
+export const PROGRAM_FOOD = {
+  /** GET — Retrieve all food categories (paginated) */
+  FOOD_CATEGORY_LIST: `${ADMIN}/get-foodcategories`,
+
+  /** GET — Retrieve all food categories (dropdown/unpaginated) */
+  FOOD_CATEGORY_DROP: `${ADMIN}/get-foodcategoriesdrop`,
+
+  /** POST — Add a new food category */
+  FOOD_CATEGORY_ADD: `${ADMIN}/add-foodcategory`,
+
+  /** POST — Update an existing food category */
+  FOOD_CATEGORY_UPDATE: (id) => `${ADMIN}/update-foodcategory/${id}`,
+
+  /** DELETE — Delete a food category */
+  FOOD_CATEGORY_DELETE: (id) => `${ADMIN}/delete-foodcategory/${id}`,
+
+  /** GET — Retrieve all food items for a program + category */
+  FOOD_LIST: (programId, categoryId) => `${ADMIN}/get-food/${programId}/${categoryId}`,
+
+  /** POST — Add a new food item */
+  FOOD_ADD: `${ADMIN}/add-food`,
+
+  /** POST — Update a food item */
+  FOOD_UPDATE: (id) => `${ADMIN}/update-food/${id}`,
+
+  /** PATCH — Toggle food approval status */
+  FOOD_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-approveunapprove/${id}`,
+
+  /** DELETE — Delete a food item */
+  FOOD_DELETE: (id) => `${ADMIN}/delete-food/${id}`,
+}
+
+// ──────────────────────── Diet Plan Management ────────────────────────────────
+
+export const PROGRAM_DIET = {
+  /** GET — Retrieve diet meals for a program */
+  DIET_MEAL_LIST: (id) => `${ADMIN}/get-dietmeal/${id}`,
+
+  /** POST — Add multiple diet meals to a day */
+  DIET_MEAL_ADD: `${ADMIN}/add-dietmeal`,
+
+  /** POST — Update a diet meal record */
+  DIET_MEAL_UPDATE: (id) => `${ADMIN}/update-dietmeal/${id}`,
+
+  /** DELETE — Delete a diet meal record */
+  DIET_MEAL_DELETE: (id) => `${ADMIN}/delete-dietmeal/${id}`,
+
+  /** GET — Get program duration in days */
+  PROGRAM_DURATION: (id) => `${ADMIN}/getprogramduration/${id}`,
+
+  /** GET — Search food/nutrition database */
+  SEARCH_FOOD: `${ADMIN}/getsearchfood`,
+
+  /** PATCH — Toggle diet meal status */
+  DIET_MEAL_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-diet-meal/${id}`,
+}

@@ -336,7 +336,7 @@ export default function ViewTicketDetails() {
                   {ticket.adminReply && (
                     <div className="mx-6 mb-6 p-5 bg-[#F0FDFB] border border-[#CCFBF1] rounded-xl animate-in fade-in slide-in-from-top-2">
                       <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2 text-brand-aqua font-bold text-[11px] uppercase tracking-tight">
+                        <div className="flex items-center gap-2 text-brand-blue font-bold text-[11px] uppercase tracking-tight">
                           <Reply className="w-4 h-4" strokeWidth={2.5} />
                           Email Response Sent
                         </div>
@@ -360,13 +360,15 @@ export default function ViewTicketDetails() {
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {ticket.replyAttachments.map((att, idx) => {
-                              const isImg = att.url && /\.(jpe?g|png|gif|webp|svg)$/i.test(att.url);
+                              const isImg =
+                                att.url &&
+                                /\.(jpe?g|png|gif|webp|svg)$/i.test(att.url);
                               return isImg ? (
                                 <button
                                   key={idx}
                                   type="button"
                                   onClick={() => setZoomImage(att.url)}
-                                  className="group relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200 hover:border-brand-aqua transition-all shadow-sm hover:shadow-md"
+                                  className="group relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
                                   title={att.name || `attachment-${idx + 1}`}
                                 >
                                   <img
@@ -406,7 +408,7 @@ export default function ViewTicketDetails() {
                         <div className="flex items-center gap-2 text-xs font-semibold uppercase text-foreground/80">
                           <Reply
                             strokeWidth={1.4}
-                            className="w-4 h-4 text-brand-aqua"
+                            className="w-4 h-4 text-brand-blue"
                           />
                           Send Email Reply to User
                         </div>
@@ -414,7 +416,7 @@ export default function ViewTicketDetails() {
                     )}
 
                   {ticket.status !== "closed" &&
-                    ticket.status !== "resolved" ? (
+                  ticket.status !== "resolved" ? (
                     <form onSubmit={handleReplySubmit}>
                       <div className="px-6 pb-2">
                         <RichTextEditor
@@ -422,7 +424,7 @@ export default function ViewTicketDetails() {
                           onChange={setReply}
                           placeholder="Write your email response here..."
                           isExpanded={isExpanded}
-                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-200 shadow-sm focus-within:ring-1 focus-within:ring-brand-aqua/30 transition-all duration-300`}
+                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-200 shadow-sm focus-within:ring-1 focus-within:ring-brand-blue transition-all duration-300`}
                         />
 
                         {attachments.length > 0 && (
@@ -431,14 +433,11 @@ export default function ViewTicketDetails() {
                               const preview = attachmentPreviews[idx];
                               return preview?.isImage ? (
                                 /* Image thumbnail card */
-                                <div
-                                  key={idx}
-                                  className="relative group"
-                                >
+                                <div key={idx} className="relative group">
                                   <button
                                     type="button"
                                     onClick={() => setZoomImage(preview.url)}
-                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-200 hover:border-brand-aqua transition-all shadow-sm hover:shadow-md"
+                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-200 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
                                     title={file.name}
                                   >
                                     <img
@@ -572,7 +571,7 @@ export default function ViewTicketDetails() {
                           <Button
                             type="submit"
                             disabled={loading || !reply.trim()}
-                            className="bg-brand-aqua hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-aqua/20 disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
+                            className="bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
                           >
                             {loading ? (
                               <Loader2 className="animate-spin w-4 h-4" />
@@ -649,7 +648,7 @@ export default function ViewTicketDetails() {
             <aside className="lg:col-span-3 space-y-4">
               {/* User Profile Card */}
               <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 text-center overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-aqua/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-blue rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
 
                 <div className="border-b border-slate-200 pb-3.5 mb-5">
                   <div className="w-20 h-20 mx-auto mb-2 rounded-full border-2 border-white shadow-sm overflow-hidden relative">
@@ -743,13 +742,13 @@ export default function ViewTicketDetails() {
                             source: "support",
                             from: `/admin/management/support/view-ticket/${ticketId}`,
                             returnState: { ticketId },
-                          }
+                          },
                         },
                       )
                     }
-                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-aqua/5 hover:text-brand-aqua hover:border-brand-aqua/50 rounded-md transition-all group"
+                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-hoverBlue hover:text-brand-blue hover:border-brand-blue rounded-md transition-all group"
                   >
-                    <User className="w-4 h-4 text-slate-400 group-hover:text-brand-aqua transition-colors" />
+                    <User className="w-4 h-4 text-slate-400 group-hover:text-brand-blue transition-colors" />
                     View User Profile
                   </Button>
                   {/* <Button

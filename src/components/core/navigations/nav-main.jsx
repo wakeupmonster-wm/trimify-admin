@@ -81,7 +81,7 @@ export function NavMain({ items }) {
                   <div
                     className={cn(
                       "flex size-5 items-center justify-center transition-all duration-300",
-                      isActive ? "text-brand-aqua" : "text-slate-400",
+                      isActive ? "text-brand-blue" : "text-slate-400",
                     )}
                   >
                     <Icon className="size-5" />
@@ -91,7 +91,7 @@ export function NavMain({ items }) {
                     className={cn(
                       "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
                       isActive
-                        ? "text-brand-aqua font-bold"
+                        ? "text-brand-blue font-bold"
                         : "text-slate-600 font-medium hover:text-slate-900",
                     )}
                   >

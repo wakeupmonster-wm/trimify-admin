@@ -13,7 +13,15 @@ import { useRef, useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { updateAdminAccount } from "../store/account.slice";
 import { toast } from "sonner";
-import { Camera, Loader2, Save, UserCircle, User, Phone, Check } from "lucide-react";
+import {
+  Camera,
+  Loader2,
+  Save,
+  UserCircle,
+  User,
+  Phone,
+  Check,
+} from "lucide-react";
 import { useDispatch } from "react-redux";
 import { cn } from "@/lib/utils";
 import { LuUserRound } from "react-icons/lu";
@@ -141,7 +149,7 @@ export default function AdminEditDialog({ children, currentData }) {
                   src={preview || currentData?.avatar?.url}
                   className="object-cover"
                 />
-                <AvatarFallback className="bg-gradient-to-br from-indigo-50 to-brand-aqua/10 text-brand-aqua">
+                <AvatarFallback className="bg-gradient-to-br from-indigo-50 to-brand-blue text-brand-blue">
                   <UserCircle className="w-16 h-16 opacity-30" />
                 </AvatarFallback>
               </Avatar>
@@ -156,7 +164,7 @@ export default function AdminEditDialog({ children, currentData }) {
 
               {/* Edit Badge floating */}
               <div className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md border border-slate-100 group-hover:scale-110 transition-transform">
-                <div className="bg-brand-aqua/10 p-2 rounded-full text-brand-aqua">
+                <div className="bg-brand-blue p-2 rounded-full text-brand-blue">
                   <Camera className="w-4 h-4" strokeWidth={2.5} />
                 </div>
               </div>
@@ -171,7 +179,7 @@ export default function AdminEditDialog({ children, currentData }) {
             </div>
 
             <div className="text-center mt-4 space-y-1">
-              <p className="text-[10px] text-brand-aqua uppercase font-black tracking-widest">
+              <p className="text-[10px] text-brand-blue uppercase font-black tracking-widest">
                 Update Photo
               </p>
               <p className="text-[10px] text-foreground/60 font-medium leading-tight">
@@ -211,7 +219,9 @@ export default function AdminEditDialog({ children, currentData }) {
                 <Input
                   value={formData.phone}
                   onChange={(e) => {
-                    const onlyNums = e.target.value.replace(/\D/g, "").slice(0, 11);
+                    const onlyNums = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 11);
                     setFormData({ ...formData, phone: onlyNums });
                     if (phoneError) setPhoneError("");
                   }}
@@ -245,7 +255,7 @@ export default function AdminEditDialog({ children, currentData }) {
                     }
                     rows={4}
                     placeholder="Tell us about yourself..."
-                    className="pl-10 py-3 text-sm font-medium rounded-lg border-slate-200 bg-white shadow-none focus-visible:ring-brand-aqua/10 focus-visible:border-brand-aqua transition-all resize-none min-h-[100px]"
+                    className="pl-10 py-3 text-sm font-medium rounded-lg border-slate-200 bg-white shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue transition-all resize-none min-h-[100px]"
                   />
                 </div>
               </div> */}
@@ -270,7 +280,7 @@ export default function AdminEditDialog({ children, currentData }) {
               "h-10 px-6 font-semibold text-[13px] capitalize rounded-md shadow-sm gap-2 transition-all duration-300 flex items-center justify-center min-w-[140px]",
               success
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-brand-aqua hover:bg-brand-hoverAqua text-white"
+                : "bg-brand-blue hover:bg-brand-hoverAqua text-white",
             )}
           >
             {loading ? (

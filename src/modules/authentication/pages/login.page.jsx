@@ -44,7 +44,7 @@ export default function LoginPage() {
             <LoginForm />
           </div>
 
-          <div className="mt-8 text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          <div className="mt-8 text-center text-xs font-jakarta font-semibold text-slate-400 uppercase tracking-wide">
             © {new Date().getFullYear()} Trimify Admin ADMIN PORTAL
           </div>
         </div>
