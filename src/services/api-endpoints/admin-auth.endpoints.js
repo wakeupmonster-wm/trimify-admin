@@ -11,9 +11,9 @@ export const AUTHENTICATION_ENDPOINTS = {
   /** POST — Authenticate admin with email & password (triggers OTP) */
   ADMIN_LOGIN: `${ADMIN}/login`,
 
-  /** POST — Verify the OTP sent after login */
-  ADMIN_VERIFY_LOGIN_OTP: `${ADMIN}/verify-login-otp`,
+  // /** POST — Verify the OTP sent after login */
+  // ADMIN_VERIFY_LOGIN_OTP: `${ADMIN}/verify-login-otp`,
 
-  /** POST — Invalidate the current admin session */
-  ADMIN_LOGOUT: `${ADMIN}/logout`,
+  // /** POST — Invalidate the current admin session */
+  // ADMIN_LOGOUT: `${ADMIN}/logout`,
 };

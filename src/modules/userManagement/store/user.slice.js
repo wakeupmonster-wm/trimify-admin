@@ -23,16 +23,13 @@ export const fetchUsersList = createAsyncThunk(
       const response = await getUserManagementAPI(params);
 
       if (response && response.status === "success") {
-        const list = response.users || [];
-        const meta = response.pagination || {};
-
         return {
-          users: list.map(mapUser),
+          users: response.users || [],
           pagination: {
-            page: meta.current_page || params.page || 1,
-            limit: params.limit || 10,
-            total: meta.total ?? list.length,
-            totalPages: meta.last_page || 1,
+            page: response.pagination?.current_page || 1,
+            limit: 10, // default limit if not specified
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
           },
         };
       }

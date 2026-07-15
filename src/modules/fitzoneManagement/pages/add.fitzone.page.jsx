@@ -14,11 +14,11 @@ const AddFitzonePage = () => {
     const isEditMode = !!editData;
 
     const [formData, setFormData] = useState({
-      title: editData?.fitzoneName || "",
+      title: editData?.title || "",
       description: editData?.description || "",
       bannerImage: null,
-      workoutHeading: editData?.workoutHeading || "",
-      workoutDescription: editData?.workoutDescription || ""
+      workoutHeading: editData?.workout_heading || "",
+      workoutDescription: editData?.workout_sub_heading || ""
     });
 
     const [isDragging, setIsDragging] = useState(false);

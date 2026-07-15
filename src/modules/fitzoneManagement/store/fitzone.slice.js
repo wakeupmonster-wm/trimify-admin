@@ -1,21 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getFitzoneManagementAPI } from "../services/fitzone.services";
+import { 
+  getFitzoneManagementAPI,
+  addFitzoneAPI,
+  toggleFitzoneStatusAPI,
+  deleteFitzoneAPI
+} from "../services/fitzone.services";
 
-// Async Thunk for getting the fitzone list
+// Fetch List
 export const fetchFitzoneList = createAsyncThunk(
   "fitzoneManagement/fetchList",
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await getFitzoneManagementAPI(params);
 
-      if (response && response.success) {
+      if (response && response.status === "success") {
         return {
-          fitzones: response.data || response.fitzones || [],
-          pagination: response.pagination || {
-            page: 1,
-            limit: 10,
-            total: 0,
-            totalPages: 0,
+          fitzones: response.fitzones || response.data || [],
+          pagination: {
+            page: response.pagination?.current_page || 1,
+            limit: 50,
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
           },
         };
       }
@@ -23,6 +28,60 @@ export const fetchFitzoneList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch fitzones"
+      );
+    }
+  }
+);
+
+// Add
+export const addFitzone = createAsyncThunk(
+  "fitzoneManagement/add",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await addFitzoneAPI(data);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to add fitzone");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to add fitzone"
+      );
+    }
+  }
+);
+
+// Toggle Status
+export const toggleFitzoneStatus = createAsyncThunk(
+  "fitzoneManagement/toggleStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await toggleFitzoneStatusAPI(id, { status });
+      if (response && response.status === "success") {
+        return { id, status: response.updated_status || status };
+      }
+      return rejectWithValue(response.message || "Failed to toggle status");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle status"
+      );
+    }
+  }
+);
+
+// Delete
+export const deleteFitzone = createAsyncThunk(
+  "fitzoneManagement/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteFitzoneAPI(id);
+      if (response && response.status === "success") {
+        return id;
+      }
+      return rejectWithValue(response.message || "Failed to delete fitzone");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete fitzone"
       );
     }
   }
@@ -36,9 +95,9 @@ const fitzoneManagementSlice = createSlice({
     error: null,
     pagination: {
       page: 1,
-      limit: 10,
+      limit: 50,
       total: 0,
-      totalPages: 0,
+      totalPages: 1,
     },
   },
   reducers: {
@@ -52,6 +111,7 @@ const fitzoneManagementSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch List
       .addCase(fetchFitzoneList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -64,6 +124,34 @@ const fitzoneManagementSlice = createSlice({
       .addCase(fetchFitzoneList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // Add
+      .addCase(addFitzone.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addFitzone.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addFitzone.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Toggle Status
+      .addCase(toggleFitzoneStatus.fulfilled, (state, action) => {
+        const { id, status } = action.payload;
+        const index = state.fitzones.findIndex((fz) => fz.id === id);
+        if (index !== -1) {
+          state.fitzones[index].status = status;
+        }
+      })
+
+      // Delete
+      .addCase(deleteFitzone.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.fitzones = state.fitzones.filter((fz) => fz.id !== id);
+        if (state.pagination.total > 0) state.pagination.total -= 1;
       });
   },
 });

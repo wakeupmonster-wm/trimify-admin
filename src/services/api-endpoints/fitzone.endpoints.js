@@ -12,13 +12,13 @@ const ADMIN = `${BASE_URL}/admin`;
 
 export const FITZONE_CRUD = {
   /** POST — Create a new Fitzone */
-  FITZONE_ADD: `${ADMIN}/add-fitzone`,
+  FITZONE_ADD: `${ADMIN}/fitzone-intro`,
 
   /** GET — Retrieve paginated list of all Fitzones */
-  FITZONE_LIST: `${ADMIN}/get-fitzones`,
+  FITZONE_LIST: `${ADMIN}/view-fitzone`,
 
   /** GET — Get the title of a specific Fitzone */
-  FITZONE_GET_TITLE: (id) => `${ADMIN}/getworkouttitle/${id}`,
+  FITZONE_GET_TITLE: (id) => `${ADMIN}/fitzone-intro/${id}`,
 
   /** PATCH — Toggle a Fitzone's active/inactive status */
   FITZONE_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-fitzone/${id}`,

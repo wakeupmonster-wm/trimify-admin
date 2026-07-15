@@ -1,0 +1,90 @@
+import React, { useState, useMemo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Container } from "@/components/common/container";
+import { PageHeader } from "@/components/common/headSubhead";
+import { Plus, UploadCloud, Apple } from "lucide-react";
+import Header from "@/components/common/header";
+import { DataTable } from "@/components/shared/datatable";
+import { Button } from "@/components/ui/button";
+import { getNutritionFoodColumns } from "@/components/columns/nutrition.food.columns";
+import { fetchNutritionList } from "../store/nutrition.slice";
+import { useNavigate } from "react-router-dom";
+
+const NutritionFoodPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { nutrition, loading, pagination: serverPagination } = useSelector(
+    (state) => state.nutrition
+  );
+
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  useEffect(() => {
+    dispatch(
+      fetchNutritionList({
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        search: globalFilter,
+      })
+    );
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+
+  const handleAction = (row, action) => {
+    console.log(`Action ${action} triggered for row`, row);
+    // TODO: Connect edit and delete actions
+  };
+
+  const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
+
+  return (
+    <Container>
+      <div className="space-y-8">
+        <Header>
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <PageHeader
+              heading="Nutrition Food"
+              icon={<Apple className="w-9 h-9 text-white" />}
+              color="bg-brand-blue shadow-brand-aqua/30"
+              subheading="Manage all nutrition food items and recipes."
+            />
+
+            <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+              <Button
+                onClick={() => navigate("/admin/data-management/add-nutrition")}
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+              >
+                <Plus className="w-4 h-4" />
+                Add Food
+              </Button>
+              <Button
+                onClick={() => console.log("Upload food clicked")}
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+              >
+                <UploadCloud className="w-4 h-4" />
+                Upload Food
+              </Button>
+            </div>
+          </div>
+        </Header>
+
+        <DataTable
+          columns={columns}
+          data={nutrition || []}
+          rowCount={nutrition?.length ? serverPagination.total : 0}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          searchPlaceholder="Search food..."
+          itemName="entries"
+          isLoading={loading}
+          manualPagination={true}
+          manualFiltering={true}
+        />
+      </div>
+    </Container>
+  );
+};
+
+export default NutritionFoodPage;

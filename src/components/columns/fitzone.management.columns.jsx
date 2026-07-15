@@ -44,7 +44,7 @@ export const getFitzoneManagementColumns = (onAction) => [
     minSize: 350,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
-        {row.original.fitzoneName || "-"}
+        {row.original.title || "-"}
       </span>
     ),
   },

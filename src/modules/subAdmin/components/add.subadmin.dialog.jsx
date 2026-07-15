@@ -22,8 +22,8 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    hospitalName: "",
-    country: "Australia",
+    hospital: "",
+    location: "Australia",
     phone: "",
     designation: "",
     password: "",
@@ -49,8 +49,8 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
     setFormData({
       name: "",
       email: "",
-      hospitalName: "",
-      country: "Australia",
+      hospital: "",
+      location: "Australia",
       phone: "",
       designation: "",
       password: "",
@@ -100,9 +100,9 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Hospital/Clinic Name</Label>
               <Input
-                name="hospitalName"
+                name="hospital"
                 placeholder="Enter Hospital/Clinic name"
-                value={formData.hospitalName}
+                value={formData.hospital}
                 onChange={handleChange}
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
                 required
@@ -113,8 +113,8 @@ export function AddSubAdminDialog({ open, onOpenChange, onAdd }) {
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Country</Label>
               <Input
-                name="country"
-                value={formData.country}
+                name="location"
+                value={formData.location}
                 disabled
                 className="h-10 text-sm bg-slate-100 text-slate-500 font-medium border-slate-300 cursor-not-allowed"
               />

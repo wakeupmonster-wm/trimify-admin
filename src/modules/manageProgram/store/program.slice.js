@@ -5,38 +5,24 @@ import {
   updateProgramAPI,
   deleteProgramAPI,
   toggleProgramStatusAPI,
-  toggleProgramFoodVisibilityAPI,
+  toggleFoodVisibilityAPI,
+  replicateProgramAPI
 } from "../services/program.services";
 
-// Maps the raw /admin/view-programs API shape to the fields the programs table columns expect
-const mapProgram = (p) => ({
-  id: p.id,
-  programName: p.title,
-  programDuration: p.duration,
-  description: p.description,
-  image: p.image,
-  status: p.status,
-  foodVisibility: !!p.is_approve_nonapproved_foods_show,
-});
-
-// Async Thunk for getting the program list
+// Fetch List
 export const fetchProgramList = createAsyncThunk(
   "manageProgram/fetchList",
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await getProgramManagementAPI(params);
-
       if (response && response.status === "success") {
-        const list = response.programs || [];
-        const meta = response.pagination || {};
-
         return {
-          programs: list.map(mapProgram),
+          programs: response.programs || [],
           pagination: {
-            page: meta.current_page || params.page || 1,
-            limit: params.limit || 10,
-            total: meta.total ?? list.length,
-            totalPages: meta.last_page || 1,
+            page: response.pagination?.current_page || 1,
+            limit: 50, // default limit if not specified
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
           },
         };
       }
@@ -49,16 +35,16 @@ export const fetchProgramList = createAsyncThunk(
   }
 );
 
-// Async Thunk for creating a new program
+// Add
 export const addProgram = createAsyncThunk(
   "manageProgram/add",
-  async (formData, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await addProgramAPI(formData);
+      const response = await addProgramAPI(data);
       if (response && response.status === "success") {
-        return mapProgram(response.data);
+        return response;
       }
-      return rejectWithValue(response?.message || "Failed to add program");
+      return rejectWithValue(response.message || "Failed to add program");
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to add program"
@@ -67,16 +53,16 @@ export const addProgram = createAsyncThunk(
   }
 );
 
-// Async Thunk for updating an existing program
+// Update
 export const updateProgram = createAsyncThunk(
   "manageProgram/update",
-  async ({ id, formData }, { rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await updateProgramAPI(id, formData);
+      const response = await updateProgramAPI(id, data);
       if (response && response.status === "success") {
-        return mapProgram(response.data);
+        return response;
       }
-      return rejectWithValue(response?.message || "Failed to update program");
+      return rejectWithValue(response.message || "Failed to update program");
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to update program"
@@ -85,7 +71,61 @@ export const updateProgram = createAsyncThunk(
   }
 );
 
-// Async Thunk for deleting a program
+// Toggle Status
+export const toggleProgramStatus = createAsyncThunk(
+  "manageProgram/toggleStatus",
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await toggleProgramStatusAPI(id, { status });
+      if (response && response.status === "success") {
+        return { id, status: response.updated_status };
+      }
+      return rejectWithValue(response.message || "Failed to toggle program status");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle program status"
+      );
+    }
+  }
+);
+
+// Toggle Food Visibility
+export const toggleFoodVisibility = createAsyncThunk(
+  "manageProgram/toggleFoodVisibility",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await toggleFoodVisibilityAPI(id);
+      if (response && response.status === "success") {
+        return { id, newStatus: response.new_status };
+      }
+      return rejectWithValue(response.message || "Failed to toggle food visibility");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to toggle food visibility"
+      );
+    }
+  }
+);
+
+// Replicate Program
+export const replicateProgram = createAsyncThunk(
+  "manageProgram/replicate",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await replicateProgramAPI(id);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to replicate program");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to replicate program"
+      );
+    }
+  }
+);
+
+// Delete
 export const deleteProgram = createAsyncThunk(
   "manageProgram/delete",
   async (id, { rejectWithValue }) => {
@@ -94,48 +134,10 @@ export const deleteProgram = createAsyncThunk(
       if (response && response.status === "success") {
         return id;
       }
-      return rejectWithValue(response?.message || "Failed to delete program");
+      return rejectWithValue(response.message || "Failed to delete program");
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to delete program"
-      );
-    }
-  }
-);
-
-// Async Thunk for toggling a program's active/inactive status
-export const toggleProgramStatus = createAsyncThunk(
-  "manageProgram/toggleStatus",
-  async ({ id, status }, { rejectWithValue }) => {
-    try {
-      const response = await toggleProgramStatusAPI(id, status);
-      if (response && response.status === "success") {
-        return { id, status: response.updated_status };
-      }
-      return rejectWithValue(response?.message || "Failed to update status");
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update status"
-      );
-    }
-  }
-);
-
-// Async Thunk for toggling a program's unapproved-food visibility flag
-export const toggleProgramFoodVisibility = createAsyncThunk(
-  "manageProgram/toggleFoodVisibility",
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await toggleProgramFoodVisibilityAPI(id);
-      if (response && response.status === "success") {
-        return { id, foodVisibility: !!response.new_status };
-      }
-      return rejectWithValue(
-        response?.message || "Failed to update food visibility"
-      );
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to update food visibility"
       );
     }
   }
@@ -150,9 +152,9 @@ const manageProgramSlice = createSlice({
     actionLoading: false,
     pagination: {
       page: 1,
-      limit: 10,
+      limit: 50,
       total: 0,
-      totalPages: 0,
+      totalPages: 1,
     },
   },
   reducers: {
@@ -166,7 +168,7 @@ const manageProgramSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // List
+      // Fetch List
       .addCase(fetchProgramList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -180,45 +182,66 @@ const manageProgramSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       // Add
       .addCase(addProgram.pending, (state) => {
-        state.actionLoading = true;
-        state.error = null;
+        state.loading = true;
       })
       .addCase(addProgram.fulfilled, (state) => {
-        state.actionLoading = false;
+        state.loading = false;
       })
       .addCase(addProgram.rejected, (state, action) => {
-        state.actionLoading = false;
+        state.loading = false;
         state.error = action.payload;
       })
+
       // Update
       .addCase(updateProgram.pending, (state) => {
-        state.actionLoading = true;
-        state.error = null;
+        state.loading = true;
       })
-      .addCase(updateProgram.fulfilled, (state, action) => {
-        state.actionLoading = false;
-        const idx = state.programs.findIndex((p) => p.id === action.payload.id);
-        if (idx !== -1) state.programs[idx] = action.payload;
+      .addCase(updateProgram.fulfilled, (state) => {
+        state.loading = false;
       })
       .addCase(updateProgram.rejected, (state, action) => {
-        state.actionLoading = false;
+        state.loading = false;
         state.error = action.payload;
       })
+
+      // Toggle Status
+      .addCase(toggleProgramStatus.fulfilled, (state, action) => {
+        const { id, status } = action.payload;
+        const index = state.programs.findIndex(prog => prog.id === id);
+        if (index !== -1) {
+          state.programs[index].status = status;
+        }
+      })
+
+      // Toggle Food Visibility
+      .addCase(toggleFoodVisibility.fulfilled, (state, action) => {
+        const { id, newStatus } = action.payload;
+        const index = state.programs.findIndex(prog => prog.id === id);
+        if (index !== -1) {
+          state.programs[index].is_approve_nonapproved_foods_show = newStatus ? 1 : 0;
+        }
+      })
+
+      // Replicate Program
+      .addCase(replicateProgram.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(replicateProgram.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(replicateProgram.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // Delete
       .addCase(deleteProgram.fulfilled, (state, action) => {
-        state.programs = state.programs.filter((p) => p.id !== action.payload);
-      })
-      // Toggle status
-      .addCase(toggleProgramStatus.fulfilled, (state, action) => {
-        const idx = state.programs.findIndex((p) => p.id === action.payload.id);
-        if (idx !== -1) state.programs[idx].status = action.payload.status;
-      })
-      // Toggle food visibility
-      .addCase(toggleProgramFoodVisibility.fulfilled, (state, action) => {
-        const idx = state.programs.findIndex((p) => p.id === action.payload.id);
-        if (idx !== -1) state.programs[idx].foodVisibility = action.payload.foodVisibility;
+        const id = action.payload;
+        state.programs = state.programs.filter(prog => prog.id !== id);
+        if (state.pagination.total > 0) state.pagination.total -= 1;
       });
   },
 });
