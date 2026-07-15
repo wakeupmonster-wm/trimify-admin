@@ -85,6 +85,12 @@ const navigationData = {
       url: "/admin/subscription-management",
       icon: IconCreditCard,
       badge: null,
+      items: [
+        { title: "Dashboard", url: "/admin/subscription-management" },
+        { title: "Config", url: "/admin/subscription-management/config" },
+        { title: "Subscribers", url: "/admin/subscription-management/subscribers" },
+        { title: "Transactions", url: "/admin/subscription-management/transactions" },
+      ],
     },
     {
       title: "Transaction Management",

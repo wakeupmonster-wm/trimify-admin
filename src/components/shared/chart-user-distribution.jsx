@@ -11,17 +11,9 @@ import DashboardHead from "./dashboard.head";
 import { LuUsersRound } from "react-icons/lu";
 export function ChartUserDistribution({ data: userDistribution }) {
   const activeCount = userDistribution?.active ?? 0;
-  const deactivatedCount = userDistribution?.deactivated ?? 0;
-  const deletedCount = userDistribution?.deleted ?? 0;
-  const suspendedCount = userDistribution?.suspended ?? 0;
-  const bannedCount = userDistribution?.banned ?? 0;
+  const inactiveCount = userDistribution?.inactive ?? 0;
 
-  const total =
-    activeCount +
-    deactivatedCount +
-    deletedCount +
-    suspendedCount +
-    bannedCount;
+  const total = activeCount + inactiveCount;
 
   const getPercent = (count) => {
     if (total === 0) return 0;
@@ -33,27 +25,12 @@ export function ChartUserDistribution({ data: userDistribution }) {
       name: "Active Users",
       value: getPercent(activeCount),
       color: "hsl(182, 59%, 54%)",
-    }, // Brand aqua main
+    },
     {
-      name: "Deactivated",
-      value: getPercent(deactivatedCount),
-      color: "hsl(160, 60%, 45%)",
-    }, // Deep emerald
-    {
-      name: "Deleted",
-      value: getPercent(deletedCount),
-      color: "hsl(200, 70%, 50%)",
-    }, // Solid sky blue
-    {
-      name: "Suspended",
-      value: getPercent(suspendedCount),
-      color: "hsl(35, 92%, 55%)",
-    }, // Solid orange
-    {
-      name: "Banned",
-      value: getPercent(bannedCount),
-      color: "hsl(348, 83%, 55%)",
-    }, // Deep red
+      name: "Inactive Users",
+      value: getPercent(inactiveCount),
+      color: "hsl(215, 20%, 65%)",
+    },
   ];
 
   const [activeIndex, setActiveIndex] = React.useState(0);

@@ -180,30 +180,12 @@ function buildZoneAStats(contextLabel, preset) {
           : 84;
   const revenueVal = `${randomize(revenueBase, 15)}k`;
 
-  const femaleVal = `${randomize(preset === "today" ? 5 : 35, 30)}%`;
-  const boostVal = `${randomize(60, 10)}%`;
-
-  const kycBase =
-    preset === "today"
-      ? 45
-      : preset === "last7"
-        ? 120
-        : preset === "last30"
-          ? 380
-          : 45;
-  const kycVal = String(randomize(kycBase, 15));
-
-  const flagBase =
-    preset === "today"
-      ? 12
-      : preset === "last7"
-        ? 35
-        : preset === "last30"
-          ? 90
-          : 12;
-  const flagVal = String(randomize(flagBase, 20));
-
   const getTrend = () => `${(randomize(120, 40) / 10).toFixed(1)}%`;
+
+  const usersBase =
+    preset === "today" ? 50 : preset === "last7" ? 350 : preset === "last30" ? 1400 : 50;
+  const activeBase = Math.round(usersBase * 0.8);
+  const premiumBase = Math.round(usersBase * 0.33);
 
   return {
     title: getGlanceTitle(preset),
@@ -218,157 +200,57 @@ function buildZoneAStats(contextLabel, preset) {
         color: "emerald",
       },
       {
-        label: "Boosts driving",
-        value: boostVal,
-        sub: "of revenue",
+        label: "MRR",
+        value: `$${randomize(5000, 15)}`,
+        sub: "Monthly Recurring Revenue",
         trend: getTrend(),
         isPositive: true,
         icon: "TrendingUp",
         color: "blue",
       },
       {
-        label: "Female signups",
-        value: femaleVal,
+        label: "Total Users",
+        value: String(randomize(usersBase, 15)),
         sub: contextLabel,
         trend: getTrend(),
-        isPositive: Math.random() > 0.5,
+        isPositive: true,
         icon: "Users",
         color: "orange",
       },
       {
-        label: "KYC pending",
-        value: kycVal,
-        sub: "Review now →",
-        isPositive: false,
-        icon: "ShieldAlert",
-        color: "cyan",
-        isActionable: true,
-        route: "/admin/management/kyc-verifications",
-      },
-      {
-        label: "Users flagged",
-        value: flagVal,
-        sub: "Review now →",
-        trend: String(randomize(5, 30)),
-        isPositive: false,
-        icon: "Flag",
-        color: "sky",
-        isActionable: true,
-        route: "/admin/management/profile-reports",
-      },
-    ],
-  };
-}
-
-function buildZoneBAlerts(contextLabel, preset) {
-  const kycCount =
-    preset === "today"
-      ? 45
-      : preset === "last7"
-        ? randomize(120, 15)
-        : preset === "last30"
-          ? randomize(380, 15)
-          : randomize(45, 30);
-  const reportedCount =
-    preset === "today"
-      ? 12
-      : preset === "last7"
-        ? randomize(35, 15)
-        : preset === "last30"
-          ? randomize(90, 15)
-          : randomize(12, 30);
-  const ghostingChange =
-    preset === "today"
-      ? "+10%"
-      : preset === "last7"
-        ? "+8%"
-        : preset === "last30"
-          ? "+12%"
-          : "+9%";
-
-  return {
-    alerts: [
-      {
-        id: "kyc",
-        label: "KYC Verification",
-        value: `${kycCount} profiles waiting for approval`,
-        sub: "Review to activate new users",
-        badge: "Pending",
-        badgeColor: "red",
-        icon: "ShieldCheck",
-        route: "/admin/management/kyc-verifications",
-      },
-      {
-        id: "reported",
-        label: "High Reported Users",
-        value: `${reportedCount} users reported 3+ times ${preset === "today" ? "today" : preset === "yesterday" ? "yesterday" : `in ${getPeriodLabelShort(preset)}`}`,
-        sub: "Investigate and take action",
-        badge: "Medium",
-        badgeColor: "orange",
-        icon: "AlertTriangle",
-        route: "/admin/management/profile-reports",
-      },
-      {
-        id: "ghosting",
-        label: "Ghosting Rate",
-        value: `${ghostingChange} ${contextLabel}`,
-        sub: "Monitor engagement trends",
-        badge: "Info",
-        badgeColor: "blue",
+        label: "Active Users",
+        value: String(randomize(activeBase, 15)),
+        sub: "Currently active",
+        trend: getTrend(),
+        isPositive: true,
         icon: "Activity",
-        route: "/admin/management/ghosting-users",
+        color: "cyan",
+      },
+      {
+        label: "Premium Subs",
+        value: String(randomize(premiumBase, 15)),
+        sub: `Conversion: ${randomize(33, 10)}%`,
+        trend: getTrend(),
+        isPositive: true,
+        icon: "Star",
+        color: "sky",
       },
     ],
   };
 }
 
-function getPeriodLabelShort(preset) {
-  switch (preset) {
-    case "today":
-      return "today";
-    case "yesterday":
-      return "yesterday";
-    case "last7":
-      return "last 7 days";
-    case "last30":
-      return "last 30 days";
-    default:
-      return "selected period";
-  }
+// buildZoneBAlerts removed — KYC, Reported Users, Ghosting not applicable to this app
+function buildZoneBAlerts() {
+  return { alerts: [] };
 }
 
 function buildZoneCMetrics(periodLabel, preset) {
-  const revenueBase =
-    preset === "today"
-      ? 84
-      : preset === "last7"
-        ? 520
-        : preset === "last30"
-          ? 2100
-          : randomize(84, 30);
-  const revenueDisplay =
-    revenueBase >= 1000
-      ? `$${(revenueBase / 100).toFixed(0)}L`
-      : `$${revenueBase}k`;
-
   return {
     metrics: [
       {
-        label: "Match Liquidity",
-        value: `${(randomize(15, 20) / 10).toFixed(1)}%`,
-        sub: `${randomize(150, 25)} matches / ${randomize(10000, 15).toLocaleString()} swipes`,
-        subtitle: "Quick overview of platform health for last 24 hours",
-        // Icon: CircleDollarSign,
-        // iconColor: "text-emerald-600",
-        // iconBg: "bg-emerald-50",
-        trend: `${(randomize(83, 30) / 10).toFixed(1)}%`,
-        isPositive: true,
-        chartData: randomizeChartData([20, 40, 35, 50, 45, 60, 55]),
-      },
-      {
         label: "Gender Ratio",
         value: `${randomize(180, 20)} : ${randomize(120, 20)}`,
-        subtitle: "Distribution of male vs female signups",
+        subtitle: "Distribution of male vs female users",
         iconName: "LuUsersRound",
         iconColor: "text-indigo-600",
         iconBg: "bg-indigo-50",
@@ -378,22 +260,6 @@ function buildZoneCMetrics(periodLabel, preset) {
         maleCount: 186,
         femaleCount: 114,
       },
-      // {
-      //   label: `Revenue ${preset === "today" ? "Today" : ""}`,
-      //   value: revenueDisplay,
-      //   sub: `Boosts: ${randomize(61, 10)}%  •  Subs: ${randomize(39, 10)}%`,
-      //   trend: `${(randomize(124, 25) / 10).toFixed(1)}%`,
-      //   isPositive: true,
-      //   chartData: randomizeChartData([30, 45, 40, 55, 50, 70, 65]),
-      // },
-      // {
-      //   label: "Funnel Drop-off",
-      //   value: `${randomize(31, 15)}%`,
-      //   sub: "At profile completion",
-      //   trend: `- ${(randomize(47, 25) / 10).toFixed(1)}%`,
-      //   isPositive: false,
-      //   chartData: randomizeChartData([65, 70, 50, 55, 45, 40, 35]),
-      // },
     ],
   };
 }
@@ -488,173 +354,40 @@ function buildLiveActivity() {
       {
         id: 1,
         time: "just now",
-        description: "User #4821 bought a Boost",
+        description: "New user registered",
         color: "#46C7CD",
       },
       {
         id: 2,
         time: "1m ago",
-        description: "Aisha & Rohan just matched!",
-        color: "#46C7CD",
+        description: "User #4821 subscribed to Premium plan",
+        color: "#780DCC",
       },
       {
         id: 3,
         time: "3m ago",
-        description: "User #3302 auto-blocked for spam",
-        color: "#F75555",
+        description: "New program assigned to User #3302",
+        color: "#46C7CD",
       },
       {
         id: 4,
         time: "5m ago",
-        description: "User #5511 bought Gold subscription",
-        color: "#780DCC",
+        description: "User #5511 completed Fitzone session",
+        color: "#46C7CD",
       },
       {
         id: 5,
         time: "8m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 6,
-        time: "10m ago",
-        description: "Priya & Arjun just matched!",
+        description: "New blog published: Healthy Diet Tips",
         color: "#46C7CD",
-      },
-      {
-        id: 7,
-        time: "12m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 8,
-        time: "15m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 9,
-        time: "18m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 10,
-        time: "20m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 11,
-        time: "22m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 12,
-        time: "24m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 13,
-        time: "26m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 14,
-        time: "28m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 15,
-        time: "30m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 16,
-        time: "32m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 17,
-        time: "34m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 18,
-        time: "36m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 19,
-        time: "38m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
-      },
-      {
-        id: 20,
-        time: "40m ago",
-        description: "User #2209 reported by 3 users",
-        color: "#F75555",
       },
     ],
   };
 }
 
-function buildConversionFunnel(periodLabel, preset) {
-  const base =
-    preset === "today"
-      ? 1200
-      : preset === "last7"
-        ? 10000
-        : preset === "last30"
-          ? 40000
-          : randomize(10000, 20);
-
-  return {
-    subtitle: "Where users drop off",
-    insight: "Biggest drop is at Profile Completion. Consider UX improvements.",
-    stages: [
-      {
-        label: "App Installs",
-        value: base,
-        dropOff: 0,
-        color: "hsl(182 100% 88%)",
-      },
-      {
-        label: "Signups",
-        value: Math.round(base * 0.82),
-        dropOff: -18,
-        color: "hsl(182 85% 78%)",
-      },
-      {
-        label: "Profile Complete",
-        value: Math.round(base * 0.58),
-        dropOff: -29,
-        color: "hsl(182 70% 68%)",
-      },
-      {
-        label: "First Swipe",
-        value: Math.round(base * 0.36),
-        dropOff: -38,
-        color: "hsl(182 60% 54%)",
-      },
-      {
-        label: "Subscribed",
-        value: Math.round(base * 0.125),
-        dropOff: -65,
-        color: "hsl(182 60% 45%)",
-      },
-    ],
-  };
+// ConversionFunnel removed — App Installs, Swipes not applicable to fitness app
+function buildConversionFunnel() {
+  return { subtitle: "", insight: "", stages: [] };
 }
 
 function buildActivityHeatmap() {
@@ -676,43 +409,9 @@ function buildActivityHeatmap() {
   };
 }
 
-function buildPerformanceInsights(periodLabel, preset) {
-  return {
-    subtitle: "What's working, what needs focus",
-    insight: "Boosts and 4+ photo users drive the best results.",
-    metrics: [
-      {
-        label: "Boost ROI",
-        value: `${(randomize(45, 15) / 10).toFixed(1)}x`,
-        percentage: randomize(90, 8),
-        color: "hsl(182 59% 54%)",
-      },
-      {
-        label: "Super Keen rate",
-        value: `${randomize(45, 15)}%`,
-        percentage: randomize(45, 15),
-        color: "hsl(182 59% 65%)",
-      },
-      {
-        label: "Normal match rate",
-        value: `${randomize(3, 30)}%`,
-        percentage: randomize(15, 20),
-        color: "hsl(215 20% 65%)",
-      },
-      {
-        label: "4+ photo users",
-        value: `${(randomize(30, 15) / 10).toFixed(0)}x matches`,
-        percentage: randomize(75, 10),
-        color: "hsl(182 59% 54%)",
-      },
-      {
-        label: "Deep connections",
-        value: `${randomize(22, 20)}%`,
-        percentage: randomize(60, 15),
-        color: "hsl(182 59% 65%)",
-      },
-    ],
-  };
+// PerformanceInsights removed — Boost ROI, Super Keen, match rate not applicable
+function buildPerformanceInsights() {
+  return { subtitle: "", insight: "", metrics: [] };
 }
 
 // ─── Main Factory Function ─────────────────────────────────────────────────────
@@ -749,10 +448,7 @@ export function getDashboardData(dateRange) {
       performanceInsights: buildPerformanceInsights(periodLabel, preset),
       userDistribution: {
         active: 62,
-        deactivated: 20,
-        deleted: 7,
-        suspended: 9,
-        banned: 2,
+        inactive: 38,
       },
     },
   };

@@ -5,35 +5,47 @@ import { Info } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { PiCurrencyCircleDollarBold } from "react-icons/pi";
 
-export function RevenueBreakdown({ data }) {
-  if (!data) return null;
+export function RevenueBreakdown({ data, revenueChartsData }) {
+  if (!data && !revenueChartsData) return null;
 
-  const categories = Array.isArray(data?.categories) ? data.categories : [];
+  let categories = Array.isArray(data?.categories) ? data.categories : [];
+  let insightText = data?.insight || "Revenue by plan distribution.";
+  let totalValue = data?.total || "0";
 
-  const hasData = data.categories && data.categories.some((c) => c.value > 0);
+  if (revenueChartsData?.planWiseSubscribers?.length > 0) {
+    const plans = revenueChartsData.planWiseSubscribers;
+    const sum = plans.reduce((acc, curr) => acc + curr.total, 0);
+    const colors = ["hsl(182 59% 75%)", "hsl(182 59% 54%)", "hsl(182 59% 35%)", "hsl(215 50% 50%)"];
+    totalValue = String(sum);
+    insightText = "Revenue by plan distribution.";
+    categories = plans.map((p, i) => {
+      const percentage = sum > 0 ? Math.round((p.total / sum) * 100) : 0;
+      return {
+        label: p.title || "Plan",
+        value: p.total,
+        displayValue: String(p.total),
+        percentage,
+        color: colors[i % colors.length]
+      };
+    });
+  }
+
+  const hasData = categories && categories.some((c) => c.value > 0);
 
   const chartConfig = {
     revenue: {
       label: "Revenue",
     },
     ...Object.fromEntries(
-      // categories.map((c, i) => [
-      //   c.label?.toLowerCase().replace(/\s+/g, "_") || `cat_${i}`,
-      //   { label: c.label || "N/A", color: c.color || "#000" },
-      (data.categories || []).map((c, i) => [
+      categories.map((c, i) => [
         c.label.toLowerCase().replace(/\s+/g, "_"),
         { label: c.label, color: c.color },
       ]),
     ),
   };
 
-  // const chartData = categories.map((c) => ({
-  //   name: c.label || "N/A",
-  //   value: c.value || 0,
-  //   fill: c.color || "#000",
-  // }));
   const chartData = hasData
-    ? data.categories.map((c) => ({
+    ? categories.map((c) => ({
         name: c.label,
         value: c.value,
         fill: c.color,
@@ -107,7 +119,7 @@ export function RevenueBreakdown({ data }) {
                             y={viewBox.cy - 5}
                             className="fill-slate-900 text-2xl font-black"
                           >
-                            {hasData ? data.total : "$0"}
+                            {hasData ? totalValue : "$0"}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
@@ -168,7 +180,7 @@ export function RevenueBreakdown({ data }) {
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
             <Info size={12} className="text-brand-blue" />
           </div>
-          {data.insight}
+          {insightText}
         </div>
       </div>
     </div>

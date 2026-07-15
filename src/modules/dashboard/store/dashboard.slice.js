@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { advancedDashboardAPI, dashboardKPIAPI } from "../services/dashboard.services";
-import { getDashboardData } from "../utils/dummyResponse";
-
+import {
+  dashboardSummaryAPI,
+  dashboardContentChartsAPI,
+  dashboardRevenueChartsAPI,
+  dashboardEngagementChartsAPI,
+  dashboardRecentActivityAPI,
+} from "../services/dashboard.services";
 // ─── Existing KPI thunk ────────────────────────────────────────────────────────
 
 export const fetchDashboardKPIs = createAsyncThunk(
@@ -45,15 +49,25 @@ export const fetchDashboardData = createAsyncThunk(
   "dashboard/fetchDashboardData",
   async (dateRange, { rejectWithValue }) => {
     try {
-      // const preset = dateRange?.preset;
-      // const res = await advancedDashboardAPI(preset, dateRange);
-      const res = await getDashboardData(dateRange);
+      const [summaryRes, contentRes, revenueRes, engagementRes, recentRes] = await Promise.allSettled([
+        dashboardSummaryAPI(dateRange),
+        dashboardContentChartsAPI(dateRange),
+        dashboardRevenueChartsAPI(dateRange),
+        dashboardEngagementChartsAPI(dateRange),
+        dashboardRecentActivityAPI(dateRange)
+      ]);
 
-      if (res.success) {
-        return { data: res.data, meta: res.meta, dateRange };
-      }
-
-      return rejectWithValue("Failed to fetch dashboard data");
+      return {
+        data: {
+          summaryData: summaryRes.status === "fulfilled" ? summaryRes.value?.data : null,
+          contentChartsData: contentRes.status === "fulfilled" ? contentRes.value?.data : null,
+          revenueChartsData: revenueRes.status === "fulfilled" ? revenueRes.value?.data : null,
+          engagementChartsData: engagementRes.status === "fulfilled" ? engagementRes.value?.data : null,
+          recentActivityData: recentRes.status === "fulfilled" ? recentRes.value?.data : null,
+        },
+        meta: { dateRange },
+        dateRange
+      };
     } catch (err) {
       return rejectWithValue(err.message || "Server Error");
     }

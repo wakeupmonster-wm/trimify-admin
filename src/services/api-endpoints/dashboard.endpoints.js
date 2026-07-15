@@ -9,18 +9,9 @@ const ADMIN = `${BASE_URL}/admin`;
 
 // ── Core Dashboard Stats ──────────────────────────────────
 export const DASHBOARD_ENDPOINTS = {
-  /** GET — Retrieve sub-admin count for the dashboard */
-  DASHBOARD_SUBADMIN_COUNT: `${ADMIN}/subadmin-count`,
-
-  /** GET — Retrieve user count for the dashboard */
-  DASHBOARD_USER_COUNT: `${ADMIN}/user-count`,
-
-  /** GET — Retrieve blog post count for the dashboard */
-  DASHBOARD_BLOG_COUNT: `${ADMIN}/blog`,
-
-  /** GET — Retrieve program count for the dashboard */
-  DASHBOARD_PROGRAM_COUNT: `${ADMIN}/manageprogram`,
-
-  /** GET — Retrieve Fitzone session count for the dashboard */
-  DASHBOARD_FITZONE_SESSION_COUNT: `${ADMIN}/fitzonesession`,
+  SUMMARY: `${ADMIN}/dashboard/summary`,
+  CONTENT_CHARTS: `${ADMIN}/dashboard/content-charts`,
+  REVENUE_CHARTS: `${ADMIN}/dashboard/revenue-charts`,
+  ENGAGEMENT_CHARTS: `${ADMIN}/dashboard/engagement-charts`,
+  RECENT_ACTIVITY: `${ADMIN}/dashboard/recent-activity`,
 }

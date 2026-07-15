@@ -41,9 +41,88 @@ const getTrendExplanation = (stat, trendValue, isTrendingUp) => {
   return `${label} ${action} by ${trendValue.replace(/[+-]/g, "")} from ${prevStr} to ${currStr}.`;
 };
 
-export function TodayAtAGlance({ data, periodLabel, selectedDate }) {
+export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData }) {
   const navigate = useNavigate();
-  if (!data) return null;
+  if (!data && !summaryData) return null;
+
+  let statsToRender = data?.stats || [];
+
+  if (summaryData) {
+    const s = summaryData;
+    // Map new API data to the cards
+    statsToRender = [
+      {
+        label: "Total Revenue",
+        value: `$${(s.totalRevenue || 0).toLocaleString()}`,
+        sub: periodLabel || "Overall",
+        icon: "Sparkles",
+        color: "emerald",
+      },
+      {
+        label: "MRR",
+        value: `$${(s.mrr || 0).toLocaleString()}`,
+        sub: "Monthly Recurring Revenue",
+        icon: "TrendingUp",
+        color: "blue",
+      },
+      {
+        label: "Total Users",
+        value: s.totalUsers?.toLocaleString() || "0",
+        sub: "Registered users",
+        icon: "Users",
+        color: "orange",
+      },
+      {
+        label: "Active Users",
+        value: s.activeUsers?.toLocaleString() || "0",
+        sub: "Currently active",
+        icon: "Activity",
+        color: "cyan",
+      },
+      {
+        label: "Premium Subs",
+        value: s.premiumSubscribers?.toLocaleString() || "0",
+        sub: "Conversion: " + (s.premiumConversionRate || 0) + "%",
+        icon: "Star",
+        color: "sky",
+      },
+      {
+        label: "Programs",
+        value: s.totalPrograms?.toLocaleString() || "0",
+        sub: "Active programs",
+        icon: "List",
+        color: "indigo",
+      },
+      {
+        label: "Sessions",
+        value: s.totalFitzoneSessions?.toLocaleString() || "0",
+        sub: "Fitzone sessions",
+        icon: "Video",
+        color: "rose",
+      },
+      {
+        label: "Blogs",
+        value: s.totalBlogs?.toLocaleString() || "0",
+        sub: "Published blogs",
+        icon: "FileText",
+        color: "amber",
+      },
+      {
+        label: "Sub-Admins",
+        value: s.totalSubAdmins?.toLocaleString() || "0",
+        sub: "Platform managers",
+        icon: "Shield",
+        color: "slate",
+      },
+      {
+        label: "Transactions",
+        value: s.totalTransactions?.toLocaleString() || "0",
+        sub: `${s.successfulTransactions} successful`,
+        icon: "CreditCard",
+        color: "emerald",
+      }
+    ];
+  }
 
   // Mock trend data logic since it's not fully in the dummy data yet
   return (
@@ -51,7 +130,7 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate }) {
       <div className="mb-2">
         <div className="mb-4 flex flex-col items-start gap-1">
           <h2 className="text-base font-bold text-slate-900">
-            {data.title || "Today at a glance"}
+            {data?.title || "Today at a glance"}
           </h2>
           <p className="text-[11px] font-medium text-slate-500 leading-none">
             Key insights that matter most right now.
@@ -59,8 +138,8 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate }) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {Array.isArray(data.stats) &&
-            data.stats.map((stat, idx) => {
+          {Array.isArray(statsToRender) &&
+            statsToRender.map((stat, idx) => {
               // Purely backend-driven data mapping
               const trendValue = stat.trend;
               const isPositive = stat.isPositive;
@@ -230,14 +309,7 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate }) {
                             ) : null}
                           </TooltipContent>
                         </Tooltip>
-                      ) : (
-                        (stat.label === "KYC pending" ||
-                          stat.label === "Users flagged") && (
-                          <span className="bg-slate-50 text-[10px] text-slate-400 px-2.5 py-1 rounded-full border border-slate-100 font-bold uppercase tracking-wider shrink-0">
-                            Pending
-                          </span>
-                        )
-                      )}
+                      ) : null}
                     </div>
                     <h3 className="text-[28px] font-extrabold text-slate-900 tracking-tight leading-none mt-1">
                       {displayValue}
