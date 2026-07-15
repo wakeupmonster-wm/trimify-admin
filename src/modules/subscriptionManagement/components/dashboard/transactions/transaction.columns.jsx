@@ -1,0 +1,76 @@
+import React from "react";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+const STATUS_STYLE = {
+  success: "bg-emerald-50 text-emerald-600",
+  failed: "bg-rose-50 text-rose-600",
+  pending: "bg-amber-50 text-amber-600",
+};
+
+export const getTransactionColumns = () => [
+  {
+    id: "sno",
+    header: () => <div className="w-10 text-center text-[10px] font-bold uppercase tracking-wider">S.No</div>,
+    size: 60,
+    cell: ({ row, table }) => {
+      const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
+      return <div className="w-10 text-center font-bold text-[11px] text-foreground/90">{pageIndex * pageSize + row.index + 1}</div>;
+    },
+    enableSorting: false,
+  },
+  {
+    accessorKey: "created_at",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Date</div>,
+    size: 130,
+    cell: ({ row }) => {
+      const value = row.original.created_at;
+      if (!value) return "-";
+      const date = new Date(value);
+      return (
+        <div>
+          <p className="text-xs font-semibold whitespace-nowrap">{format(date, "dd MMM yyyy")}</p>
+          <p className="text-[10px] text-slate-400 font-semibold">{format(date, "hh:mm a")}</p>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "user_name",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">User</div>,
+    size: 180,
+    cell: ({ row }) => (
+      <div className="min-w-0">
+        <p className="font-bold text-slate-700 text-[11px] truncate">{row.original.user_name || "-"}</p>
+        <p className="text-[10px] text-slate-400 font-medium truncate">{row.original.user_email}</p>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "plan_title",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Plan</div>,
+    size: 130,
+    cell: ({ row }) => <div className="font-semibold text-slate-600 text-[11px]">{row.original.plan_title || "-"}</div>,
+  },
+  {
+    accessorKey: "amount",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Amount</div>,
+    size: 100,
+    cell: ({ row }) => (
+      <div className="text-[13px] font-black text-slate-900 tabular-nums">
+        ${Number(row.original.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Status</div>,
+    size: 100,
+    cell: ({ row }) => (
+      <Badge className={cn("text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5", STATUS_STYLE[row.original.status] || "bg-slate-100 text-slate-500")}>
+        {row.original.status}
+      </Badge>
+    ),
+  },
+];

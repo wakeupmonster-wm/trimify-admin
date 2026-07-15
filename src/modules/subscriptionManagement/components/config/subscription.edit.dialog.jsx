@@ -6,41 +6,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
-  const isEditMode = !!editData;
-
-  const [formData, setFormData] = useState({
-    title: "",
-    subtitle: "",
-    price: "",
-    duration: "",
-    features: "",
-  });
+export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData, loading }) {
+  const [formData, setFormData] = useState({ price: "", features: "" });
 
   useEffect(() => {
-    if (open) {
-      if (editData) {
-        setFormData({
-          title: editData.title || "",
-          subtitle: editData.subtitle || "",
-          price: editData.price || "",
-          duration: editData.duration || "",
-          features: editData.features || "",
-        });
-      } else {
-        setFormData({
-          title: "",
-          subtitle: "",
-          price: "",
-          duration: "",
-          features: "",
-        });
-      }
+    if (open && editData) {
+      setFormData({
+        price: editData.price || "",
+        features: editData.features || "",
+      });
     }
   }, [open, editData]);
 
@@ -51,58 +30,50 @@ export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) {
-      onSubmit(formData);
+    if (onSubmit && editData) {
+      onSubmit({ id: editData.id, price: formData.price, features: formData.features });
     }
-    onOpenChange(false);
   };
+
+  if (!editData) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] p-0 border-none rounded-xl overflow-hidden shadow-2xl">
-        <DialogHeader className="bg-brand-blue p-4 text-center">
+        <DialogHeader className="bg-brand-aqua p-4 text-center">
           <DialogTitle className="text-white text-lg font-bold text-center w-full mx-auto">
-            {isEditMode ? "Edit Subscription" : "Add Subscription"}
+            Edit Subscription
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            
-            {/* Plan Title */}
+            {/* Plan Title — read only, backend does not support renaming a plan */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Plan Title</Label>
               <Input
-                name="title"
-                placeholder="e.g. Premium"
-                value={formData.title}
-                onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
-                required
+                value={editData.title || ""}
+                disabled
+                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
               />
             </div>
 
-            {/* Sub Title */}
+            {/* Sub Title — read only */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Sub Title</Label>
               <Input
-                name="subtitle"
-                placeholder="e.g. Package details here"
-                value={formData.subtitle}
-                onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
-                required
+                value={editData.subtitle || ""}
+                disabled
+                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
               />
             </div>
 
-            {/* Price */}
+            {/* Price — editable */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Price ($)</Label>
               <Input
-                type="number"
-                step="0.01"
                 name="price"
-                placeholder="e.g. 50.00"
+                placeholder="e.g. 34.99"
                 value={formData.price}
                 onChange={handleChange}
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
@@ -110,21 +81,17 @@ export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
               />
             </div>
 
-            {/* Duration */}
+            {/* Duration — read only */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">Duration (in Months)</Label>
               <Input
-                type="number"
-                name="duration"
-                placeholder="e.g. 2"
-                value={formData.duration}
-                onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
-                required
+                value={editData.duration || ""}
+                disabled
+                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
               />
             </div>
 
-            {/* Features */}
+            {/* Features — editable */}
             <div className="space-y-1.5 md:col-span-2">
               <Label className="text-xs font-bold text-slate-800">Features (comma separated)</Label>
               <Textarea
@@ -138,13 +105,18 @@ export function SubscriptionDialog({ open, onOpenChange, onSubmit, editData }) {
             </div>
           </div>
 
-          <div className="mt-8 flex justify-center">
+          <p className="mt-4 text-[11px] text-slate-400 font-medium">
+            Only price and features can be updated — title, sub title and duration are managed elsewhere.
+          </p>
+
+          <div className="mt-6 flex justify-center">
             <Button
               type="submit"
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2"
+              disabled={loading}
+              className="bg-brand-aqua hover:bg-brand-hoverAqua text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2"
             >
-              <Send size={16} />
-              {isEditMode ? "Update Subscription" : "Add Subscription"}
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+              Update Subscription
             </Button>
           </div>
         </form>

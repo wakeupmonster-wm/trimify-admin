@@ -41,22 +41,42 @@ export function LiveActivity({ data }) {
     }
   };
 
+  const events = React.useMemo(() => {
+    if (!data) return [];
+    
+    const users = (data.recentUsers || []).map(u => ({
+      id: `u-${u.id}`,
+      time: u.created_at,
+      description: `New user ${u.name} registered.`,
+      color: "hsl(182 59% 54%)"
+    }));
+
+    const txs = (data.recentTransactions || []).map(t => ({
+      id: `t-${t.id}`,
+      time: t.created_at,
+      description: `${t.user_name} subscribed to ${t.plan_title} ($${t.amount}).`,
+      color: "hsl(160, 60%, 45%)"
+    }));
+
+    return [...users, ...txs].sort((a, b) => new Date(b.time) - new Date(a.time));
+  }, [data]);
+
   return (
     <div className="bg-white border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl py-5 shadow-sm flex flex-col h-full">
       <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
         <DashboardHead
           title="Live Activity"
-          subtitle="Real-time user monitoring" // Changed duplicate text for variety
+          subtitle="Recent registrations and transactions"
           Icon={LuActivity}
           iconColor="text-slate-600"
           iconBg="bg-slate-100/50"
         />
       </div>
 
-      {data.events && data.events.length > 0 ? (
+      {events.length > 0 ? (
         <ScrollArea className="flex-1 mt-3 pr-2 max-h-[300px] px-6">
           <div className="space-y-1">
-            {data.events.map((event, index) => (
+            {events.map((event, index) => (
               <div
                 key={event.id}
                 className={`flex items-center gap-4 p-3 rounded-md transition-colors ${
@@ -97,27 +117,13 @@ export function LiveActivity({ data }) {
         <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0">
           <Info size={12} className="text-brand-aqua" />
         </div>
-        {data.events?.filter((e) => e.color === "#F75555").length > 0 ? (
-          <span>
-            Active monitoring:{" "}
-            <strong className="font-extrabold text-brand-aqua">
-              {data.events.length}
-            </strong>{" "}
-            events captured (
-            <strong className="font-extrabold text-rose-500">
-              {data.events.filter((e) => e.color === "#F75555").length}
-            </strong>{" "}
-            flagged for moderation).
-          </span>
-        ) : (
-          <span>
-            Active monitoring:{" "}
-            <strong className="font-extrabold text-brand-aqua">
-              {data.events?.length || 0}
-            </strong>{" "}
-            events captured in the last hour.
-          </span>
-        )}
+        <span>
+          Active monitoring:{" "}
+          <strong className="font-extrabold text-brand-aqua">
+            {events.length}
+          </strong>{" "}
+          events captured recently.
+        </span>
       </div>
       
     </div>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Tooltip,
@@ -7,23 +7,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LuActivity } from "react-icons/lu";
-import { Calendar, Info } from "lucide-react";
-import { format, getDaysInMonth } from "date-fns";
+import { Info } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { formatCompactNumber } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-// Intensity color mapping — existing colors preserved
+const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const hoursOfDay = Array.from({ length: 24 }, (_, i) => i);
+
 const getIntensityColor = (intensity) => {
   switch (intensity) {
     case 3:
-      return "bg-[#46C7CD]"; // High — bright brand aqua
+      return "bg-[#46C7CD]"; // High
     case 2:
       return "bg-[#46C7CD]/70"; // Medium
     case 1:
@@ -35,96 +29,53 @@ const getIntensityColor = (intensity) => {
   }
 };
 
-const timeSlots = [
-  "3AM - 6AM",
-  "6AM - 9AM",
-  "9AM - 12PM",
-  "12PM - 3PM",
-  "3PM - 6PM",
-  "6PM - 9PM",
-  "9PM - 12AM",
-];
-
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+const formatHour = (hour) => {
+  if (hour === 0) return "12 AM";
+  if (hour < 12) return `${hour} AM`;
+  if (hour === 12) return "12 PM";
+  return `${hour - 12} PM`;
+};
 
 export function ActivityHeatmap({ data }) {
   if (!data) return null;
 
-  const currentDate = new Date();
-  const [viewMonth, setViewMonth] = useState(currentDate.getMonth());
-  const [viewYear, setViewYear] = useState(currentDate.getFullYear());
-
-  // Year options: current year and 3 years back
-  const yearOptions = useMemo(() => {
-    const years = [];
-    const currentYear = new Date().getFullYear();
-    for (let i = 0; i < 4; i++) {
-      years.push(currentYear - i);
-    }
-    return years;
-  }, []);
-
-  const totalDays = getDaysInMonth(new Date(viewYear, viewMonth));
-
-  // Build lookup map for fast access: "YYYY-MM-DD|slot" → { count, intensity }
   const dataMap = useMemo(() => {
     const map = {};
-    const items = data.data || (Array.isArray(data) ? data : []);
+    let maxTotal = 0;
+
+    const items = Array.isArray(data) ? data : (data.peakActivityHeatmap || []);
+    
     items.forEach((item) => {
-      if (item.date && item.slot !== undefined) {
-        map[`${item.date}|${item.slot}`] = {
-          count: item.count,
-          intensity: item.intensity,
-        };
+      const day = item.day_of_week; // 1 (Mon) - 7 (Sun)
+      const hour = item.hour_of_day;
+      map[`${day}-${hour}`] = item.total;
+      if (item.total > maxTotal) {
+        maxTotal = item.total;
       }
     });
-    return map;
+
+    return { map, maxTotal };
   }, [data]);
 
-  // Find peak cell for this month
+  const getIntensity = (total, max) => {
+    if (!total || total === 0) return 0;
+    if (total > (max * 0.66)) return 3;
+    if (total > (max * 0.33)) return 2;
+    return 1;
+  };
+
   const peakCell = useMemo(() => {
     let peak = null;
-    for (let d = 1; d <= totalDays; d++) {
-      // Use manual string construction to be timezone-safe (YYYY-MM-DD)
-      const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-      for (let s = 0; s < 7; s++) {
-        const entry = dataMap[`${dateStr}|${s}`];
-        if (entry && (!peak || entry.count > peak.count)) {
-          peak = { dateStr, slot: s, count: entry.count };
-        }
+    let max = 0;
+    Object.entries(dataMap.map).forEach(([key, total]) => {
+      if (total > max) {
+        max = total;
+        const [d, h] = key.split("-");
+        peak = { day: parseInt(d), hour: parseInt(h), total };
       }
-    }
+    });
     return peak;
-  }, [dataMap, viewMonth, viewYear, totalDays]);
-
-  const dynamicInsight = useMemo(() => {
-    const monthName = monthNames[viewMonth];
-
-    if (!peakCell) {
-      return `No significant activity data found for ${monthName} ${viewYear}. Select a different period to view trends.`;
-    }
-
-    const peakDate = new Date(peakCell.dateStr);
-    const peakTime = timeSlots[peakCell.slot];
-
-    return `Peak activity in ${monthName} ${viewYear} occurred on ${format(
-      peakDate,
-      "do",
-    )} at ${peakTime} (${formatCompactNumber(peakCell.count)} users)`;
-  }, [peakCell, viewMonth, viewYear]);
+  }, [dataMap]);
 
   return (
     <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
@@ -137,143 +88,79 @@ export function ActivityHeatmap({ data }) {
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
           />
-
-          {/* Month & Year Selectors */}
-          <div className="flex flex-col md:flex-row items-end md:items-center gap-2">
-            {/* Month Select */}
-            <Select
-              value={viewMonth.toString()}
-              onValueChange={(val) => setViewMonth(parseInt(val))}
-            >
-              <SelectTrigger className="h-9 w-full md:w-[125px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-aqua focus:ring-0 focus-visible:border-brand-aqua focus-visible:ring-0">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <SelectValue placeholder="Month" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="rounded-lg border border-slate-100/80 bg-white p-1.5 shadow-xl min-w-[130px]">
-                {monthNames.map((name, idx) => (
-                  <SelectItem
-                    key={idx}
-                    value={idx.toString()}
-                    className={`text-xs font-semibold py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                      viewMonth === idx
-                        ? "!bg-brand-aqua/15 !text-brand-aqua !data-[highlighted]:bg-brand-aqua/15 !data-[highlighted]:text-brand-aqua"
-                        : "text-slate-500 hover:!bg-white hover:text-slate-900"
-                    }`}
-                  >
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Year Select */}
-            <Select
-              value={viewYear.toString()}
-              onValueChange={(val) => setViewYear(parseInt(val))}
-            >
-              <SelectTrigger className="h-9 w-full md:w-[95px] rounded-md bg-white border border-slate-200 hover:border-slate-300 text-xs font-semibold text-slate-600 shadow-sm transition-all duration-300 focus:border-brand-aqua focus:ring-0 focus-visible:border-brand-aqua focus-visible:ring-0">
-                <SelectValue placeholder="Year" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg border border-slate-100/80 bg-white p-1.5 shadow-xl min-w-[100px]">
-                {yearOptions.map((year) => (
-                  <SelectItem
-                    key={year}
-                    value={year.toString()}
-                    className={`text-xs font-semibold py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                      viewYear === year
-                        ? "!bg-brand-aqua/15 !text-brand-aqua !data-[highlighted]:bg-brand-aqua/15 !data-[highlighted]:text-brand-aqua"
-                        : "text-slate-500 hover:!bg-white hover:text-slate-900"
-                    }`}
-                  >
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
         </div>
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col px-5 pb-5 overflow-x-auto">
-        <div className="min-w-[750px]">
-          {/* Date Numbers Header (1 to totalDays) */}
-          <div className="flex mb-1.5 ml-[70px]">
-            {Array.from({ length: totalDays }).map((_, i) => (
+        <div className="min-w-[600px] mt-2">
+          {/* Hours Header */}
+          <div className="flex mb-2 ml-[35px]">
+            {hoursOfDay.map((hour) => (
               <div
-                key={i}
+                key={hour}
                 className="flex-1 text-center text-[9px] font-bold text-slate-400"
               >
-                {i + 1}
+                {hour % 2 === 0 ? formatHour(hour).replace(' ', '') : ''}
               </div>
             ))}
           </div>
 
-          {/* Heatmap Grid: 7 rows (time slots) × totalDays cols */}
+          {/* Grid */}
           <TooltipProvider>
-            {timeSlots.map((slotLabel, slotIdx) => (
-              <div key={slotLabel} className="flex items-center mb-[4px]">
-                {/* Time Slot Label */}
-                <span className="w-full max-w-[70px] text-[10px] font-medium text-slate-400 text-right pr-3 shrink-0">
-                  {slotLabel}
-                </span>
+            {daysOfWeek.map((dayLabel, dIdx) => {
+              const day = dIdx + 1;
+              return (
+                <div key={dayLabel} className="flex items-center mb-1">
+                  {/* Day Label */}
+                  <span className="w-full max-w-[35px] text-[10px] font-medium text-slate-400 text-right pr-2 shrink-0">
+                    {dayLabel}
+                  </span>
 
-                {/* Cells for this time slot row */}
-                <div className="flex-1 flex gap-[5px]">
-                  {Array.from({ length: totalDays }).map((_, dIdx) => {
-                    const dateObj = new Date(viewYear, viewMonth, dIdx + 1);
-                    const dateStr = format(dateObj, "yyyy-MM-dd");
-                    const entry = dataMap[`${dateStr}|${slotIdx}`];
-                    const count = entry?.count || 0;
-                    const intensity = entry?.intensity || 0;
-                    const isPeak =
-                      peakCell &&
-                      peakCell.dateStr === dateStr &&
-                      peakCell.slot === slotIdx;
+                  {/* Cells */}
+                  <div className="flex-1 flex gap-1">
+                    {hoursOfDay.map((hour) => {
+                      const total = dataMap.map[`${day}-${hour}`] || 0;
+                      const intensity = getIntensity(total, dataMap.maxTotal);
+                      const isPeak = peakCell && peakCell.day === day && peakCell.hour === hour;
 
-                    return (
-                      <Tooltip key={dIdx}>
-                        <TooltipTrigger asChild>
-                          <div
-                            className={`flex-1 aspect-square rounded-[3px] border border-slate-100 transition-all duration-200 cursor-pointer hover:ring-2 hover:ring-brand-aqua/40 hover:scale-110 ${getIntensityColor(intensity)} ${
-                              isPeak ? "ring-2 ring-brand-aqua" : ""
-                            }`}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="top"
-                          className="bg-slate-900 text-white border-none rounded-lg px-3 py-2 shadow-xl"
-                        >
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[11px] font-bold">
-                              {format(dateObj, "MMM dd, yyyy")} (
-                              {format(dateObj, "EEE")})
-                            </span>
-                            <span className="text-[10px] text-slate-300">
-                              {slotLabel}
-                            </span>
-                            <span className="text-[10px] text-slate-300">
-                              👥 {formatCompactNumber(count)} users
-                            </span>
-                            {isPeak && (
-                              <span className="text-[10px] font-bold text-brand-aqua">
-                                ✨ Highest for this slot
+                      return (
+                        <Tooltip key={hour}>
+                          <TooltipTrigger asChild>
+                            <div
+                              className={`flex-1 aspect-square rounded-[3px] border border-slate-100 transition-all duration-200 cursor-pointer hover:ring-2 hover:ring-brand-aqua/40 hover:scale-110 ${getIntensityColor(intensity)} ${
+                                isPeak ? "ring-2 ring-brand-aqua" : ""
+                              }`}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="top"
+                            className="bg-slate-900 text-white border-none rounded-lg px-3 py-2 shadow-xl"
+                          >
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-[11px] font-bold">
+                                {dayLabel}, {formatHour(hour)}
                               </span>
-                            )}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    );
-                  })}
+                              <span className="text-[10px] text-slate-300">
+                                👥 {formatCompactNumber(total)} users
+                              </span>
+                              {isPeak && (
+                                <span className="text-[10px] font-bold text-brand-aqua">
+                                  ✨ Highest activity
+                                </span>
+                              )}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </TooltipProvider>
 
-          {/* Footer Row */}
+          {/* Footer */}
           <div className="mt-4 flex items-center justify-between px-0">
-            {/* Legend */}
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                 Low
@@ -289,18 +176,17 @@ export function ActivityHeatmap({ data }) {
               </span>
             </div>
 
-            {/* Timezone Info */}
-            {/* <div className="flex items-center gap-1 text-[9px] text-slate-400">
-              <span>ⓘ</span>
-              <span>All times shown in local time (GMT+5:30)</span>
-            </div> */}
-
-            {/* Insight Box */}
             <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
               <div className="w-5 h-5 rounded-full flex items-center justify-center">
                 <Info size={12} className="text-brand-aqua" />
               </div>
-              {dynamicInsight}
+              {peakCell ? (
+                <span>
+                  Peak activity occurs on {daysOfWeek[peakCell.day - 1]}s at {formatHour(peakCell.hour)}.
+                </span>
+              ) : (
+                <span>No activity data found.</span>
+              )}
             </div>
           </div>
         </div>

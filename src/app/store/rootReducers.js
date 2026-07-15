@@ -8,6 +8,7 @@ import manageProgramReducer from "@/modules/manageProgram/store/program.slice";
 import fitzoneManagementReducer from "@/modules/fitzoneManagement/store/fitzone.slice";
 import blogSectionReducer from "@/modules/blogSection/store/blog.slice";
 import subscriptionManagementReducer from "@/modules/subscriptionManagement/store/subscription.slice";
+import subscriptionDashboardReducer from "@/modules/subscriptionManagement/store/subscription-dashboard.slice";
 import transactionManagementReducer from "@/modules/transactionManagement/store/transaction.slice";
 import notificationManageReducer from "@/modules/notificationManage/store/notification.slice";
 import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
@@ -25,6 +26,7 @@ export const rootReducer = combineReducers({
   fitzoneManagement: fitzoneManagementReducer,
   blogSection: blogSectionReducer,
   subscriptionManagement: subscriptionManagementReducer,
+  subscriptionDashboard: subscriptionDashboardReducer,
   transactionManagement: transactionManagementReducer,
   notificationManage: notificationManageReducer,
   faqManagement: faqManagementReducer,

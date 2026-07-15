@@ -1,5 +1,14 @@
 import * as React from "react";
-import { subDays, format, startOfDay, endOfDay, isSameDay } from "date-fns";
+import {
+  subDays,
+  format,
+  startOfDay,
+  endOfDay,
+  isSameDay,
+  startOfMonth,
+  endOfMonth,
+  subMonths,
+} from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,6 +25,8 @@ const PRESETS = [
   { label: "Last 7 Days", value: "last7" },
   { label: "Last 30 Days", value: "last30" },
   { label: "Last 90 Days", value: "last90" },
+  { label: "This Month", value: "thisMonth" },
+  { label: "Last Month", value: "lastMonth" },
   { label: "Custom Range", value: "custom" },
 ];
 
@@ -98,6 +109,14 @@ export function CalendarDateRangePicker({
       case "last90":
         newDate = { from: subDays(today, 90), to: endOfToday };
         break;
+      case "thisMonth":
+        newDate = { from: startOfMonth(today), to: endOfToday };
+        break;
+      case "lastMonth": {
+        const lastMonth = subMonths(today, 1);
+        newDate = { from: startOfMonth(lastMonth), to: endOfDay(endOfMonth(lastMonth)) };
+        break;
+      }
       default:
         break;
     }

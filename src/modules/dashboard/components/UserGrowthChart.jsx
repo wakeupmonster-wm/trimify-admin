@@ -24,29 +24,32 @@ const chartConfig = {
 };
 
 export function UserGrowthChart({ data, selectedDate }) {
-  // Process and aggregate data based on the actual range length provided in data.data
+  // Process and aggregate data based on the actual range length provided in data
   const displayData = useMemo(() => {
-    if (!data || !data.data) return null;
+    if (!data) return null;
 
-    const preset = selectedDate?.preset;
-    if (preset === "today" || preset === "yesterday") {
-      const chartData = data.data;
-      if (chartData && chartData.length > 0) {
-        const lastItem = chartData[chartData.length - 1];
-        return {
-          ...data,
-          data: [
-            {
-              ...lastItem,
-              day: preset === "today" ? "Today" : "Yesterday",
-            },
-          ],
-        };
-      }
-    }
+    const signups = data.userSignupTrend || [];
+    const active = data.activeUsersTrend || [];
 
-    return data;
-  }, [data, selectedDate]);
+    // The backend now provides pre-formatted chronological strings in the `date` field.
+    // e.g. '14 Jul', 'Week 1', 'Apr'. We just need to merge the two arrays while preserving order.
+    const uniqueDates = Array.from(new Set([...signups.map(s => s.date), ...active.map(a => a.date)]));
+
+    const formattedData = uniqueDates.map(dateLabel => {
+       const signupPoint = signups.find(s => s.date === dateLabel);
+       const activePoint = active.find(a => a.date === dateLabel);
+       return {
+         day: dateLabel, // X-Axis label
+         signups: signupPoint ? signupPoint.total : 0,
+         activeUsers: activePoint ? activePoint.active_users : 0
+       };
+    });
+
+    return {
+      data: formattedData,
+      subtitle: "Signups and active users over time"
+    };
+  }, [data]);
 
   if (!displayData) return null;
 

@@ -8,6 +8,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 export const getSubscriptionColumns = (onAction) => [
   {
@@ -138,13 +143,23 @@ export const getSubscriptionColumns = (onAction) => [
               <Edit className="w-3.5 h-3.5" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
-              onClick={() => onAction && onAction(row.original, "delete")}
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              Delete
-            </DropdownMenuItem>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <DropdownMenuItem
+                    disabled
+                    className="gap-2 py-1.5 rounded-lg text-red-600/50 font-semibold text-xs cursor-not-allowed"
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete
+                  </DropdownMenuItem>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="text-xs max-w-[200px]">
+                Plan deletion isn't supported by the API yet.
+              </TooltipContent>
+            </Tooltip>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

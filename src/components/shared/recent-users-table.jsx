@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   bannedUserProfile,
-//   fetchUsers,
-//   suspendUserProfile,
-//   unbanUserProfile,
-//   unsuspendUserProfile,
-// } from "@/modules/users/store/user.slice";
-// import { fetchDashboardData, fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -33,10 +25,6 @@ import dummyImg from "@/assets/web/dummyImg.webp";
 import {
   Eye,
   MoreHorizontal,
-  Ban,
-  UserCheck,
-  CirclePause,
-  Unlock,
 } from "lucide-react";
 import DashboardHead from "./dashboard.head";
 import { Button } from "../ui/button";
@@ -58,21 +46,13 @@ const STATUS_STYLES = {
     bg: "bg-emerald-500/10 text-emerald-600 border-emerald-100/50",
     dot: "bg-emerald-500",
   },
+  inactive: {
+    bg: "bg-slate-500/10 text-slate-600 border-slate-100/50",
+    dot: "bg-slate-400",
+  },
   pending: {
     bg: "bg-amber-100 text-amber-700 border-amber-100/50",
     dot: "bg-amber-500",
-  },
-  banned: {
-    bg: "bg-red-500/10 text-red-600 border-red-100/50",
-    dot: "bg-red-500",
-  },
-  suspended: {
-    bg: "bg-amber-500/10 text-amber-600 border-amber-100/50",
-    dot: "bg-amber-500",
-  },
-  deactivated: {
-    bg: "bg-slate-500/10 text-slate-600 border-slate-100/50",
-    dot: "bg-slate-400",
   },
 };
 
@@ -99,13 +79,29 @@ const formatDateSafe = (dateString) => {
   return isNaN(date.getTime()) ? "-" : format(date, "dd MMM yyyy");
 };
 
-export function RecentUsersTable() {
+export function RecentUsersTable({ recentActivityData }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  // const { items, loading } = useSelector((state) => state.users);
-  // const dashboardState = useSelector((state) => state.dashboard);
-  const items = [];
+
+  // Combine with dummy data format if needed or map API to dummy format
+  const items = recentActivityData?.recentUsers?.map(u => ({
+    _id: u.id,
+    profile: {
+      nickname: u.name,
+      totalCompletion: 0, // Not in new API
+    },
+    account: {
+      email: u.email,
+      status: u.status?.toLowerCase() || 'active',
+      isPremium: !!u.plan_title && !u.plan_title.toLowerCase().includes('free'),
+    },
+    createdAt: u.created_at,
+    // Add other fields from API if needed
+    plan_title: u.plan_title,
+    main_goal: u.main_goal,
+  })) || [];
+
   const loading = false;
 
   const refreshDashboard = () => {
@@ -132,9 +128,6 @@ export function RecentUsersTable() {
     type: "ban",
     user: null,
   });
-
-
-
   // Image preview modal state
   const [imageModal, setImageModal] = useState({
     open: false,
@@ -154,51 +147,7 @@ export function RecentUsersTable() {
 
   const handleActionConfirm = async (arg1, arg2) => {
     try {
-      if (actionModal.type === "ban") {
-        const reason = arg1;
-        const category = arg2 || "Administrative";
-        // await dispatch(
-        //   bannedUserProfile({
-        //     userId: actionModal.user?._id,
-        //     category,
-        //     reason,
-        //   }),
-        // ).unwrap();
-        toast.success("User has been banned");
-      } else if (actionModal.type === "suspend") {
-        const reason = arg1;
-        const duration = arg2;
-        // await dispatch(
-        //   suspendUserProfile({
-        //     userId: actionModal.user?._id,
-        //     reason,
-        //     durationHours: Number(duration),
-        //   }),
-        // ).unwrap();
-        toast.success("User Suspended", {
-          description: `Access restricted for ${duration} hours.`,
-        });
-      } else if (actionModal.type === "unban") {
-        const reason = arg1;
-        // await dispatch(
-        //   unbanUserProfile({
-        //     userId: actionModal.user?._id,
-        //     category: "Administrative",
-        //     reason,
-        //   }),
-        // ).unwrap();
-        toast.success("User account activated");
-      } else if (actionModal.type === "unsuspend") {
-        const reason = arg1;
-        // await dispatch(
-        //   unsuspendUserProfile({
-        //     userId: actionModal.user?._id,
-        //     category: "Administrative",
-        //     reason,
-        //   }),
-        // ).unwrap();
-        toast.success("User suspension lifted");
-      }
+      // Future implementation for delete/edit actions if needed
       refreshDashboard();
       setActionModal((prev) => ({ ...prev, isOpen: false }));
     } catch (error) {
@@ -258,28 +207,16 @@ export function RecentUsersTable() {
                     User
                   </TableHead>
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-2">
-                    Phone
-                  </TableHead>
-                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-2">
                     Email
                   </TableHead>
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-5">
-                    Age
-                  </TableHead>
-                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-1.5">
-                    Gender
-                  </TableHead>
-                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-1">
-                    Completion
+                    Goal
                   </TableHead>
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-5">
                     Status
                   </TableHead>
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-6">
                     Plan
-                  </TableHead>
-                  <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-1">
-                    Location
                   </TableHead>
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-4 whitespace-nowrap text-center">
                     Joined Date
@@ -314,20 +251,11 @@ export function RecentUsersTable() {
                       <TableCell className="p-2">
                         <div className="h-3 w-10 bg-slate-100 rounded animate-pulse" />
                       </TableCell>
-                      <TableCell className="p-2">
-                        <div className="flex flex-col gap-1.5 min-w-[80px]">
-                          <div className="h-3 w-8 bg-slate-100 rounded animate-pulse" />
-                          <div className="h-1.5 w-full bg-slate-100/50 rounded-full animate-pulse" />
-                        </div>
-                      </TableCell>
                       <TableCell className="p-2 px-5">
                         <div className="h-5 w-16 bg-slate-100 rounded-full animate-pulse" />
                       </TableCell>
                       <TableCell className="p-2 px-5 text-center">
                         <div className="h-5 w-12 bg-slate-100 rounded-full animate-pulse mx-auto" />
-                      </TableCell>
-                      <TableCell className="p-2">
-                        <div className="h-3 w-20 bg-slate-100 rounded animate-pulse" />
                       </TableCell>
                       <TableCell className="p-2 text-center">
                         <div className="h-3 w-16 bg-slate-100 rounded animate-pulse mx-auto" />
@@ -406,13 +334,6 @@ export function RecentUsersTable() {
                           </div>
                         </TableCell>
 
-                        {/* Phone */}
-                        <TableCell className="p-2">
-                          <span className="text-[11px] text-slate-600">
-                            {user.account?.phone || user.phone || "-"}
-                          </span>
-                        </TableCell>
-
                         {/* Mail */}
                         <TableCell
                           className="p-2 max-w-[150px]"
@@ -423,31 +344,11 @@ export function RecentUsersTable() {
                           </span>
                         </TableCell>
 
-                        {/* Age */}
+                        {/* Goal */}
                         <TableCell className="p-2 text-center">
-                          <span className="text-[11px] text-slate-600">
-                            {user.profile?.age || "-"}
+                          <span className="text-[11px] font-semibold text-slate-600 truncate max-w-[120px] block">
+                            {user.main_goal || "-"}
                           </span>
-                        </TableCell>
-
-                        {/* Gender */}
-                        <TableCell className="p-2 w-max text-[11px] text-slate-600 capitalize">
-                          {user.profile?.gender || "-"}
-                        </TableCell>
-
-                        {/* Completion */}
-                        <TableCell className="p-2">
-                          <div className="flex flex-col gap-1.5 min-w-[80px]">
-                            <span className="text-xs font-semibold text-foreground/70">
-                              {completion}%
-                            </span>
-                            <div className="h-1.5 w-full bg-slate-300/60 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-brand-aqua rounded-full transition-all duration-500"
-                                style={{ width: `${completion}%` }}
-                              />
-                            </div>
-                          </div>
                         </TableCell>
 
                         {/* Status */}
@@ -484,22 +385,6 @@ export function RecentUsersTable() {
                           )}
                         </TableCell>
 
-                        {/* Location */}
-                        <TableCell className="p-2 text-center">
-                          {/* <span className="text-xs text-slate-600">
-                          {user.location?.city + ", " + user.location?.state ||
-                            "-"}
-                        </span> */}
-
-                          <span className="w-24 flex capitalize text-[11px] truncate">
-                            {user.location?.city || ""}{" "}
-                            {user.location?.city && user.location?.country
-                              ? ", "
-                              : ""}{" "}
-                            {user.location?.country || ""}
-                          </span>
-                        </TableCell>
-
                         {/* Joined Date */}
                         <TableCell className="p-2 text-center">
                           <span className="text-[10px] text-slate-500 font-medium whitespace-nowrap">
@@ -532,7 +417,7 @@ export function RecentUsersTable() {
                                   navigate(
                                     "/admin/management/users-management/view-profile",
                                     {
-                                      state: { userId: user._id, from: location.pathname|| "/admin/dashboard" },
+                                      state: { userId: user._id, from: location.pathname || "/admin/dashboard" },
                                     },
                                   );
                                 }}
@@ -548,107 +433,7 @@ export function RecentUsersTable() {
                                 </span>
                               </DropdownMenuItem>
 
-                              {/* CONDITIONAL ACTIONS */}
-                              {user?.account?.status === "banned" ? (
-                                <>
-                                  <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "unban", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors group"
-                                  >
-                                    <UserCheck
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-emerald-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-emerald-600">
-                                      Unban User
-                                    </span>
-                                  </DropdownMenuItem>
-                                  {/* <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "suspend", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors group"
-                                  >
-                                    <CirclePause
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-amber-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-amber-600">
-                                      Suspend Account
-                                    </span>
-                                  </DropdownMenuItem> */}
-                                </>
-                              ) : user?.account?.status === "suspended" ? (
-                                <>
-                                  <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "unsuspend", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-emerald-50 transition-colors group"
-                                  >
-                                    <Unlock
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-emerald-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-emerald-600">
-                                      Unsuspend User
-                                    </span>
-                                  </DropdownMenuItem>
-                                  {/* <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "ban", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-rose-50 transition-colors group"
-                                  >
-                                    <Ban
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-rose-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-rose-600">
-                                      Ban Account
-                                    </span>
-                                  </DropdownMenuItem> */}
-                                </>
-                              ) : (
-                                <>
-                                  <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "ban", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-rose-50 transition-colors group"
-                                  >
-                                    <Ban
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-rose-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-rose-600">
-                                      Ban Account
-                                    </span>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={(e) =>
-                                      handleActionClick(e, "suspend", user)
-                                    }
-                                    className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-amber-50 transition-colors group"
-                                  >
-                                    <CirclePause
-                                      size={14}
-                                      strokeWidth={2.5}
-                                      className="text-slate-500 group-hover:text-amber-600"
-                                    />
-                                    <span className="text-xs font-semibold text-slate-700 group-hover:text-amber-600">
-                                      Suspend Account
-                                    </span>
-                                  </DropdownMenuItem>
-                                </>
-                              )}
+                              {/* Only view profile is available here. Delete/Edit can be managed from the main user management page. */}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -658,7 +443,7 @@ export function RecentUsersTable() {
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={12}
+                      colSpan={10}
                       className="py-20 text-center text-slate-400 text-sm italic"
                     >
                       No new users found in this period.
@@ -670,16 +455,6 @@ export function RecentUsersTable() {
           </div>
         </CardContent>
       </Card>
-{/* 
-      <UserActionModal
-        type={actionModal.type}
-        isOpen={actionModal.isOpen}
-        onClose={() => setActionModal((prev) => ({ ...prev, isOpen: false }))}
-        onConfirm={handleActionConfirm}
-        userName={actionModal.user?.profile?.nickname || "User"}
-      /> */}
-
-
 
       <Dialog
         open={imageModal.open}

@@ -17,7 +17,10 @@ import FaqManagementPage from "@/modules/faqManagement/pages/faq.management.page
 import NotificationManagePage from "@/modules/notificationManage/pages/notification.manage.page";
 import CMSManagementPage from "@/modules/cmsManagement/pages/cms.management.page";
 import TransactionManagementPage from "@/modules/transactionManagement/pages/transaction.management.page";
-import SubscriptionManagementPage from "@/modules/subscriptionManagement/pages/subscription.management.page";
+import SubscriptionDashboardTabPage from "@/modules/subscriptionManagement/pages/subscription.dashboard.page";
+import SubscriptionConfigTabPage from "@/modules/subscriptionManagement/pages/subscription.config.page";
+import SubscriptionSubscribersTabPage from "@/modules/subscriptionManagement/pages/subscription.subscribers.page";
+import SubscriptionTransactionsTabPage from "@/modules/subscriptionManagement/pages/subscription.transactions.page";
 import ManageCategoryPage from "@/modules/blogSection/pages/manage.category.page";
 import ManageBlogsPage from "@/modules/blogSection/pages/manage.blogs.page";
 import DataManagementPage from "@/modules/dataManagement/pages/data.management.page";
@@ -363,11 +366,40 @@ export const router = createBrowserRouter([
       },
       {
         path: "subscription-management",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <SubscriptionManagementPage />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SubscriptionDashboardTabPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "config",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SubscriptionConfigTabPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "subscribers",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SubscriptionSubscribersTabPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "transactions",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SubscriptionTransactionsTabPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "transaction-management",
