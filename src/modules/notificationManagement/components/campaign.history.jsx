@@ -207,7 +207,7 @@ export default function CampaignHistory({
             placeholder="Search campaigns..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-aqua rounded-md w-full transition-all outline-none"
+            className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
           />
           {searchTerm && (
             <button
@@ -263,7 +263,7 @@ export default function CampaignHistory({
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                 Results
               </span>
-              <span className="text-xs font-black text-brand-aqua">
+              <span className="text-xs font-black text-brand-blue">
                 {pagination?.total || 0}
               </span>
             </div>
@@ -404,7 +404,7 @@ export default function CampaignHistory({
                             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
                             item.channel === "email"
                               ? "bg-indigo-50 text-indigo-600"
-                              : "bg-brand-aqua/10 text-brand-aqua",
+                              : "bg-brand-blue text-brand-blue",
                           )}
                         >
                           {item.channel || "Push"}
@@ -458,7 +458,7 @@ export default function CampaignHistory({
                             className={cn(
                               "w-2 h-2 rounded-full",
                               item.status === "completed"
-                                ? "bg-brand-aqua shadow-[0_0_8px_rgba(20,184,166,0.4)]"
+                                ? "bg-brand-blue shadow-[0_0_8px_rgba(20,184,166,0.4)]"
                                 : "bg-amber-400",
                             )}
                           />
@@ -466,7 +466,7 @@ export default function CampaignHistory({
                             className={cn(
                               "text-[11px] font-bold uppercase tracking-wider",
                               item.status === "completed"
-                                ? "text-brand-aqua"
+                                ? "text-brand-blue"
                                 : "text-amber-600",
                             )}
                           >
@@ -479,7 +479,7 @@ export default function CampaignHistory({
                           variant="outline"
                           size="sm"
                           disabled={item.channel !== "email"}
-                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-200 hover:bg-brand-aqua hover:text-white hover:border-brand-aqua transition-all"
+                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-200 hover:bg-brand-hoverBlue hover:text-white hover:border-brand-blue transition-all"
                           onClick={() => handleViewLogs(item)}
                         >
                           Logs
@@ -622,7 +622,7 @@ export default function CampaignHistory({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-aqua/20"
+                            ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
                             : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
                         )}
                       >
@@ -753,7 +753,7 @@ export default function CampaignHistory({
               variant="outline"
               size="sm"
               onClick={closeLogsModal}
-              className="border-slate-200 bg-white text-slate-400 hover:text-white hover:bg-brand-aqua text-xs font-medium px-6 h-9 rounded-lg"
+              className="border-slate-200 bg-white text-slate-400 hover:text-white hover:bg-brand-hoverBlue text-xs font-medium px-6 h-9 rounded-lg"
             >
               Close
             </Button>

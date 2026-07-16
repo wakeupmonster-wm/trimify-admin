@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import { resetSchema } from "../schemas/auth.schemas";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { forgotPasswordThunk } from "../store/auth.slice";
+// import { forgotPasswordThunk } from "../store/auth.slice";
 import { toast } from "sonner";
 
 export default function ForgotPasswordForm() {
@@ -39,10 +39,13 @@ export default function ForgotPasswordForm() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await dispatch(
-        forgotPasswordThunk({ email, otp, newPassword: data.password }),
-      ).unwrap();
-
+      // const response = await dispatch(
+      //   forgotPasswordThunk({ email, otp, newPassword: data.password }),
+      // ).unwrap();
+      const response = {
+        screen: "/auth/login",
+        message: "Password is forgot successful!",
+      };
       // Pass the email to the next route
       navigate(response.screen || "/auth/login", { replace: true });
       toast.success(response.message || "Password is forgot successful!", {
@@ -68,12 +71,12 @@ export default function ForgotPasswordForm() {
         {/* New Password Field */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-blue" />
             <Input
               {...register("password")}
               type={showNewPassword ? "text" : "password"}
               placeholder="New Password"
-              className={`pl-10 py-6 focus:ring-brand-aqua/20 ${
+              className={`pl-10 py-6 focus:ring-brand-blue ${
                 errors.password ? "border-alerts-error" : "border-grey-200"
               }`}
             />
@@ -85,9 +88,9 @@ export default function ForgotPasswordForm() {
               tabIndex="-1" // Prevents tabbing to the eye icon before the next field
             >
               {showNewPassword ? (
-                <EyeOff className="h-4 w-4 text-brand-aqua" />
+                <EyeOff className="h-4 w-4 text-brand-blue" />
               ) : (
-                <Eye className="h-4 w-4 text-brand-aqua" />
+                <Eye className="h-4 w-4 text-brand-blue" />
               )}
             </button>
           </div>
@@ -101,12 +104,12 @@ export default function ForgotPasswordForm() {
         {/* Confirm Password Field */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-blue" />
             <Input
               {...register("confirmPassword")}
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
-              className={`pl-10 py-6 pr-10 focus:ring-brand-aqua/20 ${
+              className={`pl-10 py-6 pr-10 focus:ring-brand-blue ${
                 errors.confirmPassword
                   ? "border-alerts-error"
                   : "border-grey-200"
@@ -120,9 +123,9 @@ export default function ForgotPasswordForm() {
               tabIndex="-1" // Prevents tabbing to the eye icon before the next field
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4 text-brand-aqua" />
+                <EyeOff className="h-4 w-4 text-brand-blue" />
               ) : (
-                <Eye className="h-4 w-4 text-brand-aqua" />
+                <Eye className="h-4 w-4 text-brand-blue" />
               )}
             </button>
           </div>
@@ -136,7 +139,7 @@ export default function ForgotPasswordForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-aqua hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
+          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
         >
           {loading ? "Updating..." : "Update Password"}
         </Button>

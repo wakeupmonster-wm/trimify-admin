@@ -13,7 +13,7 @@ export const fetchSubAdminList = createAsyncThunk(
   async (params = {}, { rejectWithValue }) => {
     try {
       const response = await getSubAdminManagementAPI(params);
-      console.log("res: ", response);
+      // console.log("res: ", response);
       
       if (response && response.status === "success") {
         return {

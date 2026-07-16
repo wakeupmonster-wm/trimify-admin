@@ -50,7 +50,9 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
             {/* Plan Title — read only, backend does not support renaming a plan */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Plan Title</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Plan Title
+              </Label>
               <Input
                 value={editData.title || ""}
                 disabled
@@ -60,7 +62,9 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
 
             {/* Sub Title — read only */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Sub Title</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Sub Title
+              </Label>
               <Input
                 value={editData.subtitle || ""}
                 disabled
@@ -70,20 +74,24 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
 
             {/* Price — editable */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Price ($)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Price ($)
+              </Label>
               <Input
                 name="price"
                 placeholder="e.g. 34.99"
                 value={formData.price}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Duration — read only */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Duration (in Months)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Duration (in Months)
+              </Label>
               <Input
                 value={editData.duration || ""}
                 disabled
@@ -93,13 +101,15 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
 
             {/* Features — editable */}
             <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-bold text-slate-800">Features (comma separated)</Label>
+              <Label className="text-xs font-bold text-slate-800">
+                Features (comma separated)
+              </Label>
               <Textarea
                 name="features"
                 placeholder="e.g. Unlimited Projects, Priority Support, Advanced Analytics"
                 value={formData.features}
                 onChange={handleChange}
-                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 font-medium border-slate-300 resize-none p-3"
+                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
                 required
               />
             </div>

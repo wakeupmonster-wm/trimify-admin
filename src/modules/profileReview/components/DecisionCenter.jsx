@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  CheckCircle2,
-  Ban,
-  Clock,
-  Loader2,
-  ShieldCheck,
-} from "lucide-react";
+import { CheckCircle2, Ban, Clock, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -185,7 +179,7 @@ export const DecisionCenter = ({
                         ? `${opt?.activeBg} ${opt?.activeBorder}`
                         : `${opt?.bg} ${opt?.border} ${opt?.hoverBg} opacity-90 hover:opacity-100`,
                       isDisabled &&
-                      "opacity-50 cursor-not-allowed hover:opacity-50 grayscale"
+                        "opacity-50 cursor-not-allowed hover:opacity-50 grayscale",
                     )}
                   >
                     <opt.icon className={cn("w-5 h-5", opt.text)} />
@@ -193,7 +187,7 @@ export const DecisionCenter = ({
                       <p
                         className={cn(
                           "text-xs font-bold capitalize tracking-tight",
-                          opt.text
+                          opt.text,
                         )}
                       >
                         {opt.label}
@@ -248,50 +242,50 @@ export const DecisionCenter = ({
               {(formData.action === "resolve" ||
                 (["suspend", "ban"].includes(formData.action) &&
                   selectedDropdownReason === "Other")) && (
-                  <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                    <label className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">
-                      {selectedDropdownReason === "Other"
-                        ? "Custom Detailed Reason"
-                        : formData.action === "resolve"
-                          ? "Admin Notes (Required)"
-                          : "Admin Notes (Optional)"}
-                      {(selectedDropdownReason === "Other" ||
-                        formData.action === "resolve") && (
-                          <span className="text-red-500 ml-1">*</span>
-                        )}
-                    </label>
-                    <Textarea
-                      placeholder="Add context or internal notes for this decision..."
-                      value={formData.reason}
-                      onChange={(e) => onUpdate("reason", e.target.value)}
-                      className={cn(
-                        "min-h-[100px] rounded-lg bg-slate-50 text-sm font-medium focus:ring-slate-200 resize-none border",
-                        (formData.reason || "").length > 500
-                          ? "border-red-400 focus-visible:border-red-500"
-                          : "border-slate-200 focus-visible:border-slate-500"
-                      )}
-                    />
-                    <div className="flex justify-between items-center">
-                      {(formData.reason || "").length > 500 && (
-                        <span className="text-[10px] font-semibold text-red-500 animate-in fade-in duration-200">
-                          Maximum 500 characters allowed
-                        </span>
-                      )}
-                      <span
-                        className={cn(
-                          "text-[10px] font-semibold transition-colors ml-auto",
-                          (formData.reason || "").length > 500
-                            ? "text-red-500"
-                            : (formData.reason || "").length > 450
-                              ? "text-amber-500"
-                              : "text-slate-400"
-                        )}
-                      >
-                        {(formData.reason || "").length} / 500
+                <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                  <label className="text-[11px] font-bold text-slate-700 uppercase tracking-widest">
+                    {selectedDropdownReason === "Other"
+                      ? "Custom Detailed Reason"
+                      : formData.action === "resolve"
+                        ? "Admin Notes (Required)"
+                        : "Admin Notes (Optional)"}
+                    {(selectedDropdownReason === "Other" ||
+                      formData.action === "resolve") && (
+                      <span className="text-red-500 ml-1">*</span>
+                    )}
+                  </label>
+                  <Textarea
+                    placeholder="Add context or internal notes for this decision..."
+                    value={formData.reason}
+                    onChange={(e) => onUpdate("reason", e.target.value)}
+                    className={cn(
+                      "min-h-[100px] rounded-lg bg-slate-50 text-sm font-medium focus:ring-slate-200 resize-none border",
+                      (formData.reason || "").length > 500
+                        ? "border-red-400 focus-visible:border-red-500"
+                        : "border-slate-200 focus-visible:border-slate-500",
+                    )}
+                  />
+                  <div className="flex justify-between items-center">
+                    {(formData.reason || "").length > 500 && (
+                      <span className="text-[10px] font-semibold text-red-500 animate-in fade-in duration-200">
+                        Maximum 500 characters allowed
                       </span>
-                    </div>
+                    )}
+                    <span
+                      className={cn(
+                        "text-[10px] font-semibold transition-colors ml-auto",
+                        (formData.reason || "").length > 500
+                          ? "text-red-500"
+                          : (formData.reason || "").length > 450
+                            ? "text-amber-500"
+                            : "text-slate-400",
+                      )}
+                    >
+                      {(formData.reason || "").length} / 500
+                    </span>
                   </div>
-                )}
+                </div>
+              )}
 
               {/* Reply Specific Fields */}
               {formData.action === "reply" && (
@@ -349,7 +343,7 @@ export const DecisionCenter = ({
                   ) : (
                     <BulkReplyList
                       reports={p?.reports?.filter(
-                        (r) => r.status !== "resolved"
+                        (r) => r.status !== "resolved",
                       )}
                     />
                   )}
@@ -441,11 +435,12 @@ export const DecisionCenter = ({
                             Max 168 hrs (7 days)
                           </span>
                         )}
-                        {formData.suspendDuration !== "" && Number(formData.suspendDuration) < 1 && (
-                          <span className="text-[10px] font-bold text-red-500">
-                            Min 1 hour
-                          </span>
-                        )}
+                        {formData.suspendDuration !== "" &&
+                          Number(formData.suspendDuration) < 1 && (
+                            <span className="text-[10px] font-bold text-red-500">
+                              Min 1 hour
+                            </span>
+                          )}
                       </div>
                       <Input
                         type="number"
@@ -459,8 +454,9 @@ export const DecisionCenter = ({
                         className={cn(
                           "h-11 rounded-lg bg-slate-50 border-slate-200",
                           (formData.suspendDuration > 168 ||
-                            (formData.suspendDuration !== "" && Number(formData.suspendDuration) < 1)) &&
-                          "border-red-500 focus-visible:ring-red-500"
+                            (formData.suspendDuration !== "" &&
+                              Number(formData.suspendDuration) < 1)) &&
+                            "border-red-500 focus-visible:ring-red-500",
                         )}
                       />
                     </div>
@@ -486,7 +482,8 @@ export const DecisionCenter = ({
                   isSubmitting ||
                   !formData.action ||
                   (["suspend", "ban", "resolve"].includes(formData.action) &&
-                    (!formData.reason || (formData.reason || "").length > 500)) ||
+                    (!formData.reason ||
+                      (formData.reason || "").length > 500)) ||
                   (formData.action === "suspend" &&
                     (!formData.suspendDuration ||
                       formData.suspendDuration > 168 ||
@@ -500,9 +497,10 @@ export const DecisionCenter = ({
                 }
                 className={cn(
                   "px-6 h-10 rounded-md font-bold text-xs uppercase tracking-widest text-white transition-all shadow-sm disabled:opacity-95 disabled:cursor-not-allowed",
-                  (["suspend", "ban", "resolve"].includes(formData.action) && (formData.reason || "").length > 500)
+                  ["suspend", "ban", "resolve"].includes(formData.action) &&
+                    (formData.reason || "").length > 500
                     ? "bg-slate-200 text-slate-400 cursor-not-allowed border-slate-200 hover:bg-slate-200 hover:text-slate-400"
-                    : "bg-brand-aqua hover:bg-brand-hoverAqua"
+                    : "bg-brand-blue hover:bg-brand-hoverAqua",
                 )}
               >
                 {isSubmitting ? (
@@ -525,12 +523,15 @@ export const DecisionCenter = ({
         }}
         onConfirm={onSubmit}
         title={ACTION_CONFIG[formData.action]?.label || "Confirm Action"}
-        message={`Are you sure you want to "${ACTION_CONFIG[formData.action]?.label || formData.action
-          }" this profile?${formData.reason ? ` Notes: "${formData.reason}"` : ""
-          }${formData.action === "suspend"
+        message={`Are you sure you want to "${
+          ACTION_CONFIG[formData.action]?.label || formData.action
+        }" this profile?${
+          formData.reason ? ` Notes: "${formData.reason}"` : ""
+        }${
+          formData.action === "suspend"
             ? ` Duration: ${formData.suspendDuration || 0} hours.`
             : ""
-          }`}
+        }`}
         confirmText="Execute"
         type={ACTION_CONFIG[formData.action]?.type || "brand"}
         loading={isSubmitting}

@@ -114,7 +114,7 @@ export default function SettingsPage() {
         {/* <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" /> */}
         <CardHeader className="pb-2">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-brand-aqua/20 rounded-xl text-brand-aqua shadow-inner">
+            <div className="p-3 bg-brand-blue rounded-xl text-brand-blue shadow-inner">
               <IconLock size={28} />
             </div>
             <div>
@@ -182,12 +182,13 @@ export default function SettingsPage() {
                 <div className="relative">
                   <Input
                     type={showPasswords.confirm ? "text" : "password"}
-                    className={`h-12 border-slate-200 rounded-xl pr-12 transition-all ${passwordsMatch
-                      ? "border-success/50 bg-success/5"
-                      : passwordsMismatch
-                        ? "border-destructive/50 bg-destructive/5"
-                        : "border-border"
-                      }`}
+                    className={`h-12 border-slate-200 rounded-xl pr-12 transition-all ${
+                      passwordsMatch
+                        ? "border-success/50 bg-success/5"
+                        : passwordsMismatch
+                          ? "border-destructive/50 bg-destructive/5"
+                          : "border-border"
+                    }`}
                     value={form.confirmPassword}
                     onChange={(e) =>
                       setForm({ ...form, confirmPassword: e.target.value })
@@ -214,9 +215,10 @@ export default function SettingsPage() {
                     Security Strength
                   </span>
                   <span
-                    className={`text-[10px] font-bold uppercase tracking-wider ${strength.color?.replace("bg-", "text-") ||
+                    className={`text-[10px] font-bold uppercase tracking-wider ${
+                      strength.color?.replace("bg-", "text-") ||
                       "text-muted-foreground"
-                      }`}
+                    }`}
                   >
                     {strength.label}
                   </span>
@@ -225,8 +227,9 @@ export default function SettingsPage() {
                   {[1, 2, 3, 4, 5].map((step) => (
                     <div
                       key={step}
-                      className={`h-full flex-1 rounded-full transition-all duration-500 ${step <= strength.score ? strength.color : "bg-secondary"
-                        }`}
+                      className={`h-full flex-1 rounded-full transition-all duration-500 ${
+                        step <= strength.score ? strength.color : "bg-secondary"
+                      }`}
                     />
                   ))}
                 </div>
@@ -234,8 +237,9 @@ export default function SettingsPage() {
                   {checks.map((c) => (
                     <li
                       key={c.label}
-                      className={`flex items-center gap-2 text-xs font-medium transition-colors ${c.pass ? "text-success" : "text-muted-foreground"
-                        }`}
+                      className={`flex items-center gap-2 text-xs font-medium transition-colors ${
+                        c.pass ? "text-success" : "text-muted-foreground"
+                      }`}
                     >
                       <Check className="w-3 h-3" strokeWidth={3} />
                       {c.label}
@@ -251,7 +255,7 @@ export default function SettingsPage() {
                 form.newPassword !== form.confirmPassword ||
                 !form.newPassword
               }
-              className="h-14 bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-14 bg-brand-blue hover:bg-brand-hoverBlue border border-brand-blue text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

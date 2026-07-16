@@ -78,7 +78,7 @@ export function ActivityHeatmap({ data }) {
   }, [dataMap]);
 
   return (
-    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
+    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
       <CardHeader className="px-0">
         <div className="flex items-start justify-between pb-4 px-5 border-b border-slate-200">
           <DashboardHead
@@ -178,7 +178,7 @@ export function ActivityHeatmap({ data }) {
 
             <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
               <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                <Info size={12} className="text-brand-aqua" />
+                <Info size={12} className="text-brand-blue" />
               </div>
               {peakCell ? (
                 <span>

@@ -6,7 +6,9 @@ import {
   deleteProgramAPI,
   toggleProgramStatusAPI,
   toggleFoodVisibilityAPI,
-  replicateProgramAPI
+  replicateProgramAPI,
+  getProgramAssignedUsersAPI,
+  getProgramFoodVisibilityAPI
 } from "../services/program.services";
 
 // Fetch List
@@ -107,6 +109,24 @@ export const toggleFoodVisibility = createAsyncThunk(
   }
 );
 
+// Get Food Visibility
+export const getProgramFoodVisibility = createAsyncThunk(
+  "manageProgram/getProgramFoodVisibility",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await getProgramFoodVisibilityAPI(id);
+      if (response && response.status === "success") {
+        return { id, isVisible: response.is_visible };
+      }
+      return rejectWithValue(response.message || "Failed to fetch food visibility");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch food visibility"
+      );
+    }
+  }
+);
+
 // Replicate Program
 export const replicateProgram = createAsyncThunk(
   "manageProgram/replicate",
@@ -143,10 +163,38 @@ export const deleteProgram = createAsyncThunk(
   }
 );
 
+// Fetch Assigned Users
+export const fetchProgramAssignedUsers = createAsyncThunk(
+  "manageProgram/fetchAssignedUsers",
+  async ({ id, params }, { rejectWithValue }) => {
+    try {
+      const response = await getProgramAssignedUsersAPI(id, params);
+      if (response && response.status === "success") {
+        return {
+          users: response.viewAssignedPrograms || [],
+          pagination: {
+            page: response.pagination?.current_page || 1,
+            limit: response.pagination?.per_page || 10,
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.last_page || 1,
+          },
+        };
+      }
+      return rejectWithValue(response.message || "Failed to fetch assigned users");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch assigned users"
+      );
+    }
+  }
+);
+
+
 const manageProgramSlice = createSlice({
   name: "manageProgram",
   initialState: {
     programs: [],
+    assignedUsers: [],
     loading: false,
     error: null,
     pagination: {
@@ -155,6 +203,13 @@ const manageProgramSlice = createSlice({
       total: 0,
       totalPages: 1,
     },
+    usersPagination: {
+      page: 1,
+      limit: 10,
+      total: 0,
+      totalPages: 1,
+    },
+    programFoodVisibility: {}, // store visibility by id
   },
   reducers: {
     setPage: (state, action) => {
@@ -222,6 +277,16 @@ const manageProgramSlice = createSlice({
         if (index !== -1) {
           state.programs[index].is_approve_nonapproved_foods_show = newStatus ? 1 : 0;
         }
+        // Update the detail map if it exists
+        if (state.programFoodVisibility[id] !== undefined) {
+           state.programFoodVisibility[id] = newStatus ? 1 : 0;
+        }
+      })
+
+      // Get Food Visibility
+      .addCase(getProgramFoodVisibility.fulfilled, (state, action) => {
+        const { id, isVisible } = action.payload;
+        state.programFoodVisibility[id] = isVisible;
       })
 
       // Replicate Program
@@ -241,6 +306,21 @@ const manageProgramSlice = createSlice({
         const id = action.payload;
         state.programs = state.programs.filter(prog => prog.id !== id);
         if (state.pagination.total > 0) state.pagination.total -= 1;
+      })
+
+      // Fetch Assigned Users
+      .addCase(fetchProgramAssignedUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchProgramAssignedUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.assignedUsers = action.payload.users;
+        state.usersPagination = action.payload.pagination;
+      })
+      .addCase(fetchProgramAssignedUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

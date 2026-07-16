@@ -22,8 +22,8 @@ const LABELS = [
 ];
 
 const LINE_LENGTH = 28; // px — how far the line extends past the doughnut edge
-const CHIP_H = 14;      // chip height px
-const CHIP_PX = 7;      // chip horizontal padding px
+const CHIP_H = 14; // chip height px
+const CHIP_PX = 7; // chip horizontal padding px
 
 const Last24HoursPieChart = ({ last24HoursActivity }) => {
   const chartRef = useRef(null);
@@ -38,7 +38,12 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
         plansExpiringSoon = 0,
       } = last24HoursActivity || {};
 
-      const values = [newSubscriptions, walletPacksBought, cancellations, plansExpiringSoon];
+      const values = [
+        newSubscriptions,
+        walletPacksBought,
+        cancellations,
+        plansExpiringSoon,
+      ];
       const total = values.reduce((a, b) => a + b, 0);
       const isEmpty = total === 0;
 
@@ -172,11 +177,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
             ) : (
               <>
                 {/* Doughnut chart — no canvas plugin needed */}
-                <Doughnut
-                  ref={chartRef}
-                  data={chartData}
-                  options={options}
-                />
+                <Doughnut ref={chartRef} data={chartData} options={options} />
 
                 {/* ── SVG Overlay: line + chip rendered on hover ── */}
                 {hoveredSlice && chip && (
@@ -304,7 +305,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
 
       {/* ─── FOOTER BANNER ─── */}
       <div className="px-5 pb-5">
-        <div className="w-full bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
+        <div className="w-full bg-brand-blue border border-brand-blue rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#edffff] flex items-center justify-center flex-shrink-0 text-white shadow-sm">
             <TrendingUp
               size={16}

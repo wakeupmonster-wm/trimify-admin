@@ -62,7 +62,7 @@ export function LiveActivity({ data }) {
   }, [data]);
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl py-5 shadow-sm flex flex-col h-full">
+    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl py-5 shadow-sm flex flex-col h-full">
       <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
         <DashboardHead
           title="Live Activity"
@@ -113,9 +113,9 @@ export function LiveActivity({ data }) {
         </div>
       )}
 
-      <div className="mt-4 mx-6 flex items-center gap-2 px-3 py-2 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-[11px] sm:text-xs font-medium">
+      <div className="mt-4 mx-6 flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] sm:text-xs font-medium">
         <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0">
-          <Info size={12} className="text-brand-aqua" />
+          <Info size={12} className="text-brand-blue" />
         </div>
         <span>
           Active monitoring:{" "}
@@ -125,7 +125,6 @@ export function LiveActivity({ data }) {
           events captured recently.
         </span>
       </div>
-      
     </div>
   );
 }

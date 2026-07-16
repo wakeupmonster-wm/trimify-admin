@@ -76,20 +76,20 @@ export function LoginForm({ className, ...props }) {
 
         <div className="flex flex-col gap-3">
           <Field>
-            <FieldLabel htmlFor="email" className={"text-base"}>
+            <FieldLabel htmlFor="email" className={"text-sm"}>
               Email
             </FieldLabel>
             <div className="relative">
-              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-aqua" />
+              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-blue" />
               <Input
                 id="email"
                 type="email"
                 {...register("email")}
-                placeholder="keenasmustard@gmail.com.au"
+                placeholder="info@trimify.com.au"
                 className={`w-full px-9 py-5 bg-gray-50 outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-100"
-                    : "focus:border-brand-aqua focus-visible:ring-brand-aqua/10"
+                    : "focus:border-brand-blue focus-visible:ring-brand-blue"
                 }`}
               />
               {errors.email && (
@@ -105,14 +105,14 @@ export function LoginForm({ className, ...props }) {
               <FieldLabel
                 htmlFor="password"
                 title="Password"
-                className="text-base"
+                className="text-sm"
               >
                 Password
               </FieldLabel>
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-aqua" />
+              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-blue" />
               <Input
                 id="password"
                 // Dynamic type based on state
@@ -122,7 +122,7 @@ export function LoginForm({ className, ...props }) {
                 className={`w-full px-9 py-5 pr-12 bg-gray-50 border !outline-none transition-all ${
                   errors.password
                     ? "border-red-500 focus-visible:ring-red-100"
-                    : "focus:border-brand-aqua focus-visible:ring-brand-aqua/10"
+                    : "focus:border-brand-blue focus-visible:ring-brand-blue"
                 }`}
               />
 
@@ -133,16 +133,16 @@ export function LoginForm({ className, ...props }) {
                 tabIndex="-1" // Prevents tabbing to the eye icon before the next field
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-brand-aqua" />
+                  <EyeOff className="h-4 w-4 text-brand-blue" />
                 ) : (
-                  <Eye className="h-4 w-4 text-brand-aqua" />
+                  <Eye className="h-4 w-4 text-brand-blue" />
                 )}
               </button>
             </div>
 
             <Link
               to="/auth/forgot-password"
-              className="text-right text-sm hover:text-blue-700 underline-offset-4 hover:underline"
+              className="text-right text-xs hover:text-blue-700 underline-offset-4 hover:underline"
             >
               Forgot your password?
             </Link>
@@ -167,7 +167,7 @@ export function LoginForm({ className, ...props }) {
             type="submit"
             // disabled={loading}
             className={
-              "py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-aqua hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
+              "py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
             }
           >
             {/* {loading ? (

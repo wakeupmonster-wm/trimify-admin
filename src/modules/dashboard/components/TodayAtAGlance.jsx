@@ -2,7 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
 import { formatCompactNumber } from "@/lib/utils";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 const getTrendExplanation = (stat, trendValue, isTrendingUp) => {
   if (stat.tooltipData?.type === "contribution") {
@@ -14,8 +19,12 @@ const getTrendExplanation = (stat, trendValue, isTrendingUp) => {
   }
 
   const { current, previous, isCurrency } = stat.tooltipData;
-  const currStr = isCurrency ? `$${current?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : current?.toLocaleString();
-  const prevStr = isCurrency ? `$${previous?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : previous?.toLocaleString();
+  const currStr = isCurrency
+    ? `$${current?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : current?.toLocaleString();
+  const prevStr = isCurrency
+    ? `$${previous?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : previous?.toLocaleString();
   const action = isTrendingUp ? "increased" : "decreased";
   const label = stat.label;
 
@@ -29,7 +38,7 @@ const getTrendExplanation = (stat, trendValue, isTrendingUp) => {
     return `${label} remained exactly the same as the previous period (${currStr}).`;
   }
 
-  return `${label} ${action} by ${trendValue.replace(/[+-]/g, '')} from ${prevStr} to ${currStr}.`;
+  return `${label} ${action} by ${trendValue.replace(/[+-]/g, "")} from ${prevStr} to ${currStr}.`;
 };
 
 export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData }) {
@@ -141,15 +150,15 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData })
               // Use compact number formatting for raw numeric values
               const displayValue =
                 !isNaN(stat.value) &&
-                  typeof stat.value !== "boolean" &&
-                  stat.value !== ""
+                typeof stat.value !== "boolean" &&
+                stat.value !== ""
                   ? formatCompactNumber(Number(stat.value))
                   : stat.value;
 
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-200 hover:border-brand-aqua/30 hover:shadow-sm cursor-pointer group flex flex-col justify-between min-h-[128px]"
+                  className="bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-200 hover:border-brand-blue hover:shadow-sm cursor-pointer group flex flex-col justify-between min-h-[128px]"
                   onClick={() => {
                     sessionStorage.clear();
                     navigate(stat.route, {
@@ -171,10 +180,11 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData })
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
                             <div
-                              className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 transition-transform ${isRed
-                                ? "text-rose-600 bg-rose-50 border-rose-200"
-                                : "text-emerald-600 bg-emerald-50 border-emerald-200"
-                                }`}
+                              className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 transition-transform ${
+                                isRed
+                                  ? "text-rose-600 bg-rose-50 border-rose-200"
+                                  : "text-emerald-600 bg-emerald-50 border-emerald-200"
+                              }`}
                             >
                               {isTrendingUp ? (
                                 <IconTrendingUp size={12} stroke={3} />
@@ -184,19 +194,37 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData })
                               <span>{trendValue}</span>
                             </div>
                           </TooltipTrigger>
-                          <TooltipContent className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium" side="bottom" align="end">
+                          <TooltipContent
+                            className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium"
+                            side="bottom"
+                            align="end"
+                          >
                             <p className="text-slate-300 border-b border-slate-700/50 pb-1.5 mb-1.5 leading-relaxed">
-                              {getTrendExplanation(stat, trendValue, isTrendingUp)}
+                              {getTrendExplanation(
+                                stat,
+                                trendValue,
+                                isTrendingUp,
+                              )}
                             </p>
-                            {stat.tooltipData && stat.tooltipData.type === "contribution" ? (
+                            {stat.tooltipData &&
+                            stat.tooltipData.type === "contribution" ? (
                               <div className="space-y-1 mt-1">
                                 <div className="flex justify-between gap-4">
-                                  <span className="text-slate-400">Supercharge Revenue:</span>
-                                  <span>${stat.tooltipData.superChargeRev.toFixed(2)}</span>
+                                  <span className="text-slate-400">
+                                    Supercharge Revenue:
+                                  </span>
+                                  <span>
+                                    $
+                                    {stat.tooltipData.superChargeRev.toFixed(2)}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between gap-4">
-                                  <span className="text-slate-400">Total Revenue:</span>
-                                  <span>${stat.tooltipData.totalRev.toFixed(2)}</span>
+                                  <span className="text-slate-400">
+                                    Total Revenue:
+                                  </span>
+                                  <span>
+                                    ${stat.tooltipData.totalRev.toFixed(2)}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between gap-4 font-bold text-white pt-1 mt-1 border-t border-slate-700/50">
                                   <span>Contribution:</span>
@@ -206,18 +234,75 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData })
                             ) : stat.tooltipData ? (
                               <div className="space-y-1 mt-1">
                                 <div className="flex justify-between gap-4">
-                                  <span className="text-slate-400">Current Period:</span>
-                                  <span>{stat.tooltipData.isCurrency ? '$' : ''}{stat.tooltipData.current?.toLocaleString(undefined, { minimumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0, maximumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0 })}</span>
+                                  <span className="text-slate-400">
+                                    Current Period:
+                                  </span>
+                                  <span>
+                                    {stat.tooltipData.isCurrency ? "$" : ""}
+                                    {stat.tooltipData.current?.toLocaleString(
+                                      undefined,
+                                      {
+                                        minimumFractionDigits: stat.tooltipData
+                                          .isCurrency
+                                          ? 2
+                                          : 0,
+                                        maximumFractionDigits: stat.tooltipData
+                                          .isCurrency
+                                          ? 2
+                                          : 0,
+                                      },
+                                    )}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between gap-4">
-                                  <span className="text-slate-400">Previous Period:</span>
-                                  <span>{stat.tooltipData.isCurrency ? '$' : ''}{stat.tooltipData.previous?.toLocaleString(undefined, { minimumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0, maximumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0 })}</span>
+                                  <span className="text-slate-400">
+                                    Previous Period:
+                                  </span>
+                                  <span>
+                                    {stat.tooltipData.isCurrency ? "$" : ""}
+                                    {stat.tooltipData.previous?.toLocaleString(
+                                      undefined,
+                                      {
+                                        minimumFractionDigits: stat.tooltipData
+                                          .isCurrency
+                                          ? 2
+                                          : 0,
+                                        maximumFractionDigits: stat.tooltipData
+                                          .isCurrency
+                                          ? 2
+                                          : 0,
+                                      },
+                                    )}
+                                  </span>
                                 </div>
                                 <div className="flex justify-between gap-4 font-bold text-white pt-1 mt-1 border-t border-slate-700/50">
                                   <span>Difference:</span>
-                                  <span className={isRed ? "text-rose-400" : "text-emerald-400"}>
-                                    {stat.tooltipData.current - stat.tooltipData.previous > 0 ? "+" : ""}
-                                    {stat.tooltipData.isCurrency ? '$' : ''}{(stat.tooltipData.current - stat.tooltipData.previous).toLocaleString(undefined, { minimumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0, maximumFractionDigits: stat.tooltipData.isCurrency ? 2 : 0 })}
+                                  <span
+                                    className={
+                                      isRed
+                                        ? "text-rose-400"
+                                        : "text-emerald-400"
+                                    }
+                                  >
+                                    {stat.tooltipData.current -
+                                      stat.tooltipData.previous >
+                                    0
+                                      ? "+"
+                                      : ""}
+                                    {stat.tooltipData.isCurrency ? "$" : ""}
+                                    {(
+                                      stat.tooltipData.current -
+                                      stat.tooltipData.previous
+                                    ).toLocaleString(undefined, {
+                                      minimumFractionDigits: stat.tooltipData
+                                        .isCurrency
+                                        ? 2
+                                        : 0,
+                                      maximumFractionDigits: stat.tooltipData
+                                        .isCurrency
+                                        ? 2
+                                        : 0,
+                                    })}
                                   </span>
                                 </div>
                               </div>
@@ -233,15 +318,24 @@ export function TodayAtAGlance({ data, periodLabel, selectedDate, summaryData })
 
                   <div>
                     <p className="text-[11px] text-secondary-foreground font-medium truncate">
-                      {stat.periodLabel || (() => {
-                        if (!periodLabel) return "Compared to previous 30 days";
-                        const lowerLabel = periodLabel.toLowerCase();
-                        if (lowerLabel === "today") return "Compared to yesterday";
-                        if (lowerLabel === "yesterday") return "Compared to previous day";
-                        if (lowerLabel.includes("days") || lowerLabel.includes("day")) return `Compared to previous ${periodLabel.toLowerCase()}`;
-                        if (lowerLabel.includes("-")) return "Compared to equivalent period";
-                        return `Compared to previous period`;
-                      })()}
+                      {stat.periodLabel ||
+                        (() => {
+                          if (!periodLabel)
+                            return "Compared to previous 30 days";
+                          const lowerLabel = periodLabel.toLowerCase();
+                          if (lowerLabel === "today")
+                            return "Compared to yesterday";
+                          if (lowerLabel === "yesterday")
+                            return "Compared to previous day";
+                          if (
+                            lowerLabel.includes("days") ||
+                            lowerLabel.includes("day")
+                          )
+                            return `Compared to previous ${periodLabel.toLowerCase()}`;
+                          if (lowerLabel.includes("-"))
+                            return "Compared to equivalent period";
+                          return `Compared to previous period`;
+                        })()}
                     </p>
                   </div>
                 </div>

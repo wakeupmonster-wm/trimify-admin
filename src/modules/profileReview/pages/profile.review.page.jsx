@@ -82,7 +82,9 @@ export default function ProfileReviewPage() {
       action: formData.action,
       reason: (formData.reason || "").trim() || undefined,
       replyMessage:
-        formData.action === "reply" ? (formData.replyMessage || "").trim() : undefined,
+        formData.action === "reply"
+          ? (formData.replyMessage || "").trim()
+          : undefined,
       reportId:
         formData.action === "reply" ? formData.selectedReportId : undefined,
       suspendDuration:
@@ -94,7 +96,8 @@ export default function ProfileReviewPage() {
     try {
       if (formData.action === "reply" && formData.isBulkMode) {
         // Bulk Submission Logic: Send a single API call with all report IDs
-        const pendingReports = p?.reports?.filter((r) => r.status !== "resolved") || [];
+        const pendingReports =
+          p?.reports?.filter((r) => r.status !== "resolved") || [];
         const reportIds = pendingReports.map((r) => r._id || r.id);
 
         if (reportIds.length === 0) {
@@ -123,7 +126,8 @@ export default function ProfileReviewPage() {
         dispatch(fetchReportedProfiles({ page: 1, limit: 20 })),
       ]);
 
-      const pendingCount = p?.reports?.filter((r) => r.status !== "resolved").length || 0;
+      const pendingCount =
+        p?.reports?.filter((r) => r.status !== "resolved").length || 0;
 
       toast.success(
         formData.action === "reply" && formData.isBulkMode
@@ -206,7 +210,7 @@ export default function ProfileReviewPage() {
                   className={cn(
                     "pb-4 px-4 text-xs font-semibold capitalize tracking-wide transition-all relative",
                     isActive
-                      ? "text-brand-aqua"
+                      ? "text-brand-blue"
                       : "text-slate-400 hover:text-slate-600",
                   )}
                 >
@@ -217,7 +221,7 @@ export default function ProfileReviewPage() {
                         className={cn(
                           "text-[9px] px-1.5 py-0.5 rounded-md font-bold",
                           isActive
-                            ? "bg-brand-aqua/10 text-brand-aqua"
+                            ? "bg-brand-blue text-brand-blue"
                             : "bg-slate-100 text-slate-400",
                         )}
                       >
@@ -228,7 +232,7 @@ export default function ProfileReviewPage() {
                   {isActive && (
                     <motion.div
                       layoutId="activeTabReview"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-aqua rounded-t-full"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-blue rounded-t-full"
                     />
                   )}
                 </button>

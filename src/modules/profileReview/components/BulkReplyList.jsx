@@ -17,13 +17,13 @@ export const BulkReplyList = ({ reports }) => {
           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">
             Targeted Reporters ({reports.length})
           </h4>
-          <span className="text-[9px] font-bold px-2 py-0.5 bg-brand-aqua/10 text-brand-aqua rounded-full">
+          <span className="text-[9px] font-bold px-2 py-0.5 bg-brand-blue text-brand-blue rounded-full">
             Bulk Mode Active
           </span>
         </div>
         <div className="h-px bg-slate-100 w-full" />
       </div>
-      
+
       <div className="grid grid-cols-1 gap-3 pb-2">
         {reports.map((r) => {
           return (
@@ -31,7 +31,7 @@ export const BulkReplyList = ({ reports }) => {
               key={r._id}
               className={cn(
                 "p-3 rounded-xl border transition-all duration-300",
-                "bg-slate-50/30 border-slate-200"
+                "bg-slate-50/30 border-slate-200",
               )}
             >
               <div className="flex items-center justify-between">
@@ -47,12 +47,12 @@ export const BulkReplyList = ({ reports }) => {
                       {r.reportedBy?.nickname || "User"}
                     </p>
                     <p className="text-[10px] font-bold text-rose-500/80 uppercase tracking-wider line-clamp-1">
-                      {r.reason?.replace(/_/g, ' ') || "Reported"}
+                      {r.reason?.replace(/_/g, " ") || "Reported"}
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               {r.description && (
                 <div className="mt-2.5 bg-white/80 p-2.5 rounded-lg border border-slate-100 shadow-sm">
                   <p className="text-[11px] text-slate-500 font-medium leading-relaxed italic line-clamp-2">

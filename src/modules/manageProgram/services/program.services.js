@@ -28,3 +28,11 @@ export const toggleFoodVisibilityAPI = async (id) => {
 export const replicateProgramAPI = async (id) => {
   return apiConnector("POST", PROGRAM.PROGRAM_REPLICATE(id));
 };
+
+export const getProgramAssignedUsersAPI = async (id, params = {}) => {
+  return apiConnector("GET", PROGRAM.PROGRAM_VIEW_ASSIGNED_USERS(id), null, null, params);
+};
+
+export const getProgramFoodVisibilityAPI = async (id) => {
+  return apiConnector("GET", PROGRAM.PROGRAM_GET_FOOD_VISIBILITY(id));
+};

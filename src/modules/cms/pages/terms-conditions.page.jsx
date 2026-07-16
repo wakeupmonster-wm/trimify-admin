@@ -192,7 +192,7 @@ export default function TermAndConditionsPage() {
           <PageHeader
             heading="Terms & Conditions"
             icon={<ReceiptText className="w-6 h-6 text-white" />}
-            color="bg-brand-aqua"
+            color="bg-brand-blue"
             subheading="Manage legal policies and user agreements."
           />
 
@@ -216,7 +216,7 @@ export default function TermAndConditionsPage() {
             <Button
               onClick={handleSaveAll}
               disabled={isSaving || loading}
-              className="bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
+              className="bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
             >
               {isSaving ? (
                 <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
@@ -240,7 +240,7 @@ export default function TermAndConditionsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={allExpanded ? collapseAll : expandAll}
-            className="text-xs font-semibold text-slate-500 hover:text-brand-aqua transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-50"
+            className="text-xs font-semibold text-slate-500 hover:text-brand-blue transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-50"
           >
             {allExpanded ? "Collapse All" : "Expand All"}
           </button>
@@ -259,7 +259,7 @@ export default function TermAndConditionsPage() {
               value={pageTitle}
               onChange={(e) => setPageTitle(e.target.value)}
               placeholder="e.g. Terms & Conditions"
-              className="h-10 border-slate-200 focus-visible:ring-brand-aqua/20 focus-visible:border-slate-400 shadow-sm rounded-lg px-4 text-slate-700 font-medium"
+              className="h-10 border-slate-200 focus-visible:ring-brand-blue focus-visible:border-slate-400 shadow-sm rounded-lg px-4 text-slate-700 font-medium"
             />
           </div>
         )}

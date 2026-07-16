@@ -20,6 +20,7 @@ import {
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const FaqManagementPage = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const FaqManagementPage = () => {
   } = useSelector((state) => state.faqManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [formData, setFormData] = useState({ question: "", answer: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,10 +43,15 @@ const FaqManagementPage = () => {
       fetchFaqList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
+        search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,10 +93,9 @@ const FaqManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
-        {/* Top Header matching standard design */}
+      <div className="space-y-8">
         <Header>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
               heading="FAQ"
               icon={<HelpCircle className="w-9 h-9 text-white" />}
@@ -130,7 +136,7 @@ const FaqManagementPage = () => {
                   placeholder="Enter Question"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 border-slate-200"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200"
                   required
                 />
               </div>
@@ -143,7 +149,7 @@ const FaqManagementPage = () => {
                   placeholder="Enter Answer"
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-aqua/30 border-slate-200 resize-none"
+                  className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200 resize-none"
                   required
                 />
               </div>
@@ -162,24 +168,22 @@ const FaqManagementPage = () => {
         </Dialog>
 
         {/* DataTable */}
-        <div className="bg-white rounded-md shadow-sm px-4">
-          <DataTable
-            columns={columns}
-            data={faqs || []}
-            rowCount={
-              serverPagination ? serverPagination.total : faqs?.length || 0
-            }
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search faqs..."
-            itemName="entries"
-            isLoading={loading}
-            manualPagination={!!serverPagination}
-            manualFiltering={!!serverPagination}
-          />
-        </div>
+        <DataTable
+          columns={columns}
+          data={faqs || []}
+          rowCount={
+            serverPagination ? serverPagination.total : faqs?.length || 0
+          }
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          searchPlaceholder="Search faqs..."
+          itemName="entries"
+          isLoading={loading}
+          manualPagination={!!serverPagination}
+          manualFiltering={!!serverPagination}
+        />
       </div>
     </Container>
   );

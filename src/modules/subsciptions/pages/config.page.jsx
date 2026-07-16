@@ -357,12 +357,25 @@ export default function ConfigPage() {
       if (res.meta.requestStatus === "fulfilled") {
         toast.success("Perk deleted successfully");
         setLocalDynamicFeatures((prev) => prev.filter((f) => f.key !== key));
-        setDeleteConfirm((prev) => ({ ...prev, loading: false, success: true }));
+        setDeleteConfirm((prev) => ({
+          ...prev,
+          loading: false,
+          success: true,
+        }));
         setTimeout(() => {
-          setDeleteConfirm({ isOpen: false, key: null, loading: false, success: false });
+          setDeleteConfirm({
+            isOpen: false,
+            key: null,
+            loading: false,
+            success: false,
+          });
         }, 1500);
       } else {
-        setDeleteConfirm((prev) => ({ ...prev, loading: false, success: false }));
+        setDeleteConfirm((prev) => ({
+          ...prev,
+          loading: false,
+          success: false,
+        }));
         toast.error(res.payload || "Delete failed");
       }
     } catch (err) {
@@ -405,7 +418,7 @@ export default function ConfigPage() {
               heading="Subscription Config"
               subheading="Control quotas, feature toggles, and milestone programs"
               icon={<Settings className="w-10 h-10 text-white" />}
-              color="bg-brand-aqua"
+              color="bg-brand-blue"
             />
             <div className="flex items-center gap-3 w-full lg:w-auto">
               {hasChanges && (
@@ -422,7 +435,7 @@ export default function ConfigPage() {
                 className={cn(
                   "rounded-md h-9 flex-1 lg:flex-none px-4 font-semibold border gap-2 transition-all duration-300",
                   hasChanges
-                    ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua"
+                    ? "bg-brand-blue text-white hover:bg-brand-hoverAqua"
                     : "bg-white hover:bg-white/50 text-slate-400 hover:text-slate-600 border-slate-300 hover:border-slate-400 cursor-not-allowed shadow-none scale-95",
                 )}
                 onClick={handleSave}
@@ -643,8 +656,8 @@ export default function ConfigPage() {
 
         <div className="pb-10 mx-6">
           <div className="bg-slate-800 rounded-xl p-6 flex items-start gap-4 shadow-xl">
-            <div className="p-2 bg-brand-aqua/20 rounded-xl mt-0.5">
-              <Info className="w-5 h-5 text-brand-aqua" />
+            <div className="p-2 bg-brand-blue rounded-xl mt-0.5">
+              <Info className="w-5 h-5 text-brand-blue" />
             </div>
             <div className="space-y-1 flex-1">
               <h4 className="text-sm font-black text-white">
@@ -652,7 +665,7 @@ export default function ConfigPage() {
               </h4>
               <p className="text-xs font-medium text-slate-400 leading-relaxed">
                 Changes take effect{" "}
-                <span className="text-brand-aqua font-bold">immediately</span>{" "}
+                <span className="text-brand-blue font-bold">immediately</span>{" "}
                 after saving. Free/Premium limits control daily quotas.
               </p>
             </div>
@@ -677,7 +690,12 @@ export default function ConfigPage() {
         isOpen={deleteConfirm.isOpen}
         onClose={() => {
           if (deleteConfirm.loading || deleteConfirm.success) return;
-          setDeleteConfirm({ isOpen: false, key: null, loading: false, success: false });
+          setDeleteConfirm({
+            isOpen: false,
+            key: null,
+            loading: false,
+            success: false,
+          });
         }}
         onConfirm={handleDeleteFeature}
         title="Delete Premium Perk"
@@ -733,7 +751,7 @@ const QuotaField = ({
           </span>
           <Label
             className="text-[11px] font-bold uppercase tracking-wider text-slate-500"
-          // className="text-xs font-semibold text-foreground/80"
+            // className="text-xs font-semibold text-foreground/80"
           >
             {label}
           </Label>
@@ -800,7 +818,7 @@ const FeatureToggle = ({
         className={cn(
           "p-2 rounded-xl transition-all duration-300",
           checked
-            ? "bg-brand-aqua/10 text-brand-aqua"
+            ? "bg-brand-blue text-brand-blue"
             : "bg-slate-200/60 text-slate-400",
         )}
       >
@@ -819,7 +837,7 @@ const FeatureToggle = ({
       <span
         className={cn(
           "text-[10px] font-black uppercase tracking-widest transition-colors",
-          checked ? "text-brand-aqua" : "text-slate-400",
+          checked ? "text-brand-blue" : "text-slate-400",
         )}
       >
         {checked ? "ON" : "OFF"}
@@ -827,7 +845,7 @@ const FeatureToggle = ({
       <Switch
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className={"bg-brand-aqua"}
+        className={"bg-brand-blue"}
       />
     </div>
   </div>
@@ -836,13 +854,13 @@ const FeatureToggle = ({
 /* ======================== DYNAMIC FEATURE COMPONENTS ======================== */
 
 const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
-  <div className="flex items-center justify-between bg-white border border-slate-100 p-3 rounded-xl group hover:border-brand-aqua/30 transition-all shadow-sm">
+  <div className="flex items-center justify-between bg-white border border-slate-100 p-3 rounded-xl group hover:border-brand-blue transition-all shadow-sm">
     <div className="flex items-center gap-3">
       <div
         className={cn(
           "p-2 rounded-lg flex items-center justify-center",
           feature.isActive
-            ? "bg-brand-aqua/10 text-brand-aqua"
+            ? "bg-brand-blue text-brand-blue"
             : "bg-slate-100 text-slate-400",
         )}
       >
@@ -866,7 +884,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-lg text-slate-400 hover:text-brand-aqua"
+        className="h-8 w-8 rounded-lg text-slate-400 hover:text-brand-blue"
         onClick={() => onEdit(feature)}
       >
         <Edit className="w-3.5 h-3.5" />
@@ -902,7 +920,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
       <Switch
         checked={feature.isActive}
         onCheckedChange={(val) => onToggle(feature.key, val)}
-        className="scale-75 data-[state=checked]:bg-brand-aqua"
+        className="scale-75 data-[state=checked]:bg-brand-blue"
       />
     </div>
   </div>

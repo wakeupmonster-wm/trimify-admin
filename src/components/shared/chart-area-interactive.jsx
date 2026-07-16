@@ -49,7 +49,12 @@ const parseLocalDate = (dateStr) => {
   return new Date(dateStr);
 };
 
-export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) {
+export function ChartAreaInteractive({
+  kpiData,
+  loading,
+  error,
+  selectedDate,
+}) {
   const [activeChart, setActiveChart] = useState("both");
   const dispatch = useDispatch();
 
@@ -58,8 +63,12 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
     const preset = selectedDate.preset || "today";
     const apiParams = {
       preset,
-      from: selectedDate.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null,
-      to: selectedDate.to ? format(new Date(selectedDate.to), "yyyy-MM-dd") : null,
+      from: selectedDate.from
+        ? format(new Date(selectedDate.from), "yyyy-MM-dd")
+        : null,
+      to: selectedDate.to
+        ? format(new Date(selectedDate.to), "yyyy-MM-dd")
+        : null,
     };
     // dispatch(fetchDashboardKPIs(apiParams));
   };
@@ -76,12 +85,18 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
     const getRangeDays = () => {
       if (preset !== "custom") {
         switch (preset) {
-          case "today": return 1;
-          case "yesterday": return 1;
-          case "last7": return 7;
-          case "last30": return 30;
-          case "last90": return 90;
-          default: return 7;
+          case "today":
+            return 1;
+          case "yesterday":
+            return 1;
+          case "last7":
+            return 7;
+          case "last30":
+            return 30;
+          case "last90":
+            return 90;
+          default:
+            return 7;
         }
       }
       if (selectedDate?.from && selectedDate?.to) {
@@ -108,13 +123,23 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
         targetDateStr = format(new Date(selectedDate.from), "yyyy-MM-dd");
       }
 
-      const matchRecord = (targetDateStr ? rawData.find(d => d.date === targetDateStr) : null) || rawData[rawData.length - 1];
+      const matchRecord =
+        (targetDateStr
+          ? rawData.find((d) => d.date === targetDateStr)
+          : null) || rawData[rawData.length - 1];
       if (matchRecord) {
         const N = matchRecord.android || 0;
         const M = matchRecord.ios || 0;
 
-        const ratios = [0.10, 0.05, 0.20, 0.25, 0.25, 0.15];
-        const labels = ["12 AM - 4 AM", "4 AM - 8 AM", "8 AM - 12 PM", "12 PM - 4 PM", "4 PM - 8 PM", "8 PM - 12 AM"];
+        const ratios = [0.1, 0.05, 0.2, 0.25, 0.25, 0.15];
+        const labels = [
+          "12 AM - 4 AM",
+          "4 AM - 8 AM",
+          "8 AM - 12 PM",
+          "12 PM - 4 PM",
+          "4 PM - 8 PM",
+          "8 PM - 12 AM",
+        ];
 
         const distributed = [];
         let accumulatedAndroid = 0;
@@ -152,12 +177,19 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
         if (isNaN(d.getTime())) return;
         const monthLabel = d.toLocaleString("default", { month: "short" });
         if (!months[monthLabel]) {
-          months[monthLabel] = { date: monthLabel, android: 0, ios: 0, rawTimestamp: d.getTime() };
+          months[monthLabel] = {
+            date: monthLabel,
+            android: 0,
+            ios: 0,
+            rawTimestamp: d.getTime(),
+          };
         }
         months[monthLabel].android += item.android || 0;
         months[monthLabel].ios += item.ios || 0;
       });
-      return Object.values(months).sort((a, b) => a.rawTimestamp - b.rawTimestamp);
+      return Object.values(months).sort(
+        (a, b) => a.rawTimestamp - b.rawTimestamp,
+      );
     } else if (preset === "last30" || (rangeDays > 7 && rangeDays <= 31)) {
       // Group into 4 weeks
       const processed = [];
@@ -179,7 +211,8 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
       return processed;
     } else {
       // Daily view: rangeDays between 2 and 7 (e.g. last7, preset === "last7", or len <= 7)
-      const dailyRaw = (preset === "last7" || rangeDays === 7) ? rawData.slice(-7) : rawData;
+      const dailyRaw =
+        preset === "last7" || rangeDays === 7 ? rawData.slice(-7) : rawData;
       const processed = dailyRaw.map((item) => {
         if (!item.date) return { ...item, dayLabel: "Unknown" };
         const d = parseLocalDate(item.date);
@@ -234,7 +267,10 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
         targetDateStr = format(y, "yyyy-MM-dd");
       }
 
-      const matchRecord = (targetDateStr ? rawData.find(d => d.date === targetDateStr) : null) || rawData[rawData.length - 1];
+      const matchRecord =
+        (targetDateStr
+          ? rawData.find((d) => d.date === targetDateStr)
+          : null) || rawData[rawData.length - 1];
       const android = matchRecord?.android || 0;
       const ios = matchRecord?.ios || 0;
       return { currentAndroid: android, currentIos: ios };
@@ -244,12 +280,18 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
     const getRangeDays = () => {
       if (preset !== "custom") {
         switch (preset) {
-          case "today": return 1;
-          case "yesterday": return 1;
-          case "last7": return 7;
-          case "last30": return 30;
-          case "last90": return 90;
-          default: return 7;
+          case "today":
+            return 1;
+          case "yesterday":
+            return 1;
+          case "last7":
+            return 7;
+          case "last30":
+            return 30;
+          case "last90":
+            return 90;
+          default:
+            return 7;
         }
       }
       if (selectedDate?.from && selectedDate?.to) {
@@ -264,18 +306,24 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
     const rangeDays = getRangeDays();
 
     if (rangeDays <= 1) {
-      let targetDateStr = selectedDate?.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null;
-      const matchRecord = (targetDateStr ? rawData.find(d => d.date === targetDateStr) : null) || rawData[rawData.length - 1];
+      let targetDateStr = selectedDate?.from
+        ? format(new Date(selectedDate.from), "yyyy-MM-dd")
+        : null;
+      const matchRecord =
+        (targetDateStr
+          ? rawData.find((d) => d.date === targetDateStr)
+          : null) || rawData[rawData.length - 1];
       const android = matchRecord?.android || 0;
       const ios = matchRecord?.ios || 0;
       return { currentAndroid: android, currentIos: ios };
     }
 
     // Otherwise, sum the data in the history
-    const sumRaw = (preset === "last7" || rangeDays === 7) ? rawData.slice(-7) : rawData;
+    const sumRaw =
+      preset === "last7" || rangeDays === 7 ? rawData.slice(-7) : rawData;
     let sumAndroid = 0;
     let sumIos = 0;
-    sumRaw.forEach(item => {
+    sumRaw.forEach((item) => {
       sumAndroid += item.android || 0;
       sumIos += item.ios || 0;
     });
@@ -302,7 +350,7 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
   }
 
   return (
-    <Card className="rounded-xl border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 shadow-sm py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
+    <Card className="rounded-xl border border-slate-200 hover:border-blue-200 transition-all duration-300 shadow-sm py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
       <CardHeader className="flex flex-col items-end justify-between px-0 tracking-tight shrink-0">
         <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-200">
           <DashboardHead
@@ -331,10 +379,7 @@ export function ChartAreaInteractive({ kpiData, loading, error, selectedDate }) 
             </p>
           </div>
         ) : (
-          <VisitorChart
-            filteredData={filteredData}
-            activeChart={activeChart}
-          />
+          <VisitorChart filteredData={filteredData} activeChart={activeChart} />
         )}
 
         <VisitorBottomLegends

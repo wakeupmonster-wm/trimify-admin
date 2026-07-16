@@ -13,7 +13,7 @@ export default function RadialStatCard({
   const data = [{ value: percentage, fill: color }];
 
   return (
-    <div className="border border-brand-aqua/40 shadow-lg rounded-2xl p-4 flex flex-col items-center bg-slate-50">
+    <div className="border border-brand-blue shadow-lg rounded-2xl p-4 flex flex-col items-center bg-slate-50">
       <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">
         {title}
       </span>

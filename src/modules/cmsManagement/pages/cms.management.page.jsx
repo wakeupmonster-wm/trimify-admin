@@ -9,12 +9,14 @@ import { FileEdit } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCmsPages } from "../store/cms.management.slice";
 import { toast } from "sonner";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const CMSManagementPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const { data, loading, error } = useSelector((state) => state.cmsManagement);
@@ -22,9 +24,9 @@ const CMSManagementPage = () => {
   useEffect(() => {
     dispatch(fetchCmsPages({ 
       page: pagination.pageIndex + 1, 
-      search: globalFilter 
+      search: debouncedSearchTerm 
     }));
-  }, [dispatch, pagination.pageIndex, globalFilter]);
+  }, [dispatch, pagination.pageIndex, debouncedSearchTerm]);
 
   useEffect(() => {
     if (error) {
@@ -60,7 +62,7 @@ const CMSManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0">
             <PageHeader

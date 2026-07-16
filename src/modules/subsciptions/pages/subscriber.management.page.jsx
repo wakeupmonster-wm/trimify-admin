@@ -192,27 +192,41 @@ export default function SubscriberManagementPage() {
       },
       {
         label: "Active Users",
-        val: serverPagination?.totalActive ?? subscribers.filter((s) => s.status === "ACTIVE" && !s.isExpired).length,
+        val:
+          serverPagination?.totalActive ??
+          subscribers.filter((s) => s.status === "ACTIVE" && !s.isExpired)
+            .length,
         icon: <LuUserRoundCheck size={22} />,
         color: "emerald",
         description: "Currently subscribed",
       },
       {
         label: "Expired",
-        val: serverPagination?.totalExpired ?? subscribers.filter((s) => s.isExpired || s.status === "EXPIRED").length,
+        val:
+          serverPagination?.totalExpired ??
+          subscribers.filter((s) => s.isExpired || s.status === "EXPIRED")
+            .length,
         icon: <RiUserForbidLine size={22} />,
         color: "amber",
         description: "Subscription ended",
       },
       {
         label: "Revoked",
-        val: serverPagination?.totalRevoked ?? subscribers.filter((s) => s.status === "REVOKED").length,
+        val:
+          serverPagination?.totalRevoked ??
+          subscribers.filter((s) => s.status === "REVOKED").length,
         icon: <RiUserForbidLine size={22} />,
         color: "rose",
         description: "Access removed",
       },
     ];
-  }, [subscribers, serverPagination?.total, serverPagination?.totalActive, serverPagination?.totalExpired, serverPagination?.totalRevoked]);
+  }, [
+    subscribers,
+    serverPagination?.total,
+    serverPagination?.totalActive,
+    serverPagination?.totalExpired,
+    serverPagination?.totalRevoked,
+  ]);
 
   // ─── Table columns ───
   const columns = useMemo(() => getSubscriberColumns(navigate), [navigate]);
@@ -251,7 +265,7 @@ export default function SubscriberManagementPage() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-brand-aqua shadow-brand-aqua/30"
+                color="bg-brand-blue shadow-brand-blue"
                 subheading="Monitor and manage all application subscribers."
               />
             </div>
@@ -291,7 +305,7 @@ export default function SubscriberManagementPage() {
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by nickname, email or phone..."
-                className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-aqua rounded-md w-full transition-all outline-none"
+                className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -319,13 +333,13 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      statusFilter && "border-brand-aqua text-brand-aqua",
+                      statusFilter && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs truncate">
                       {statusFilter
                         ? statusFilter.charAt(0).toUpperCase() +
-                        statusFilter.slice(1).toLowerCase()
+                          statusFilter.slice(1).toLowerCase()
                         : "All Status"}
                     </span>
                     <IconChevronDown className="h-4 w-4 opacity-50 shrink-0" />
@@ -338,19 +352,23 @@ export default function SubscriberManagementPage() {
                   <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase px-2 py-1.5">
                     Account Status
                   </DropdownMenuLabel>
-                  {["ACTIVE", "CANCELLED", "REVOKED", "EXPIRED"].map((status) => (
-                    <DropdownMenuCheckboxItem
-                      key={status}
-                      className="rounded-lg capitalize text-xs"
-                      checked={statusFilter === status}
-                      onCheckedChange={() => {
-                        setStatusFilter(statusFilter === status ? "" : status);
-                        setPagination((p) => ({ ...p, pageIndex: 0 }));
-                      }}
-                    >
-                      {status.toLowerCase()}
-                    </DropdownMenuCheckboxItem>
-                  ))}
+                  {["ACTIVE", "CANCELLED", "REVOKED", "EXPIRED"].map(
+                    (status) => (
+                      <DropdownMenuCheckboxItem
+                        key={status}
+                        className="rounded-lg capitalize text-xs"
+                        checked={statusFilter === status}
+                        onCheckedChange={() => {
+                          setStatusFilter(
+                            statusFilter === status ? "" : status,
+                          );
+                          setPagination((p) => ({ ...p, pageIndex: 0 }));
+                        }}
+                      >
+                        {status.toLowerCase()}
+                      </DropdownMenuCheckboxItem>
+                    ),
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -362,7 +380,7 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      planFilter && "border-brand-aqua text-brand-aqua",
+                      planFilter && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs truncate">
@@ -403,7 +421,7 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      platformFilter && "border-brand-aqua text-brand-aqua",
+                      platformFilter && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs truncate">
@@ -441,7 +459,7 @@ export default function SubscriberManagementPage() {
 
               {/* 4. COUNT INDICATOR */}
               <div className="flex items-center gap-1.5 pl-2 md:pl-2 border-l-0 md:border-l border-slate-200 md:ml-1.5 justify-center md:justify-start py-1 md:py-0">
-                <span className="text-xs 3xl:text-sm font-bold text-brand-aqua">
+                <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
                   {serverPagination?.total || 0}
                 </span>
                 <span className="text-xs 3xl:text-sm text-slate-400 font-medium whitespace-nowrap">
@@ -538,7 +556,12 @@ export default function SubscriberManagementPage() {
         {/* ─── DATA TABLE ─── */}
         <motion.div variants={itemVariants}>
           <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className={cn("overflow-x-auto relative", loading && subscribers.length > 0 && "min-h-[180px]")}>
+            <div
+              className={cn(
+                "overflow-x-auto relative",
+                loading && subscribers.length > 0 && "min-h-[180px]",
+              )}
+            >
               <AnimatePresence>
                 {loading && subscribers.length > 0 && (
                   <motion.div
@@ -591,7 +614,9 @@ export default function SubscriberManagementPage() {
                           const targetId =
                             sub.user?._id || sub.userId?._id || sub.userId;
                           if (targetId)
-                            navigate(`/admin/management/subscription-management/view-subscription/${targetId}`);
+                            navigate(
+                              `/admin/management/subscription-management/view-subscription/${targetId}`,
+                            );
                         }}
                       >
                         {row.getVisibleCells().map((cell) => (
@@ -747,7 +772,7 @@ export default function SubscriberManagementPage() {
                             className={cn(
                               "h-8 w-8 text-xs font-bold rounded-md transition-all",
                               isActive
-                                ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-aqua/20 border-none"
+                                ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
                                 : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
                             )}
                           >

@@ -115,12 +115,16 @@ export default function ADSMobPage() {
     try {
       setLoading(true);
       const promises = [];
-      
+
       if (dirtyFields.android) {
-        promises.push(dispatch(updateAdsConfig(toApi("android", data.android))).unwrap());
+        promises.push(
+          dispatch(updateAdsConfig(toApi("android", data.android))).unwrap(),
+        );
       }
       if (dirtyFields.ios) {
-        promises.push(dispatch(updateAdsConfig(toApi("ios", data.ios))).unwrap());
+        promises.push(
+          dispatch(updateAdsConfig(toApi("ios", data.ios))).unwrap(),
+        );
       }
 
       if (promises.length > 0) {
@@ -147,7 +151,10 @@ export default function ADSMobPage() {
         </header>
 
         <Form {...form}>
-          <form className="space-y-6 px-2" onSubmit={form.handleSubmit(onConfirmOpen)}>
+          <form
+            className="space-y-6 px-2"
+            onSubmit={form.handleSubmit(onConfirmOpen)}
+          >
             {/* Android Section */}
             <AdSection
               title="Android Ads Settings"
@@ -179,7 +186,7 @@ export default function ADSMobPage() {
               </Button>
               <Button
                 type="submit"
-                className="h-10 px-6 bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
+                className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
                 disabled={loading || fetching || !isDirty}
               >
                 {loading ? (
@@ -202,9 +209,12 @@ export default function ADSMobPage() {
         <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
           <DialogContent className="sm:max-w-md bg-white border-slate-200">
             <DialogHeader>
-              <DialogTitle className="text-lg font-bold text-slate-800">Confirm Changes</DialogTitle>
+              <DialogTitle className="text-lg font-bold text-slate-800">
+                Confirm Changes
+              </DialogTitle>
               <DialogDescription className="text-sm text-slate-500 mt-2">
-                Are you sure you want to save these advertisement settings? This will update the ads configuration for {updateMsg}
+                Are you sure you want to save these advertisement settings? This
+                will update the ads configuration for {updateMsg}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="mt-6 flex sm:justify-end gap-2">
@@ -219,7 +229,7 @@ export default function ADSMobPage() {
               <Button
                 type="button"
                 onClick={confirmSave}
-                className="h-10 px-6 bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold rounded-md shadow-sm"
+                className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold rounded-md shadow-sm"
               >
                 Yes, Save Changes
               </Button>

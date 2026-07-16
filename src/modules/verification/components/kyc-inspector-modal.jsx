@@ -26,30 +26,32 @@ export function KYCInspectorModal({
 
   return (
     <Dialog open={config.open} onOpenChange={onClose}>
-      <DialogContent className={cn(
-        "max-w-5xl 3xl:max-w-[1280px] w-full flex flex-col p-0 pb-6 gap-6 bg-white overflow-hidden rounded-xl border-none shadow-sm",
-        isApproved ? "h-[75vh] 3xl:h-[65vh]" : "h-[90vh] 3xl:h-[80vh]"
-      )}>
+      <DialogContent
+        className={cn(
+          "max-w-5xl 3xl:max-w-[1280px] w-full flex flex-col p-0 pb-6 gap-6 bg-white overflow-hidden rounded-xl border-none shadow-sm",
+          isApproved ? "h-[75vh] 3xl:h-[65vh]" : "h-[90vh] 3xl:h-[80vh]",
+        )}
+      >
         {/* --- MODAL HEADER --- */}
         <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
           <DashboardHead
             title="Visual Identity Inspector"
             titleSizeClass="text-[18px]"
-            iconSizeClass="w-12 h-12 rounded-xl shadow-lg shadow-brand-aqua/10"
+            iconSizeClass="w-12 h-12 rounded-xl shadow-lg shadow-brand-blue"
             iconInnerClass="h-6 w-6"
             subtitle={
               <div className="flex items-center gap-1">
                 <span className="text-xs font-semibold text-slate-400">
                   Reviewing:
                 </span>
-                <span className="text-xs font-semibold text-brand-aqua">
+                <span className="text-xs font-semibold text-brand-blue">
                   {config.userName || "Unknown User"}
                 </span>
               </div>
             }
             Icon={IconShieldCheck}
-            iconColor="text-brand-aqua"
-            iconBg="bg-brand-aqua/10"
+            iconColor="text-brand-blue"
+            iconBg="bg-brand-blue"
           />
           {/* <button
             onClick={onClose}

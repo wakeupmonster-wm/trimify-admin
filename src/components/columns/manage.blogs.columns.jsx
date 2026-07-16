@@ -20,13 +20,14 @@ export const getManageBlogsColumns = (onAction) => [
     id: "sno",
     header: () => (
       <div className="w-10 text-left text-[10px] font-bold uppercase tracking-wider">
-        S.No
+        SR.No
       </div>
     ),
     size: 50,
     minSize: 40,
     cell: ({ row, table }) => {
-      const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
+      const { pageIndex = 0, pageSize = 10 } =
+        table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
@@ -94,19 +95,28 @@ export const getManageBlogsColumns = (onAction) => [
     minSize: 100,
     cell: ({ row }) => {
       // Defaulting to "Public" if status is "Public" or true, else "Private"
-      const statusValue = row.original.status === "Public" || row.original.status === true ? "Public" : "Private";
+      const statusValue =
+        row.original.status === "Public" || row.original.status === true
+          ? "Public"
+          : "Private";
       return (
         <div className="flex justify-center">
-          <Select 
-            value={statusValue} 
-            onValueChange={(val) => onAction && onAction(row.original, "change-status", val)}
+          <Select
+            value={statusValue}
+            onValueChange={(val) =>
+              onAction && onAction(row.original, "change-status", val)
+            }
           >
-            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-brand-aqua/30 border-slate-200">
+            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Public" className="text-[11px]">Public</SelectItem>
-              <SelectItem value="Private" className="text-[11px]">Private</SelectItem>
+              <SelectItem value="Public" className="text-[11px]">
+                Public
+              </SelectItem>
+              <SelectItem value="Private" className="text-[11px]">
+                Private
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -133,12 +143,15 @@ export const getManageBlogsColumns = (onAction) => [
               <MoreVertical className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm">
+          <DropdownMenuContent
+            align="end"
+            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+          >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-aqua/10 focus:text-brand-aqua font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

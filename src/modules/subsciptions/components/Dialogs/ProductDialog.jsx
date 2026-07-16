@@ -62,8 +62,8 @@ export const ProductDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-aqua/10 border border-brand-aqua/20">
-              <Package className="h-6 w-6 text-brand-aqua" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+              <Package className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -92,7 +92,14 @@ export const ProductDialog = ({
         {/* ── Form Body ── */}
         <div className="px-7 py-5 space-y-4 bg-white">
           {/* Type + Category */}
-          <div className={cn("grid gap-4", formData.type === "SUBSCRIPTION" && !isEditMode ? "grid-cols-1" : "grid-cols-2")}>
+          <div
+            className={cn(
+              "grid gap-4",
+              formData.type === "SUBSCRIPTION" && !isEditMode
+                ? "grid-cols-1"
+                : "grid-cols-2",
+            )}
+          >
             <div className="space-y-2">
               <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
                 <span>Product Type</span>
@@ -130,7 +137,7 @@ export const ProductDialog = ({
                       className={cn(
                         "rounded-md font-bold text-[11px] uppercase tracking-wider border-2 transition-all",
                         formData.type === t
-                          ? "border-brand-aqua bg-brand-aqua/5 text-brand-aqua"
+                          ? "border-brand-blue bg-brand-blue text-brand-blue"
                           : "border-slate-200 bg-slate-50 text-slate-400 hover:border-slate-300",
                       )}
                     >
@@ -386,7 +393,7 @@ export const ProductDialog = ({
                     placeholder="e.g. MOST POPULAR"
                     value={formData.badgeText || ""}
                     onChange={(e) => updateField("badgeText", e.target.value)}
-                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-aqua/20 focus-visible:border-brand-aqua w-full pr-24"
+                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue w-full pr-24"
                   />
                   {formData.badgeText && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -411,7 +418,7 @@ export const ProductDialog = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-pointer">
-                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-aqua transition-colors" />
+                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-blue transition-colors" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[350px] text-center">
@@ -460,7 +467,7 @@ export const ProductDialog = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-pointer">
-                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-aqua transition-colors" />
+                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-blue transition-colors" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[350px] text-center">
@@ -535,7 +542,7 @@ export const ProductDialog = ({
                       placeholder={`Feature ${i + 1}`}
                       value={f}
                       onChange={(e) => updateFeature(i, e.target.value)}
-                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-aqua/20 focus-visible:border-brand-aqua"
+                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue"
                     />
                     <button
                       onClick={() => removeFeature(i)}
@@ -547,7 +554,7 @@ export const ProductDialog = ({
                 ))}
                 <button
                   onClick={addFeature}
-                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-brand-aqua bg-brand-aqua/10 hover:bg-brand-aqua/20 rounded-md transition-colors border border-brand-aqua/20"
+                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-brand-blue bg-brand-blue hover:bg-brand-hoverBlue rounded-md transition-colors border border-brand-blue"
                 >
                   <Plus className="w-4 h-4" /> Add Feature
                 </button>
@@ -594,7 +601,7 @@ export const ProductDialog = ({
           <Button
             onClick={handleSubmit}
             disabled={actionLoading}
-            className="bg-brand-aqua hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
+            className="bg-brand-blue hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
           >
             {actionLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

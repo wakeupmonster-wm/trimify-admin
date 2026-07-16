@@ -36,7 +36,7 @@ export default function ErrorState({ error, fetchVisitorData }) {
           {/* Premium Styled Retry Button */}
           <Button
             onClick={fetchVisitorData}
-            className="group relative flex items-center gap-3 px-8 py-6 border border-slate-200 bg-white hover:bg-brand-aqua text-brand-aqua hover:text-white rounded-2xl font-bold text-sm transition-all duration-300 hover:shadow-lg active:scale-95"
+            className="group relative flex items-center gap-3 px-8 py-6 border border-slate-200 bg-white hover:bg-brand-hoverBlue text-brand-blue hover:text-white rounded-2xl font-bold text-sm transition-all duration-300 hover:shadow-lg active:scale-95"
           >
             <IconRefresh
               size={18}
@@ -47,7 +47,7 @@ export default function ErrorState({ error, fetchVisitorData }) {
         </CardContent>
 
         {/* Decorative Bottom Wave (Faded version of your main cards) */}
-        <div className="absolute bottom-0 left-0 w-full opacity-[0.06] bg-brand-aqua pointer-events-none">
+        <div className="absolute bottom-0 left-0 w-full opacity-[0.06] bg-brand-blue pointer-events-none">
           <svg viewBox="0 0 400 100" fill="none">
             <path
               d="M0 80 C 100 70 150 90 250 50 C 320 30 350 20 400 0 L 400 100 L 0 100 Z"

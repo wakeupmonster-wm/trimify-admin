@@ -36,7 +36,7 @@ export function ImagePreviewModal({ config, onClose }) {
       <DialogContent className="max-w-4xl w-[95vw] h-[90vh] flex flex-col p-0 overflow-hidden bg-slate-950 border-slate-800">
         <DialogHeader className="p-4 bg-white border-b flex flex-row items-center justify-between space-y-0">
           <DialogTitle className="text-slate-900 flex items-center gap-2">
-            <Maximize2 className="w-4 h-4 text-brand-aqua" />
+            <Maximize2 className="w-4 h-4 text-brand-blue" />
             {config.title}
           </DialogTitle>
           <div className="flex items-center gap-2 mr-14">

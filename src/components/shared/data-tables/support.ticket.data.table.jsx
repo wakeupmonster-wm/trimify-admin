@@ -87,7 +87,7 @@ export default function SupportTicketsDataTables({
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
             <Input
               placeholder={searchPlaceholder}
-              className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-aqua rounded-md w-full transition-all outline-none"
+              className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -112,7 +112,7 @@ export default function SupportTicketsDataTables({
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      hasActiveFilters && "border-brand-aqua text-brand-aqua",
+                      hasActiveFilters && "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
@@ -137,8 +137,9 @@ export default function SupportTicketsDataTables({
                   <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase px-2 py-1.5">
                     Support Status
                   </DropdownMenuLabel>
-                  {["open", "in_progress", "resolved", "closed"].filter(s => s !== "closed").map(
-                    (status) => (
+                  {["open", "in_progress", "resolved", "closed"]
+                    .filter((s) => s !== "closed")
+                    .map((status) => (
                       <DropdownMenuCheckboxItem
                         key={status}
                         className="rounded-lg capitalize text-xs"
@@ -147,12 +148,11 @@ export default function SupportTicketsDataTables({
                       >
                         {status.replace("_", " ")}
                       </DropdownMenuCheckboxItem>
-                    ),
-                  )}
+                    ))}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
- 
+
             {/* 1.5. CATEGORY DROPDOWN */}
             <div className="flex-1 md:w-auto">
               <DropdownMenu>
@@ -161,7 +161,8 @@ export default function SupportTicketsDataTables({
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between min-w-[120px]",
-                      filters.categoryFilter && "border-brand-aqua text-brand-aqua",
+                      filters.categoryFilter &&
+                        "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
@@ -209,7 +210,7 @@ export default function SupportTicketsDataTables({
 
             {/* 2. ITEM COUNT INDICATOR */}
             <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-200">
-              <span className="text-xs 3xl:text-sm font-bold text-brand-aqua">
+              <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
                 {rowCount ?? data.length}
               </span>
               <span className="text-xs 3xl:text-sm text-slate-400 font-medium">
@@ -284,7 +285,9 @@ export default function SupportTicketsDataTables({
                     }
                     sessionStorage.removeItem("supportManagementGlobalFilter");
                     sessionStorage.removeItem("supportManagementStatusFilter");
-                    sessionStorage.removeItem("supportManagementCategoryFilter");
+                    sessionStorage.removeItem(
+                      "supportManagementCategoryFilter",
+                    );
                     sessionStorage.removeItem("supportManagementPagination");
                   }}
                 >
@@ -298,7 +301,12 @@ export default function SupportTicketsDataTables({
 
       {/* --- DATA AREA (RESPONSIBLE) & PAGINATION MERGED --- */}
       <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className={cn("overflow-x-auto relative", isLoading && data.length > 0 && "min-h-[180px]")}>
+        <div
+          className={cn(
+            "overflow-x-auto relative",
+            isLoading && data.length > 0 && "min-h-[180px]",
+          )}
+        >
           <AnimatePresence>
             {isLoading && data.length > 0 && (
               <motion.div
@@ -347,9 +355,12 @@ export default function SupportTicketsDataTables({
                         e.target.closest("a")
                       )
                         return;
-                      navigate(`/admin/management/support/view-ticket/${row.original._id}`, {
-                        state: { ticketData: row.original },
-                      });
+                      navigate(
+                        `/admin/management/support/view-ticket/${row.original._id}`,
+                        {
+                          state: { ticketData: row.original },
+                        },
+                      );
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -490,7 +501,7 @@ export default function SupportTicketsDataTables({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-aqua/20"
+                            ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
                             : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
                         )}
                       >

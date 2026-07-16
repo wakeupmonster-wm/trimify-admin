@@ -148,7 +148,7 @@ export default function StoragePage() {
             </Button>
             <Button
               type="button"
-              className="h-10 px-6 bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
+              className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
               onClick={handleSave}
             >
               {loading ? (

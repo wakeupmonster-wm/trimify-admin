@@ -68,8 +68,8 @@ export const FeatureDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-6 pt-6 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-aqua/10 border border-brand-aqua/20">
-              <Sparkles className="h-5 w-5 text-brand-aqua" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+              <Sparkles className="h-5 w-5 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-base font-extrabold text-slate-900 tracking-tight">
@@ -100,7 +100,7 @@ export const FeatureDialog = ({
                   className={cn(
                     "h-10 pl-9 text-[13px] font-medium rounded-lg border-slate-300 shadow-none focus-visible:border-slate-500 transition-all",
                     editing &&
-                    "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed",
+                      "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed",
                   )}
                   value={formData.key}
                   onChange={(e) =>
@@ -155,10 +155,10 @@ export const FeatureDialog = ({
             <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
               Icon (SVG/PNG) <span className="text-red-400 font-normal">*</span>
             </Label>
-            <div className="flex items-center gap-4 p-3 rounded-xl border border-slate-300 bg-slate-50/50 group hover:border-brand-aqua/20 transition-all">
+            <div className="flex items-center gap-4 p-3 rounded-xl border border-slate-300 bg-slate-50/50 group hover:border-brand-blue transition-all">
               <div className="w-12 h-12 rounded-lg bg-white shadow-sm border border-slate-300 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
                 {isUploading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-brand-aqua" />
+                  <Loader2 className="w-4 h-4 animate-spin text-brand-blue" />
                 ) : formData.icon ? (
                   <img
                     src={formData.icon}
@@ -180,7 +180,7 @@ export const FeatureDialog = ({
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full h-9 rounded-lg border-slate-300 bg-white hover:bg-brand-aqua/5 hover:text-brand-aqua hover:border-brand-aqua/20 font-bold text-[11px] gap-2 transition-all"
+                  className="w-full h-9 rounded-lg border-slate-300 bg-white hover:bg-brand-hoverBlue hover:text-brand-blue hover:border-brand-blue font-bold text-[11px] gap-2 transition-all"
                   onClick={() => fileInputRef.current.click()}
                   disabled={isUploading}
                 >
@@ -210,7 +210,7 @@ export const FeatureDialog = ({
                 onCheckedChange={(val) =>
                   setFormData({ ...formData, isActive: val })
                 }
-                className="data-[state=checked]:bg-brand-aqua"
+                className="data-[state=checked]:bg-brand-blue"
               />
             </div>
             {/* <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-100 flex items-center justify-between hover:bg-slate-100/50 transition-colors">
@@ -248,7 +248,7 @@ export const FeatureDialog = ({
               "rounded-lg px-5 font-bold text-[11px] h-9 gap-2 transition-all active:scale-95 flex items-center justify-center min-w-[130px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-brand-aqua hover:bg-brand-hoverAqua text-white shadow-md shadow-brand-aqua/10"
+                : "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-md shadow-brand-blue",
             )}
             onClick={handleSubmit}
             disabled={localLoading || success}

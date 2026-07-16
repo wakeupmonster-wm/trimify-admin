@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ChevronUp, ChevronDown, ArrowUpDown, Eye } from "lucide-react";
 
 const CATEGORY_MAP = {
-  PREMIUM_PLAN: { label: "Premium Plan", color: "text-brand-aqua" },
+  PREMIUM_PLAN: { label: "Premium Plan", color: "text-brand-blue" },
   SUPER_KEEN: { label: "Super Keen", color: "text-amber-600" },
   SUPERCHARGE: { label: "Super Charge", color: "text-amber-600" },
 };
@@ -54,9 +54,9 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         Name{" "}
         {sortCol === "displayName" &&
           (sortDir === "asc" ? (
-            <ChevronUp className="w-3 h-3 text-brand-aqua" />
+            <ChevronUp className="w-3 h-3 text-brand-blue" />
           ) : (
-            <ChevronDown className="w-3 h-3 text-brand-aqua" />
+            <ChevronDown className="w-3 h-3 text-brand-blue" />
           ))}
       </div>
     ),
@@ -76,9 +76,9 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         Type{" "}
         {sortCol === "type" &&
           (sortDir === "asc" ? (
-            <ChevronUp className="w-3 h-3 text-brand-aqua" />
+            <ChevronUp className="w-3 h-3 text-brand-blue" />
           ) : (
-            <ChevronDown className="w-3 h-3 text-brand-aqua" />
+            <ChevronDown className="w-3 h-3 text-brand-blue" />
           ))}
       </div>
     ),
@@ -98,9 +98,9 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         Category{" "}
         {sortCol === "category" &&
           (sortDir === "asc" ? (
-            <ChevronUp className="w-3 h-3 text-brand-aqua" />
+            <ChevronUp className="w-3 h-3 text-brand-blue" />
           ) : (
-            <ChevronDown className="w-3 h-3 text-brand-aqua" />
+            <ChevronDown className="w-3 h-3 text-brand-blue" />
           ))}
       </div>
     ),
@@ -111,8 +111,10 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         if (isSub) {
           catKey = "PREMIUM_PLAN";
         } else {
-          catKey = row.original.consumableType === "BOOST"
-              ? "SUPERCHARGE" : row.original.consumableType || "SUPER_KEEN";
+          catKey =
+            row.original.consumableType === "BOOST"
+              ? "SUPERCHARGE"
+              : row.original.consumableType || "SUPER_KEEN";
         }
       }
       const meta = CATEGORY_MAP[catKey] || {
@@ -132,9 +134,9 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         Ref. Price (AUD){" "}
         {sortCol === "displayPrice" &&
           (sortDir === "asc" ? (
-            <ChevronUp className="w-3 h-3 text-brand-aqua" />
+            <ChevronUp className="w-3 h-3 text-brand-blue" />
           ) : (
-            <ChevronDown className="w-3 h-3 text-brand-aqua" />
+            <ChevronDown className="w-3 h-3 text-brand-blue" />
           ))}
       </div>
     ),
@@ -292,7 +294,7 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
           variant="ghost"
           size="icon"
           onClick={() => onEdit(row.original)}
-          className="h-8 w-8 text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/5 transition-all duration-300 rounded-lg"
+          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-brand-hoverBlue transition-all duration-300 rounded-lg"
         >
           <Eye size={14} />
         </Button>

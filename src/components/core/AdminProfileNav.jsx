@@ -49,7 +49,7 @@ export function AdminProfileNav() {
           side="bottom"
           className="flex flex-col gap-1 p-3 bg-white border-slate-200 shadow-xl"
         >
-          <p className="font-bold text-brand-aqua">Admin</p>
+          <p className="font-bold text-brand-blue">Admin</p>
           <p className="text-xs text-slate-500">[EMAIL_ADDRESS]</p>
         </TooltipContent>
       </Tooltip>

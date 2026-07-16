@@ -21,7 +21,7 @@ import dummyImg from "@/assets/web/dummyImg.webp";
 import { useDispatch, useSelector } from "react-redux";
 // import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
-import mustardLogo from "@/assets/web/mustardLogo2.webp";
+import trimifyLogo from "@/assets/web/trimifyLogo2.png";
 import { cn } from "@/lib/utils";
 // import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
 // import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
@@ -61,7 +61,7 @@ export function AppSidebar({ ...props }) {
   //   [account],
   // );
 
-    const navUser = useMemo(
+  const navUser = useMemo(
     () => ({
       name: "Admin",
       email: "admin@keenasmustard.com",
@@ -110,17 +110,17 @@ export function AppSidebar({ ...props }) {
                   to="/admin/dashboard"
                   className="flex items-center gap-2 pl-2"
                 >
-                  <div className="flex items-center justify-center rounded-lg">
+                  <div className="flex items-center justify-center rounded-lg max-w-28 h-12">
                     <img
-                      src={mustardLogo}
+                      src={trimifyLogo}
                       alt="Logo"
                       loading="lazy"
-                      className="w-9 h-7"
+                      className="w-full h-full object-contain"
                     />
                   </div>
-                  <div className="grid flex-1 text-left leading-[14px] text-brand-aqua truncate text-sm font-bold">
-                    Keen As <br /> Mustard
-                  </div>
+                  {/* <div className="grid flex-1 text-left leading-[14px] text-brand-blue truncate text-sm font-bold">
+                    Trimify Admin
+                  </div> */}
                 </Link>
               </SidebarMenuButton>
             )}
@@ -137,20 +137,20 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin pt-4 gap-0 bg-white">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-white">
         {/* Overview Section */}
         {/* {dynamicNavigation.navMain && ( */}
-          <NavMain items={navigationData.navMain} />
+        <NavMain items={navigationData.navMain} />
         {/* )} */}
 
         {/* Management Section */}
         {/* {dynamicNavigation.navManagement && ( */}
-          <NavManagements items={navigationData.navManagement} />
+        <NavManagements items={navigationData.navManagement} />
         {/* )} */}
 
         {/* Platform Section */}
         {/* {dynamicNavigation.navPlateform && ( */}
-          <NavPlateform items={navigationData.navPlateform} />
+        <NavPlateform items={navigationData.navPlateform} />
         {/* )} */}
 
         {/* {dynamicNavigation.navSecondary && (

@@ -20,7 +20,7 @@ export const ConversionFunnel = ({ data }) => {
   const reductionPerSegment = totalReduction / totalStages;
 
   return (
-    <Card className="flex flex-col h-full bg-white border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
+    <Card className="flex flex-col h-full bg-white border-slate-200 hover:border-blue-200 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
         <DashboardHead
           title="Conversion Funnel"
@@ -121,15 +121,15 @@ export const ConversionFunnel = ({ data }) => {
         </div>
 
         {/* Insight Box */}
-        {/* <div className="mt-2 flex items-center gap-3 px-4 py-3 bg-brand-aqua/10 border border-brand-aqua/40 rounded-xl text-muted-foreground text-[10px] font-bold leading-snug">
+        {/* <div className="mt-2 flex items-center gap-3 px-4 py-3 bg-brand-blue border border-brand-blue rounded-xl text-muted-foreground text-[10px] font-bold leading-snug">
           <Info size={15} className="text-[#46C7CD] shrink-0" />
           {data.insight}
         </div> */}
       </CardContent>
       <CardFooter className="pt-2">
-        <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
+        <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
-            <Info size={14} className="text-brand-aqua shrink-0" />
+            <Info size={14} className="text-brand-blue shrink-0" />
           </div>
           {data.insight}
         </div>

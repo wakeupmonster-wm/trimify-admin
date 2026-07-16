@@ -5,7 +5,7 @@ export const getNotificationColumns = () => [
     id: "sno",
     header: () => (
       <div className="w-16 text-center text-[10px] font-bold uppercase tracking-wider">
-        S.No
+        SR.No
       </div>
     ),
     size: 60,

@@ -31,7 +31,7 @@ export default function Dashboard() {
   const { stats, loading, dashboardData, dashboardMeta, dateRange } =
     useSelector((state) => state.dashboard);
   const [selectedDate, setSelectedDate] = useState(
-    dateRange || { preset: "today" }
+    dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
   const [liveEvents, setLiveEvents] = useState([]);
@@ -102,7 +102,9 @@ export default function Dashboard() {
         const preset = dateObj?.preset || "today";
         const apiParams = {
           preset,
-          from: dateObj?.from ? format(new Date(dateObj.from), "yyyy-MM-dd") : null,
+          from: dateObj?.from
+            ? format(new Date(dateObj.from), "yyyy-MM-dd")
+            : null,
           to: dateObj?.to ? format(new Date(dateObj.to), "yyyy-MM-dd") : null,
         };
 
@@ -118,8 +120,7 @@ export default function Dashboard() {
         ]);
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
-      }
-      finally {
+      } finally {
         setRefreshing(false);
       }
     };
@@ -130,9 +131,11 @@ export default function Dashboard() {
     dispatch(
       setDashboardDateRange({
         ...selectedDate,
-        from: selectedDate?.from ? new Date(selectedDate.from).toISOString() : null,
+        from: selectedDate?.from
+          ? new Date(selectedDate.from).toISOString()
+          : null,
         to: selectedDate?.to ? new Date(selectedDate.to).toISOString() : null,
-      })
+      }),
     );
   }, [selectedDate, dispatch]);
 
@@ -140,7 +143,8 @@ export default function Dashboard() {
   // For custom date ranges: format from the selected dates
   // For presets (today, 7d, 30d): use the label returned by the backend
   const dynamicPeriodLabel =
-    selectedDate?.from && (!selectedDate.preset || selectedDate.preset === "custom")
+    selectedDate?.from &&
+    (!selectedDate.preset || selectedDate.preset === "custom")
       ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
       : dashboardMeta?.periodLabel;
 
@@ -148,8 +152,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     const handleScroll = (e) => {
-      const target = e.target === document ? document.documentElement || document.body : e.target;
-      const currentScrollY = window.scrollY || (target && target.scrollTop) || 0;
+      const target =
+        e.target === document
+          ? document.documentElement || document.body
+          : e.target;
+      const currentScrollY =
+        window.scrollY || (target && target.scrollTop) || 0;
       // Update scrolled state for shadow
       setScrolled(currentScrollY > 10);
     };
@@ -158,7 +166,8 @@ export default function Dashboard() {
       passive: true,
       capture: true,
     });
-    return () => window.removeEventListener("scroll", handleScroll, { capture: true });
+    return () =>
+      window.removeEventListener("scroll", handleScroll, { capture: true });
   }, []);
 
   // ─── Initial Load Guard ─────────────────────────────────────────────────────
@@ -195,7 +204,7 @@ export default function Dashboard() {
               "sticky top-0 z-[50] px-3 md:px-6 py-3 transition-all duration-300 ease-in-out",
               scrolled
                 ? "backdrop-blur-md bg-white/95 border-b border-slate-200 shadow-sm shadow-slate-300/50"
-                : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none"
+                : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
@@ -207,11 +216,11 @@ export default function Dashboard() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-brand-aqua shadow-brand-aqua/30"
+                color="bg-brand-blue shadow-brand-blue"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-aqua font-semibold">
+                    <span className="text-brand-blue font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>
@@ -247,12 +256,13 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <UserGrowthChart data={dashboardData?.engagementChartsData} selectedDate={selectedDate} />
+                <UserGrowthChart
+                  data={dashboardData?.engagementChartsData}
+                  selectedDate={selectedDate}
+                />
                 <LiveActivity
                   data={
-                    dashboardData
-                      ? dashboardData.recentActivityData
-                      : undefined
+                    dashboardData ? dashboardData.recentActivityData : undefined
                   }
                 />
               </div>
@@ -262,15 +272,14 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
               {/* Left Column: Revenue Breakdown */}
               <div className="lg:col-span-4 h-full">
-                <RevenueBreakdown 
-                  data={dashboardData?.revenueBreakdown} 
-                  revenueChartsData={dashboardData?.revenueChartsData} 
+                <RevenueBreakdown
+                  data={dashboardData?.revenueBreakdown}
+                  revenueChartsData={dashboardData?.revenueChartsData}
                 />
               </div>
 
               {/* Right Column: Stats & Heatmap */}
               <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
-
                 <div className="flex-1">
                   <ActivityHeatmap data={dashboardData?.engagementChartsData} />
                 </div>
@@ -282,11 +291,11 @@ export default function Dashboard() {
                 <RevenueTrendChart data={dashboardData?.revenueChartsData} />
               </div>
               <div className="flex-1 min-w-0 flex flex-col h-full w-full">
-                <ChartUserDistribution 
+                <ChartUserDistribution
                   data={{
                     active: dashboardData?.summaryData?.activeUsers || 0,
-                    inactive: dashboardData?.summaryData?.inactiveUsers || 0
-                  }} 
+                    inactive: dashboardData?.summaryData?.inactiveUsers || 0,
+                  }}
                 />
               </div>
             </div>
@@ -301,7 +310,9 @@ export default function Dashboard() {
             {/* Recent Joined Users */}
             <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
               <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
-                <RecentUsersTable recentActivityData={dashboardData?.recentActivityData} />
+                <RecentUsersTable
+                  recentActivityData={dashboardData?.recentActivityData}
+                />
               </div>
             </div>
           </div>

@@ -58,7 +58,7 @@ export function UserGrowthChart({ data, selectedDate }) {
     displayData.data.some((d) => (d.male || 0) > 0 || (d.female || 0) > 0);
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 rounded-2xl shadow-sm flex flex-col gap-5 py-5 h-full">
+    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col gap-5 py-5 h-full">
       <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
         <DashboardHead
           title="User Growth by Gender"
@@ -70,7 +70,7 @@ export function UserGrowthChart({ data, selectedDate }) {
         />
         {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-brand-aqua border-slate-200 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
+            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-brand-hoverBlue border-slate-200 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
             aria-label="Select time range"
           >
             <SelectValue placeholder="7 Days" />
@@ -148,9 +148,9 @@ export function UserGrowthChart({ data, selectedDate }) {
         )}
       </div>
 
-      <div className="mt-4 flex items-center gap-2 mx-6 px-3 py-2 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
+      <div className="mt-4 flex items-center gap-2 mx-6 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
         <div className="w-5 h-5 rounded-full flex items-center justify-center">
-          <Info size={12} className="text-brand-aqua ml-auto" />
+          <Info size={12} className="text-brand-blue ml-auto" />
         </div>
         {displayData.insight || "Male signups are up 18% this week"}
       </div>

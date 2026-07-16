@@ -107,7 +107,7 @@ export default function ReportsDataTables({
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
             <Input
               placeholder={searchPlaceholder}
-              className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-aqua rounded-md w-full transition-all outline-none"
+              className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -131,7 +131,8 @@ export default function ReportsDataTables({
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between min-w-[120px]",
-                      filters.statusFilter && "border-brand-aqua text-brand-aqua",
+                      filters.statusFilter &&
+                        "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
@@ -141,7 +142,7 @@ export default function ReportsDataTables({
                           : filters.statusFilter === "in_progress"
                             ? "In progress"
                             : filters.statusFilter.charAt(0).toUpperCase() +
-                            filters.statusFilter.slice(1).toLowerCase()
+                              filters.statusFilter.slice(1).toLowerCase()
                         : "All Status"}
                     </span>
                     <IconChevronDown className="h-4 w-4 opacity-50" />
@@ -165,7 +166,7 @@ export default function ReportsDataTables({
                   {[
                     { val: "new", label: "Pending" },
                     { val: "in_progress", label: "In progress" },
-                    { val: "resolved", label: "Resolved" }
+                    { val: "resolved", label: "Resolved" },
                   ].map((item) => (
                     <DropdownMenuCheckboxItem
                       key={item.val}
@@ -188,7 +189,8 @@ export default function ReportsDataTables({
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between min-w-[120px]",
-                      filters.priorityFilter && "border-brand-aqua text-brand-aqua",
+                      filters.priorityFilter &&
+                        "border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="text-xs">
@@ -218,13 +220,15 @@ export default function ReportsDataTables({
                   </DropdownMenuCheckboxItem>
                   {[
                     { val: "high", label: "High Priority" },
-                    { val: "low", label: "Low Priority" }
+                    { val: "low", label: "Low Priority" },
                   ].map((item) => (
                     <DropdownMenuCheckboxItem
                       key={item.val}
                       className="rounded-lg text-xs"
                       checked={filters.priorityFilter === item.val}
-                      onCheckedChange={() => filters.setPriorityFilter(item.val)}
+                      onCheckedChange={() =>
+                        filters.setPriorityFilter(item.val)
+                      }
                     >
                       {item.label}
                     </DropdownMenuCheckboxItem>
@@ -235,7 +239,7 @@ export default function ReportsDataTables({
 
             {/* 3. ITEM COUNT INDICATOR */}
             <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-200">
-              <span className="text-xs 3xl:text-sm font-bold text-brand-aqua">
+              <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
                 {rowCount ?? data.length}
               </span>
               <span className="text-xs 3xl:text-sm text-slate-400 font-medium">
@@ -329,7 +333,12 @@ export default function ReportsDataTables({
 
       {/* --- DATA AREA (RESPONSIBLE) & PAGINATION MERGED --- */}
       <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className={cn("overflow-x-auto relative", isLoading && data.length > 0 && "min-h-[180px]")}>
+        <div
+          className={cn(
+            "overflow-x-auto relative",
+            isLoading && data.length > 0 && "min-h-[180px]",
+          )}
+        >
           <AnimatePresence>
             {isLoading && data.length > 0 && (
               <motion.div
@@ -364,7 +373,7 @@ export default function ReportsDataTables({
             <TableBody
               className={cn(
                 isLoading &&
-                "opacity-50 pointer-events-none transition-opacity",
+                  "opacity-50 pointer-events-none transition-opacity",
               )}
             >
               <AnimatePresence mode="popLayout">
@@ -386,7 +395,9 @@ export default function ReportsDataTables({
                           e.target.closest("[role='menuitem']")
                         )
                           return;
-                        navigate(`/admin/management/profile-reports/review/${row.original?.userId}`);
+                        navigate(
+                          `/admin/management/profile-reports/review/${row.original?.userId}`,
+                        );
                       }}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -433,7 +444,7 @@ export default function ReportsDataTables({
             -
             {Math.min(
               (table.getState().pagination.pageIndex + 1) *
-              table.getState().pagination.pageSize,
+                table.getState().pagination.pageSize,
               rowCount,
             )}{" "}
             of {rowCount} reports
@@ -532,7 +543,7 @@ export default function ReportsDataTables({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-brand-aqua text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-aqua/20"
+                            ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
                             : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
                         )}
                       >

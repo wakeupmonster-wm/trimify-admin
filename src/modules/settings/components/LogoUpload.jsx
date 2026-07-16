@@ -55,10 +55,9 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
 
   return (
     <div className="space-y-3">
-
       <div
         onClick={() => fileInputRef.current.click()}
-        className="relative group w-24 h-24 bg-[#f9fafb] border border-slate-200 hover:border-brand-aqua rounded-xl flex items-center justify-center cursor-pointer overflow-hidden transition-all"
+        className="relative group w-24 h-24 bg-[#f9fafb] border border-slate-200 hover:border-brand-blue rounded-xl flex items-center justify-center cursor-pointer overflow-hidden transition-all"
       >
         {preview ? (
           <>
