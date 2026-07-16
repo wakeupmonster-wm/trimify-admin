@@ -72,7 +72,7 @@ const NutritionFoodPage = () => {
                 Add Food
               </Button>
               <Button
-                onClick={() => console.log("Upload food clicked")}
+                onClick={() => navigate("/admin/data-management/ai-food-upload")}
                 className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
               >
                 <UploadCloud className="w-4 h-4" />

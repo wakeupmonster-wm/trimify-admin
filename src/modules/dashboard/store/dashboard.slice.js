@@ -17,11 +17,11 @@ export const fetchDashboardKPIs = createAsyncThunk(
       // if (res.success) {
       //   return res.data.kpis;
       // }
-      
+
       // Return Dummy KPI Data
       const today = new Date();
       const visitorHistory = [];
-      for(let i=6; i>=0; i--) {
+      for (let i = 6; i >= 0; i--) {
         const d = new Date();
         d.setDate(today.getDate() - i);
         visitorHistory.push({
@@ -73,8 +73,6 @@ export const fetchDashboardData = createAsyncThunk(
     }
   },
 );
-
-
 const initialState = {
   stats: null,
   dashboardData: null,

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { 
   getFitzoneManagementAPI,
   addFitzoneAPI,
+  updateFitzoneAPI,
   toggleFitzoneStatusAPI,
   deleteFitzoneAPI
 } from "../services/fitzone.services";
@@ -46,6 +47,25 @@ export const addFitzone = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to add fitzone"
+      );
+    }
+  }
+);
+
+// Update existing Fitzone
+export const updateFitzone = createAsyncThunk(
+  "fitzoneManagement/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await updateFitzoneAPI(id, data);
+      
+      if (response.status === "success" || response.message) {
+        return response.data || data;
+      }
+      return rejectWithValue(response.message || "Failed to update fitzone");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update fitzone"
       );
     }
   }
@@ -134,6 +154,24 @@ const fitzoneManagementSlice = createSlice({
         state.loading = false;
       })
       .addCase(addFitzone.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Update Fitzone
+      .addCase(updateFitzone.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateFitzone.fulfilled, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          const index = state.fitzones.findIndex((fz) => fz.id === action.payload.id);
+          if (index !== -1) {
+            state.fitzones[index] = { ...state.fitzones[index], ...action.payload };
+          }
+        }
+      })
+      .addCase(updateFitzone.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

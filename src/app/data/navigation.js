@@ -59,8 +59,12 @@ const navigationData = {
       badge: null,
       items: [
         {
-          title: "Bulk Food Upload",
+          title: "Nutrition Food",
           url: "/admin/data-management/nutrition-food",
+        },
+        {
+          title: "AI Food Upload",
+          url: "/admin/data-management/ai-food-upload",
         },
       ],
     },

@@ -6,9 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addFitzone, updateFitzone } from "../store/fitzone.slice";
+import { toast } from "sonner";
 
 const AddFitzonePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const editData = location.state?.editData;
   const isEditMode = !!editData;
@@ -54,10 +58,39 @@ const AddFitzonePage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(isEditMode ? "Update Fitzone:" : "Submit Fitzone:", formData);
-    // TODO: Dispatch action to create/update fitzone API
+    
+    const submissionData = new FormData();
+    submissionData.append("title", formData.title);
+    submissionData.append("description", formData.description);
+    submissionData.append("workout_heading", formData.workoutHeading);
+    submissionData.append("workout_sub_heading", formData.workoutDescription);
+    
+    if (formData.bannerImage) {
+      submissionData.append("image", formData.bannerImage);
+    } else if (!isEditMode) {
+      toast.error("Please upload a banner image");
+      return;
+    }
+
+    try {
+      let resultAction;
+      if (isEditMode) {
+        resultAction = await dispatch(updateFitzone({ id: editData.id, data: submissionData }));
+      } else {
+        resultAction = await dispatch(addFitzone(submissionData));
+      }
+
+      if (resultAction.type.endsWith("fulfilled")) {
+        toast.success(`Fitzone ${isEditMode ? "updated" : "added"} successfully`);
+        navigate(-1);
+      } else {
+        toast.error(resultAction.payload || `Failed to ${isEditMode ? "update" : "add"} fitzone`);
+      }
+    } catch (error) {
+      toast.error("An error occurred");
+    }
   };
 
   return (

@@ -12,7 +12,10 @@ const ADMIN = `${BASE_URL}/admin`;
 
 export const FITZONE_CRUD = {
   /** POST — Create a new Fitzone */
-  FITZONE_ADD: `${ADMIN}/fitzone-intro`,
+  FITZONE_ADD: `${ADMIN}/add-fitzone`,
+
+  /** POST — Update a Fitzone */
+  FITZONE_UPDATE: (id) => `${ADMIN}/update-fitzone/${id}`,
 
   /** GET — Retrieve paginated list of all Fitzones */
   FITZONE_LIST: `${ADMIN}/view-fitzone`,

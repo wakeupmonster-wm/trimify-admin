@@ -21,6 +21,7 @@ import notificationManageReducer from "@/modules/notificationManage/store/notifi
 import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
 import nutritionReducer from "@/modules/dataManagement/store/nutrition.slice";
 import cmsManagementReducer from "@/modules/cmsManagement/store/cms.management.slice";
+import aiFoodReducer from "@/modules/aiFoodUpload/store/ai.food.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -45,4 +46,5 @@ export const rootReducer = combineReducers({
   faqManagement: faqManagementReducer,
   nutrition: nutritionReducer,
   cmsManagement: cmsManagementReducer,
+  aiFood: aiFoodReducer,
 });
