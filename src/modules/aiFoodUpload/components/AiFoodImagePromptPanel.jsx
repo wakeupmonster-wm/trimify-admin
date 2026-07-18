@@ -7,13 +7,17 @@ import {
   Play,
   Trash2,
   UploadCloud,
+  Download,
+  RotateCcw,
   Sparkles,
   Info,
+  X,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { audioBlobToWav } from "../utils/audioToWav";
 
 const formatTime = (seconds) => {
   const m = Math.floor(seconds / 60)
@@ -25,14 +29,11 @@ const formatTime = (seconds) => {
   return `${m}:${s}`;
 };
 
-const AiFoodImagePromptPanel = ({
-  onGenerateFromPrompt,
-  onGenerateFromAudio,
-  busy,
-}) => {
+const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onCancel, busy }) => {
   const [prompt, setPrompt] = useState("");
 
   const [isRecording, setIsRecording] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -73,13 +74,26 @@ const AiFoodImagePromptPanel = ({
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
-      recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        resetAudio();
-        setAudioBlob(blob);
-        setAudioUrl(URL.createObjectURL(blob));
-        setAudioSource("recorded");
+      recorder.onstop = async () => {
         streamRef.current?.getTracks().forEach((track) => track.stop());
+        const rawBlob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
+
+        setIsConverting(true);
+        try {
+          // Normalize to WAV — browsers' recorded webm/opus audio is
+          // sometimes sniffed server-side as "video/webm" (shared
+          // container), which a strict audio-only mimetype check rejects.
+          // A plain PCM WAV always sniffs correctly.
+          const wavBlob = await audioBlobToWav(rawBlob);
+          resetAudio();
+          setAudioBlob(wavBlob);
+          setAudioUrl(URL.createObjectURL(wavBlob));
+          setAudioSource("recorded");
+        } catch {
+          toast.error("Couldn't process that recording. Please try recording again.");
+        } finally {
+          setIsConverting(false);
+        }
       };
 
       recorder.start();
@@ -100,6 +114,22 @@ const AiFoodImagePromptPanel = ({
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
     if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const retakeRecording = () => {
+    resetAudio();
+    startRecording();
+  };
+
+  const downloadRecording = () => {
+    if (!audioBlob) return;
+    const ext = audioBlob.type.includes("wav") ? "wav" : "webm";
+    const a = document.createElement("a");
+    a.href = audioUrl;
+    a.download = `image-prompt-audio.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const handleFileUpload = (e) => {
@@ -143,65 +173,75 @@ const AiFoodImagePromptPanel = ({
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Describe exactly how the image should look — e.g. “top-down shot on a dark slate plate, garnished with mint, natural light”"
             rows={3}
-            className="text-sm resize-y border-slate-300/60"
+            disabled={busy}
+            className="text-sm resize-y border-slate-300"
           />
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
+            {busy && (
+              <Button type="button" variant="outline" onClick={onCancel} className="flex items-center gap-2">
+                <X className="w-4 h-4" />
+                Cancel
+              </Button>
+            )}
             <Button
               type="button"
               onClick={handlePromptSubmit}
               disabled={busy || !prompt.trim()}
               className="bg-app-primary2 hover:bg-app-primary5 text-white flex items-center gap-2"
             >
-              {busy ? (
-                <Spinner className="w-4 h-4" />
-              ) : (
-                <Sparkles className="w-4 h-4" />
-              )}
-              Generate Image
+              {busy ? <Spinner className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+              {busy ? "Generating…" : "Generate Image"}
             </Button>
           </div>
         </TabsContent>
 
         <TabsContent value="audio" className="space-y-3 pt-3">
           {!audioUrl ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-6 border border-dashed border-slate-300/60 rounded-md">
-              <button
-                type="button"
-                onClick={isRecording ? stopRecording : startRecording}
-                className={`w-14 h-14 rounded-full flex items-center justify-center shadow transition-colors ${
-                  isRecording
-                    ? "bg-red-600 hover:bg-red-700 animate-pulse"
-                    : "bg-app-primary2 hover:bg-app-primary5"
-                }`}
-              >
-                {isRecording ? (
-                  <Square className="w-5 h-5 text-white" />
-                ) : (
-                  <Mic className="w-6 h-6 text-white" />
-                )}
-              </button>
-              <p className="text-xs font-medium text-slate-500">
-                {isRecording
-                  ? `Recording… ${formatTime(elapsed)}`
-                  : "Tap to record a voice description"}
-              </p>
+            <div className="flex flex-col items-center justify-center gap-3 py-6 border border-dashed border-slate-300 rounded-md">
+              {isConverting ? (
+                <>
+                  <Spinner className="w-6 h-6 text-brand-blue" />
+                  <p className="text-xs font-medium text-slate-500">Processing recording…</p>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={isRecording ? stopRecording : startRecording}
+                    className={`w-14 h-14 rounded-full flex items-center justify-center shadow transition-colors ${
+                      isRecording
+                        ? "bg-red-600 hover:bg-red-700 animate-pulse"
+                        : "bg-brand-blue hover:bg-brand-hoverBlue"
+                    }`}
+                  >
+                    {isRecording ? (
+                      <Square className="w-5 h-5 text-white" />
+                    ) : (
+                      <Mic className="w-6 h-6 text-white" />
+                    )}
+                  </button>
+                  <p className="text-xs font-medium text-slate-500">
+                    {isRecording ? `Recording… ${formatTime(elapsed)}` : "Tap to record a voice description"}
+                  </p>
 
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span className="h-px w-8 bg-slate-200" />
-                or
-                <span className="h-px w-8 bg-slate-200" />
-              </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span className="h-px w-8 bg-slate-200" />
+                    or
+                    <span className="h-px w-8 bg-slate-200" />
+                  </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 text-xs"
-              >
-                <UploadCloud className="w-3.5 h-3.5" />
-                Upload an audio file
-              </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 text-xs"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    Upload an audio file
+                  </Button>
+                </>
+              )}
               <input
                 ref={fileInputRef}
                 type="file"
@@ -217,14 +257,6 @@ const AiFoodImagePromptPanel = ({
                   <Play className="w-4 h-4 text-brand-blue" />
                 </div>
                 <audio controls src={audioUrl} className="flex-1 h-9" />
-                <button
-                  type="button"
-                  onClick={resetAudio}
-                  title="Remove"
-                  className="text-slate-400 hover:text-red-600 shrink-0"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
               <p className="text-[11px] text-slate-400">
                 {audioSource === "recorded"
@@ -232,20 +264,77 @@ const AiFoodImagePromptPanel = ({
                   : "Uploaded file"}{" "}
                 — ready to send.
               </p>
-              <div className="flex justify-end">
+
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   type="button"
-                  onClick={handleAudioSubmit}
+                  variant="outline"
+                  size="sm"
                   disabled={busy}
-                  className="bg-app-primary2 hover:bg-app-primary5 text-white flex items-center gap-2"
+                  onClick={retakeRecording}
+                  className="flex items-center gap-1.5 text-xs"
                 >
-                  {busy ? (
-                    <Spinner className="w-4 h-4" />
-                  ) : (
-                    <Sparkles className="w-4 h-4" />
-                  )}
-                  Generate Image from Audio
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Retake
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={busy}
+                  onClick={downloadRecording}
+                  className="flex items-center gap-1.5 text-xs"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={busy}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-1.5 text-xs"
+                >
+                  <UploadCloud className="w-3.5 h-3.5" />
+                  Upload Instead
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={busy}
+                  onClick={resetAudio}
+                  className="flex items-center gap-1.5 text-xs text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+
+                <div className="ml-auto flex items-center gap-2">
+                  {busy && (
+                    <Button type="button" variant="outline" onClick={onCancel} className="flex items-center gap-2">
+                      <X className="w-4 h-4" />
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    onClick={handleAudioSubmit}
+                    disabled={busy}
+                    className="bg-brand-blue hover:bg-brand-hoverBlue text-white flex items-center gap-2"
+                  >
+                    {busy ? <Spinner className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                    {busy ? "Generating…" : "Generate Image from Audio"}
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -255,9 +344,10 @@ const AiFoodImagePromptPanel = ({
       <div className="flex items-start gap-2 bg-blue-50/60 border border-blue-100 rounded-md px-3 py-2">
         <Info className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
         <p className="text-[11px] text-blue-700 leading-relaxed">
-          This panel is ready on the frontend — prompt and audio-based image
-          generation will start working automatically once the backend endpoint
-          for it ships.
+          Only updates this item's photo — food name and nutrition stay untouched. Each regenerate
+          uses a real (paid) AI image call, so use it deliberately rather than repeatedly. "Cancel"
+          only stops waiting on this screen — a generation already in progress still finishes in the
+          background and the photo updates automatically once it's ready.
         </p>
       </div>
     </div>

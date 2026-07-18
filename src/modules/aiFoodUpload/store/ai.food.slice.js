@@ -6,6 +6,7 @@ import {
   updateAiFoodAPI,
   retryAiFoodAPI,
   regenerateAiFoodImageAPI,
+  regenerateAiFoodImageAudioAPI,
   deleteAiFoodAPI,
   saveAiFoodAPI,
 } from "../services/ai.food.services";
@@ -98,11 +99,14 @@ export const retryAiFoodItem = createAsyncThunk(
   },
 );
 
+// `imagePrompt` is optional — omit it to replay the existing/auto prompt
+// unchanged (same as the plain "regenerate" icon button), or pass one to
+// set a new custom prompt first and regenerate against it.
 export const regenerateAiFoodImage = createAsyncThunk(
   "aiFood/regenerateImage",
-  async (id, { rejectWithValue }) => {
+  async ({ id, imagePrompt }, { rejectWithValue }) => {
     try {
-      const response = await regenerateAiFoodImageAPI(id);
+      const response = await regenerateAiFoodImageAPI(id, imagePrompt);
       if (response && response.success) {
         return { id, item: response.data };
       }
@@ -110,6 +114,26 @@ export const regenerateAiFoodImage = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to regenerate image",
+      );
+    }
+  },
+);
+
+// Regenerates ONLY the image from a fresh audio recording — name/nutrition
+// are untouched. Distinct from generateAiFood/voice-generate, which creates
+// a brand-new item; this always targets an existing draft/review item.
+export const regenerateAiFoodImageFromAudio = createAsyncThunk(
+  "aiFood/regenerateImageFromAudio",
+  async ({ id, audioBlob }, { rejectWithValue }) => {
+    try {
+      const response = await regenerateAiFoodImageAudioAPI(id, audioBlob);
+      if (response && response.success) {
+        return { id, item: response.data };
+      }
+      return rejectWithValue(response?.message || "Failed to regenerate image from audio");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to regenerate image from audio",
       );
     }
   },
@@ -260,9 +284,9 @@ const aiFoodSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Regenerate image
+      // Regenerate image (optional custom prompt)
       .addCase(regenerateAiFoodImage.pending, (state, action) => {
-        state.itemActionIds.push(action.meta.arg);
+        state.itemActionIds.push(action.meta.arg.id);
       })
       .addCase(regenerateAiFoodImage.fulfilled, (state, action) => {
         state.itemActionIds = state.itemActionIds.filter(
@@ -277,7 +301,29 @@ const aiFoodSlice = createSlice({
       })
       .addCase(regenerateAiFoodImage.rejected, (state, action) => {
         state.itemActionIds = state.itemActionIds.filter(
-          (id) => id !== action.meta.arg,
+          (id) => id !== action.meta.arg.id,
+        );
+        state.error = action.payload;
+      })
+
+      // Regenerate image from audio
+      .addCase(regenerateAiFoodImageFromAudio.pending, (state, action) => {
+        state.itemActionIds.push(action.meta.arg.id);
+      })
+      .addCase(regenerateAiFoodImageFromAudio.fulfilled, (state, action) => {
+        state.itemActionIds = state.itemActionIds.filter(
+          (id) => id !== action.payload.id,
+        );
+        if (action.payload.item) {
+          upsertItems(state, [action.payload.item]);
+        } else {
+          const item = state.items.find((it) => it.id === action.payload.id);
+          if (item) item.image_status = "pending";
+        }
+      })
+      .addCase(regenerateAiFoodImageFromAudio.rejected, (state, action) => {
+        state.itemActionIds = state.itemActionIds.filter(
+          (id) => id !== action.meta.arg.id,
         );
         state.error = action.payload;
       })

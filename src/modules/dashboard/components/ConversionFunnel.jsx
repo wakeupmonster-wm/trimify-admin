@@ -120,11 +120,28 @@ export const ConversionFunnel = ({ data }) => {
           })}
         </div>
 
-        {/* Insight Box */}
-        {/* <div className="mt-2 flex items-center gap-3 px-4 py-3 bg-app-primary2 border border-brand-blue rounded-xl text-muted-foreground text-[10px] font-bold leading-snug">
-          <Info size={15} className="text-[#46C7CD] shrink-0" />
-          {data.insight}
-        </div> */}
+        {/* Full breakdown — the funnel bars above only show the 2 sequential
+            checkpoints (signups -> paid), so notPaidUsers/conversionRate/
+            dropOffRate are surfaced here as their own numbers rather than
+            only being implied by the drop-off badge. */}
+        {(data.notPaidUsers !== undefined || data.conversionRate !== undefined) && (
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="rounded-xl bg-slate-50 border border-slate-100 px-2 py-2.5 text-center">
+              <p className="text-[10px] font-semibold text-slate-500 leading-tight">Not Paid Yet</p>
+              <p className="text-sm font-extrabold text-amber-600 mt-0.5">
+                {(data.notPaidUsers ?? 0).toLocaleString()}
+              </p>
+            </div>
+            <div className="rounded-xl bg-slate-50 border border-slate-100 px-2 py-2.5 text-center">
+              <p className="text-[10px] font-semibold text-slate-500 leading-tight">Conversion Rate</p>
+              <p className="text-sm font-extrabold text-emerald-600 mt-0.5">{data.conversionRate ?? 0}%</p>
+            </div>
+            <div className="rounded-xl bg-slate-50 border border-slate-100 px-2 py-2.5 text-center">
+              <p className="text-[10px] font-semibold text-slate-500 leading-tight">Drop-off Rate</p>
+              <p className="text-sm font-extrabold text-rose-600 mt-0.5">{data.dropOffRate ?? 0}%</p>
+            </div>
+          </div>
+        )}
       </CardContent>
       <CardFooter className="pt-2">
         <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">

@@ -69,6 +69,9 @@ const TrendChartCard = ({
                 tickLine={false}
               />
               <YAxis
+                type="number"
+                domain={[0, "auto"]}
+                allowDecimals={false}
                 tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}

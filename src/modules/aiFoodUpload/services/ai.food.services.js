@@ -23,8 +23,20 @@ export const retryAiFoodAPI = async (id) => {
   return apiConnector("POST", AI_FOOD_ENDPOINTS.RETRY(id));
 };
 
-export const regenerateAiFoodImageAPI = async (id) => {
-  return apiConnector("POST", AI_FOOD_ENDPOINTS.REGENERATE_IMAGE(id));
+export const regenerateAiFoodImageAPI = async (id, imagePrompt) => {
+  return apiConnector(
+    "POST",
+    AI_FOOD_ENDPOINTS.REGENERATE_IMAGE(id),
+    imagePrompt ? { image_prompt: imagePrompt } : null,
+  );
+};
+
+export const regenerateAiFoodImageAudioAPI = async (id, audioBlob) => {
+  const formData = new FormData();
+  formData.append("audio", audioBlob, "recording.webm");
+  return apiConnector("POST", AI_FOOD_ENDPOINTS.REGENERATE_IMAGE_AUDIO(id), formData, {
+    "Content-Type": "multipart/form-data",
+  });
 };
 
 export const deleteAiFoodAPI = async (id) => {

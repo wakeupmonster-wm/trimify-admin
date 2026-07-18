@@ -10,7 +10,6 @@ import {
   dashboardFitzoneCompletionTrendAPI,
 } from "../services/dashboard.services";
 import {
-  getSubscriptionOverviewAPI,
   getDailyPerformanceAPI,
   getRetentionTrendAPI,
   getExpiringSoonAPI,
@@ -18,7 +17,6 @@ import {
 } from "@/modules/subscriptionManagement/services/subscription-dashboard.services";
 import {
   toCategoricalPie,
-  toStatusPie,
   toLabeledPie,
   buildFunnel,
   buildSecondaryKpis,
@@ -100,8 +98,6 @@ export const fetchDashboardExtras = createAsyncThunk(
     try {
       const [
         summaryRes,
-        overviewRes,
-        revenueChartsRes,
         demographicsRes,
         funnelRes,
         engagementRes,
@@ -113,8 +109,6 @@ export const fetchDashboardExtras = createAsyncThunk(
         abandonedRes,
       ] = await Promise.allSettled([
         dashboardSummaryAPI(dateRange),
-        getSubscriptionOverviewAPI(),
-        dashboardRevenueChartsAPI(dateRange),
         dashboardDemographicsChartsAPI(),
         dashboardConversionFunnelAPI(dateRange),
         dashboardEngagementChartsAPI(dateRange),
@@ -129,8 +123,6 @@ export const fetchDashboardExtras = createAsyncThunk(
       const pick = (res) => (res.status === "fulfilled" && res.value?.success ? res.value.data : null);
 
       const summary = pick(summaryRes);
-      const overview = pick(overviewRes);
-      const revenueCharts = pick(revenueChartsRes);
       const demographics = pick(demographicsRes);
       const funnelData = pick(funnelRes);
       const engagement = pick(engagementRes);
@@ -142,12 +134,8 @@ export const fetchDashboardExtras = createAsyncThunk(
       const abandoned = pick(abandonedRes);
 
       return {
-        secondaryKpis: buildSecondaryKpis(summary, overview),
+        secondaryKpis: buildSecondaryKpis(summary),
         pieCharts: {
-          planType: revenueCharts?.planWiseSubscribers
-            ? toCategoricalPie(revenueCharts.planWiseSubscribers, "title", "total")
-            : [],
-          txStatus: revenueCharts?.transactionStatus ? toStatusPie(revenueCharts.transactionStatus) : [],
           userGoals: demographics?.goalDistribution
             ? toCategoricalPie(demographics.goalDistribution, "main_goal", "total")
             : [],
@@ -168,6 +156,7 @@ export const fetchDashboardExtras = createAsyncThunk(
           expiringSoon: expiringSoon?.subscribers || [],
           abandonedCheckouts: abandoned?.checkouts || [],
           subAdminRoster: recentActivity?.subAdminRoster || [],
+          unassignedUsers: recentActivity?.unassignedUsers ?? null,
           recentNotifications: recentActivity?.recentNotifications || [],
         },
         funnel: buildFunnel(funnelData),

@@ -8,11 +8,12 @@ import {
   fetchOverview,
   fetchCharts,
   fetchDailyPerformance,
+  fetchDashboardExtrasForSubscription,
 } from "../store/subscription-dashboard.slice";
 
 export default function SubscriptionDashboardPage() {
   const dispatch = useDispatch();
-  const { overview, overviewLoading, overviewError, charts, dailyPerformance } = useSelector(
+  const { overview, overviewLoading, overviewError, charts, dailyPerformance, dashboardExtras } = useSelector(
     (state) => state.subscriptionDashboard
   );
 
@@ -51,12 +52,12 @@ export default function SubscriptionDashboardPage() {
 
   const fetchChartsForRange = useCallback(
     (range) => {
-      dispatch(
-        fetchCharts({
-          from: format(range.from, "yyyy-MM-dd"),
-          to: format(range.to, "yyyy-MM-dd"),
-        })
-      );
+      const params = {
+        from: format(range.from, "yyyy-MM-dd"),
+        to: format(range.to, "yyyy-MM-dd"),
+      };
+      dispatch(fetchCharts(params));
+      dispatch(fetchDashboardExtrasForSubscription(params));
     },
     [dispatch]
   );
@@ -93,6 +94,7 @@ export default function SubscriptionDashboardPage() {
           overviewError={overviewError}
           charts={charts}
           dailyPerformance={dailyPerformance}
+          dashboardExtras={dashboardExtras}
           rangeLabel={rangeLabel}
           onRetry={handleRefresh}
         />
