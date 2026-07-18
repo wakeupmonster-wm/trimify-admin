@@ -38,6 +38,7 @@ createRoot(document.getElementById("root")).render(
         {/* <Toaster position="top-right" /> */}
         <Toaster
           position="top-right"
+          richColors
           toastOptions={{
             unstyled: false,
             classNames: {

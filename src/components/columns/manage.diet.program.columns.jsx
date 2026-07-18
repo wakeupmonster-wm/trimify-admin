@@ -5,22 +5,31 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const DAYS_OF_WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAYS_OF_WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export const getManageDietProgramColumns = (handleAction) => [
   {
     accessorKey: "sno",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        S.No
+        SR.No
       </div>
     ),
     size: 60,
     cell: ({ row }) => (
-      <div className="text-left font-bold text-[11px] text-foreground/90">
+      <div className="text-left px-1 font-bold text-[11px] text-foreground/90">
         {row.index + 1}
       </div>
     ),
@@ -34,9 +43,10 @@ export const getManageDietProgramColumns = (handleAction) => [
     ),
     size: 130,
     cell: ({ row }) => {
-      const date = row.original.created_at || row.original.updated_at
-        ? new Date(row.original.created_at || row.original.updated_at)
-        : new Date();
+      const date =
+        row.original.created_at || row.original.updated_at
+          ? new Date(row.original.created_at || row.original.updated_at)
+          : new Date();
       return (
         <span className="font-medium text-slate-700 text-[11px]">
           {date.toLocaleDateString("en-GB", {
@@ -130,7 +140,10 @@ export const getManageDietProgramColumns = (handleAction) => [
     ),
     size: 80,
     cell: ({ row }) => {
-      const isActive = row.original.status === "Active" || row.original.status === 1 || row.original.is_active;
+      const isActive =
+        row.original.status === "Active" ||
+        row.original.status === 1 ||
+        row.original.is_active;
       return (
         <div className="flex justify-center">
           <Switch
@@ -166,15 +179,16 @@ export const getManageDietProgramColumns = (handleAction) => [
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+              className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
             >
+              <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                Actions
+              </DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() =>
-                  handleAction && handleAction(row.original, "edit")
-                }
-                className="text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer rounded-lg py-2"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
+                onClick={() => handleAction && handleAction(row.original, "edit")}
               >
-                <Edit className="mr-2 h-3.5 w-3.5" />
+                <Edit className="w-3.5 h-3.5" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem

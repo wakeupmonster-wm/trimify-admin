@@ -13,7 +13,9 @@ import {
   toggleDietMealStatus,
   deleteDietMeal,
 } from "../store/diet.slice";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { getManageDietProgramColumns } from "@/components/columns/manage.diet.program.columns";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ManageDietProgramPage = () => {
   const { id } = useParams();
@@ -24,12 +26,23 @@ const ManageDietProgramPage = () => {
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearch = useDebounce(globalFilter, 500);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  const fetchDietMeals = () => {
+    if (id) {
+      const params = {
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        ...(debouncedSearch && { search: debouncedSearch }),
+      };
+      dispatch(getDietMeals({ id, params }));
+    }
+  };
 
   useEffect(() => {
-    if (id) {
-      dispatch(getDietMeals(id));
-    }
-  }, [dispatch, id]);
+    fetchDietMeals();
+  }, [dispatch, id, pagination.pageIndex, pagination.pageSize, debouncedSearch]);
 
   const handleAction = async (row, action, val) => {
     if (action === "toggle") {
@@ -39,23 +52,29 @@ const ManageDietProgramPage = () => {
       );
       if (toggleDietMealStatus.fulfilled.match(resultAction)) {
         toast.success("Status updated successfully!");
-        dispatch(getDietMeals(id));
+        fetchDietMeals();
       } else {
         toast.error(resultAction.payload || "Failed to update status.");
       }
     } else if (action === "edit") {
-      navigate(`/admin/manage-program/manage/diet-plan/edit-diet/${id}/${row.id}`);
+      navigate(
+        `/admin/manage-program/manage/diet-plan/edit-diet/${id}/${row.id}`,
+      );
     } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this diet meal?")) {
-        const resultAction = await dispatch(deleteDietMeal(row.id));
-        if (deleteDietMeal.fulfilled.match(resultAction)) {
-          toast.success("Diet meal deleted successfully!");
-          dispatch(getDietMeals(id));
-        } else {
-          toast.error(resultAction.payload || "Failed to delete diet meal.");
-        }
-      }
+      setDeleteTarget(row);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const resultAction = await dispatch(deleteDietMeal(deleteTarget.id));
+    if (deleteDietMeal.fulfilled.match(resultAction)) {
+      toast.success("Diet meal deleted successfully!");
+      fetchDietMeals();
+    } else {
+      toast.error(resultAction.payload || "Failed to delete diet meal.");
+    }
+    setDeleteTarget(null);
   };
 
   const columns = useMemo(() => getManageDietProgramColumns(handleAction), []);
@@ -72,7 +91,7 @@ const ManageDietProgramPage = () => {
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               onClick={() =>
                 navigate(
                   `/admin/manage-program/manage/diet-plan/add-diet/${id}`,
@@ -96,6 +115,14 @@ const ManageDietProgramPage = () => {
           loading={loading}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Diet Meal"
+        message={`Are you sure you want to delete the diet meal "${deleteTarget?.diet_meal_data?.Meal_title || deleteTarget?.meal}"? This action cannot be undone.`}
+      />
     </Container>
   );
 };

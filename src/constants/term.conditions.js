@@ -177,7 +177,7 @@ export const termsContent = [
             },
           },
           "You may not, without the prior written permission of Trimify Admin and the permission of any other relevant rights owners: broadcast, republish, up-load to a third party, transmit, post, distribute, show or play in public, adapt or change in any way the Content or third party content for any purpose. This prohibition does not extend to materials on the Website, which are freely available for re-use or are in the public domain.",
-          "You agree to promptly notify <b>info@keenasmustard.com.au</b> of any actual or suspected infringement of Trimify Admin's intellectual property rights that comes to your attention. In the event of any unauthorised use of Trimify Admin's intellectual property, we reserve the right to seek all available legal and equitable remedies, including injunctive relief.",
+          "You agree to promptly notify <b>info@trimify.com.au</b> of any actual or suspected infringement of Trimify Admin's intellectual property rights that comes to your attention. In the event of any unauthorised use of Trimify Admin's intellectual property, we reserve the right to seek all available legal and equitable remedies, including injunctive relief.",
         ],
       },
     ],

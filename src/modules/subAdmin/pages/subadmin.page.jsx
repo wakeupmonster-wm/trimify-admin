@@ -1,21 +1,23 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { UserCog, Plus, FileText } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
-import { DataTable } from "@/components/shared/datatable";
+import { useNavigate } from "react-router-dom";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import { getSubAdminColumns } from "@/components/columns/sub.admin.columns";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSubAdminList,
-  addSubAdmin,
-  updateSubAdmin,
   toggleSubAdminStatus,
   deleteSubAdmin,
 } from "../store/sub.admin.slice";
 import { Button } from "@/components/ui/button";
-import { AddSubAdminDialog } from "../components/add.subadmin.dialog";
-import { EditSubAdminDialog } from "../components/edit.subadmin.dialog";
 import { useDebounce } from "../../../hooks/useDebounce";
 
 // Simple utility to convert an array of objects to CSV
@@ -32,17 +34,29 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     "Role",
     "Status",
   ];
-  const rows = data.map((item, index) => [
-    index + 1,
-    item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
-    item.userName || "-",
-    item.emailId || "-",
-    item.hospital || item.hospitalName || "-",
-    item.designation || "-",
-    item.location || item.country || "-",
-    item.role || "-",
-    item.status ? "Active" : "Inactive",
-  ]);
+  const rows = data.map((item, index) => {
+    let displayRole = "-";
+    if (item.role == 1) displayRole = "WhiteListing User";
+    else if (item.role == 0) displayRole = "Sub-Admin User";
+    else if (item.role) displayRole = item.role;
+
+    const dateValue = item.created_at;
+    const createdAt = dateValue && !isNaN(new Date(dateValue).getTime())
+      ? new Date(dateValue).toLocaleDateString()
+      : "-";
+
+    return [
+      index + 1,
+      createdAt,
+      item.name || "-",
+      item.email || "-",
+      item.hospital || "-",
+      item.designation || "-",
+      item.location || "-",
+      displayRole,
+      item.status === "Active" || item.status === true ? "Active" : "Inactive",
+    ];
+  });
 
   const csvContent = [
     headers.join(","),
@@ -62,18 +76,14 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
 
 const SubAdminManagementPage = () => {
   const dispatch = useDispatch();
-  const {
-    subAdmins,
-    loading,
-    pagination: serverPagination,
-  } = useSelector((state) => state.subAdmin);
+  const { subAdmins, loading, pagination: serverPagination } = useSelector((state) => state.subAdmin);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
+  const navigate = useNavigate();
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
 
   useEffect(() => {
     dispatch(
@@ -81,14 +91,10 @@ const SubAdminManagementPage = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
+        role: roleFilter,
       }),
     );
-  }, [
-    dispatch,
-    pagination.pageIndex,
-    pagination.pageSize,
-    debouncedSearchTerm,
-  ]);
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm, roleFilter ]);
 
   const handleAction = async (row, action, checked) => {
     const rowId = row.id || row._id;
@@ -97,28 +103,19 @@ const SubAdminManagementPage = () => {
       const status = checked ? "Active" : "Inactive";
       dispatch(toggleSubAdminStatus({ id: rowId, status }));
     } else if (action === "edit") {
-      setEditData(row);
-      setIsEditDialogOpen(true);
+      navigate("/admin/sub-admin-management/edit", {
+        state: { editData: row },
+      });
     } else if (action === "delete") {
-      console.log("Delete row:", rowId);
-      const result = await dispatch(deleteSubAdmin(rowId));
-      if (deleteSubAdmin.fulfilled.match(result)) {
-        dispatch(
-          fetchSubAdminList({
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearchTerm,
-          }),
-        );
-      }
+      setDeleteModal({ open: true, rowData: row });
     }
   };
 
-  const handleAddSubAdmin = async (formData) => {
-    console.log("Adding Sub Admin with data:", formData);
-    const result = await dispatch(addSubAdmin(formData));
-    if (addSubAdmin.fulfilled.match(result)) {
-      setIsAddDialogOpen(false);
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
+    const result = await dispatch(deleteSubAdmin(rowId));
+    if (deleteSubAdmin.fulfilled.match(result)) {
       dispatch(
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
@@ -127,24 +124,7 @@ const SubAdminManagementPage = () => {
         }),
       );
     }
-  };
-
-  const handleEditSubAdmin = async (formData) => {
-    console.log("Updating Sub Admin with data:", formData);
-    const result = await dispatch(
-      updateSubAdmin({ id: editData.id || editData._id, data: formData }),
-    );
-    if (updateSubAdmin.fulfilled.match(result)) {
-      setIsEditDialogOpen(false);
-      setEditData(null);
-      dispatch(
-        fetchSubAdminList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-        }),
-      );
-    }
+    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getSubAdminColumns(handleAction), []);
@@ -153,9 +133,42 @@ const SubAdminManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
+  // Local fallback filtering in case the backend ignores the `role` parameter
+  const filteredSubAdmins = useMemo(() => {
+    if (!roleFilter) return subAdmins || [];
+    return (subAdmins || []).filter((admin) => {
+      // Handle both string and integer matching
+      if (String(admin.role) === String(roleFilter)) return true;
+      if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
+      if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
+      return false;
+    });
+  }, [subAdmins, roleFilter]);
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "roleFilter",
+      label: "Role",
+      value: roleFilter,
+      onChange: setRoleFilter,
+      options: [
+        { label: "Sub-Admin User", value: "0" },
+        { label: "WhiteListing User", value: "1" },
+      ],
+      placeholder: "All Roles",
+      getDisplayValue: (val) =>
+        val === "0"
+          ? "Sub-Admin User"
+          : val === "1"
+            ? "WhiteListing User"
+            : "All Roles",
+    },
+  ];
+
   return (
     <Container>
-     <div className="space-y-6">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
@@ -167,15 +180,15 @@ const SubAdminManagementPage = () => {
 
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
-                onClick={() => setIsAddDialogOpen(true)}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                onClick={() => navigate("/admin/sub-admin-management/add")}
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4" />
                 Add Sub Admin
               </Button>
               <Button
                 onClick={() => downloadCSV(subAdmins)}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <FileText className="w-4 h-4" />
                 Download CSV
@@ -186,8 +199,10 @@ const SubAdminManagementPage = () => {
 
         <DataTable
           columns={columns}
-          data={subAdmins || []}
-          rowCount={isManual ? serverPagination.total : subAdmins?.length || 0}
+          data={filteredSubAdmins}
+          rowCount={
+            isManual ? serverPagination.total : filteredSubAdmins.length
+          }
           pagination={pagination}
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
@@ -197,20 +212,22 @@ const SubAdminManagementPage = () => {
           isLoading={loading}
           manualPagination={isManual}
           manualFiltering={isManual}
+          toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+          activeFiltersChildren={
+            <DataTableActiveChips
+              filterConfig={filterConfig}
+              onClearAll={() => setRoleFilter("")}
+            />
+          }
         />
       </div>
 
-      <AddSubAdminDialog
-        open={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        onAdd={handleAddSubAdmin}
-      />
-
-      <EditSubAdminDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        onEdit={handleEditSubAdmin}
-        editData={editData}
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this sub-admin? This action cannot be undone."
       />
     </Container>
   );

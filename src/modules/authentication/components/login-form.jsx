@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
-import mustardIcon from "@/assets/web/mustardLogo2.webp";
+import trimifyLogo2 from "@/assets/web/trimifyLogo2.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +36,10 @@ export function LoginForm({ className, ...props }) {
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     try {
       const { user } = await dispatch(loginThunk(data)).unwrap();
 
@@ -49,6 +52,8 @@ export function LoginForm({ className, ...props }) {
     } catch (err) {
       resetField("password");
       toast.error(err || "Server error while login");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -60,10 +65,10 @@ export function LoginForm({ className, ...props }) {
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-14 mb-5 rounded-2xl">
+          <div className="inline-flex items-center justify-center mx-auto w-44 h-12 mb-1">
             <img
-              src={mustardIcon}
-              alt={mustardIcon}
+              src={trimifyLogo2}
+              alt={trimifyLogo2}
               loading="lazy"
               className="h-full w-full"
             />
@@ -92,12 +97,12 @@ export function LoginForm({ className, ...props }) {
                     : "focus:border-brand-blue focus-visible:ring-brand-blue"
                 }`}
               />
-              {errors.email && (
-                <p className="text-xs text-red-500 -mt-1 ml-1">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
+            {errors.email && (
+              <p className="text-xs text-red-500 -mt-1 ml-1">
+                {errors.email.message}
+              </p>
+            )}
           </Field>
 
           <Field>
@@ -140,18 +145,21 @@ export function LoginForm({ className, ...props }) {
               </button>
             </div>
 
+            <div className="flex justify-between items-start -mt-1">
+              <div className="flex-1">
+                {errors.password && (
+                  <p className="text-xs text-red-500 ml-1">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+            </div>
             <Link
               to="/auth/forgot-password"
-              className="text-right text-xs hover:text-blue-700 underline-offset-4 hover:underline"
+              className="text-right text-xs hover:text-blue-700 underline-offset-4 hover:underline shrink-0"
             >
               Forgot your password?
             </Link>
-
-            {errors.password && (
-              <p className="text-xs text-red-500 mt-1 ml-1">
-                {errors.password.message}
-              </p>
-            )}
           </Field>
 
           {/* Error Message from Thunk */}
@@ -165,19 +173,18 @@ export function LoginForm({ className, ...props }) {
         <Field>
           <Button
             type="submit"
-            // disabled={loading}
+            disabled={isSubmitting}
             className={
               "py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
             }
           >
-            {/* {loading ? (
+            {isSubmitting ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" /> Logged in...
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Logging in...
               </>
             ) : (
               "Log In"
-            )} */}
-            Log In
+            )}
           </Button>
         </Field>
         {/* <FieldSeparator>Or continue with</FieldSeparator> */}

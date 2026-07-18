@@ -5,11 +5,13 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Utensils, Plus } from "lucide-react";
+import { Utensils, Plus } from "lucide-react";
 import { DataTable } from "@/components/shared/datatable";
-import { getFoodCategories } from "../store/food.slice";
+import { getFoodCategories, deleteFoodCategory } from "../store/food.slice";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { getManageFoodCategoryColumns } from "@/components/columns/manage.food.category.columns";
 import { useDebounce } from "@/hooks/useDebounce";
+import { toast } from "sonner";
 
 const ManageFoodProgramPage = () => {
   const { id } = useParams();
@@ -25,6 +27,7 @@ const ManageFoodProgramPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     dispatch(
@@ -46,14 +49,37 @@ const ManageFoodProgramPage = () => {
       // Navigate to manage specific foods for this program and category
       navigate(`/admin/manage-program/manage/food/add-food/${id}/${row.id}`);
     } else if (action === "edit") {
-      navigate(`/admin/manage-program/manage/food/edit-food-category/${id}/${row.id}`, { state: { editData: row } });
+      navigate(
+        `/admin/manage-program/manage/food/edit-food-category/${id}/${row.id}`,
+        { state: { editData: row } },
+      );
     } else if (action === "delete") {
-      console.log("Delete category", row);
-      // Open delete modal
+      setDeleteTarget(row);
     }
   };
 
-  const columns = useMemo(() => getManageFoodCategoryColumns(handleAction), [id]);
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const result = await dispatch(deleteFoodCategory(deleteTarget.id));
+    if (deleteFoodCategory.fulfilled.match(result)) {
+      toast.success("Food Category deleted successfully");
+      dispatch(
+        getFoodCategories({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+        }),
+      );
+    } else {
+      toast.error(result.payload || "Failed to delete food category.");
+    }
+    setDeleteTarget(null);
+  };
+
+  const columns = useMemo(
+    () => getManageFoodCategoryColumns(handleAction),
+    [id],
+  );
 
   return (
     <Container>
@@ -67,7 +93,7 @@ const ManageFoodProgramPage = () => {
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               onClick={() =>
                 navigate("/admin/manage-program/manage/food/add-food-category")
               }
@@ -86,11 +112,19 @@ const ManageFoodProgramPage = () => {
           setPagination={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          loading={loading}
+          isLoading={loading}
           manualPagination={true}
           pageCount={serverPagination.totalPages || 1}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Food Category"
+        message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}
+      />
     </Container>
   );
 };

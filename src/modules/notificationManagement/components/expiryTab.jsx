@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export const ExpiryTab = ({ onSubmit, loading }) => {
   const [form, setForm] = useState({
@@ -59,10 +60,17 @@ export const ExpiryTab = ({ onSubmit, loading }) => {
 
       <Button
         type="submit"
-        className="w-full bg-orange-600 hover:bg-orange-700"
+        className="w-full bg-orange-600 hover:bg-orange-700 flex items-center justify-center gap-2"
         disabled={loading}
       >
-        {loading ? "Scheduling..." : "Start Expiry Campaign"}
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Scheduling...
+          </>
+        ) : (
+          "Start Expiry Campaign"
+        )}
       </Button>
     </form>
   );

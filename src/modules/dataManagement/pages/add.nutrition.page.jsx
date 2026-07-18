@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Apple, ArrowLeft, Send } from "lucide-react";
+import { Apple, Save, Loader2 } from "lucide-react";
 import Header from "@/components/common/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ const AddNutritionPage = () => {
     Meal_Serving: "",
   });
 
-  console.log("editData: ", editData)
+  console.log("editData: ", editData);
 
   const parseArrayToString = (val) => {
     try {
@@ -62,15 +62,24 @@ const AddNutritionPage = () => {
     if (isEdit && editData) {
       setFormData({
         title: editData.Meal_title || editData.title || "",
-        image: editData.Meal_Image_url && editData.Meal_Image_url !== "none" ? editData.Meal_Image_url : editData.image || "",
+        image:
+          editData.Meal_Image_url && editData.Meal_Image_url !== "none"
+            ? editData.Meal_Image_url
+            : editData.image || "",
         protein: editData.Meal_Protien_In_gm || editData.protein || "",
         carbs: editData.Meal_Carbs_In_gm || editData.carbs || "",
         calories: editData.Meal_Calories_In_gm || editData.calories || "",
         fats: editData.Meal_Fats_In_gm || editData.fats || "",
         description: editData.Meal_Description || editData.description || "",
         Meal_Type: editData.Meal_Type || "",
-        meal_description: parseArrayToString(editData.Meal_instructions) || editData.meal_description || "",
-        meal_ingredients: parseArrayToString(editData.Meal_ingredients) || editData.meal_ingredients || "",
+        meal_description:
+          parseArrayToString(editData.Meal_instructions) ||
+          editData.meal_description ||
+          "",
+        meal_ingredients:
+          parseArrayToString(editData.Meal_ingredients) ||
+          editData.meal_ingredients ||
+          "",
         Meal_Serving: editData.Meal_Serving || "",
       });
     }
@@ -87,7 +96,7 @@ const AddNutritionPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const payloadData = {
       ...formData,
       protein: Number(formData.protein),
@@ -97,7 +106,7 @@ const AddNutritionPage = () => {
       Meal_Serving: Number(formData.Meal_Serving),
     };
 
-    const action = isEdit 
+    const action = isEdit
       ? updateNutrition({ id, data: payloadData })
       : addNutrition(payloadData);
 
@@ -107,7 +116,10 @@ const AddNutritionPage = () => {
         navigate("/admin/data-management/nutrition-food");
       })
       .catch((error) => {
-        console.error(`Failed to ${isEdit ? "update" : "add"} nutrition:`, error);
+        console.error(
+          `Failed to ${isEdit ? "update" : "add"} nutrition:`,
+          error,
+        );
       });
   };
 
@@ -120,27 +132,25 @@ const AddNutritionPage = () => {
               heading={isEdit ? "Edit Food" : "Add Food"}
               icon={<Apple className="w-9 h-9 text-white" />}
               color="bg-brand-blue shadow-brand-blue"
-              subheading={isEdit ? "Update existing nutrition food details." : "Add new nutrition food items and recipes."}
+              subheading={
+                isEdit
+                  ? "Update existing nutrition food details."
+                  : "Add new nutrition food items and recipes."
+              }
             />
-
-            <Button
-              variant="outline"
-              onClick={() => navigate("/admin/data-management/nutrition-food")}
-              className="w-full md:w-auto flex items-center gap-2"
-            >
-              <ArrowLeft size={16} />
-              Back to List
-            </Button>
           </div>
         </Header>
 
-        <div className="bg-white rounded-md shadow-sm border border-slate-300 p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <form
+            onSubmit={handleSubmit}
+            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="title"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Food Title
                 </Label>
@@ -150,15 +160,15 @@ const AddNutritionPage = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Enter Food Title"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="image"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Image URL
                 </Label>
@@ -168,17 +178,17 @@ const AddNutritionPage = () => {
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="Enter Image URL"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 />
-                <p className="text-[10px] text-slate-500">
-                  Note: Please upload the jpg image here
+                <p className="text-[10px] text-slate-500 font-medium">
+                  Note: Please provide the jpg image URL here
                 </p>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="protein"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Proteins (gm)
                 </Label>
@@ -191,15 +201,15 @@ const AddNutritionPage = () => {
                   value={formData.protein}
                   onChange={handleChange}
                   placeholder="Enter Proteins"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="carbs"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Carbs (gm)
                 </Label>
@@ -212,15 +222,15 @@ const AddNutritionPage = () => {
                   value={formData.carbs}
                   onChange={handleChange}
                   placeholder="Enter Carbs"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="calories"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Calories (kcal)
                 </Label>
@@ -233,15 +243,15 @@ const AddNutritionPage = () => {
                   value={formData.calories}
                   onChange={handleChange}
                   placeholder="Enter Calories"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label
                   htmlFor="fats"
-                  className="text-xs font-semibold text-slate-700"
+                  className="text-xs font-bold text-slate-800"
                 >
                   Fats (gm)
                 </Label>
@@ -254,16 +264,16 @@ const AddNutritionPage = () => {
                   value={formData.fats}
                   onChange={handleChange}
                   placeholder="Enter Fats"
-                  className="h-10 text-sm font-normal border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="description"
-                className="text-xs font-semibold text-slate-700"
+                className="text-xs font-bold text-slate-800"
               >
                 Description
               </Label>
@@ -273,17 +283,17 @@ const AddNutritionPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Enter Description"
-                className="min-h-[80px] text-sm resize-y font-normal border-slate-300"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
               />
-              <p className="text-[10px] text-slate-500">
-                Character Count: {formData.description.length}
-              </p>
+              <div className="text-[10px] text-slate-500 font-medium">
+                Character Count: {formData.description?.length || 0}
+              </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="Meal_Type"
-                className="text-xs font-semibold text-slate-700"
+                className="text-xs font-bold text-slate-800"
               >
                 Meal Type
               </Label>
@@ -292,7 +302,7 @@ const AddNutritionPage = () => {
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
                 required
               >
-                <SelectTrigger className="h-10 text-sm font-normal border-slate-300">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select Meal Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -302,10 +312,10 @@ const AddNutritionPage = () => {
               </Select>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="meal_description"
-                className="text-xs font-semibold text-slate-700"
+                className="text-xs font-bold text-slate-800"
               >
                 Meal Instructions
               </Label>
@@ -315,18 +325,18 @@ const AddNutritionPage = () => {
                 value={formData.meal_description}
                 onChange={handleChange}
                 placeholder="Enter Meal Instructions"
-                className="min-h-[100px] text-sm resize-y font-normal border-slate-300"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
               />
-              <p className="text-[10px] text-slate-500">
-                Character Count: {formData.meal_description.length} Note: Please
-                enter the meal instructions in list format.
-              </p>
+              <div className="text-[10px] text-slate-500 font-medium">
+                Character Count: {formData.meal_description?.length || 0}. Note:
+                Please enter the meal instructions in list format.
+              </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="meal_ingredients"
-                className="text-xs font-semibold text-slate-700"
+                className="text-xs font-bold text-slate-800"
               >
                 Meal Ingredients
               </Label>
@@ -336,18 +346,18 @@ const AddNutritionPage = () => {
                 value={formData.meal_ingredients}
                 onChange={handleChange}
                 placeholder="Enter ingredients"
-                className="min-h-[80px] text-sm resize-y font-normal border-slate-300"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
               />
-              <p className="text-[10px] text-slate-500">
-                Character Count: {formData.meal_ingredients.length} Note: Please
-                enter the meal ingredients in list format.
-              </p>
+              <div className="text-[10px] text-slate-500 font-medium">
+                Character Count: {formData.meal_ingredients?.length || 0}. Note:
+                Please enter the meal ingredients in list format.
+              </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label
                 htmlFor="Meal_Serving"
-                className="text-xs font-semibold text-slate-700"
+                className="text-xs font-bold text-slate-800"
               >
                 Meal Serving
               </Label>
@@ -359,19 +369,38 @@ const AddNutritionPage = () => {
                 value={formData.Meal_Serving}
                 onChange={handleChange}
                 placeholder="Enter Meal Serving"
-                className="h-10 text-sm font-normal border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
-            <div className="flex justify-center pt-4 border-t">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  navigate("/admin/data-management/nutrition-food")
+                }
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold"
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full max-w-sm bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md h-10 flex items-center justify-center gap-2 font-medium"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send size={16} className="-ml-1" />
-                {isEdit ? "Update Nutrition" : "Add Nutrition"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    {isEdit ? "Updating..." : "Saving..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Update" : "Save"}
+                    <Save size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>

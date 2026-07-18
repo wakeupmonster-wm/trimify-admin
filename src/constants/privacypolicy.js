@@ -239,7 +239,7 @@ export const privacyContents = [
     title: "8. How to contact us about privacy?",
     content: [
       {
-        text: "If you have any queries, or if you seek access to your Personal Information, or if you have a complaint about our privacy practices, you can contact us via email at: info@keenasmustard.com.au (please mark privacy queries as 'Privacy Request' in the subject line).",
+        text: "If you have any queries, or if you seek access to your Personal Information, or if you have a complaint about our privacy practices, you can contact us via email at: info@trimify.com.au (please mark privacy queries as 'Privacy Request' in the subject line).",
       },
     ],
   },

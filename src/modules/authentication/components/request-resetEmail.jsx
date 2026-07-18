@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Mail, ArrowLeft } from "lucide-react";
+import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { schema } from "../schemas/auth.schemas";
 import { useDispatch } from "react-redux";
@@ -71,7 +71,7 @@ export default function RequestResetEmailForm() {
             />
           </div>
           {errors.email && (
-            <p className="text-destructive text-xs mt-1">
+            <p className="text-destructive text-xs -mt-1">
               {errors.email.message}
             </p>
           )}
@@ -82,7 +82,14 @@ export default function RequestResetEmailForm() {
           className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Sending..." : "Send Reset Link"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Sending...
+            </>
+          ) : (
+            "Send Reset Link"
+          )}
         </Button>
 
         <Link

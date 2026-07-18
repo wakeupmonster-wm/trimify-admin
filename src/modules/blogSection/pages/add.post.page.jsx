@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Send, UploadCloud, FileText } from "lucide-react";
+import { Save, UploadCloud, FileText, Loader2 } from "lucide-react";
+import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   Select,
@@ -15,20 +15,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import {
+  addBlogPost,
+  updateBlogPost,
+  fetchBlogCategoryDropdown,
+} from "../store/blog.slice";
 
 const AddPostPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const isEdit = Boolean(id);
   const editData = location.state?.editData || null;
+
+  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     description: "",
-    status: "Public",
+    status: "Active", // "Active" maps to the SelectItem displaying "Public"
     bannerImage: null,
   });
 
@@ -36,13 +47,33 @@ const AddPostPage = () => {
     if (isEdit && editData) {
       setFormData({
         title: editData.title || "",
-        category: editData.category || "",
+        category:
+          editData.category?.id?.toString() ||
+          editData.blog_category_id?.toString() ||
+          "",
         description: editData.description || "",
-        status: editData.status || "Public",
+        // If backend sends "Active", we store "Active" so the Select dropdown displays "Public"
+        status:
+          editData.status === "Active"
+            ? "Active"
+            : editData.status === "Inactive"
+              ? "Inactive"
+              : "Active",
         bannerImage: null,
       });
     }
   }, [isEdit, editData]);
+
+  useEffect(() => {
+    dispatch(fetchBlogCategoryDropdown())
+      .unwrap()
+      .then((data) => {
+        setCategories(data);
+      })
+      .catch((error) => {
+        toast.error("Failed to load categories");
+      });
+  }, [dispatch]);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -81,10 +112,40 @@ const AddPostPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit Post:", formData);
-    // TODO: Dispatch action to create blog post API
+    if (!formData.title.trim()) {
+      return toast.error("Post Title is required");
+    }
+    if (!formData.category) {
+      return toast.error("Please select a category");
+    }
+
+    setLoading(true);
+    try {
+      const payload = new FormData();
+      payload.append("title", formData.title);
+      payload.append("category_id", formData.category);
+      payload.append("content", formData.description);
+      payload.append("status", formData.status);
+
+      if (formData.bannerImage) {
+        payload.append("image", formData.bannerImage);
+      }
+
+      if (isEdit) {
+        await dispatch(updateBlogPost({ id, data: payload })).unwrap();
+        toast.success("Post updated successfully!");
+      } else {
+        await dispatch(addBlogPost(payload)).unwrap();
+        toast.success("Post added successfully!");
+      }
+      navigate(-1);
+    } catch (error) {
+      toast.error(error || "An error occurred while saving the post");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -102,17 +163,14 @@ const AddPostPage = () => {
         </Header>
 
         {/* Main Form Card */}
-        <div className="mx-auto w-full bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-brand-blue py-4 px-6 flex items-center justify-center">
-            <h2 className="text-white text-lg font-bold tracking-wide">
-              {isEdit ? "Edit Blog Post" : "Add Blog Post"}
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <form
+            onSubmit={handleSubmit}
+            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+          >
             {/* Post Title */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Post Title
               </Label>
               <Input
@@ -120,55 +178,58 @@ const AddPostPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Category */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category
               </Label>
               <Select
+                key={`cat-${categories.length}-${formData.category}`}
                 value={formData.category}
                 onValueChange={(val) => handleSelectChange("category", val)}
                 required
               >
-                <SelectTrigger className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Nutrition">Nutrition</SelectItem>
-                  <SelectItem value="Workout">Workout</SelectItem>
-                  {/* More categories can be fetched from API here */}
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id.toString()}>
+                      {cat.title}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             {/* Post Content/Description */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Content / Description
               </Label>
-              <Textarea
-                name="description"
-                placeholder="Enter content"
+              <RichTextEditor
                 value={formData.description}
-                onChange={handleChange}
-                className="min-h-[200px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200 resize-none p-3"
-                required
+                onChange={(content) =>
+                  setFormData((prev) => ({ ...prev, description: content }))
+                }
+                placeholder="Enter content"
+                height={300}
               />
             </div>
 
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 {isEdit ? "Replace Featured Image" : "Upload Featured Image"}
               </Label>
               {isEdit && editData?.image && !formData.bannerImage && (
                 <div className="mb-4">
-                  <Label className="text-sm font-bold text-slate-800 block mb-2">
+                  <Label className="text-xs font-bold text-slate-800 block mb-2">
                     Current Featured Image
                   </Label>
                   <div className="w-24 h-24 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
@@ -181,7 +242,11 @@ const AddPostPage = () => {
                 </div>
               )}
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging ? "border-brand-blue bg-brand-blue" : "border-slate-200 hover:border-slate-300"}`}
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-brand-blue bg-blue-50"
+                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -194,44 +259,62 @@ const AddPostPage = () => {
                   accept="image/*"
                   onChange={handleFileSelect}
                 />
-                <UploadCloud className="w-12 h-12 text-slate-300 mb-3" />
-                <p className="text-sm font-medium text-slate-400">
+                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <p className="text-sm font-semibold text-slate-700">
                   {formData.bannerImage
                     ? formData.bannerImage.name
-                    : "Drag and drop a file here or click"}
+                    : "Click or drag and drop to upload"}
                 </p>
-              </div>
-              <div className="text-xs text-slate-500 font-medium mt-1">
-                Maximum Image Size: Up to 6MB per upload
+                <p className="text-xs text-slate-500 mt-1">
+                  SVG, PNG, JPG or GIF (max. 800x400px)
+                </p>
               </div>
             </div>
 
             {/* Post Status */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">Status</Label>
+              <Label className="text-xs font-bold text-slate-800">Status</Label>
               <Select
                 value={formData.status}
                 onValueChange={(val) => handleSelectChange("status", val)}
                 required
               >
-                <SelectTrigger className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Public">Public</SelectItem>
-                  <SelectItem value="Private">Private</SelectItem>
+                  <SelectItem value="Active">Public</SelectItem>
+                  <SelectItem value="Inactive">Private</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Submit Button */}
-            <div className="pt-6 flex justify-center">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded shadow-sm px-10 h-11 text-sm font-semibold flex items-center gap-2"
+                disabled={loading}
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send size={16} />
-                {isEdit ? "Update Post" : "Add Post"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    {isEdit ? "Updating..." : "Saving..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Update Post" : "Save Post"}
+                    <Save size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>

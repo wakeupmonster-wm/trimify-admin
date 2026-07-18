@@ -48,9 +48,21 @@ const ManageProgramDetailsPage = () => {
   );
 
   const staticData = [
-    { id: "intro", title: "Introduction" },
-    { id: "foods", title: "Approved / Non-Approved Foods" },
-    { id: "diet", title: "Diet Plan" },
+    {
+      id: "intro",
+      title: "Introduction",
+      description: "View and edit the introduction content for this program.",
+    },
+    {
+      id: "foods",
+      title: "Approved / Non-Approved Foods",
+      description: "Configure which foods are approved or non-approved.",
+    },
+    {
+      id: "diet",
+      title: "Diet Plan",
+      description: "Manage the daily diet plans and meals for this program.",
+    },
   ];
 
   return (
@@ -61,7 +73,7 @@ const ManageProgramDetailsPage = () => {
             heading="Manage Program Modules"
             icon={<Settings className="w-9 h-9 text-white" />}
             color="bg-brand-blue shadow-blue-200"
-            subheading="Manage program details like Introduction, Foods, and Diet Plan."
+            subheading="Manage program details like Introduction,   Foods, and Diet Plan."
           />
         </Header>
 

@@ -5,7 +5,17 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Send, PlayCircle } from "lucide-react";
+import { Save, Loader2, PlayCircle, UploadCloud } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   addFitzoneSession,
   updateFitzoneSession,
@@ -24,15 +34,16 @@ const AddFitzoneSessionPage = () => {
 
   const isEdit = Boolean(sessionId);
   const editData = location.state?.editData || null;
+  console.log("editData: ", editData);
 
-  // Form State
   const [sessionTitle, setSessionTitle] = useState("");
   const [sessionDetails, setSessionDetails] = useState("");
   const [sessionCategoryId, setSessionCategoryId] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [duration, setDuration] = useState("");
-  const [description, setDescription] = useState("");
+  const [stepDescription, setStepDescription] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -44,17 +55,57 @@ const AddFitzoneSessionPage = () => {
 
   useEffect(() => {
     if (isEdit && editData) {
-      setSessionTitle(editData.session_title || editData.title || "");
-      setSessionDetails(editData.details || editData.sub_heading || "");
-      setSessionCategoryId(editData.category_id || editData.fitzone_workoutcat_id || "");
+      setSessionTitle(editData.title || editData.session_title || "");
+      setSessionDetails(
+        editData.description || editData.details || editData.sub_heading || "",
+      );
+      setSessionCategoryId(
+        editData.workoutcat_id?.toString() ||
+          editData.category_id?.toString() ||
+          editData.fitzone_workoutcat_id?.toString() ||
+          "",
+      );
       setVideoUrl(editData.video_url || "");
       setDuration(editData.duration || "");
-      setDescription(editData.description || "");
+
+      if (editData.step_description) {
+        try {
+          const parsed = JSON.parse(editData.step_description);
+          if (Array.isArray(parsed)) {
+            setStepDescription(parsed.join("\n"));
+          } else {
+            setStepDescription(editData.step_description);
+          }
+        } catch (e) {
+          setStepDescription(editData.step_description);
+        }
+      } else {
+        setStepDescription(editData.description || "");
+      }
     }
   }, [isEdit, editData]);
 
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
+    if (file) {
+      setVideoFile(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
     if (file) {
       setVideoFile(file);
     }
@@ -73,12 +124,18 @@ const AddFitzoneSessionPage = () => {
 
     const formData = new FormData();
     formData.append("fitzone_id", id);
-    formData.append("title", sessionTitle); 
-    formData.append("details", sessionDetails);
-    formData.append("fitzone_workoutcat_id", sessionCategoryId); 
+    formData.append("title", sessionTitle);
+    formData.append("description", sessionDetails);
+    formData.append("workoutcat_id", sessionCategoryId);
     formData.append("duration", duration);
-    formData.append("description", description);
-    
+
+    // Parse step description into a JSON string array
+    const stepsArray = stepDescription
+      .split("\n")
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+    formData.append("step_description", JSON.stringify(stepsArray));
+
     if (videoUrl.trim()) {
       formData.append("video_url", videoUrl);
     }
@@ -90,7 +147,7 @@ const AddFitzoneSessionPage = () => {
     let resultAction;
     if (isEdit) {
       resultAction = await dispatch(
-        updateFitzoneSession({ id: sessionId, data: formData })
+        updateFitzoneSession({ id: sessionId, data: formData }),
       );
     } else {
       resultAction = await dispatch(addFitzoneSession(formData));
@@ -100,9 +157,7 @@ const AddFitzoneSessionPage = () => {
       updateFitzoneSession.fulfilled.match(resultAction) ||
       addFitzoneSession.fulfilled.match(resultAction)
     ) {
-      toast.success(
-        `Session ${isEdit ? "updated" : "added"} successfully!`
-      );
+      toast.success(`Session ${isEdit ? "updated" : "added"} successfully!`);
       navigate(-1);
     } else {
       toast.error(resultAction.payload || "An error occurred");
@@ -117,144 +172,189 @@ const AddFitzoneSessionPage = () => {
             heading={isEdit ? "Edit Session" : "Add Session"}
             icon={<PlayCircle className="w-9 h-9 text-white" />}
             color="bg-brand-blue shadow-blue-200"
-            subheading={isEdit ? "Edit existing workout session details and videos." : "Add a new workout session with videos."}
+            subheading={
+              isEdit
+                ? "Edit existing workout session details and videos."
+                : "Add a new workout session with videos."
+            }
           />
         </Header>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mx-auto w-full">
-          <div className="bg-brand-blue px-6 py-4 flex items-center justify-center">
-            <h2 className="text-white text-lg font-bold tracking-wide">
-              {isEdit ? "Edit Session" : "Add Session"}
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <form
+            onSubmit={handleSubmit}
+            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+          >
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Session Heading
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={sessionTitle}
                 onChange={(e) => setSessionTitle(e.target.value)}
                 placeholder="Enter Title Here"
-                className="w-full h-11 px-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                required
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
-                Session Sub-Heading(Details)
-              </label>
-              <input
+              <Label className="text-xs font-bold text-slate-800">
+                Session Sub-Heading (Details)
+              </Label>
+              <Input
                 type="text"
                 value={sessionDetails}
                 onChange={(e) => setSessionDetails(e.target.value)}
                 placeholder="Enter Details Here"
-                className="w-full h-11 px-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
               />
             </div>
 
-            <div className="space-y-3">
-              {isEdit && editData?.video && !videoFile && (
+            {isEdit && editData?.video && !videoFile && (
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-slate-800">
+                  Current Uploaded Video
+                </Label>
                 <div className="flex items-center gap-2 text-sm font-medium">
-                  <span className="text-slate-800 font-bold">Uploaded Video :</span>
-                  <a href={editData.video} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline break-all">
+                  <a
+                    href={editData.video}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-600 hover:underline break-all"
+                  >
                     {editData.video}
                   </a>
                 </div>
-              )}
-              <div className="flex items-center gap-4">
-                <Button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="bg-black hover:bg-gray-800 text-white rounded-none px-6 h-9 font-semibold text-xs"
-                >
-                  {isEdit ? "Upload New Video" : "Upload Video"}
-                </Button>
-                {videoFile && (
-                  <span className="text-sm font-medium text-brand-blue">
-                    {videoFile.name}
-                  </span>
-                )}
               </div>
-              <input
-                type="file"
-                accept="video/*"
-                className="hidden"
-                ref={fileInputRef}
-                onChange={handleVideoChange}
-              />
+            )}
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
+                {isEdit ? "Upload New Video (optional)" : "Upload Video"}
+              </Label>
+              <div
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-brand-blue bg-blue-50"
+                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleVideoChange}
+                />
+                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <p className="text-sm font-semibold text-slate-700">
+                  {videoFile
+                    ? videoFile.name
+                    : "Click or drag and drop to upload"}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  MP4, WEBM or OGG (max. 50MB)
+                </p>
+              </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
-                {isEdit ? "New Video URL(optional)" : "Video URL"}
-              </label>
-              <input
+              <Label className="text-xs font-bold text-slate-800">
+                {isEdit ? "New Video URL (optional)" : "Video URL"}
+              </Label>
+              <Input
                 type="text"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="Enter Video URL here"
-                className="w-full h-11 px-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Duration
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="Enter Video Duration"
-                className="w-full h-11 px-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category
-              </label>
-              <select
-                value={sessionCategoryId}
-                onChange={(e) => setSessionCategoryId(e.target.value)}
-                className="w-full h-11 px-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 font-medium bg-white"
+              </Label>
+              <Select
+                value={
+                  sessionCategoryId ? sessionCategoryId.toString() : undefined
+                }
+                onValueChange={(val) => setSessionCategoryId(val)}
+                required
               >
-                <option value="" disabled>Select a category</option>
-                {categories &&
-                  categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.title}
-                    </option>
-                  ))}
-              </select>
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories &&
+                    categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id.toString()}>
+                        {cat.title}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Description
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              </Label>
+              <Textarea
+                value={stepDescription}
+                onChange={(e) => setStepDescription(e.target.value)}
                 placeholder="Enter description"
-                className="w-full h-32 p-3 text-sm border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium resize-none"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
-                Note: Please enter the description in list format.
+                Note: Please enter each step on a new line.
               </div>
             </div>
 
-            <div className="flex justify-center pt-6 pb-2">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate(-1)}
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold"
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-12 h-11 text-sm font-bold flex items-center gap-2 rounded shadow-sm"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send className="w-4 h-4" />
-                {isEdit ? "Update" : "Add"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    {isEdit ? "Updating..." : "Saving..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Update" : "Save"}
+                    <Save size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>

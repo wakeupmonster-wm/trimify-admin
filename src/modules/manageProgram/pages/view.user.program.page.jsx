@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
-import { PageHeader } from '@/components/common/headSubhead';
+import { PageHeader } from "@/components/common/headSubhead";
 import { DataTable } from "@/components/shared/datatable";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users } from "lucide-react";
@@ -63,16 +63,6 @@ const ViewUserProgramPage = () => {
             color="bg-brand-blue shadow-blue-200"
             subheading="View the list of users assigned to this program."
           />
-
-          <div className="flex flex-wrap items-center gap-3">
-            <Button 
-              className="bg-[#0B1E36] hover:bg-[#152e4d] text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Previous
-            </Button>
-          </div>
         </Header>
 
         <DataTable

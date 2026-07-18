@@ -1,5 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getBlogCategoriesAPI, getBlogPostsAPI } from "../services/blog.services";
+import { 
+  getBlogCategoriesAPI, 
+  getBlogPostsAPI,
+  addBlogCategoryAPI,
+  getBlogCategoryByIdAPI,
+  getBlogCategoryDropdownAPI,
+  updateBlogCategoryAPI,
+  toggleBlogCategoryStatusAPI,
+  deleteBlogCategoryAPI,
+  addBlogPostAPI,
+  updateBlogPostAPI,
+  toggleBlogPostStatusAPI,
+  toggleBlogPostVisibilityAPI,
+  deleteBlogPostAPI
+} from "../services/blog.services";
 
 export const fetchBlogCategories = createAsyncThunk(
   "blogSection/fetchCategories",
@@ -7,10 +21,16 @@ export const fetchBlogCategories = createAsyncThunk(
     try {
       const response = await getBlogCategoriesAPI(params);
 
-      if (response && response.success) {
+      if (response && (response.success || response.status === "success")) {
+        const pag = response.pagination || {};
         return {
-          categories: response.data || response.categories || [],
-          pagination: response.pagination || { page: 1, limit: 10, total: 0, totalPages: 0 },
+          categories: response.blogs || response.data || response.categories || [],
+          pagination: {
+            page: pag.current_page || 1,
+            limit: pag.per_page || 10,
+            total: pag.total || 0,
+            totalPages: pag.last_page || 0,
+          },
         };
       }
       return rejectWithValue(response.message || "Failed to fetch categories");
@@ -26,15 +46,164 @@ export const fetchBlogPosts = createAsyncThunk(
     try {
       const response = await getBlogPostsAPI(params);
 
-      if (response && response.success) {
+      if (response && (response.success || response.status === "success")) {
+        const pag = response.pagination || {};
         return {
-          posts: response.data || response.blogs || response.posts || [],
-          pagination: response.pagination || { page: 1, limit: 10, total: 0, totalPages: 0 },
+          posts: response.blogs || response.data || response.posts || [],
+          pagination: {
+            page: pag.current_page || 1,
+            limit: pag.per_page || 10,
+            total: pag.total || 0,
+            totalPages: pag.last_page || 0,
+          },
         };
       }
       return rejectWithValue(response.message || "Failed to fetch blog posts");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch blog posts");
+    }
+  }
+);
+
+export const addBlogCategory = createAsyncThunk(
+  "blogSection/addCategory",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await addBlogCategoryAPI(data);
+      if (response && (response.success || response.status === "success")) return response;
+      return rejectWithValue(response.message || "Failed to add category");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to add category");
+    }
+  }
+);
+
+export const getBlogCategoryById = createAsyncThunk(
+  "blogSection/getCategoryById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await getBlogCategoryByIdAPI(id);
+      if (response && (response.success || response.status === "success")) return response.data;
+      return rejectWithValue(response.message || "Failed to get category");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to get category");
+    }
+  }
+);
+
+export const fetchBlogCategoryDropdown = createAsyncThunk(
+  "blogSection/fetchCategoryDropdown",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getBlogCategoryDropdownAPI();
+      if (response && (response.success || response.status === "success")) return response.blogcategories || response.data || response.categories || [];
+      return rejectWithValue(response.message || "Failed to fetch categories");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch categories");
+    }
+  }
+);
+
+export const updateBlogCategory = createAsyncThunk(
+  "blogSection/updateCategory",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await updateBlogCategoryAPI(id, data);
+      if (response && (response.success || response.status === "success")) return response;
+      return rejectWithValue(response.message || "Failed to update category");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update category");
+    }
+  }
+);
+
+export const toggleBlogCategoryStatus = createAsyncThunk(
+  "blogSection/toggleCategoryStatus",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await toggleBlogCategoryStatusAPI(id);
+      if (response && (response.success || response.status === "success")) return { id, ...response };
+      return rejectWithValue(response.message || "Failed to toggle status");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to toggle status");
+    }
+  }
+);
+
+export const deleteBlogCategory = createAsyncThunk(
+  "blogSection/deleteCategory",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteBlogCategoryAPI(id);
+      if (response && (response.success || response.status === "success")) return id;
+      return rejectWithValue(response.message || "Failed to delete category");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to delete category");
+    }
+  }
+);
+
+export const addBlogPost = createAsyncThunk(
+  "blogSection/addPost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await addBlogPostAPI(data);
+      if (response && (response.success || response.status === "success")) return response;
+      return rejectWithValue(response.message || "Failed to add blog post");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to add post");
+    }
+  }
+);
+
+export const updateBlogPost = createAsyncThunk(
+  "blogSection/updatePost",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await updateBlogPostAPI(id, data);
+      if (response && (response.success || response.status === "success")) return response;
+      return rejectWithValue(response.message || "Failed to update blog post");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update post");
+    }
+  }
+);
+
+export const toggleBlogPostStatus = createAsyncThunk(
+  "blogSection/togglePostStatus",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await toggleBlogPostStatusAPI(id);
+      if (response && (response.success || response.status === "success")) return { id, ...response };
+      return rejectWithValue(response.message || "Failed to toggle post status");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to toggle status");
+    }
+  }
+);
+
+export const toggleBlogPostVisibility = createAsyncThunk(
+  "blogSection/togglePostVisibility",
+  async ({ id, visibility_status }, { rejectWithValue }) => {
+    try {
+      const response = await toggleBlogPostVisibilityAPI(id, { visibility_status });
+      if (response && (response.success || response.status === "success")) return { id, ...response };
+      return rejectWithValue(response.message || "Failed to toggle post visibility");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to toggle visibility");
+    }
+  }
+);
+
+export const deleteBlogPost = createAsyncThunk(
+  "blogSection/deletePost",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteBlogPostAPI(id);
+      if (response && (response.success || response.status === "success")) return id;
+      return rejectWithValue(response.message || "Failed to delete blog post");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to delete post");
     }
   }
 );

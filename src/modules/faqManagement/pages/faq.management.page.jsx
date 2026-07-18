@@ -1,12 +1,13 @@
 import { Container } from "@/components/common/container";
-import React, { useState, useMemo } from "react";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import React, { useState, useMemo, useEffect } from "react";
 import { DataTable } from "@/components/shared/datatable";
 import { getFaqManagementColumns } from "@/components/columns/faq.management.columns";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send, HelpCircle, Plus } from "lucide-react";
+import { Send, HelpCircle, Plus, X, Loader2 } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +18,6 @@ import {
   toggleFaqStatus,
   deleteFaq,
 } from "../store/faq.slice";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useDebounce } from "../../../hooks/useDebounce";
@@ -37,6 +37,8 @@ const FaqManagementPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentFaqId, setCurrentFaqId] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -60,15 +62,24 @@ const FaqManagementPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editMode) {
-      await dispatch(updateFaq({ id: currentFaqId, data: formData }));
-    } else {
-      await dispatch(addFaq(formData));
+    setIsSubmitting(true);
+    try {
+      let res;
+      if (editMode) {
+        res = await dispatch(updateFaq({ id: currentFaqId, data: formData })).unwrap();
+      } else {
+        res = await dispatch(addFaq(formData)).unwrap();
+      }
+      toast.success(res?.message || `FAQ ${editMode ? "updated" : "added"} successfully`);
+      setIsDialogOpen(false);
+      setFormData({ question: "", answer: "" }); // Reset form
+      setEditMode(false);
+      setCurrentFaqId(null);
+    } catch (error) {
+      toast.error(error?.message || error || "An error occurred");
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsDialogOpen(false);
-    setFormData({ question: "", answer: "" }); // Reset form
-    setEditMode(false);
-    setCurrentFaqId(null);
   };
 
   const handleAction = async (row, action, value) => {
@@ -82,10 +93,18 @@ const FaqManagementPage = () => {
       setEditMode(true);
       setIsDialogOpen(true);
     } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this FAQ?")) {
-        await dispatch(deleteFaq(row.id));
-        toast.success("FAQ deleted successfully");
-      }
+      setDeleteModal({ open: true, rowData: row });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    try {
+      const res = await dispatch(deleteFaq(deleteModal.rowData.id)).unwrap();
+      toast.success(res?.message || "FAQ deleted successfully");
+      setDeleteModal({ open: false, rowData: null });
+    } catch (error) {
+      toast.error(error?.message || error || "Failed to delete FAQ");
     }
   };
 
@@ -112,7 +131,7 @@ const FaqManagementPage = () => {
               setCurrentFaqId(null);
               setIsDialogOpen(true);
             }}
-            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 font-semibold gap-2"
+            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 text-xs font-semibold gap-2"
           >
             <Plus className="w-4 h-4" /> Add FAQ
           </Button>
@@ -120,47 +139,72 @@ const FaqManagementPage = () => {
 
         {/* FAQ Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-xl p-0 overflow-hidden border-0">
-            <div className="bg-brand-blue py-4 px-6 text-center">
-              <DialogTitle className="text-white text-base font-semibold">
-                {editMode ? "Edit FAQ" : "Add FAQ"}
+          <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300 bg-slate-50/50">
+              <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-brand-blue" />
+                {editMode ? "Edit FAQ" : "Add New FAQ"}
               </DialogTitle>
+              <button
+                type="button"
+                onClick={() => setIsDialogOpen(false)}
+                className="text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 p-1.5 rounded-full transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-5">
-              <div className="space-y-1.5">
-                <Label className="text-sm font-semibold text-slate-800">
+            <form onSubmit={handleSubmit} className="px-6 pb-6 pt-1 space-y-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-slate-700 uppercase tracking-wide">
                   Question
                 </Label>
                 <Input
                   name="question"
-                  placeholder="Enter Question"
+                  placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200"
+                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-sm font-semibold text-slate-800">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-slate-700 uppercase tracking-wide">
                   Answer
                 </Label>
                 <Textarea
                   name="answer"
-                  placeholder="Enter Answer"
+                  placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200 resize-none"
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
-              <div className="pt-2 flex justify-center">
+              <div className="pt-4 flex justify-end gap-3 border-t border-slate-200 mt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                  className="rounded-lg px-5 h-10 text-xs font-semibold border-slate-300 text-slate-600 hover:bg-slate-50"
+                >
+                  Cancel
+                </Button>
                 <Button
                   type="submit"
-                  className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2 h-auto text-sm font-medium flex items-center gap-2"
-                  disabled={loading}
+                  className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+                  disabled={isSubmitting}
                 >
-                  {editMode ? "Update FAQ" : "Add FAQ"}{" "}
-                  <Send className="w-3.5 h-3.5 ml-1" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      {editMode ? "Updating..." : "Saving..."}
+                    </>
+                  ) : (
+                    <>
+                      {editMode ? "Update FAQ" : "Save FAQ"}
+                      <Send className="w-4 h-4 ml-1" />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>
@@ -185,6 +229,14 @@ const FaqManagementPage = () => {
           manualFiltering={!!serverPagination}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this FAQ? This action cannot be undone."
+      />
     </Container>
   );
 };

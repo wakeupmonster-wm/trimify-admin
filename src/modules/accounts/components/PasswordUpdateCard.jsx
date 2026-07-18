@@ -6,7 +6,6 @@ import {
   IconLock,
   IconEye,
   IconEyeOff,
-  IconShieldCheck,
 } from "@tabler/icons-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePassword } from "../store/account.slice";
+import { Loader2 } from "lucide-react";
 
 const passwordSchema = z
   .object({
@@ -125,9 +125,16 @@ export const PasswordUpdateCard = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 px-8 rounded-xl shadow-md"
+              className="bg-purple-600 hover:bg-purple-700 px-8 rounded-xl shadow-md flex items-center justify-center gap-1"
             >
-              {loading ? "Updating..." : "Update Password"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Password"
+              )}
             </Button>
           </div>
         </form>

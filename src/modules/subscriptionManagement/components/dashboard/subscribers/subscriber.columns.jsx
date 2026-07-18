@@ -30,47 +30,63 @@ const formatDate = (value) => {
 export const getSubscriberColumns = (onAction) => [
   {
     id: "sno",
-    header: () => <div className="w-10 text-center text-[10px] font-bold uppercase tracking-wider">S.No</div>,
-    size: 60,
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">SR.No</div>,
+    size: 100,
+    minSize: 100,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
-      return <div className="w-10 text-center font-bold text-[11px] text-foreground/90">{pageIndex * pageSize + row.index + 1}</div>;
+      return <div className="text-left px-2 font-bold text-[11px] text-foreground/90">{pageIndex * pageSize + row.index + 1}</div>;
     },
     enableSorting: false,
   },
   {
     accessorKey: "name",
-    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Subscriber</div>,
-    size: 200,
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Subscriber Name</div>,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => (
       <div className="min-w-0">
         <p className="font-bold text-slate-700 text-[11px] truncate">{row.original.name || "-"}</p>
-        <p className="text-[10px] text-slate-400 font-medium truncate">{row.original.email}</p>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Email</div>,
+    size: 150,
+    minSize: 150,
+    cell: ({ row }) => (
+      <div className="min-w-0">
+        <p className="text-[11px] text-slate-600 font-medium truncate">{row.original.email || "-"}</p>
       </div>
     ),
   },
   {
     accessorKey: "plan_title",
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Plan</div>,
-    size: 130,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => <div className="font-semibold text-slate-600 text-[11px]">{row.original.plan_title || "-"}</div>,
   },
   {
     accessorKey: "started_at",
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Started</div>,
-    size: 110,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => <div className="text-slate-600 text-[11px] font-medium whitespace-nowrap">{formatDate(row.original.started_at)}</div>,
   },
   {
     accessorKey: "expires_at",
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Expires</div>,
-    size: 110,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => <div className="text-slate-600 text-[11px] font-medium whitespace-nowrap">{formatDate(row.original.expires_at)}</div>,
   },
   {
     accessorKey: "status",
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Status</div>,
-    size: 100,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => (
       <Badge className={cn("text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5", STATUS_STYLE[row.original.status] || "bg-slate-100 text-slate-500")}>
         {row.original.status}
@@ -80,7 +96,8 @@ export const getSubscriberColumns = (onAction) => [
   {
     id: "actions",
     header: () => <div className="text-center text-[10px] font-bold uppercase tracking-wider">Action</div>,
-    size: 60,
+    size: 150,
+    minSize: 150,
     cell: ({ row }) => {
       const sub = row.original;
       return (
@@ -96,7 +113,7 @@ export const getSubscriberColumns = (onAction) => [
                 Manage
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-aqua/10 focus:text-brand-aqua font-semibold text-xs"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue/10 focus:text-brand-blue font-semibold text-xs"
                 onClick={() => onAction(sub, "upgrade")}
               >
                 <ArrowUpCircle className="w-3.5 h-3.5" />

@@ -30,7 +30,7 @@ export const getSubscriptionColumns = (onAction) => [
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-10 text-center font-bold text-[11px] text-foreground/90">
+        <div className="w-10 text-left px-2 font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -45,8 +45,8 @@ export const getSubscriptionColumns = (onAction) => [
         Plan Title
       </div>
     ),
-    size: 130,
-    minSize: 130,
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.title || "-"}
@@ -60,8 +60,8 @@ export const getSubscriptionColumns = (onAction) => [
         Duration
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="capitalize font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.duration ? `${row.original.duration} Months` : "-"}
@@ -75,8 +75,8 @@ export const getSubscriptionColumns = (onAction) => [
         Price
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.price ? `$${row.original.price}` : "-"}
@@ -105,7 +105,7 @@ export const getSubscriptionColumns = (onAction) => [
         Features
       </div>
     ),
-    size: 250,
+    size: 200,
     minSize: 200,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight truncate max-w-[250px]">
@@ -120,8 +120,8 @@ export const getSubscriptionColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 60,
-    minSize: 60,
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>
@@ -135,13 +135,13 @@ export const getSubscriptionColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

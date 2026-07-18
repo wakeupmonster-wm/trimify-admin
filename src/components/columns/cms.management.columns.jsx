@@ -12,18 +12,18 @@ export const getCmsManagementColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[11px] font-bold text-foreground">
+      <div className="w-10 text-left text-[10px] 3xl:text-xs font-bold text-foreground">
         SR.No
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 100,
+    minSize: 100,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-14 text-left font-medium text-[11px] text-slate-700">
+        <div className="w-14 text-left font-medium text-[10px] 3xl:text-xs text-slate-700">
           {serialNumber}
         </div>
       );
@@ -32,22 +32,41 @@ export const getCmsManagementColumns = (onAction) => [
   {
     accessorKey: "pageName",
     header: () => (
-      <div className="text-[11px] font-bold text-foreground text-left">
+      <div className="text-[10px] 3xl:text-xs font-bold text-foreground text-left">
         Page name
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 250,
+    minSize: 250,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-700">
+      <span className="text-[10px] 3xl:text-xs font-medium text-slate-700">
         {row.getValue("pageName") || "-"}
       </span>
     ),
   },
   {
+    accessorKey: "description",
+    header: () => (
+      <div className="text-[10px] 3xl:text-xs font-bold text-foreground text-left">
+        Description
+      </div>
+    ),
+    size: 250,
+    minSize: 250,
+    cell: ({ row }) => {
+      const description = row.getValue("description") || "-";
+      return (
+        <div
+          className="text-[10px] 3xl:text-xs font-medium text-slate-700 line-clamp-2"
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
+      );
+    },
+  },
+  {
     id: "actions",
     header: () => (
-      <div className="text-center text-[11px] font-bold text-foreground">
+      <div className="text-center text-[10px] 3xl:text-xs font-bold text-foreground">
         Action
       </div>
     ),
@@ -66,13 +85,13 @@ export const getCmsManagementColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
           >
-            <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-[10px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

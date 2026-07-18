@@ -15,12 +15,13 @@ export const getManageFitzoneSessionColumns = (onAction) => [
     accessorKey: "sno",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        S.No
+        SR.No
       </div>
     ),
-    size: 60,
+    size: 80,
+    minSize: 80,
     cell: ({ row }) => (
-      <div className="text-left font-bold text-[11px] text-foreground/90">
+      <div className="text-left px-1 font-bold text-[11px] text-foreground/90">
         {row.index + 1}
       </div>
     ),
@@ -32,6 +33,8 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         Created At
       </div>
     ),
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700">
         {row.original.created_at
@@ -47,6 +50,8 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         Session Title
       </div>
     ),
+    size: 200,
+    minSize: 200,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.title || "-"}
@@ -60,6 +65,8 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         Session Category
       </div>
     ),
+    size: 200,
+    minSize: 200,
     cell: ({ row }) => {
       // It might be a nested object or a string depending on the API.
       const categoryName = row.original.workoutsession?.title || "N/A";
@@ -77,6 +84,8 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         Video
       </div>
     ),
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => {
       const hasVideo = !!row.original.video || !!row.original.video_url;
       return (
@@ -94,6 +103,7 @@ export const getManageFitzoneSessionColumns = (onAction) => [
       </div>
     ),
     size: 100,
+    minSize: 100,
     cell: ({ row }) => {
       const isActive =
         row.original.status === "Active" ||
@@ -126,7 +136,8 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 80,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">
@@ -141,24 +152,24 @@ export const getManageFitzoneSessionColumns = (onAction) => [
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-40 z-[100] bg-white border-slate-200 shadow-lg"
+              className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
             >
-              <DropdownMenuLabel className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
                 onClick={() => onAction && onAction(row.original, "edit")}
               >
                 <Edit className="w-3.5 h-3.5" />
-                <span>Edit Session</span>
+                Edit
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-600 font-semibold text-xs"
                 onClick={() => onAction && onAction(row.original, "delete")}
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Delete Session</span>
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

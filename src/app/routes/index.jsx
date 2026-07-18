@@ -13,7 +13,10 @@ import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
 // ======== New trimify imports ===========//
 const AccountsPage = lazy(() => import("@/modules/accounts/page/accounts.page"));
 const SubAdminManagementPage = lazy(() => import("@/modules/subAdmin/pages/subadmin.page"));
+const AddSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/add.subadmin.page"));
+const EditSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/edit.subadmin.page"));
 const UsersManagementPage = lazy(() => import("@/modules/userManagement/pages/users.management.page"));
+const ViewUserProfilePage = lazy(() => import("@/modules/userManagement/pages/view.user.profile.page"));
 const AccountSettingsPage = lazy(() => import("@/modules/accountSettings/pages/account.settings.page"));
 const FaqManagementPage = lazy(() => import("@/modules/faqManagement/pages/faq.management.page"));
 const NotificationManagePage = lazy(() => import("@/modules/notificationManage/pages/notification.manage.page"));
@@ -136,21 +139,55 @@ export const router = createBrowserRouter([
       /*====================== Sub-Admin Management Module ======================*/
       {
         path: "sub-admin-management",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <SubAdminManagementPage />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SubAdminManagementPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "add",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AddSubAdminPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "edit",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <EditSubAdminPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
 
       /*====================== User Management Module ======================*/
       {
         path: "users",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <UsersManagementPage />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <UsersManagementPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "view-user/:id",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <ViewUserProfilePage />
+              </Suspense>
+            ),
+          },
+        ],
       },
 
       /*====================== Program Management Module ======================*/

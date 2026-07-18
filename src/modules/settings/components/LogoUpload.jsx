@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Upload, X } from "lucide-react";
+import { UploadCloud, X } from "lucide-react";
 import ConfirmModal from "@/components/common/ConfirmModal"; // Update with your actual path
 
 export default function LogoUpload({ currentLogo, onFileSelect }) {
@@ -9,26 +9,50 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
   const [removeSuccess, setRemoveSuccess] = useState(false);
   const fileInputRef = useRef(null);
 
+  const [isDragging, setIsDragging] = useState(false);
+
   useEffect(() => {
     setPreview(currentLogo);
   }, [currentLogo]);
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleFileLogic(file);
+    }
+  };
+
+  const handleFileLogic = (file) => {
+    if (file.size > 1024 * 1024) {
+      alert("File size is too large! Max 1MB allowed.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+    onFileSelect(file);
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 1024 * 1024) {
-        alert("File size is too large! Max 1MB allowed.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      onFileSelect(file);
+      handleFileLogic(file);
     }
   };
+
 
   // Step 1: Just open the modal
   const handleRemoveClick = (e) => {
@@ -54,43 +78,50 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-1.5 w-full">
+      <label className="text-xs font-bold text-slate-800">Upload Logo</label>
       <div
-        onClick={() => fileInputRef.current.click()}
-        className="relative group w-24 h-24 bg-[#f9fafb] border border-slate-200 hover:border-brand-blue rounded-xl flex items-center justify-center cursor-pointer overflow-hidden transition-all"
+        className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+          isDragging
+            ? "border-brand-blue bg-blue-50"
+            : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
       >
+        <input
+          type="file"
+          id="logo-upload-input"
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          accept="image/*"
+          className="hidden"
+        />
         {preview ? (
-          <>
-            <div className="absolute top-0 right-0.5 z-10">
-              <span className="bg-black/60 text-white text-[9px] px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/10">
-                WEBP
-              </span>
-            </div>
+          <div className="flex flex-col items-center">
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-full object-contain p-2"
+              className="w-16 h-16 object-contain mb-3"
             />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <Upload className="text-white w-8 h-8" />
-            </div>
-          </>
-        ) : (
-          <div className="text-center p-4">
-            <Upload className="mx-auto text-gray-500 mb-2" />
-            <span className="text-xs text-gray-500">Upload Logo</span>
+            <span className="text-sm font-semibold text-slate-700 text-center">
+              Logo selected. Click or drag to replace.
+            </span>
           </div>
+        ) : (
+          <>
+            <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+            <p className="text-sm font-semibold text-slate-700 text-center">
+              Click or drag and drop to upload
+            </p>
+          </>
         )}
+        <p className="text-xs text-slate-500 mt-1">
+          SVG, PNG, JPG (max. 800x400px)
+        </p>
       </div>
-
-      <input
-        type="file"
-        id="logo-upload-input"
-        ref={fileInputRef}
-        onChange={handleImageChange}
-        accept="image/*"
-        className="hidden"
-      />
 
       {preview && (
         <button

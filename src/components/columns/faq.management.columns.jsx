@@ -17,13 +17,14 @@ export const getFaqManagementColumns = (onAction) => [
         SR.No
       </div>
     ),
-    size: 50,
+    size: 80,
+    minSize: 80,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-10 text-left font-medium text-[11px] text-slate-700">
+        <div className="w-10 px-1 text-left font-medium text-[11px] text-slate-700">
           {serialNumber}
         </div>
       );
@@ -36,6 +37,8 @@ export const getFaqManagementColumns = (onAction) => [
         Question
       </div>
     ),
+    size: 250,
+    minSize: 250,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
         {row.getValue("question") || "-"}
@@ -49,6 +52,8 @@ export const getFaqManagementColumns = (onAction) => [
         Answer
       </div>
     ),
+    size: 350,
+    minSize: 350,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 line-clamp-1">
         {row.getValue("answer") || "-"}
@@ -62,6 +67,8 @@ export const getFaqManagementColumns = (onAction) => [
         Status
       </div>
     ),
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => {
       const isActive =
         row.original.status === "Active" || row.original.status === true;
@@ -85,7 +92,8 @@ export const getFaqManagementColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 60,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>
@@ -99,13 +107,13 @@ export const getFaqManagementColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

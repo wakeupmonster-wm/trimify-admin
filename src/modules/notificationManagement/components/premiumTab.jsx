@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export const PremiumTab = ({ onSubmit, loading }) => {
   const [form, setForm] = useState({
@@ -55,10 +56,17 @@ export const PremiumTab = ({ onSubmit, loading }) => {
       <Button
         type="submit"
         variant="default"
-        className="w-full bg-purple-600 hover:bg-purple-700"
+        className="w-full bg-purple-600 hover:bg-purple-700 flex items-center justify-center gap-2"
         disabled={loading}
       >
-        {loading ? "Processing..." : "Blast to Premium Users"}
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Processing...
+          </>
+        ) : (
+          "Blast to Premium Users"
+        )}
       </Button>
     </form>
   );

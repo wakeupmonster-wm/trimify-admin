@@ -3,6 +3,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -214,13 +215,16 @@ export const getNutritionFoodColumns = (onAction) => [
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-40 rounded-xl shadow-lg border-slate-100"
+              className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
             >
+              <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                Actions
+              </DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => onAction(row.original, "edit")}
-                className="text-xs font-medium cursor-pointer py-2 hover:bg-slate-50 hover:text-brand-blue"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
+                onClick={() => onAction && onAction(row.original, "edit")}
               >
-                <Edit className="w-3.5 h-3.5 mr-2" />
+                <Edit className="w-3.5 h-3.5" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem

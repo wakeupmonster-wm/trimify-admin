@@ -5,7 +5,9 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Send, FileText } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Save, FileText } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import {
   getFitzoneIntro,
@@ -86,57 +88,64 @@ const EditFitzoneIntroPage = () => {
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-white rounded-lg shadow-md border border-slate-200 overflow-hidden">
-          {/* Card Header */}
-          <div className="bg-brand-blue py-3 text-center">
-            <h2 className="text-white font-semibold text-sm tracking-wide">
-              Edit Introduction
-            </h2>
-          </div>
-
-          {/* Card Content */}
-          <div className="p-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-bold text-slate-800">
                 Heading
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 placeholder="Begin Your Path to Better Health"
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
-                className="w-full h-10 px-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue"
+                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-bold text-slate-800">
                 Subheading
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 placeholder="Embrace a healthier lifestyle with our tailored fitness programs"
                 value={subheading}
                 onChange={(e) => setSubheading(e.target.value)}
-                className="w-full h-10 px-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue"
+                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
+            <div className="space-y-1.5">
+              <Label className="text-sm font-bold text-slate-800">
+                Introduction Content
+              </Label>
+              <p className="text-[13px] text-slate-500 font-medium">
+                Write a comprehensive introduction for your fitzone. This
+                content will be displayed to users before they start.
+              </p>
+            </div>
             <RichTextEditor
-              label="Introduction Content"
               value={content}
               onChange={setContent}
               height={400}
             />
 
-            <div className="flex justify-center pt-4">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                variant="outline"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-10 h-10 flex items-center gap-2 font-medium shadow-sm"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send className="w-4 h-4" />
-                Update Introduction
+                <Save size={16} />
+                {loading ? "Updating..." : "Update"}
               </Button>
             </div>
           </div>

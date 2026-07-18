@@ -21,6 +21,7 @@ import {
   CheckCircle,
   ShieldCheck,
   Check,
+  UploadCloud,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,24 @@ export const FeatureDialog = ({
 }) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      onFileUpload({ target: { files: [file] } });
+    }
+  };
 
   useEffect(() => {
     if (open) {
@@ -152,45 +171,38 @@ export const FeatureDialog = ({
 
           {/* Icon Upload */}
           <div className="space-y-1.5">
-            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              Icon (SVG/PNG) <span className="text-red-400 font-normal">*</span>
+            <Label className="text-xs font-bold text-slate-800">
+              Upload Icon (SVG/PNG) <span className="text-red-400 font-normal">*</span>
             </Label>
-            <div className="flex items-center gap-4 p-3 rounded-xl border border-slate-300 bg-slate-50/50 group hover:border-brand-blue transition-all">
-              <div className="w-12 h-12 rounded-lg bg-white shadow-sm border border-slate-300 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition-transform">
-                {isUploading ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-brand-blue" />
-                ) : formData.icon ? (
-                  <img
-                    src={formData.icon}
-                    alt="icon"
-                    className="w-full h-full object-contain p-2"
-                  />
-                ) : (
-                  <Sparkles className="w-4 h-4 text-slate-300" />
-                )}
-              </div>
-              <div className="flex-1">
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/svg+xml,image/png,image/jpeg"
-                  ref={fileInputRef}
-                  onChange={onFileUpload}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full h-9 rounded-lg border-slate-300 bg-white hover:bg-brand-hoverBlue hover:text-brand-blue hover:border-brand-blue font-bold text-[11px] gap-2 transition-all"
-                  onClick={() => fileInputRef.current.click()}
-                  disabled={isUploading}
-                >
-                  {isUploading
-                    ? "Uploading..."
-                    : formData.icon
-                      ? "Change Icon"
-                      : "Upload SVG Icon"}
-                </Button>
-              </div>
+            <div
+              className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                isDragging
+                  ? "border-brand-blue bg-blue-50"
+                  : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input
+                type="file"
+                className="hidden"
+                accept="image/svg+xml,image/png,image/jpeg"
+                ref={fileInputRef}
+                onChange={onFileUpload}
+              />
+              <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+              <p className="text-sm font-semibold text-slate-700 text-center">
+                {isUploading 
+                  ? "Uploading..." 
+                  : (formData.icon 
+                      ? "Icon selected. Click or drag to replace." 
+                      : "Click or drag and drop to upload")}
+              </p>
+              <p className="text-xs text-slate-500 mt-1">
+                SVG, PNG, JPG (max. 800x400px)
+              </p>
             </div>
           </div>
 

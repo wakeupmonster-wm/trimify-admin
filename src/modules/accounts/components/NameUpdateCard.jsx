@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { Loader2 } from "lucide-react";
 
 export const NameUpdateCard = ({ currentName }) => {
   const dispatch = useDispatch();
@@ -14,8 +15,16 @@ export const NameUpdateCard = ({ currentName }) => {
     defaultValues: { fullName: currentName },
   });
 
-  const onSubmit = (data) => {
-    dispatch(updateAdminName(data.fullName)).then(() => setIsEditing(false));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      await dispatch(updateAdminName(data.fullName));
+      setIsEditing(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -37,7 +46,16 @@ export const NameUpdateCard = ({ currentName }) => {
                 </p>
               )}
             </div>
-            <Button type="submit">Save</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
+            </Button>
           </form>
         ) : (
           <p className="font-semibold text-slate-700">

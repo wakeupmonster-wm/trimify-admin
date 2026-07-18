@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -57,8 +58,15 @@ export const EmailTab = ({ onSubmit, loading }) => {
           <SelectItem value="premium">Premium Users</SelectItem>
         </SelectContent>
       </Select>
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Sending..." : "Queue Email Campaign"}
+      <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={loading}>
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Sending...
+          </>
+        ) : (
+          "Send Email"
+        )}
       </Button>
     </form>
   );

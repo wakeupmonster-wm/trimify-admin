@@ -14,6 +14,7 @@ import {
   deleteFitzoneSession,
 } from "../store/fitzone.session.slice";
 import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const ManageFitzoneSessionPage = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const ManageFitzoneSessionPage = () => {
 
   const { sessions, loading } = useSelector((state) => state.fitzoneSession);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -31,7 +33,10 @@ const ManageFitzoneSessionPage = () => {
 
   const handleAction = async (row, action, value) => {
     if (action === "edit") {
-      navigate(`/admin/fitzone-management/manage/session/edit-session/${id}/${row.id}`, { state: { editData: row } });
+      navigate(
+        `/admin/fitzone-management/manage/session/edit-session/${id}/${row.id}`,
+        { state: { editData: row } },
+      );
     } else if (action === "toggle-status") {
       const statusStr = value ? "Active" : "Inactive";
       const resultAction = await dispatch(
@@ -44,15 +49,22 @@ const ManageFitzoneSessionPage = () => {
         toast.error(resultAction.payload || "Failed to update status");
       }
     } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this session?")) {
-        const resultAction = await dispatch(deleteFitzoneSession(row.id));
-        if (deleteFitzoneSession.fulfilled.match(resultAction)) {
-          toast.success("Session deleted successfully!");
-          dispatch(getFitzoneSessions(id));
-        } else {
-          toast.error(resultAction.payload || "Failed to delete session");
-        }
+      setDeleteTarget(row);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTarget) {
+      const resultAction = await dispatch(
+        deleteFitzoneSession(deleteTarget.id),
+      );
+      if (deleteFitzoneSession.fulfilled.match(resultAction)) {
+        toast.success("Session deleted successfully!");
+        dispatch(getFitzoneSessions(id));
+      } else {
+        toast.error(resultAction.payload || "Failed to delete session");
       }
+      setDeleteTarget(null);
     }
   };
 
@@ -69,15 +81,15 @@ const ManageFitzoneSessionPage = () => {
     <Container>
       <div className="space-y-8">
         <Header>
-          <PageHeader 
-            heading="Session Management" 
+          <PageHeader
+            heading="Session Management"
             icon={<Video className="w-9 h-9 text-white" />}
             color="bg-brand-blue shadow-blue-200"
             subheading="Manage workout sessions and videos."
           />
           <Button
             onClick={openAddModal}
-            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Session
@@ -91,8 +103,17 @@ const ManageFitzoneSessionPage = () => {
           searchPlaceholder="Search..."
           pagination={pagination}
           onPaginationChange={setPagination}
+          loading={loading}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Session"
+        message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
+      />
     </Container>
   );
 };

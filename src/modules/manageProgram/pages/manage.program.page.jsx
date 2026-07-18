@@ -4,7 +4,11 @@ import { LayoutDashboard, Plus } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import { getManageProgramColumns } from "@/components/columns/manage.program.columns";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,6 +20,7 @@ import {
 } from "../store/program.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const ManageProgramPage = () => {
   const navigate = useNavigate();
@@ -27,11 +32,10 @@ const ManageProgramPage = () => {
   } = useSelector((state) => state.manageProgram);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const [durationFilter, setDurationFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-
-  // Fallback to empty array if no data
-  const displayData = programs || [];
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     dispatch(
@@ -39,6 +43,7 @@ const ManageProgramPage = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
+        duration: durationFilter,
       }),
     );
   }, [
@@ -46,6 +51,7 @@ const ManageProgramPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    durationFilter,
   ]);
 
   const handleAction = async (row, action, value) => {
@@ -63,17 +69,7 @@ const ManageProgramPage = () => {
     } else if (action === "edit") {
       navigate("edit-program", { state: { editData: row } });
     } else if (action === "delete") {
-      console.log("Delete program:", row);
-      const result = await dispatch(deleteProgram(row.id));
-      if (deleteProgram.fulfilled.match(result)) {
-        dispatch(
-          fetchProgramList({
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearchTerm,
-          }),
-        );
-      }
+      setDeleteTarget(row);
     } else if (action === "replicate") {
       console.log("Replicate program:", row.id);
       const result = await dispatch(replicateProgram(row.id));
@@ -83,10 +79,27 @@ const ManageProgramPage = () => {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
             search: debouncedSearchTerm,
+            duration: durationFilter,
           }),
         );
       }
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const result = await dispatch(deleteProgram(deleteTarget.id));
+    if (deleteProgram.fulfilled.match(result)) {
+      dispatch(
+        fetchProgramList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          duration: durationFilter,
+        }),
+      );
+    }
+    setDeleteTarget(null);
   };
 
   const columns = useMemo(() => getManageProgramColumns(handleAction), []);
@@ -94,6 +107,31 @@ const ManageProgramPage = () => {
   // Check if the backend is doing manual pagination.
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
+
+  // Local fallback filtering
+  const displayData = useMemo(() => {
+    if (!durationFilter) return programs || [];
+    return (programs || []).filter(
+      (p) => String(p.duration) === String(durationFilter),
+    );
+  }, [programs, durationFilter]);
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "durationFilter",
+      label: "Duration",
+      value: durationFilter,
+      onChange: setDurationFilter,
+      options: [
+        { label: "4 Weeks", value: "4" },
+        { label: "6 Weeks", value: "6" },
+        { label: "8 Weeks", value: "8" },
+        { label: "12 Weeks", value: "12" },
+      ],
+      placeholder: "All Durations",
+    },
+  ];
 
   return (
     <Container>
@@ -109,7 +147,7 @@ const ManageProgramPage = () => {
 
             <div className="flex flex-wrap items-center gap-3">
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
                 onClick={() => navigate("add-program")}
               >
                 <Plus className="w-4 h-4" />
@@ -134,8 +172,23 @@ const ManageProgramPage = () => {
           isLoading={loading}
           manualPagination={isManual}
           manualFiltering={isManual}
+          toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+          activeFiltersChildren={
+            <DataTableActiveChips
+              filterConfig={filterConfig}
+              onClearAll={() => setDurationFilter("")}
+            />
+          }
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Program"
+        message="Are you sure you want to delete this program? This action cannot be undone."
+      />
     </Container>
   );
 };

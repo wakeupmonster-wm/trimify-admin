@@ -75,7 +75,7 @@ export default function PrivacyAndPolicyPage() {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
@@ -109,8 +109,8 @@ export default function PrivacyAndPolicyPage() {
           </div>
         </Header>
 
-        <div className="space-y-6">
-          <div className="px-4">
+        <div className="space-y-4">
+          <div className="px-2">
             <RichTextEditor 
               value={content}
               onChange={setContent}

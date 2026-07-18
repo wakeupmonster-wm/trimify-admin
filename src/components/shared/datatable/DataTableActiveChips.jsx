@@ -14,7 +14,19 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
       activeChips.push({
         id: filter.id,
         label: filter.label,
-        displayValue: filter.getDisplayValue ? filter.getDisplayValue(filter.value) : filter.value.toString().replace("_", " ").replace("-", " "),
+        displayValue: filter.getDisplayValue 
+          ? filter.getDisplayValue(filter.value) 
+          : (() => {
+              const matched = filter.options?.find(
+                (o) => (typeof o === "object" ? o.value : o) === filter.value
+              );
+              const lbl = matched
+                ? typeof matched === "object"
+                  ? matched.label
+                  : matched
+                : filter.value;
+              return lbl.toString().replace("_", " ").replace("-", " ");
+            })(),
         onClear: () => filter.onChange("")
       });
     }

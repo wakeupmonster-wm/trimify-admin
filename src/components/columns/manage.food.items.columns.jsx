@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -13,12 +14,13 @@ export const getManageFoodItemsColumns = (handleAction) => [
     accessorKey: "sno",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        S.No
+        SR.No
       </div>
     ),
-    size: 60,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => (
-      <div className="text-left font-bold text-[11px] text-foreground/90">
+      <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
       </div>
     ),
@@ -30,7 +32,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Last Edit
       </div>
     ),
-    size: 150,
+    size: 130,
+    minSize: 130,
     cell: ({ row }) => {
       const date = row.original.updated_at
         ? new Date(row.original.updated_at)
@@ -54,6 +57,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
       </div>
     ),
     size: 250,
+    minSize: 250,
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
         {row.original.meal.Meal_title || "-"}
@@ -67,7 +71,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Food Category
       </div>
     ),
-    size: 150,
+    size: 200,
+    minSize: 200,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
         {row.original.category?.name ||
@@ -85,6 +90,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
       </div>
     ),
     size: 180,
+    minSize: 180,
     cell: ({ row }) => {
       const isApproved =
         row.original.approval_status === "Approved" ||
@@ -110,7 +116,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Status
       </div>
     ),
-    size: 100,
+    size: 120,
+    minSize: 120,
     cell: ({ row }) => {
       const isApproved =
         row.original.approval_status === "Approved" ||
@@ -136,7 +143,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 80,
+    size: 100,
+    minSize: 100,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center">
@@ -148,19 +156,22 @@ export const getManageFoodItemsColumns = (handleAction) => [
               >
                 <MoreVertical className="h-4 w-4 text-foreground/90" />
               </Button>
-            </DropdownMenuTrigger>
+            </DropdownMenuTrigger>{" "}
             <DropdownMenuContent
               align="end"
-              className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+              className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
             >
+              <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                Actions
+              </DropdownMenuLabel>
               <DropdownMenuItem
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
                 onClick={() =>
                   handleAction && handleAction(row.original, "edit")
                 }
-                className="text-xs font-medium text-slate-700 hover:bg-slate-50 cursor-pointer rounded-lg py-2"
               >
-                <Edit className="mr-2 h-3.5 w-3.5" />
-                Edit Food
+                <Edit className="w-3.5 h-3.5" />
+                Edit
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() =>

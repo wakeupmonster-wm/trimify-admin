@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { resetSchema } from "../schemas/auth.schemas";
 import { useEffect, useState } from "react";
@@ -141,7 +141,14 @@ export default function ForgotPasswordForm() {
           disabled={loading}
           className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
         >
-          {loading ? "Updating..." : "Update Password"}
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Updating...
+            </>
+          ) : (
+            "Update Password"
+          )}
         </Button>
       </div>
     </form>

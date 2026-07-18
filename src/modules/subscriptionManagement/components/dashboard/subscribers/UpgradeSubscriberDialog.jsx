@@ -71,10 +71,16 @@ export default function UpgradeSubscriberDialog({ open, onOpenChange, subscriber
           <Button
             type="submit"
             disabled={loading || !planId || !planExpiry}
-            className="w-full bg-brand-aqua hover:bg-brand-hoverAqua text-white font-semibold h-10 flex items-center justify-center gap-2"
+            className="bg-brand-aqua hover:bg-brand-hoverAqua text-white px-6 rounded-md text-xs font-semibold flex items-center gap-2"
           >
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            Confirm Upgrade
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Upgrading...
+              </>
+            ) : (
+              "Confirm Upgrade"
+            )}
           </Button>
         </form>
       </DialogContent>

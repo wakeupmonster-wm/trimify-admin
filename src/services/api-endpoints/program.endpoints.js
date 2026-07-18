@@ -30,7 +30,7 @@ export const PROGRAM = {
   PROGRAM_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-program/${id}`,
 
   /** PATCH — Toggle food visibility for a program */
-  PROGRAM_TOGGLE_FOOD_VISIBILITY: (id) => `${ADMIN}/toggle-food-visibility/${id}`,
+  PROGRAM_TOGGLE_FOOD_VISIBILITY: (id) => `${ADMIN}/toggle-status-food-visibility/${id}`,
 
   /** GET — Get the current food visibility state for a program */
   PROGRAM_GET_FOOD_VISIBILITY: (id) => `${ADMIN}/program-food-visibility/${id}`,

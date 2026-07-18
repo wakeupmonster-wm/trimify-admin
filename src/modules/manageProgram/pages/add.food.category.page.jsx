@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Send, Layers } from "lucide-react";
+import { ArrowLeft, Save, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
 import { BASE_URL } from "@/services/api-endpoints/base.url";
@@ -24,12 +24,16 @@ const AddFoodCategoryPage = () => {
   const [categoryName, setCategoryName] = useState(
     editData?.name || editData?.title || "",
   );
+  const [description, setDescription] = useState(
+    editData?.description || "",
+  );
   const [iconFile, setIconFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(
     editData?.image
       ? `${BASE_URL.replace("/api", "")}/${editData.image}`
       : null,
   );
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -43,8 +47,17 @@ const AddFoodCategoryPage = () => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
   const handleDrop = (e) => {
     e.preventDefault();
+    setIsDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) {
       if (file.size > 6 * 1024 * 1024) {
@@ -56,10 +69,6 @@ const AddFoodCategoryPage = () => {
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
   const handleSubmit = async () => {
     if (!categoryName.trim()) {
       toast.error("Please enter a category name.");
@@ -68,7 +77,8 @@ const AddFoodCategoryPage = () => {
 
     // Create FormData for file upload
     const formData = new FormData();
-    formData.append("title", categoryName);
+    formData.append("name", categoryName);
+    formData.append("description", description);
     if (iconFile) {
       formData.append("image", iconFile);
     }
@@ -96,47 +106,52 @@ const AddFoodCategoryPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
-          <PageHeader
-            heading="Manage Food Category"
-            icon={<Layers className="w-9 h-10 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
-            subheading={
-              isEditMode
-                ? "Edit and configure food category."
-                : "Add and configure food categories."
-            }
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <PageHeader
+              heading="Manage Food Category"
+              icon={<Layers className="w-9 h-10 text-white" />}
+              color="bg-brand-blue shadow-blue-200"
+              subheading={
+                isEditMode
+                  ? "Edit and configure food category."
+                  : "Add and configure food categories."
+              }
+            />
+          </div>
         </Header>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mx-auto w-full">
-          {/* Card Header */}
-          <div className="bg-brand-blue text-white px-6 py-4 flex items-center justify-center">
-            <h2 className="text-lg font-semibold tracking-wide">
-              {isEditMode ? "Edit Food Category" : "Add Food Category"}
-            </h2>
-          </div>
-
-          {/* Card Content */}
-          <div className="p-8 space-y-6">
-            {/* Category Name */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
+        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-200 overflow-hidden">
+          <div className="space-y-6">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-800">
                 Category Name
               </label>
               <input
                 type="text"
                 placeholder="Enter Category Name"
-                className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
               />
             </div>
 
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-800">
+                Description
+              </label>
+              <textarea
+                placeholder="Enter Category Description"
+                className="w-full px-4 py-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+
             {isEditMode && editData?.image && (
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800">
                   Current Uploaded Banner Image
                 </label>
                 <div className="flex flex-col items-center justify-center py-4">
@@ -149,49 +164,21 @@ const AddFoodCategoryPage = () => {
               </div>
             )}
 
-            {/* Upload Icon */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
                 {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
-              </label>
+              </Label>
               <div
-                className="w-full border-2 border-dashed border-slate-300 rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors relative"
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-brand-blue bg-blue-50"
+                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onClick={() => document.getElementById("icon-upload").click()}
               >
-                {previewUrl ? (
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="w-16 h-16 object-contain mb-2"
-                    />
-                    <span className="text-xs text-slate-500">
-                      Click or drag to replace
-                    </span>
-                  </div>
-                ) : (
-                  <>
-                    <svg
-                      className="w-12 h-12 text-slate-300 mb-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      ></path>
-                    </svg>
-                    <p className="text-sm text-slate-400 font-medium">
-                      Drag and drop a file here or click
-                    </p>
-                  </>
-                )}
                 <input
                   id="icon-upload"
                   type="file"
@@ -199,28 +186,53 @@ const AddFoodCategoryPage = () => {
                   className="hidden"
                   onChange={handleFileChange}
                 />
+                {previewUrl ? (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-16 h-16 object-contain mb-3"
+                    />
+                    <span className="text-sm font-semibold text-slate-700 text-center">
+                      Icon selected. Click or drag to replace.
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                    <p className="text-sm font-semibold text-slate-700 text-center">
+                      Click or drag and drop to upload
+                    </p>
+                  </>
+                )}
+                <p className="text-xs text-slate-500 mt-1">
+                  SVG, PNG, JPG (max. 800x400px)
+                </p>
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Maximum Icon Size: Up to 6MB per upload
-              </p>
             </div>
           </div>
 
-          {/* Footer Action */}
-          <div className="pb-8 flex justify-center">
+          <div className="mt-8 flex justify-end gap-4">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 h-11 text-sm font-semibold shadow-sm w-48"
+              variant="outline"
+              className="rounded-md px-8 py-2.5 h-auto text-sm font-semibold"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >
-              <Send className="w-4 h-4 mr-2" />
+              <Save size={16} />
               {loading
                 ? isEditMode
                   ? "Updating..."
-                  : "Adding..."
+                  : "Saving..."
                 : isEditMode
-                  ? "Update Category"
-                  : "Add Category"}
+                  ? "Update"
+                  : "Save"}
             </Button>
           </div>
         </div>

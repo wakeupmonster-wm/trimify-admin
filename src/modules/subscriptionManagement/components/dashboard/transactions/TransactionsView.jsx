@@ -177,7 +177,7 @@ export default function TransactionsView() {
               variant="outline"
               onClick={handleExport}
               disabled={exportLoading}
-              className="h-9 3xl:h-10 border-slate-200 bg-slate-50 hover:bg-brand-aqua shadow-sm text-slate-500 hover:text-white transition-all active:scale-95"
+              className="h-9 3xl:h-10 border-slate-200 bg-slate-50 hover:bg-brand-blue shadow-sm text-slate-500 hover:text-white transition-all active:scale-95"
             >
               {exportLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Download className="w-3.5 h-3.5 mr-1.5" />}
               Export CSV

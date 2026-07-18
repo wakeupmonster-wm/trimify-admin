@@ -1,5 +1,6 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { FileText, Plus } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
@@ -7,23 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/components/shared/datatable";
 import { getManageCategoryColumns } from "@/components/columns/manage.category.columns";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBlogCategories } from "../store/blog.slice";
+import { 
+  fetchBlogCategories, 
+  toggleBlogCategoryStatus, 
+  deleteBlogCategory 
+} from "../store/blog.slice";
 import { Button } from "@/components/ui/button";
-
-const dummyCategories = [
-  {
-    id: 1,
-    title: "Nutrition",
-    description: "All about healthy eating and diet plans.",
-    status: true,
-  },
-  {
-    id: 2,
-    title: "Workout",
-    description: "Workout routines and exercises.",
-    status: true,
-  },
-];
+import { toast } from "sonner";
 
 const ManageCategoryPage = () => {
   const navigate = useNavigate();
@@ -37,6 +28,7 @@ const ManageCategoryPage = () => {
     pageIndex: Math.max(0, categoriesPagination.page - 1),
     pageSize: categoriesPagination.limit || 10,
   });
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
 
   useEffect(() => {
     dispatch(
@@ -48,13 +40,43 @@ const ManageCategoryPage = () => {
     );
   }, [dispatch, categoryPage.pageIndex, categoryPage.pageSize, categoryFilter]);
 
-  const handleCategoryAction = (row, action, value) => {
+  const handleCategoryAction = async (row, action, value) => {
     if (action === "toggle-status") {
-      console.log("Toggle category status for:", row.id, "to", value);
+      try {
+        await dispatch(toggleBlogCategoryStatus(row.id)).unwrap();
+        toast.success("Category status updated successfully!");
+        dispatch(
+          fetchBlogCategories({
+            page: categoryPage.pageIndex + 1,
+            limit: categoryPage.pageSize,
+            search: categoryFilter,
+          })
+        );
+      } catch (error) {
+        toast.error(error || "Failed to update category status");
+      }
     } else if (action === "edit") {
       navigate(`/admin/blog-section/edit-category/${row.id}`, { state: { editData: row } });
     } else if (action === "delete") {
-      console.log("Delete category:", row);
+      setDeleteModal({ open: true, rowData: row });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    try {
+      await dispatch(deleteBlogCategory(deleteModal.rowData.id)).unwrap();
+      toast.success("Category deleted successfully!");
+      setDeleteModal({ open: false, rowData: null });
+      dispatch(
+        fetchBlogCategories({
+          page: categoryPage.pageIndex + 1,
+          limit: categoryPage.pageSize,
+          search: categoryFilter,
+        })
+      );
+    } catch (error) {
+      toast.error(error || "Failed to delete category");
     }
   };
 
@@ -63,7 +85,7 @@ const ManageCategoryPage = () => {
     [],
   );
   const displayCategories =
-    categories && categories.length > 0 ? categories : dummyCategories;
+    categories && categories.length > 0 ? categories : [];
   const isCategoryManual = !!(
     categoriesPagination && categoriesPagination.total > 0
   );
@@ -82,7 +104,7 @@ const ManageCategoryPage = () => {
 
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
                 onClick={() => navigate("/admin/blog-section/add-category")}
               >
                 <Plus className="w-4 h-4" />
@@ -111,6 +133,14 @@ const ManageCategoryPage = () => {
           manualFiltering={isCategoryManual}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this category? This action cannot be undone."
+      />
     </Container>
   );
 };

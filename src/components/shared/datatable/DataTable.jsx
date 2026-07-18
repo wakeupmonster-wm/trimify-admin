@@ -29,7 +29,8 @@ export default function DataTable({
   searchPlaceholder = "Search...",
   globalFilter,
   setGlobalFilter,
-  isLoading,
+  isLoading: _isLoading,
+  loading,
   meta,
   itemName = "items",
   onRowClick,
@@ -40,6 +41,7 @@ export default function DataTable({
   manualSorting = false,
   rowClassName, // custom function or string for row class
 }) {
+  const isLoading = _isLoading || loading;
   const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({
@@ -60,7 +62,7 @@ export default function DataTable({
   });
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-3">
       <DataTableToolbar
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
@@ -73,7 +75,7 @@ export default function DataTable({
 
       {/* ACTIVE FILTERS AREA */}
       {activeFiltersChildren && (
-        <div className="flex flex-wrap items-center gap-2 mt-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <AnimatePresence>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}

@@ -5,7 +5,16 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Send, X, Utensils } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Send, Utensils } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -13,9 +22,11 @@ import {
   addFood,
   updateFood,
   toggleFoodStatus,
+  deleteFood,
   getFoodCategoriesDrop,
 } from "../store/food.slice";
 import { getManageFoodItemsColumns } from "@/components/columns/manage.food.items.columns";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const ManageFoodItemsPage = () => {
   const { programId, categoryId } = useParams();
@@ -33,6 +44,7 @@ const ManageFoodItemsPage = () => {
   // Consolidated Form State (Add & Edit)
   const [isEditing, setIsEditing] = useState(false);
   const [editingFoodId, setEditingFoodId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     type: "Non Approved",
@@ -81,6 +93,8 @@ const ManageFoodItemsPage = () => {
     });
   };
 
+  console.log("formData: ", formData);
+
   const handleAddOrUpdateFood = async () => {
     if (!formData.title.trim()) {
       toast.error("Please enter a food name.");
@@ -93,11 +107,14 @@ const ManageFoodItemsPage = () => {
 
     if (isEditing) {
       const payload = {
-        title: formData.title,
-        type: formData.type,
+        foodName: formData.title,
+        approvalStatus: formData.type,
+        category: formData.category_id,
         quantity: formData.quantity,
         unit: formData.unit,
       };
+
+      console.log("payload: ", payload);
       const resultAction = await dispatch(
         updateFood({ id: editingFoodId, data: payload }),
       );
@@ -111,9 +128,9 @@ const ManageFoodItemsPage = () => {
     } else {
       const payload = {
         program_id: programId,
-        foodcategory_id: formData.category_id,
-        name: formData.title, // Add endpoint expects 'name' historically based on earlier assumptions, but we map title to it
-        approval_status: formData.type,
+        category: formData.category_id,
+        foodName: formData.title,
+        approvalStatus: formData.type,
         quantity: formData.quantity,
         unit: formData.unit,
       };
@@ -152,14 +169,26 @@ const ManageFoodItemsPage = () => {
         title: row.name || row.title || row.meal?.Meal_title || "",
         type: isApproved ? "Approved" : "Non Approved",
         category_id: row.category_id || row.foodcategory_id || categoryId || "",
-        quantity: row.quantity || "",
-        unit: row.unit || "",
+        quantity: row.quantity || row.meal?.quantity || row.meal_quantity || "",
+        unit: row.unit || row.meal?.unit || row.meal_unit || "",
       });
       // Scroll to top where the form is
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (action === "delete") {
-      console.log("Delete food", row);
+      setDeleteTarget(row);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const resultAction = await dispatch(deleteFood(deleteTarget.id));
+    if (deleteFood.fulfilled.match(resultAction)) {
+      toast.success("Food deleted successfully!");
+      dispatch(getFoodList({ programId, categoryId }));
+    } else {
+      toast.error(resultAction.payload || "Failed to delete food.");
+    }
+    setDeleteTarget(null);
   };
 
   const columns = useMemo(
@@ -169,38 +198,29 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
-          <PageHeader
-            heading="Manage Food Items"
-            icon={<Utensils className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
-            subheading="Add, edit, or remove specific food items."
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <PageHeader
+              heading={isEditing ? "Edit Food Item" : "Add Food Item"}
+              icon={<Utensils className="w-9 h-9 text-white" />}
+              color="bg-brand-blue shadow-blue-200"
+              subheading={
+                isEditing
+                  ? "Modify the selected food item's details."
+                  : "Add a new specific food item."
+              }
+            />
+          </div>
         </Header>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mx-auto w-full mb-6">
-          <div className="bg-brand-blue text-white px-6 py-4 flex items-center justify-center relative">
-            <h2 className="text-lg font-semibold tracking-wide">
-              {isEditing ? "Edit Food" : "Add Food"}
-            </h2>
-            {isEditing && (
-              <Button
-                variant="ghost"
-                onClick={resetForm}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 hover:text-white rounded-full h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-
-          <div className="p-8 space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mx-auto w-full">
+          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
             {/* Approval Status */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
                 Approval Status
-              </label>
+              </Label>
               <div className="flex items-center gap-6 mt-2">
                 <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
                   <input
@@ -232,14 +252,14 @@ const ManageFoodItemsPage = () => {
             </div>
 
             {/* Search / Food Name */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
                 {isEditing ? "Food Name" : "Search Food Name"}
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 placeholder="Enter Food Name..."
-                className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 value={formData.title}
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
@@ -247,97 +267,98 @@ const ManageFoodItemsPage = () => {
               />
             </div>
 
-            {/* Food Category */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
                 Food Category
-              </label>
-              <select
-                className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-slate-100 appearance-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+              </Label>
+              <Select
                 value={formData.category_id}
-                onChange={(e) =>
-                  setFormData({ ...formData, category_id: e.target.value })
+                onValueChange={(val) =>
+                  setFormData({ ...formData, category_id: val })
                 }
                 disabled={isEditing}
               >
-                <option value="" disabled>
-                  Select Category
-                </option>
-                {dropdownCategories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name || cat.title}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium disabled:bg-slate-50 disabled:opacity-70 disabled:cursor-not-allowed">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {dropdownCategories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id.toString()}>
+                      {cat.name || cat.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Optional Fields based on Approved status */}
             {formData.type === "Approved" && (
               <>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-800">
                     Food Quantity
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     value={formData.quantity}
                     onChange={(e) =>
                       setFormData({ ...formData, quantity: e.target.value })
                     }
-                    className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                    className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                     placeholder="Enter Food Quantity"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-800">
                     Select Unit
-                  </label>
-                  <select
-                    className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-white appearance-none cursor-pointer"
+                  </Label>
+                  <Select
                     value={formData.unit}
-                    onChange={(e) =>
-                      setFormData({ ...formData, unit: e.target.value })
+                    onValueChange={(val) =>
+                      setFormData({ ...formData, unit: val })
                     }
                   >
-                    <option value="" disabled>
-                      Select Unit
-                    </option>
-                    {standardUnits.map((u) => (
-                      <option key={u} value={u}>
-                        {u}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                      <SelectValue placeholder="Select Unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {standardUnits.map((u) => (
+                        <SelectItem key={u} value={u}>
+                          {u}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </>
             )}
-          </div>
 
-          <div className="pb-8 flex justify-center gap-4 border-b border-slate-100">
-            {isEditing && (
+            <div className="mt-8 flex justify-end gap-4">
+              {isEditing && (
+                <Button
+                  variant="outline"
+                  className="rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
+                  onClick={resetForm}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+              )}
               <Button
-                variant="outline"
-                className="h-11 text-sm font-semibold px-8 border-slate-300 text-slate-700 hover:bg-slate-50"
-                onClick={resetForm}
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >
-                Cancel
+                {!isEditing && <Send size={16} />}
+                {loading
+                  ? isEditing
+                    ? "Updating..."
+                    : "Adding..."
+                  : isEditing
+                    ? "Update Food"
+                    : "Add Food"}
               </Button>
-            )}
-            <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 h-11 text-sm font-semibold shadow-sm w-48"
-              onClick={handleAddOrUpdateFood}
-              disabled={loading}
-            >
-              {!isEditing && <Send className="w-4 h-4 mr-2" />}
-              {loading
-                ? isEditing
-                  ? "Saving..."
-                  : "Adding..."
-                : isEditing
-                  ? "Save Changes"
-                  : "Add Food"}
-            </Button>
+            </div>
           </div>
         </div>
 
@@ -353,6 +374,14 @@ const ManageFoodItemsPage = () => {
           loading={loading}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Food Item"
+        message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
+      />
     </Container>
   );
 };

@@ -5,7 +5,7 @@ export const getViewUserProgramColumns = () => [
     accessorKey: "sno",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        S.No
+        SR.No
       </div>
     ),
     size: 50,

@@ -39,46 +39,46 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-    --brand-: 212, 100%, 45%;
-    --hover-blue: 212, 100%, 50%;
+    --brand-: 212 100% 45%;
+    --hover-blue: 212 100% 50%;
     /* #46C7CD */
     --brand-bg: 198 100% 96%;
     /* #AAE1FE at low opacity */
 
     /* Main Brand Color (#46C7CD) */
-    --brand-blue: 212, 100%, 45%;
+    --brand-blue: 212 100% 45%;
 
     /* Alerts */
     --info: 182 59% 54%;
     /* #46C7CD (same as main) */
     --success: 151 72% 46%;
-    --success-dark: 151, 72%, 37%;
+    --success-dark: 151 72% 37%;
     /* #1AA260 */
     /* #12D18E */
     --warning: 45 98% 54%;
     --warning-dark: 45 98% 26%;
     /* #FACC15 */
     --error: 0 100% 65%;
-    --error-dark: 0, 58%, 52%;
+    --error-dark: 0 58% 52%;
     /* #CC3D3D */
     /* #F75555 */
-    --light-dis: 0, 0%, 85%;
-    --light-dis-dark: 0, 0%, 26%;
+    --light-dis: 0 0% 85%;
+    --light-dis-dark: 0 0% 26%;
     /* #D8D8D8 */
-    --dark-dis: 0, 0%, 13%;
-    --dark-dis-dark: 0, 0%, 85%;
+    --dark-dis: 0 0% 13%;
+    --dark-dis-dark: 0 0% 85%;
     /* #212121 */
-    --button-dis: 274, 88%, 43%;
-    --button-dis-dark: 274, 88%, 26%;
+    --button-dis: 274 88% 43%;
+    --button-dis-dark: 274 88% 26%;
     /* #780DCC */
 
-    --bg-info: 182, 90%, 92%;
+    --bg-info: 182 90% 92%;
     /* #d7fcfd */
-    --bg-success: 160, 81%, 89%;
+    --bg-success: 160 81% 89%;
     /* #cefaeb*/
-    --bg-warning: 49, 91%, 91%;
+    --bg-warning: 49 91% 91%;
     /* #fdf5d3 */
-    --bg-error: 0, 70%, 94%;
+    --bg-error: 0 70% 94%;
     /* #fae5e5 */
 
     /* Greyscale Mapping */

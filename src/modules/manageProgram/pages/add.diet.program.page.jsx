@@ -5,7 +5,16 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Send, Check, X, CalendarCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Save, X, CalendarCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
   getProgramDuration,
@@ -86,15 +95,12 @@ const AddDietProgramPage = () => {
       return;
     }
 
-    const dayNum =
-      (parseInt(selectedWeek) - 1) * 7 +
-      (DAYS_OF_WEEK.indexOf(selectedDay) + 1);
-
     const payload = {
       program_id: id,
-      day: dayNum,
-      meal_ids: selectedMeals.map((m) => m.id),
-      meal_type: selectedMealType,
+      week: selectedWeek,
+      day: selectedDay,
+      food: selectedMeals[0].id,
+      meal: selectedMealType,
     };
 
     const resultAction = await dispatch(addDietMeal(payload));
@@ -110,95 +116,88 @@ const AddDietProgramPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
-          <PageHeader
-            heading="Add Diet Meal Plan"
-            icon={<CalendarCheck className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
-            subheading="Add a new diet meal to this plan."
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <PageHeader
+              heading="Add Diet Meal Plan"
+              icon={<CalendarCheck className="w-9 h-9 text-white" />}
+              color="bg-brand-blue shadow-blue-200"
+              subheading="Add a new diet meal to this plan."
+            />
+          </div>
         </Header>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mx-auto w-full mb-6">
-          <div className="bg-brand-blue text-white px-6 py-4 flex items-center justify-center">
-            <h2 className="text-lg font-semibold tracking-wide">
-              Add Diet Meal
-            </h2>
-          </div>
-
-          <div className="p-8 space-y-6">
-            <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-slate-800">
                   Choose Week
-                </label>
-                <select
-                  className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-white appearance-none cursor-pointer"
-                  value={selectedWeek}
-                  onChange={(e) => setSelectedWeek(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select Week
-                  </option>
-                  {weeksOptions.map((w) => (
-                    <option key={w} value={w}>
-                      Week {w}
-                    </option>
-                  ))}
-                </select>
+                </Label>
+                <Select value={selectedWeek} onValueChange={setSelectedWeek}>
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                    <SelectValue placeholder="Select Week" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {weeksOptions.map((w) => (
+                      <SelectItem key={w} value={w.toString()}>
+                        Week {w}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Choose Day */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-slate-800">
                   Choose Day
-                </label>
-                <select
-                  className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-white appearance-none cursor-pointer"
-                  value={selectedDay}
-                  onChange={(e) => setSelectedDay(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select Day
-                  </option>
-                  {DAYS_OF_WEEK.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
-                </select>
+                </Label>
+                <Select value={selectedDay} onValueChange={setSelectedDay}>
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                    <SelectValue placeholder="Select Day" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DAYS_OF_WEEK.map((d) => (
+                      <SelectItem key={d} value={d}>
+                        {d}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Choose Meal Type */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-slate-800">
                   Choose Meal Type
-                </label>
-                <select
-                  className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors bg-white appearance-none cursor-pointer"
+                </Label>
+                <Select
                   value={selectedMealType}
-                  onChange={(e) => setSelectedMealType(e.target.value)}
+                  onValueChange={setSelectedMealType}
                 >
-                  <option value="" disabled>
-                    Select Meal
-                  </option>
-                  {MEAL_TYPES.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                    <SelectValue placeholder="Select Meal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MEAL_TYPES.map((m) => (
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Search Food / Selected Food */}
               {selectedMeals.length > 0 ? (
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-800">
                     Selected Food
-                  </label>
-                  <div className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md flex items-center justify-between bg-white">
+                  </Label>
+                  <div className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md flex items-center justify-between bg-white font-medium">
                     <span className="truncate">
                       {selectedMeals[0].title ||
                         selectedMeals[0].name ||
@@ -213,14 +212,14 @@ const AddDietProgramPage = () => {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2 relative">
-                  <label className="text-sm font-semibold text-slate-700">
+                <div className="space-y-1.5 relative">
+                  <Label className="text-xs font-bold text-slate-800">
                     Search Food
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     type="text"
                     placeholder="Search Food..."
-                    className="w-full h-11 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors"
+                    className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
@@ -255,14 +254,21 @@ const AddDietProgramPage = () => {
               )}
             </div>
 
-            <div className="pb-8 flex justify-center border-b border-slate-100">
+            <div className="mt-8 flex justify-end gap-4">
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 h-11 text-sm font-semibold shadow-sm w-48"
+                variant="outline"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
                 onClick={handleAddDietMeal}
                 disabled={loading}
               >
-                <Send className="w-4 h-4 mr-2" />
-                {loading ? "Adding..." : "Add Diet Meal"}
+                <Save size={16} />
+                {loading ? "Saving..." : "Save"}
               </Button>
             </div>
           </div>

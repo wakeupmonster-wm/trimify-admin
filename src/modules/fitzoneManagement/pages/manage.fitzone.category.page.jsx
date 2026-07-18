@@ -13,6 +13,7 @@ import {
   deleteFitzoneCategory,
 } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const ManageFitzoneCategoryPage = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const ManageFitzoneCategoryPage = () => {
   const { categories, loading } = useSelector((state) => state.fitzoneCategory);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -36,17 +38,24 @@ const ManageFitzoneCategoryPage = () => {
         { state: { editData: row } },
       );
     } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this category?")) {
-        dispatch(deleteFitzoneCategory(row.id))
-          .unwrap()
-          .then(() => {
-            toast.success("Category deleted successfully!");
-            dispatch(getFitzoneCategories(id));
-          })
-          .catch((err) => {
-            toast.error(err || "Failed to delete category");
-          });
-      }
+      setDeleteTarget(row);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteTarget) {
+      dispatch(deleteFitzoneCategory(deleteTarget.id))
+        .unwrap()
+        .then(() => {
+          toast.success("Category deleted successfully!");
+          dispatch(getFitzoneCategories(id));
+        })
+        .catch((err) => {
+          toast.error(err || "Failed to delete category");
+        })
+        .finally(() => {
+          setDeleteTarget(null);
+        });
     }
   };
 
@@ -71,7 +80,7 @@ const ManageFitzoneCategoryPage = () => {
           />
           <Button
             onClick={openAddModal}
-            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Session Category
@@ -85,8 +94,17 @@ const ManageFitzoneCategoryPage = () => {
           searchPlaceholder="Search..."
           pagination={pagination}
           onPaginationChange={setPagination}
+          loading={loading}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Category"
+        message={`Are you sure you want to delete the category "${deleteTarget?.title}"? This action cannot be undone.`}
+      />
     </Container>
   );
 };

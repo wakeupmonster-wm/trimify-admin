@@ -11,7 +11,7 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
     size: 100,
     minSize: 100,
     cell: ({ row }) => (
-      <div className="w-8 text-center font-bold text-[11px] text-foreground/90">
+      <div className="w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
       </div>
     ),

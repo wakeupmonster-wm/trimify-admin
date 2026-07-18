@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import {
-  IconMail,
-  IconShieldCheck,
-  IconArrowRight,
-  IconRefresh,
-} from "@tabler/icons-react";
+import { IconMail, IconArrowRight } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -76,7 +71,7 @@ export const EmailUpdateCard = ({ currentEmail }) => {
                 className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6"
               >
                 {loading ? (
-                  <IconRefresh className="animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <IconArrowRight size={18} />
                 )}

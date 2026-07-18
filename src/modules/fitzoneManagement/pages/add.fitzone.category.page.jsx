@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { CloudUpload, Send, Layers } from "lucide-react";
+import { UploadCloud, Layers, Send, Loader2 } from "lucide-react";
 import {
   addFitzoneCategory,
   updateFitzoneCategory,
@@ -24,11 +24,15 @@ const AddFitzoneCategoryPage = () => {
   const editData = location.state?.editData || null;
 
   // Form State
-  const [categoryName, setCategoryName] = useState("");
-  const [categoryDetails, setCategoryDetails] = useState("");
-  const [htmlContent, setHtmlContent] = useState("");
+  const [categoryName, setCategoryName] = useState(editData?.title || "");
+  const [categoryDetails, setCategoryDetails] = useState(
+    editData?.description || "",
+  );
   const [iconFile, setIconFile] = useState(null);
-  const [iconPreview, setIconPreview] = useState(null);
+  const [iconPreview, setIconPreview] = useState(editData?.image || null);
+  const [htmlContent, setHtmlContent] = useState(editData?.description || "");
+  const [isDragging, setIsDragging] = useState(false);
+
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -40,11 +44,36 @@ const AddFitzoneCategoryPage = () => {
     }
   }, [isEdit, editData]);
 
+  // Helper logic for upload image
+  const handleIconLogic = (file) => {
+    setIconFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setIconPreview(objectUrl);
+  };
+
   const handleIconChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setIconFile(file);
-      setIconPreview(URL.createObjectURL(file));
+      handleIconLogic(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleIconLogic(file);
     }
   };
 
@@ -93,20 +122,18 @@ const AddFitzoneCategoryPage = () => {
             heading={isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"}
             icon={<Layers className="w-9 h-9 text-white" />}
             color="bg-brand-blue shadow-blue-200"
-            subheading={isEdit ? "Edit existing workout session category." : "Create a new workout session category."}
+            subheading={
+              isEdit
+                ? "Edit existing workout session category."
+                : "Create a new workout session category."
+            }
           />
         </Header>
 
-        <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mx-auto w-full">
-          <div className="bg-brand-blue px-6 py-4 relative flex items-center justify-center">
-            <h2 className="text-white text-lg font-bold tracking-wide">
-              {isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"}
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="px-6 py-6 space-y-5">
+        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-300 overflow-hidden">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
-              <label className="text-sm font-bold text-slate-800">
+              <label className="text-xs font-bold text-slate-800">
                 Category Title
               </label>
               <input
@@ -114,12 +141,12 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 placeholder="Enter Title Here"
-                className="w-full h-11 px-3 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-bold text-slate-800">
+              <label className="text-xs font-bold text-slate-800">
                 Category Details
               </label>
               <input
@@ -127,21 +154,21 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryDetails}
                 onChange={(e) => setCategoryDetails(e.target.value)}
                 placeholder="e.g. 20 min , 182 kcal"
-                className="w-full h-11 px-3 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-bold text-slate-800">
+              <label className="text-xs font-bold text-slate-800">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </label>
 
               {isEdit && iconPreview && !iconFile && (
                 <div className="mb-4">
-                  <label className="text-sm font-bold text-slate-800 block mb-2">
+                  <label className="text-xs font-bold text-slate-800 block mb-2">
                     Current Uploaded Icon
                   </label>
-                  <div className="w-12 h-12 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
+                  <div className="w-16 h-16 rounded-md bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
                     <img
                       src={iconPreview}
                       alt="Icon Preview"
@@ -152,29 +179,25 @@ const AddFitzoneCategoryPage = () => {
               )}
 
               <div
-                className="w-full h-32 border-2 border-slate-200 border-solid rounded-md bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-colors"
+                className={`w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
+                  isDragging
+                    ? "border-brand-blue bg-blue-50"
+                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
               >
-                {iconFile ? (
-                  <div className="flex flex-col items-center">
-                    <span className="text-sm text-brand-blue font-semibold">
-                      {iconFile.name}
-                    </span>
-                    <span className="text-xs text-slate-400 mt-1">
-                      Click to replace
-                    </span>
-                  </div>
-                ) : (
-                  <React.Fragment>
-                    <CloudUpload
-                      className="w-10 h-10 text-slate-300 mb-2"
-                      strokeWidth={1.5}
-                    />
-                    <span className="text-sm text-slate-300 font-medium">
-                      Drag and drop a file here or click
-                    </span>
-                  </React.Fragment>
-                )}
+                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <p className="text-sm font-semibold text-slate-700 text-center">
+                  {iconFile
+                    ? "Icon selected. Click or drag to replace."
+                    : "Click or drag and drop to upload"}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  SVG, PNG, JPG (max. 800x400px)
+                </p>
               </div>
               <input
                 type="file"
@@ -186,32 +209,45 @@ const AddFitzoneCategoryPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-bold text-slate-800">
+              <label className="text-xs font-bold text-slate-800">
                 Category Description
               </label>
               <textarea
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
                 placeholder="Enter Description"
-                className="w-full h-28 p-3 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-300 placeholder:text-slate-400 font-medium resize-none"
+                className="w-full px-4 py-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
               />
               <div className="text-[11px] text-slate-500 font-medium">
                 Character Count: {htmlContent.length}
               </div>
             </div>
 
-            <div className="flex justify-center pt-2">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                variant="outline"
+                type="button"
+                className="rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 h-10 text-sm font-bold flex items-center gap-2 rounded shadow-sm"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send className="w-4 h-4" />
-                {loading
-                  ? "Saving..."
-                  : isEdit
-                    ? "Update Category"
-                    : "Add Category"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    {isEdit ? "Updating..." : "Saving..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Update" : "Save"}
+                    <Send size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>

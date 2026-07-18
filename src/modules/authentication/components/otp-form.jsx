@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,6 +21,17 @@ import {
 } from "@/components/ui/input-otp";
 
 export default function OTPForm({ ...props }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 1000);
+  };
+
   return (
     <Card {...props}>
       <CardHeader className="text-center">
@@ -28,7 +41,7 @@ export default function OTPForm({ ...props }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="otp" className="sr-only">
@@ -48,7 +61,16 @@ export default function OTPForm({ ...props }) {
                 Enter the 6-digit code sent to your email.
               </FieldDescription>
             </Field>
-            <Button type="submit">Verify</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                "Verify"
+              )}
+            </Button>
             <FieldDescription className="text-center text-slate-700">
               Didn&apos;t receive the code? <a href="#">Resend</a>
             </FieldDescription>

@@ -12,7 +12,7 @@ export function DataTableToolbar({
 }) {
   return (
     <div className="flex flex-col">
-      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4 p-1">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4 py-1">
         {/* 1. LEFT SIDE: Search Input (Expanded) */}
         <div className="relative flex-1 min-w-0 w-full md:max-w-md">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />

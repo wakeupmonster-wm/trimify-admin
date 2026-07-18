@@ -723,7 +723,7 @@ export default function NotificationManagementPages() {
                                     Trimify Admin
                                   </p>
                                   <p className="text-[11px] text-slate-500">
-                                    support@keenasmustard.com
+                                    info@trimify.com.au
                                   </p>
                                 </div>
                               </div>

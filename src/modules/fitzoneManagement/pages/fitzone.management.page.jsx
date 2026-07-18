@@ -1,5 +1,6 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { Dumbbell, Plus } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
@@ -7,7 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/components/shared/datatable";
 import { getFitzoneManagementColumns } from "@/components/columns/fitzone.management.columns";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchFitzoneList, toggleFitzoneStatus, deleteFitzone } from "../store/fitzone.slice";
+import {
+  fetchFitzoneList,
+  toggleFitzoneStatus,
+  deleteFitzone,
+} from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 
@@ -23,6 +28,7 @@ const FitzoneManagementPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
 
   useEffect(() => {
     dispatch(
@@ -32,7 +38,12 @@ const FitzoneManagementPage = () => {
         search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
@@ -44,16 +55,23 @@ const FitzoneManagementPage = () => {
     } else if (action === "edit") {
       navigate("edit-fitzone", { state: { editData: row } });
     } else if (action === "delete") {
-      console.log("Delete fitzone:", row.id);
-      const result = await dispatch(deleteFitzone(row.id));
-      if (deleteFitzone.fulfilled.match(result)) {
-        dispatch(fetchFitzoneList({
+      setDeleteModal({ open: true, rowData: row });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
+    if (deleteFitzone.fulfilled.match(result)) {
+      dispatch(
+        fetchFitzoneList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
-          search: debouncedSearchTerm
-        }));
-      }
+          search: debouncedSearchTerm,
+        }),
+      );
     }
+    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getFitzoneManagementColumns(handleAction), []);
@@ -66,7 +84,7 @@ const FitzoneManagementPage = () => {
     <Container>
       {/* Top Header Section outside of the white card */}
 
-     <div className="space-y-6">
+      <div className="space-y-6">
         <Header>
           <PageHeader
             heading="Fitzone Management"
@@ -76,7 +94,7 @@ const FitzoneManagementPage = () => {
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               onClick={() => navigate("add-fitzone")}
             >
               <Plus className="w-4 h-4" />
@@ -88,9 +106,7 @@ const FitzoneManagementPage = () => {
         <DataTable
           columns={columns}
           data={fitzones || []}
-          rowCount={
-            isManual ? serverPagination.total : (fitzones?.length || 0)
-          }
+          rowCount={isManual ? serverPagination.total : fitzones?.length || 0}
           pagination={pagination}
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
@@ -102,6 +118,14 @@ const FitzoneManagementPage = () => {
           manualFiltering={isManual}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this fitzone? This action cannot be undone."
+      />
     </Container>
   );
 };

@@ -1,5 +1,6 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { CreditCard, Plus } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
@@ -42,9 +43,9 @@ const SubscriptionManagementPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
 
   useEffect(() => {
     dispatch(
@@ -66,8 +67,15 @@ const SubscriptionManagementPage = () => {
       setEditData(row);
       setDialogOpen(true);
     } else if (action === "delete") {
-      console.log("Delete row:", row);
+      setDeleteModal({ open: true, rowData: row });
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    console.log("Delete subscription plan:", deleteModal.rowData);
+    // Add dispatch for delete action here when API is ready
+    setDeleteModal({ open: false, rowData: null });
   };
 
   const handleDialogSubmit = (data) => {
@@ -133,6 +141,14 @@ const SubscriptionManagementPage = () => {
         onOpenChange={setDialogOpen}
         onSubmit={handleDialogSubmit}
         editData={editData}
+      />
+
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this subscription plan? This action cannot be undone."
       />
     </Container>
   );

@@ -57,7 +57,7 @@ export const addFoodCategory = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await addFoodCategoryAPI(data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to add food category");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to add food category");
@@ -70,7 +70,7 @@ export const updateFoodCategory = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateFoodCategoryAPI(id, data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to update food category");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to update food category");
@@ -83,7 +83,7 @@ export const deleteFoodCategory = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await deleteFoodCategoryAPI(id);
-      if (response && response.status === "success") return id;
+      if (response && response.status !== "error" && response.status !== false) return id;
       return rejectWithValue(response.message || "Failed to delete food category");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to delete food category");
@@ -111,7 +111,7 @@ export const addFood = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await addFoodAPI(data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to add food");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to add food");
@@ -124,7 +124,7 @@ export const updateFood = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateFoodAPI(id, data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to update food");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to update food");
@@ -137,7 +137,7 @@ export const toggleFoodStatus = createAsyncThunk(
   async ({ id, status }, { rejectWithValue }) => {
     try {
       const response = await toggleFoodStatusAPI(id, { status });
-      if (response && response.status === "success") return { id, status };
+      if (response && response.status !== "error" && response.status !== false) return { id, status };
       return rejectWithValue(response.message || "Failed to toggle status");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to toggle status");
@@ -150,7 +150,7 @@ export const deleteFood = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await deleteFoodAPI(id);
-      if (response && response.status === "success") return id;
+      if (response && response.status !== "error" && response.status !== false) return id;
       return rejectWithValue(response.message || "Failed to delete food");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to delete food");

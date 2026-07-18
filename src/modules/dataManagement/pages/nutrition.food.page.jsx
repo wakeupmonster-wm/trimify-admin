@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Plus, UploadCloud, Apple } from "lucide-react";
@@ -23,6 +24,7 @@ const NutritionFoodPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
 
   useEffect(() => {
     dispatch(
@@ -45,8 +47,15 @@ const NutritionFoodPage = () => {
         state: { editData: row },
       });
     } else if (action === "delete") {
-      console.log("Delete nutrition food", row);
+      setDeleteModal({ open: true, rowData: row });
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    console.log("Delete nutrition food", deleteModal.rowData);
+    // Add dispatch for delete action here when API is ready
+    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
@@ -66,14 +75,14 @@ const NutritionFoodPage = () => {
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 onClick={() => navigate("/admin/data-management/add-nutrition")}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 Add Food
               </Button>
               <Button
                 onClick={() => console.log("Upload food clicked")}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               >
                 <UploadCloud className="w-4 h-4" />
                 Upload Food
@@ -97,6 +106,14 @@ const NutritionFoodPage = () => {
           manualFiltering={true}
         />
       </div>
+
+      <ConfirmModal
+        isOpen={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this nutrition food? This action cannot be undone."
+      />
     </Container>
   );
 };

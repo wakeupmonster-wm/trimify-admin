@@ -64,7 +64,7 @@ const SubscriptionConfigPage = () => {
                 <PageHeader
                   heading="All Subscription"
                   icon={<CreditCard className="w-9 h-9 text-white" />}
-                  color="bg-brand-aqua shadow-brand-aqua/30"
+                  color="bg-brand-blue shadow-blue-200"
                   subheading="Manage subscription plans and their details."
                 />
 
@@ -74,7 +74,7 @@ const SubscriptionConfigPage = () => {
                       <span>
                         <Button
                           disabled
-                          className="bg-brand-aqua/50 text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm cursor-not-allowed"
+                          className="bg-brand-blue/50 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm cursor-not-allowed"
                         >
                           <Plus className="w-4 h-4" />
                           Add Subscription

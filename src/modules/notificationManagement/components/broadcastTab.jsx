@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -75,8 +76,15 @@ export const BroadcastTab = ({ onSubmit, loading }) => {
         onChange={(e) => setForm({ ...form, cta: e.target.value })}
       />
 
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Sending Broadcast..." : "Send Push Notification"}
+      <Button type="submit" className="w-full flex items-center justify-center gap-2" disabled={loading}>
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Sending Broadcast...
+          </>
+        ) : (
+          "Send Push Notification"
+        )}
       </Button>
     </form>
   );

@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Send, Layers } from "lucide-react";
+import { Save, Layers, UploadCloud, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -15,20 +15,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
 
 const AddCategoryPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const isEdit = Boolean(id);
   const editData = location.state?.editData || null;
+
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     status: "Active",
+    iconImage: null,
   });
+
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (isEdit && editData) {
@@ -36,9 +45,36 @@ const AddCategoryPage = () => {
         title: editData.title || editData.name || "",
         description: editData.description || "",
         status: editData.status || "Active",
+        iconImage: null,
       });
     }
   }, [isEdit, editData]);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, iconImage: file }));
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, iconImage: file }));
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,10 +85,40 @@ const AddCategoryPage = () => {
     setFormData((prev) => ({ ...prev, status: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit Category:", formData);
-    // TODO: Dispatch action to create category API
+    if (!formData.title.trim()) {
+      return toast.error("Category Title is required");
+    }
+
+    setLoading(true);
+    try {
+      const payload = new FormData();
+      payload.append("title", formData.title);
+      payload.append("description", formData.description);
+      payload.append("status", formData.status);
+
+      if (formData.iconImage) {
+        payload.append("icon", formData.iconImage);
+      }
+
+      if (isEdit) {
+        await dispatch(updateBlogCategory({ id, data: payload })).unwrap();
+        toast.success("Category updated successfully!");
+      } else {
+        if (!formData.iconImage) {
+          setLoading(false);
+          return toast.error("Category icon is required");
+        }
+        await dispatch(addBlogCategory(payload)).unwrap();
+        toast.success("Category added successfully!");
+      }
+      navigate(-1);
+    } catch (error) {
+      toast.error(error || "An error occurred while saving the category");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,17 +138,14 @@ const AddCategoryPage = () => {
         </Header>
 
         {/* Main Form Card */}
-        <div className="mx-auto w-full bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-brand-blue py-4 px-6 flex items-center justify-center">
-            <h2 className="text-white text-lg font-bold tracking-wide">
-              {isEdit ? "Edit Category" : "Add Category"}
-            </h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <form
+            onSubmit={handleSubmit}
+            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+          >
             {/* Category Title */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Title
               </Label>
               <Input
@@ -90,14 +153,14 @@ const AddCategoryPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
                 required
               />
             </div>
 
             {/* Category Description */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Description
               </Label>
               <Textarea
@@ -106,7 +169,7 @@ const AddCategoryPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 maxLength={500}
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
                 required
               />
               <div className="text-xs text-slate-500 font-medium">
@@ -114,15 +177,64 @@ const AddCategoryPage = () => {
               </div>
             </div>
 
+            {/* Upload Icon Image */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-800">
+                {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
+              </Label>
+              {isEdit && editData?.icon && !formData.iconImage && (
+                <div className="mb-4">
+                  <Label className="text-xs font-bold text-slate-800 block mb-2">
+                    Current Icon
+                  </Label>
+                  <div className="w-24 h-24 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
+                    <img
+                      src={editData.icon}
+                      alt="Current Icon"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+              )}
+              <div
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-brand-blue bg-blue-50"
+                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById("icon-upload").click()}
+              >
+                <input
+                  id="icon-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                />
+                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <p className="text-sm font-semibold text-slate-700">
+                  {formData.iconImage
+                    ? formData.iconImage.name
+                    : "Click or drag and drop to upload"}
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  SVG, PNG, JPG or GIF (max. 6144 KB)
+                </p>
+              </div>
+            </div>
+
             {/* Category Status */}
             <div className="space-y-1.5">
-              <Label className="text-sm font-bold text-slate-800">Status</Label>
+              <Label className="text-xs font-bold text-slate-800">Status</Label>
               <Select
                 value={formData.status}
                 onValueChange={handleStatusChange}
                 required
               >
-                <SelectTrigger className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,13 +245,31 @@ const AddCategoryPage = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-6 flex justify-center">
+            <div className="mt-8 flex justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded shadow-sm px-10 h-11 text-sm font-semibold flex items-center gap-2"
+                disabled={loading}
+                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
-                <Send size={16} />
-                {isEdit ? "Update Category" : "Add Category"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    {isEdit ? "Updating..." : "Saving..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Update Category" : "Save Category"}
+                    <Save size={16} />
+                  </>
+                )}
               </Button>
             </div>
           </form>

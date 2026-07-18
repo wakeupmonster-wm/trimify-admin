@@ -13,10 +13,12 @@ import {
 
 export const getDietMeals = createAsyncThunk(
   "manageDiet/getDietMeals",
-  async (id, { rejectWithValue }) => {
+  async (arg, { rejectWithValue }) => {
     try {
-      const response = await getDietMealsAPI(id);
-      if (response && response.status === "success") {
+      const id = typeof arg === "object" && arg !== null ? arg.id : arg;
+      const params = typeof arg === "object" && arg !== null ? arg.params : {};
+      const response = await getDietMealsAPI(id, params);
+      if (response && response.status !== "error" && response.status !== false) {
         return {
           diet: response.diet || [],
           pagination: {
@@ -39,7 +41,7 @@ export const addDietMeal = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await addDietMealAPI(data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to assign meals");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to assign meals");
@@ -52,7 +54,7 @@ export const updateDietMeal = createAsyncThunk(
   async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateDietMealAPI(id, data);
-      if (response && response.status === "success") return response;
+      if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to update diet meal");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to update diet meal");
@@ -65,7 +67,7 @@ export const deleteDietMeal = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await deleteDietMealAPI(id);
-      if (response && response.status === "success") return id;
+      if (response && response.status !== "error" && response.status !== false) return id;
       return rejectWithValue(response.message || "Failed to delete diet meal");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to delete diet meal");
@@ -78,7 +80,7 @@ export const toggleDietMealStatus = createAsyncThunk(
   async ({ id, status }, { rejectWithValue }) => {
     try {
       const response = await toggleDietMealStatusAPI(id, { status });
-      if (response && response.status === "success") return { id, status };
+      if (response && response.status !== "error" && response.status !== false) return { id, status };
       return rejectWithValue(response.message || "Failed to toggle diet meal status");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to toggle diet meal status");
@@ -93,7 +95,7 @@ export const getProgramDuration = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await getProgramDurationAPI(id);
-      if (response && response.status === "success") {
+      if (response && response.status !== "error" && response.status !== false) {
         return response.duration;
       }
       return rejectWithValue(response.message || "Failed to fetch duration");
@@ -107,9 +109,20 @@ export const searchFood = createAsyncThunk(
   "manageDiet/searchFood",
   async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await searchFoodAPI(params);
-      if (response && response.status === "success") {
-        return response.foods;
+      const response = await searchFoodAPI();
+      if (response && response.status !== "error" && response.status !== false) {
+        let foods = response.searchfood || response.data || [];
+        
+        // Local filtering since backend doesn't support query params for search
+        if (params.query) {
+          const lowerQuery = params.query.toLowerCase();
+          foods = foods.filter((f) => {
+            const foodName = f.title || f.name || f.Meal_title || "";
+            return foodName.toLowerCase().includes(lowerQuery);
+          });
+        }
+        
+        return foods;
       }
       return rejectWithValue(response.message || "Failed to search food");
     } catch (error) {

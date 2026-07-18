@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { 
   getFitzoneManagementAPI,
   addFitzoneAPI,
+  updateFitzoneAPI,
   toggleFitzoneStatusAPI,
   deleteFitzoneAPI
 } from "../services/fitzone.services";
@@ -46,6 +47,23 @@ export const addFitzone = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to add fitzone"
+      );
+    }
+  }
+);
+
+export const updateFitzone = createAsyncThunk(
+  "fitzoneManagement/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await updateFitzoneAPI(id, data);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to update fitzone");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update fitzone"
       );
     }
   }

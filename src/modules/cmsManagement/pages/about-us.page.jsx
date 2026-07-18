@@ -13,13 +13,15 @@ import { fetchCmsPages, updateCmsContent } from "../store/cms.management.slice";
 const AboutUsPage = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.cmsManagement);
-  
+
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Find the page ID and initial content from Redux state
-  const pageData = data?.find(page => page.page_name?.toLowerCase().includes("about"));
-  
+  const pageData = data?.find((page) =>
+    page.page_name?.toLowerCase().includes("about"),
+  );
+
   useEffect(() => {
     // If data isn't loaded yet, fetch it
     if (!data || data.length === 0) {
@@ -38,18 +40,20 @@ const AboutUsPage = () => {
     if (!content.trim()) {
       return toast.error("Content cannot be empty.");
     }
-    
+
     if (!pageData?.id) {
       return toast.error("Page ID not found. Cannot save.");
     }
 
     setIsSaving(true);
     try {
-      await dispatch(updateCmsContent({ 
-        id: pageData.id, 
-        page_name: pageData.page_name || "About Us", 
-        description: content 
-      })).unwrap();
+      await dispatch(
+        updateCmsContent({
+          id: pageData.id,
+          page_name: pageData.page_name || "About Us",
+          description: content,
+        }),
+      ).unwrap();
 
       toast.success("About Us content saved successfully.");
     } catch (error) {
@@ -78,7 +82,7 @@ const AboutUsPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
@@ -113,19 +117,8 @@ const AboutUsPage = () => {
           </div>
         </Header>
 
-        <div className="space-y-6">
-          {/* <div className="px-4 border-b border-slate-100">
-            <h2 className="text-lg font-semibold text-slate-800">
-              Content Editor
-            </h2>
-            <p className="text-sm text-slate-500">
-              Use the rich text editor below to format your About Us page.
-              Changes will be visible in the mobile app immediately after
-              saving.
-            </p>
-          </div> */}
-
-          <div className="px-4">
+        <div className="space-y-4">
+          <div className="px-2">
             <RichTextEditor
               value={content}
               onChange={setContent}

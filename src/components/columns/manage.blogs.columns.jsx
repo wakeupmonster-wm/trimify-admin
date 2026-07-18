@@ -46,8 +46,8 @@ export const getManageBlogsColumns = (onAction) => [
         Title
       </div>
     ),
-    size: 200,
-    minSize: 150,
+    size: 250,
+    minSize: 250,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
         {row.original.title || "-"}
@@ -61,13 +61,19 @@ export const getManageBlogsColumns = (onAction) => [
         Category
       </div>
     ),
-    size: 150,
-    minSize: 120,
-    cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-700 tracking-tight">
-        {row.original.category || "-"}
-      </span>
-    ),
+    size: 100,
+    minSize: 100,
+    cell: ({ row }) => {
+      const categoryLabel =
+        typeof row.original.category === "object"
+          ? row.original.category?.title
+          : row.original.category;
+      return (
+        <span className="text-[11px] font-medium text-slate-700 tracking-tight">
+          {categoryLabel || "-"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -76,31 +82,38 @@ export const getManageBlogsColumns = (onAction) => [
         Description
       </div>
     ),
-    size: 300,
-    minSize: 200,
-    cell: ({ row }) => (
-      <span className="text-slate-700 font-medium text-[11px] tracking-tight line-clamp-1">
-        {row.original.description || "-"}
-      </span>
-    ),
+    size: 250,
+    minSize: 250,
+    cell: ({ row }) => {
+      let plainText = "-";
+      if (row.original.description) {
+        const doc = new DOMParser().parseFromString(row.original.description, "text/html");
+        plainText = doc.body.textContent || "";
+      }
+      return (
+        <span className="text-slate-700 font-medium text-[11px] tracking-tight line-clamp-1" title={plainText}>
+          {plainText}
+        </span>
+      );
+    },
   },
   {
-    accessorKey: "status",
+    accessorKey: "visibility_status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Publish/Private
       </div>
     ),
     size: 120,
-    minSize: 100,
+    minSize: 120,
     cell: ({ row }) => {
-      // Defaulting to "Public" if status is "Public" or true, else "Private"
+      // Defaulting to "Public" if visibility_status is "Public" or true, else "Private"
       const statusValue =
-        row.original.status === "Public" || row.original.status === true
+        row.original.visibility_status === "Public" || row.original.visibility_status === true
           ? "Public"
           : "Private";
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-center max-w-26">
           <Select
             value={statusValue}
             onValueChange={(val) =>
@@ -145,13 +158,13 @@ export const getManageBlogsColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-36 p-1.5 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs"
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

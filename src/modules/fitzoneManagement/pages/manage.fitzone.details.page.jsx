@@ -14,6 +14,7 @@ const ManageFitzoneDetailsPage = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   const handleAction = (actionId) => {
     if (actionId === "intro") {
@@ -33,17 +34,29 @@ const ManageFitzoneDetailsPage = () => {
   );
 
   const staticData = [
-    { id: "intro", title: "Introduction" },
-    { id: "category", title: "WorkOut session Categories" },
-    { id: "session", title: "Session Management" },
+    {
+      id: "intro",
+      title: "Introduction",
+      description: "View and edit the introduction content for this fitzone.",
+    },
+    {
+      id: "category",
+      title: "WorkOut Session Categories",
+      description: "Manage categories for workout sessions.",
+    },
+    {
+      id: "session",
+      title: "Session Management",
+      description: "Manage individual workout sessions for this fitzone.",
+    },
   ];
 
   return (
     <Container>
       <div className="space-y-8">
         <Header>
-          <PageHeader 
-            heading="Manage Fitzone Modules" 
+          <PageHeader
+            heading="Manage Fitzone Modules"
             icon={<Settings className="w-9 h-9 text-white" />}
             color="bg-brand-blue shadow-blue-200"
             subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."
@@ -51,12 +64,16 @@ const ManageFitzoneDetailsPage = () => {
         </Header>
 
         <DataTable
-          data={staticData}
           columns={columns}
-          searchable={true}
-          searchPlaceholder="Search..."
+          data={staticData}
+          rowCount={staticData.length}
+          loading={false}
+          manualPagination={false}
           pagination={pagination}
-          onPaginationChange={setPagination}
+          setPagination={setPagination}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          pageCount={Math.ceil(staticData.length / pagination.pageSize)}
         />
       </div>
     </Container>

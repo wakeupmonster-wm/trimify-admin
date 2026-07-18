@@ -55,7 +55,7 @@ export function AppSidebar({ ...props }) {
   // const navUser = useMemo(
   //   () => ({
   //     name: account?.nickname || "Admin",
-  //     email: account?.email || "admin@keenasmustard.com",
+  //     email: account?.email || "info@trimify.com.au",
   //     avatar: account?.avatar?.url || dummyImg,
   //   }),
   //   [account],
@@ -64,7 +64,7 @@ export function AppSidebar({ ...props }) {
   const navUser = useMemo(
     () => ({
       name: "Admin",
-      email: "admin@keenasmustard.com",
+      email: "info@trimify.com.au",
       avatar: dummyImg,
     }),
     [],
@@ -92,11 +92,11 @@ export function AppSidebar({ ...props }) {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-slate-200 bg-white pt-1"
+      className="border-r border-slate-200 bg-slate-50 pt-1"
       {...props}
     >
       {/* --- HEADER: Logo & Branding --- */}
-      <SidebarHeader className="sticky top-0 z-20 h-[3.75rem] items-center justify-center border-b border-slate-200 bg-white p-0">
+      <SidebarHeader className="sticky top-0 z-20 h-[3.75rem] items-center justify-center border-b border-slate-200 bg-slate-50 p-0">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center justify-around px-4">
             {/* 2. Agar sidebar open hai tabhi logo dikhega */}
@@ -137,7 +137,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-white">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50">
         {/* Overview Section */}
         {/* {dynamicNavigation.navMain && ( */}
         <NavMain items={navigationData.navMain} />

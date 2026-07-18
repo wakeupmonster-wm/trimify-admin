@@ -19,7 +19,7 @@ export default function DashboardHeader({ scrolled, dateRange, onDateChange, onR
         <PageHeader
           heading="Subscription Dashboard"
           icon={<LayoutDashboard strokeWidth={2} className="w-8 h-8 text-white" />}
-          color="bg-brand-aqua shadow-brand-aqua/30"
+          color="bg-brand-blue shadow-blue-200"
           subheading="Plans, subscribers and revenue at a glance."
         />
 
@@ -30,7 +30,7 @@ export default function DashboardHeader({ scrolled, dateRange, onDateChange, onR
             variant="outline"
             onClick={onRefresh}
             disabled={refreshing}
-            className="h-10 shrink-0 border-slate-200 bg-white hover:bg-brand-aqua shadow-sm text-slate-500 hover:text-white transition-all active:scale-95"
+            className="h-10 shrink-0 border-slate-200 bg-white hover:bg-brand-blue shadow-sm text-slate-500 hover:text-white transition-all active:scale-95"
           >
             <RefreshCcw className={cn("h-4 w-4", refreshing && "animate-spin")} />
           </Button>

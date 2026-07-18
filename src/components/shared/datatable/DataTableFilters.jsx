@@ -45,10 +45,20 @@ export function DataTableFilters({ filterConfig = [] }) {
                       {isActive && filter.getDisplayValue
                         ? filter.getDisplayValue(filter.value)
                         : isActive
-                          ? filter.value
-                              .toString()
-                              .replace("_", " ")
-                              .replace("-", " ")
+                          ? (() => {
+                              const matched = filter.options?.find(
+                                (o) => (typeof o === "object" ? o.value : o) === filter.value
+                              );
+                              const lbl = matched
+                                ? typeof matched === "object"
+                                  ? matched.label
+                                  : matched
+                                : filter.value;
+                              return lbl
+                                .toString()
+                                .replace("_", " ")
+                                .replace("-", " ");
+                            })()
                           : filter.placeholder || `Select ${filter.label}`}
                     </span>
                     <IconChevronDown className="h-4 w-4 opacity-50" />

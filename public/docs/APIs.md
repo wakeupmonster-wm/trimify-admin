@@ -1695,6 +1695,9 @@ Required — Bearer Token
 
 ### PATCH /admin/toggle-status-blog-category/{id}
 
+> [!WARNING]
+> **Currently Broken**: This endpoint is currently returning a `500 Internal Server Error` in the testing environment (testadmin.trimify.com.au). Backend team needs to fix this route.
+
 #### Description
 
 Toggles the active/inactive status of a blog category.
