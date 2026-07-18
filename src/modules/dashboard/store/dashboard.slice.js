@@ -5,7 +5,24 @@ import {
   dashboardRevenueChartsAPI,
   dashboardEngagementChartsAPI,
   dashboardRecentActivityAPI,
+  dashboardConversionFunnelAPI,
+  dashboardDemographicsChartsAPI,
+  dashboardFitzoneCompletionTrendAPI,
 } from "../services/dashboard.services";
+import {
+  getSubscriptionOverviewAPI,
+  getDailyPerformanceAPI,
+  getRetentionTrendAPI,
+  getExpiringSoonAPI,
+  getAbandonedCheckoutsAPI,
+} from "@/modules/subscriptionManagement/services/subscription-dashboard.services";
+import {
+  toCategoricalPie,
+  toStatusPie,
+  toLabeledPie,
+  buildFunnel,
+  buildSecondaryKpis,
+} from "../utils/dashboardExtras.transform";
 // ─── Existing KPI thunk ────────────────────────────────────────────────────────
 
 export const fetchDashboardKPIs = createAsyncThunk(
@@ -73,14 +90,104 @@ export const fetchDashboardData = createAsyncThunk(
     }
   },
 );
+// ─── Dashboard Extras thunk (secondary KPIs, pie charts, trends, tables, funnel) ──
+// Pulls from every real endpoint the widgets below the primary summary need,
+// then maps each response into the exact shape those widgets already render
+// (see dashboardExtras.transform.js) — components never see the raw payload.
+export const fetchDashboardExtras = createAsyncThunk(
+  "dashboard/fetchDashboardExtras",
+  async (dateRange, { rejectWithValue }) => {
+    try {
+      const [
+        summaryRes,
+        overviewRes,
+        revenueChartsRes,
+        demographicsRes,
+        funnelRes,
+        engagementRes,
+        recentActivityRes,
+        dailyPerfRes,
+        fitzoneRes,
+        retentionRes,
+        expiringSoonRes,
+        abandonedRes,
+      ] = await Promise.allSettled([
+        dashboardSummaryAPI(dateRange),
+        getSubscriptionOverviewAPI(),
+        dashboardRevenueChartsAPI(dateRange),
+        dashboardDemographicsChartsAPI(),
+        dashboardConversionFunnelAPI(dateRange),
+        dashboardEngagementChartsAPI(dateRange),
+        dashboardRecentActivityAPI(dateRange),
+        getDailyPerformanceAPI(),
+        dashboardFitzoneCompletionTrendAPI(dateRange),
+        getRetentionTrendAPI(),
+        getExpiringSoonAPI({ limit: 10 }),
+        getAbandonedCheckoutsAPI({ limit: 10 }),
+      ]);
+
+      const pick = (res) => (res.status === "fulfilled" && res.value?.success ? res.value.data : null);
+
+      const summary = pick(summaryRes);
+      const overview = pick(overviewRes);
+      const revenueCharts = pick(revenueChartsRes);
+      const demographics = pick(demographicsRes);
+      const funnelData = pick(funnelRes);
+      const engagement = pick(engagementRes);
+      const recentActivity = pick(recentActivityRes);
+      const dailyPerf = pick(dailyPerfRes);
+      const fitzone = pick(fitzoneRes);
+      const retention = pick(retentionRes);
+      const expiringSoon = pick(expiringSoonRes);
+      const abandoned = pick(abandonedRes);
+
+      return {
+        secondaryKpis: buildSecondaryKpis(summary, overview),
+        pieCharts: {
+          planType: revenueCharts?.planWiseSubscribers
+            ? toCategoricalPie(revenueCharts.planWiseSubscribers, "title", "total")
+            : [],
+          txStatus: revenueCharts?.transactionStatus ? toStatusPie(revenueCharts.transactionStatus) : [],
+          userGoals: demographics?.goalDistribution
+            ? toCategoricalPie(demographics.goalDistribution, "main_goal", "total")
+            : [],
+          gender: demographics?.genderDistribution
+            ? toCategoricalPie(demographics.genderDistribution, "gender", "total")
+            : [],
+          dietPreference: demographics?.vegetarianSplit ? toLabeledPie(demographics.vegetarianSplit) : [],
+        },
+        trends: {
+          activeVsChurned: retention?.retentionTrend || [],
+          engagementDAU: engagement?.activeUsersTrend || [],
+          fitzoneCompletion: fitzone?.fitzoneStatusTrend || [],
+          fitzoneStatuses: fitzone?.statuses || [],
+          planRevenue: dailyPerf?.topSellingPlans || [],
+        },
+        tables: {
+          recentTransactions: recentActivity?.recentTransactions || [],
+          expiringSoon: expiringSoon?.subscribers || [],
+          abandonedCheckouts: abandoned?.checkouts || [],
+          subAdminRoster: recentActivity?.subAdminRoster || [],
+          recentNotifications: recentActivity?.recentNotifications || [],
+        },
+        funnel: buildFunnel(funnelData),
+      };
+    } catch (err) {
+      return rejectWithValue(err.message || "Server Error");
+    }
+  },
+);
+
 const initialState = {
   stats: null,
   dashboardData: null,
+  dashboardExtras: null,
   dashboardMeta: null,
   dateRange: null,
   activities: [],
   loading: false,
   dashboardLoading: false,
+  extrasLoading: false,
   error: null,
   lastUpdated: null,
 };
@@ -121,9 +228,23 @@ const dashboardSlice = createSlice({
         state.dashboardData = action.payload.data;
         state.dashboardMeta = action.payload.meta;
         state.dateRange = action.payload.dateRange;
+        state.lastUpdated = Date.now();
       })
       .addCase(fetchDashboardData.rejected, (state, action) => {
         state.dashboardLoading = false;
+        state.error = action.payload;
+      })
+      // Dashboard extras cases (new)
+      .addCase(fetchDashboardExtras.pending, (state) => {
+        state.extrasLoading = true;
+      })
+      .addCase(fetchDashboardExtras.fulfilled, (state, action) => {
+        state.extrasLoading = false;
+        state.dashboardExtras = action.payload;
+        state.lastUpdated = Date.now();
+      })
+      .addCase(fetchDashboardExtras.rejected, (state, action) => {
+        state.extrasLoading = false;
         state.error = action.payload;
       });
   },

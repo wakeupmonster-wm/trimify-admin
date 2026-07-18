@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,20 +16,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
+import { DataTable } from "@/components/shared/datatable";
+import { getAiFoodColumns } from "@/components/columns/ai.food.columns";
 import AiFoodNameInput from "../components/AiFoodNameInput";
-import AiFoodReviewCard from "../components/AiFoodReviewCard";
-import {
-  generateAiFood,
-  pollAiFoodBatch,
-  updateAiFoodItem,
-  retryAiFoodItem,
-  regenerateAiFoodImage,
-  deleteAiFoodItem,
-  saveAiFoodItems,
-  resetAiFoodBatch,
-} from "../store/ai.food.slice";
-
-const POLL_INTERVAL_MS = 2500;
+import { generateAiFood, saveAiFoodItems } from "../store/ai.food.slice";
+import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 
 const OUTCOME_META = {
   saved: { label: "Saved", icon: CheckCircle2, className: "text-emerald-600" },
@@ -43,36 +34,35 @@ const OUTCOME_META = {
 const AiFoodUploadPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    batchId,
-    items,
-    generateLoading,
-    saveLoading,
-    itemActionIds,
-    saveResults,
-  } = useSelector((state) => state.aiFood);
+  useAiFoodPolling();
+
+  const { items, generateLoading, saveLoading, saveResults } = useSelector(
+    (state) => state.aiFood,
+  );
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const visibleItems = useMemo(
     () => items.filter((item) => item.status !== "approved"),
     [items],
   );
 
-  const hasInFlightItems = useMemo(
-    () => items.some((item) => item.status === "draft" || item.status === "processing"),
-    [items],
-  );
+  const filteredItems = useMemo(() => {
+    const q = globalFilter.trim().toLowerCase();
+    if (!q) return visibleItems;
+    return visibleItems.filter((item) =>
+      item.food_name?.toLowerCase().includes(q),
+    );
+  }, [visibleItems, globalFilter]);
 
-  useEffect(() => {
-    if (!batchId || !hasInFlightItems) return;
-    const interval = setInterval(() => {
-      dispatch(pollAiFoodBatch(batchId));
-    }, POLL_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [dispatch, batchId, hasInFlightItems]);
+  const pagedItems = useMemo(() => {
+    const start = pagination.pageIndex * pagination.pageSize;
+    return filteredItems.slice(start, start + pagination.pageSize);
+  }, [filteredItems, pagination]);
 
   const handleGenerate = (foodNames) => {
     dispatch(generateAiFood(foodNames))
@@ -91,32 +81,8 @@ const AiFoodUploadPage = () => {
     );
   };
 
-  const handleFieldSave = (id, data) => {
-    dispatch(updateAiFoodItem({ id, data }))
-      .unwrap()
-      .catch((error) => toast.error(error || "Failed to save change."));
-  };
-
-  const handleRetry = (id) => {
-    dispatch(retryAiFoodItem(id))
-      .unwrap()
-      .catch((error) => toast.error(error || "Failed to retry item."));
-  };
-
-  const handleRegenerateImage = (id) => {
-    dispatch(regenerateAiFoodImage(id))
-      .unwrap()
-      .then(() => toast.success("Regenerating image…"))
-      .catch((error) => toast.error(error || "Failed to regenerate image."));
-  };
-
-  const handleRemove = (id) => {
-    dispatch(deleteAiFoodItem(id))
-      .unwrap()
-      .then(() => {
-        setSelectedIds((prev) => prev.filter((i) => i !== id));
-      })
-      .catch((error) => toast.error(error || "Failed to remove item."));
+  const handleView = (id) => {
+    navigate(`/admin/data-management/ai-food-upload/${id}`);
   };
 
   const handleConfirmSave = () => {
@@ -129,6 +95,11 @@ const AiFoodUploadPage = () => {
       })
       .catch((error) => toast.error(error || "Failed to save items."));
   };
+
+  const columns = useMemo(
+    () => getAiFoodColumns({ selectedIds, onToggleSelect: handleToggleSelect, onView: handleView }),
+    [selectedIds],
+  );
 
   const pendingReviewCount = visibleItems.filter(
     (item) => item.status === "pending_review",
@@ -170,50 +141,26 @@ const AiFoodUploadPage = () => {
         <AiFoodNameInput onGenerate={handleGenerate} loading={generateLoading} />
 
         {visibleItems.length > 0 && (
-          <div className="flex items-center justify-between px-1">
-            <p className="text-xs font-medium text-slate-500">
-              {visibleItems.length} item{visibleItems.length !== 1 ? "s" : ""} in this session
-              {pendingReviewCount > 0 && ` · ${pendingReviewCount} ready for review`}
-            </p>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                dispatch(resetAiFoodBatch());
-                setSelectedIds([]);
-              }}
-              className="text-xs text-slate-400 hover:text-red-600"
-            >
-              Clear session
-            </Button>
-          </div>
+          <p className="text-xs font-medium text-slate-500 px-1">
+            {visibleItems.length} item{visibleItems.length !== 1 ? "s" : ""} awaiting review
+            {pendingReviewCount > 0 && ` · ${pendingReviewCount} ready for review`}
+          </p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {visibleItems.map((item) => (
-            <AiFoodReviewCard
-              key={item.id}
-              item={item}
-              selected={selectedIds.includes(item.id)}
-              onToggleSelect={handleToggleSelect}
-              onFieldSave={handleFieldSave}
-              onRetry={handleRetry}
-              onRegenerateImage={handleRegenerateImage}
-              onRemove={handleRemove}
-              isBusy={itemActionIds.includes(item.id)}
-            />
-          ))}
-        </div>
-
-        {visibleItems.length === 0 && (
-          <div className="text-center py-16 text-slate-400">
-            <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
-            <p className="text-sm font-medium">
-              Type food names above and hit Generate to get started.
-            </p>
-          </div>
-        )}
+        <DataTable
+          columns={columns}
+          data={pagedItems}
+          rowCount={filteredItems.length}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          searchPlaceholder="Search generated food…"
+          itemName="items"
+          onRowClick={(row) => handleView(row.original.id)}
+          manualPagination={true}
+          manualFiltering={true}
+        />
       </div>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

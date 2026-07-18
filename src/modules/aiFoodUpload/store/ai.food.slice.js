@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   generateAiFoodAPI,
   getAiFoodBatchAPI,
+  getAiFoodListAPI,
   updateAiFoodAPI,
   retryAiFoodAPI,
   regenerateAiFoodImageAPI,
@@ -38,6 +39,26 @@ export const pollAiFoodBatch = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch batch",
+      );
+    }
+  },
+);
+
+// Backend-persisted review dashboard — hydrates the table on mount/refresh
+// so unsaved (non-approved) generations survive a page reload or navigation,
+// since they only ever lived in memory before this.
+export const fetchAiFoodList = createAsyncThunk(
+  "aiFood/fetchList",
+  async (params = { limit: 100 }, { rejectWithValue }) => {
+    try {
+      const response = await getAiFoodListAPI(params);
+      if (response && response.success) {
+        return response.data.items;
+      }
+      return rejectWithValue(response?.message || "Failed to fetch items");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch items",
       );
     }
   },
@@ -129,10 +150,11 @@ export const saveAiFoodItems = createAsyncThunk(
 );
 
 const initialState = {
-  batchId: null,
+  batchIds: [],
   items: [],
   generateLoading: false,
   polling: false,
+  listLoading: false,
   saveLoading: false,
   itemActionIds: [], // ids currently mid-action (retry/regenerate/delete/update)
   saveResults: null,
@@ -153,14 +175,7 @@ const upsertItems = (state, incoming = []) => {
 const aiFoodSlice = createSlice({
   name: "aiFood",
   initialState,
-  reducers: {
-    resetAiFoodBatch: (state) => {
-      state.batchId = null;
-      state.items = [];
-      state.saveResults = null;
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       // Generate
@@ -170,7 +185,9 @@ const aiFoodSlice = createSlice({
       })
       .addCase(generateAiFood.fulfilled, (state, action) => {
         state.generateLoading = false;
-        state.batchId = action.payload.batch_id;
+        if (!state.batchIds.includes(action.payload.batch_id)) {
+          state.batchIds.push(action.payload.batch_id);
+        }
         upsertItems(state, action.payload.items);
       })
       .addCase(generateAiFood.rejected, (state, action) => {
@@ -188,6 +205,19 @@ const aiFoodSlice = createSlice({
       })
       .addCase(pollAiFoodBatch.rejected, (state, action) => {
         state.polling = false;
+        state.error = action.payload;
+      })
+
+      // Fetch list (hydrate from backend)
+      .addCase(fetchAiFoodList.pending, (state) => {
+        state.listLoading = true;
+      })
+      .addCase(fetchAiFoodList.fulfilled, (state, action) => {
+        state.listLoading = false;
+        upsertItems(state, action.payload);
+      })
+      .addCase(fetchAiFoodList.rejected, (state, action) => {
+        state.listLoading = false;
         state.error = action.payload;
       })
 
@@ -293,5 +323,4 @@ const aiFoodSlice = createSlice({
   },
 });
 
-export const { resetAiFoodBatch } = aiFoodSlice.actions;
 export default aiFoodSlice.reducer;

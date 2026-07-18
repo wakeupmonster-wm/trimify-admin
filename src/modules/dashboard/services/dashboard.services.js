@@ -35,3 +35,21 @@ export const dashboardRecentActivityAPI = (dateRange) => {
   if (dateRange?.to) params.to = dateRange.to;
   return apiConnector("GET", DASHBOARD_ENDPOINTS.RECENT_ACTIVITY, null, {}, params);
 };
+
+export const dashboardConversionFunnelAPI = (dateRange) => {
+  const params = {};
+  if (dateRange?.from) params.from = dateRange.from;
+  if (dateRange?.to) params.to = dateRange.to;
+  return apiConnector("GET", DASHBOARD_ENDPOINTS.CONVERSION_FUNNEL, null, {}, params);
+};
+
+export const dashboardDemographicsChartsAPI = () => {
+  return apiConnector("GET", DASHBOARD_ENDPOINTS.DEMOGRAPHICS_CHARTS);
+};
+
+export const dashboardFitzoneCompletionTrendAPI = (dateRange) => {
+  const params = {};
+  if (dateRange?.from) params.from = dateRange.from;
+  if (dateRange?.to) params.to = dateRange.to;
+  return apiConnector("GET", DASHBOARD_ENDPOINTS.FITZONE_COMPLETION_TREND, null, {}, params);
+};

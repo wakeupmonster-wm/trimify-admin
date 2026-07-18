@@ -36,3 +36,15 @@ export const exportTransactionsAPI = async (params = {}) => {
     responseType: "blob",
   });
 };
+
+export const getRetentionTrendAPI = async (params = {}) => {
+  return apiConnector("GET", SUBSCRIPTION_DASHBOARD.RETENTION_TREND, null, null, params);
+};
+
+export const getExpiringSoonAPI = async (params = {}) => {
+  return apiConnector("GET", SUBSCRIPTION_DASHBOARD.EXPIRING_SOON, null, null, params);
+};
+
+export const getAbandonedCheckoutsAPI = async (params = {}) => {
+  return apiConnector("GET", SUBSCRIPTION_DASHBOARD.ABANDONED_CHECKOUTS, null, null, params);
+};

@@ -37,4 +37,13 @@ export const SUBSCRIPTION_DASHBOARD = {
 
   /** GET — CSV stream (not JSON), same filters as TRANSACTIONS */
   TRANSACTIONS_EXPORT: `${ADMIN}/subscription/transactions/export`,
+
+  /** GET — retentionTrend: month-wise activeUsers/churnedUsers (accepts months) */
+  RETENTION_TREND: `${ADMIN}/subscription/retention-trend`,
+
+  /** GET — subscribers whose plan expires within `days` (default 7) */
+  EXPIRING_SOON: `${ADMIN}/subscription/subscribers/expiring-soon`,
+
+  /** GET — signed-up-but-unpaid users older than `hours` (default 24) */
+  ABANDONED_CHECKOUTS: `${ADMIN}/subscription/subscribers/abandoned-checkouts`,
 };
