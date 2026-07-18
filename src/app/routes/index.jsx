@@ -30,6 +30,8 @@ const ManageCategoryPage = lazy(() => import("@/modules/blogSection/pages/manage
 const ManageBlogsPage = lazy(() => import("@/modules/blogSection/pages/manage.blogs.page"));
 const NutritionFoodPage = lazy(() => import("@/modules/dataManagement/pages/nutrition.food.page"));
 const AddNutritionPage = lazy(() => import("@/modules/dataManagement/pages/add.nutrition.page"));
+const AiFoodUploadPage = lazy(() => import("@/modules/aiFoodUpload/pages/ai.food.upload.page"));
+const AiFoodViewPage = lazy(() => import("@/modules/aiFoodUpload/pages/ai.food.view.page"));
 const FitzoneManagementPage = lazy(() => import("@/modules/fitzoneManagement/pages/fitzone.management.page"));
 const AddFitzonePage = lazy(() => import("@/modules/fitzoneManagement/pages/add.fitzone.page"));
 const ManageProgramPage = lazy(() => import("@/modules/manageProgram/pages/manage.program.page"));
@@ -437,6 +439,22 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <AddNutritionPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "ai-food-upload",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AiFoodUploadPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "ai-food-upload/:id",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <AiFoodViewPage />
               </Suspense>
             ),
           },

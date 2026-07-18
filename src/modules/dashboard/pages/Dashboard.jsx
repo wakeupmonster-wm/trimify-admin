@@ -7,11 +7,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   fetchDashboardKPIs,
   fetchDashboardData,
+  fetchDashboardExtras,
   setDashboardDateRange,
 } from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
-import { LayoutDashboard } from "lucide-react";
+import {
+  LayoutDashboard,
+  PieChart as PieChartIcon,
+  Receipt,
+  Target,
+  Users2,
+  Salad,
+  TrendingUp,
+  Activity as ActivityIcon,
+  Dumbbell,
+  Wallet,
+  ShieldCheck,
+  Bell,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TodayAtAGlance } from "../components/TodayAtAGlance";
 import { UserGrowthChart } from "../components/UserGrowthChart";
 import { RevenueBreakdown } from "../components/RevenueBreakdown";
@@ -19,7 +34,14 @@ import { LiveActivity } from "../components/LiveActivity";
 import { ActivityHeatmap } from "../components/ActivityHeatmap";
 import { ContentPerformance } from "@/components/shared/ContentPerformance";
 import { DashboardSkeleton } from "../components/DashboardSkeleton";
-import { format } from "date-fns";
+import { ConversionFunnel } from "../components/ConversionFunnel";
+import SecondaryKpiRow from "../components/SecondaryKpiRow";
+import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
+import DonutStatCard from "../components/DonutStatCard";
+import TrendChartCard from "../components/TrendChartCard";
+import DashboardTableCard from "../components/DashboardTableCard";
+import StatusPill from "../components/StatusPill";
+import { format, formatDistanceToNow } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
@@ -27,8 +49,9 @@ import { TableLoader } from "@/app/loader/table.loader";
 export default function Dashboard() {
   const socket = useSocket();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const { stats, loading, dashboardData, dashboardMeta, dateRange } =
+  const { stats, loading, dashboardData, dashboardExtras, dashboardMeta, dateRange, lastUpdated } =
     useSelector((state) => state.dashboard);
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
@@ -117,6 +140,7 @@ export default function Dashboard() {
         await Promise.all([
           dispatch(fetchDashboardData(serializableDate)),
           dispatch(fetchDashboardKPIs(apiParams)),
+          dispatch(fetchDashboardExtras(serializableDate)),
         ]);
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
@@ -138,6 +162,32 @@ export default function Dashboard() {
       }),
     );
   }, [selectedDate, dispatch]);
+
+  // Manual refresh — re-pulls the same three thunks for the currently
+  // selected range, used by the "as of HH:MM" indicator's refresh button.
+  const handleManualRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const preset = selectedDate?.preset || "today";
+      const apiParams = {
+        preset,
+        from: selectedDate?.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null,
+        to: selectedDate?.to ? format(new Date(selectedDate.to), "yyyy-MM-dd") : null,
+      };
+      const serializableDate = {
+        ...selectedDate,
+        from: selectedDate?.from ? new Date(selectedDate.from).toISOString() : null,
+        to: selectedDate?.to ? new Date(selectedDate.to).toISOString() : null,
+      };
+      await Promise.all([
+        dispatch(fetchDashboardData(serializableDate)),
+        dispatch(fetchDashboardKPIs(apiParams)),
+        dispatch(fetchDashboardExtras(serializableDate)),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   // Derive the human-readable period label (e.g. "May 01 – May 27, 2026")
   // For custom date ranges: format from the selected dates
@@ -173,7 +223,7 @@ export default function Dashboard() {
   // ─── Initial Load Guard ─────────────────────────────────────────────────────
   // Show full-page skeleton until the first API response populates dashboardData.
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
-  if (!dashboardData) {
+  if (!dashboardExtras) {
     return (
       <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
@@ -185,7 +235,7 @@ export default function Dashboard() {
     <>
       <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
-          {refreshing && dashboardData && (
+          {refreshing && dashboardExtras && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -227,6 +277,11 @@ export default function Dashboard() {
                 }
               />
               <div className="flex items-center gap-2.5 w-full sm:w-max shrink-0">
+                <LastUpdatedIndicator
+                  lastUpdated={lastUpdated}
+                  onRefresh={handleManualRefresh}
+                  refreshing={refreshing}
+                />
                 <CalendarDateRangePicker
                   value={selectedDate}
                   onDateChange={setSelectedDate}
@@ -237,81 +292,316 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
-            <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
-              <TodayAtAGlance
-                data={dashboardData?.zoneA}
-                summaryData={dashboardData?.summaryData}
-                periodLabel={dynamicPeriodLabel}
-                selectedDate={selectedDate}
-              />
+            {/* ─────────────────────────────────────────────────────────────
+                Previous dashboard widgets — temporarily disabled while the
+                new dashboard (extras-driven) is being built out. Nothing
+                deleted, just switched off; flip back to `true` to restore.
+               ───────────────────────────────────────────────────────────── */}
+            {false && (
+              <>
+                <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
+                  <TodayAtAGlance
+                    data={dashboardData?.zoneA}
+                    summaryData={dashboardData?.summaryData}
+                    periodLabel={dynamicPeriodLabel}
+                    selectedDate={selectedDate}
+                  />
+                </div>
+
+                <div className="flex flex-col items-start justify-between gap-4 3xl:gap-6">
+                  <div className="flex flex-col items-start gap-1">
+                    <h2 className="text-base font-bold text-slate-900 group">
+                      Key Metrics
+                    </h2>
+                    <p className="text-[11px] font-medium text-slate-500 leading-none">
+                      Quick overview of platform health
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                    <UserGrowthChart
+                      data={dashboardData?.engagementChartsData}
+                      selectedDate={selectedDate}
+                    />
+                    <LiveActivity
+                      data={
+                        dashboardData ? dashboardData.recentActivityData : undefined
+                      }
+                    />
+                  </div>
+                </div>
+
+                {/* Analytical Row 3: Bento Grid (Revenue, Match, Gender, Heatmap) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  {/* Left Column: Revenue Breakdown */}
+                  <div className="lg:col-span-4 h-full">
+                    <RevenueBreakdown
+                      data={dashboardData?.revenueBreakdown}
+                      revenueChartsData={dashboardData?.revenueChartsData}
+                    />
+                  </div>
+
+                  {/* Right Column: Stats & Heatmap */}
+                  <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
+                    <div className="flex-1">
+                      <ActivityHeatmap data={dashboardData?.engagementChartsData} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col xl:flex-row gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="flex-[1.2] min-w-0 flex flex-col h-full w-full">
+                    <RevenueTrendChart data={dashboardData?.revenueChartsData} />
+                  </div>
+                  <div className="flex-1 min-w-0 flex flex-col h-full w-full">
+                    <ChartUserDistribution
+                      data={{
+                        active: dashboardData?.summaryData?.activeUsers || 0,
+                        inactive: dashboardData?.summaryData?.inactiveUsers || 0,
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} selectedDate={selectedDate} />
+
+            {/* Composition — pie/donut breakdowns */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start gap-1">
+                <h2 className="text-base font-bold text-slate-900">Composition</h2>
+                <p className="text-[11px] font-medium text-slate-500 leading-none">
+                  How the current user & revenue base breaks down
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                <DonutStatCard
+                  title="Users by Plan Type"
+                  subtitle="Monthly vs Quarterly"
+                  Icon={PieChartIcon}
+                  iconColor="text-brand-blue"
+                  iconBg="bg-blue-50"
+                  data={dashboardExtras?.pieCharts?.planType || []}
+                  footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
+                />
+                <DonutStatCard
+                  title="Transaction Status"
+                  subtitle="Success / failed / pending"
+                  Icon={Receipt}
+                  iconColor="text-emerald-600"
+                  iconBg="bg-emerald-50"
+                  data={dashboardExtras?.pieCharts?.txStatus || []}
+                />
+                <DonutStatCard
+                  title="User Goal Distribution"
+                  subtitle="Primary goal, main_goal field"
+                  Icon={Target}
+                  iconColor="text-violet-600"
+                  iconBg="bg-violet-50"
+                  data={dashboardExtras?.pieCharts?.userGoals || []}
+                  scrollableLegend
+                />
+                <DonutStatCard
+                  title="Gender Distribution"
+                  Icon={Users2}
+                  iconColor="text-cyan-600"
+                  iconBg="bg-cyan-50"
+                  data={dashboardExtras?.pieCharts?.gender || []}
+                />
+                <DonutStatCard
+                  title="Vegetarian vs Non-veg"
+                  Icon={Salad}
+                  iconColor="text-amber-600"
+                  iconBg="bg-amber-50"
+                  data={dashboardExtras?.pieCharts?.dietPreference || []}
+                  footnote="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
+                />
+                <ConversionFunnel data={dashboardExtras?.funnel} />
+              </div>
             </div>
 
-            <div className="flex flex-col items-start justify-between gap-4 3xl:gap-6">
+            {/* Trends — everything not already covered by Signups/Revenue/Heatmap above */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
               <div className="flex flex-col items-start gap-1">
-                <h2 className="text-base font-bold text-slate-900 group">
-                  Key Metrics
-                </h2>
+                <h2 className="text-base font-bold text-slate-900">Trends</h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
-                  Quick overview of platform health
+                  Change over time, grouped to match the selected date range
                 </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <UserGrowthChart
-                  data={dashboardData?.engagementChartsData}
-                  selectedDate={selectedDate}
+                <TrendChartCard
+                  title="Active vs Churned Users"
+                  subtitle="Month-wise comparison"
+                  Icon={TrendingUp}
+                  iconColor="text-brand-blue"
+                  iconBg="bg-blue-50"
+                  tooltipText="Approximate — churnedUsers can only reflect plans that lapsed and haven't been renewed as of today, not a full historical ledger."
+                  data={dashboardExtras?.trends?.activeVsChurned || []}
+                  xKey="month"
+                  series={[
+                    { key: "activeUsers", label: "Active", color: "hsl(160, 84%, 39%)", type: "line" },
+                    { key: "churnedUsers", label: "Churned", color: "hsl(0, 84%, 60%)", type: "line" },
+                  ]}
+                  note="Churn numbers are approximate — a user who churned and later renewed no longer shows up as churned that month."
                 />
-                <LiveActivity
-                  data={
-                    dashboardData ? dashboardData.recentActivityData : undefined
-                  }
+                <TrendChartCard
+                  title="Engagement Trend (DAU)"
+                  subtitle="Users logging food / water / steps / weight"
+                  Icon={ActivityIcon}
+                  iconColor="text-cyan-600"
+                  iconBg="bg-cyan-50"
+                  data={dashboardExtras?.trends?.engagementDAU || []}
+                  xKey="date"
+                  series={[{ key: "active_users", label: "Daily Active Users", color: "hsl(182, 59%, 54%)", type: "line" }]}
+                />
+                <TrendChartCard
+                  title="Plan-wise Revenue"
+                  subtitle="Revenue contribution per plan"
+                  Icon={Wallet}
+                  iconColor="text-emerald-600"
+                  iconBg="bg-emerald-50"
+                  data={dashboardExtras?.trends?.planRevenue || []}
+                  xKey="title"
+                  series={[{ key: "revenue", label: "Revenue", color: "hsl(212, 100%, 45%)", type: "bar" }]}
+                />
+                <TrendChartCard
+                  title="Fitzone Session Completion"
+                  subtitle="Assignment volume per period"
+                  Icon={Dumbbell}
+                  iconColor="text-rose-600"
+                  iconBg="bg-rose-50"
+                  data={dashboardExtras?.trends?.fitzoneCompletion || []}
+                  xKey="date"
+                  series={(dashboardExtras?.trends?.fitzoneStatuses || ["Active"]).map((status, i) => ({
+                    key: status,
+                    label: status,
+                    color: ["hsl(340, 82%, 60%)", "hsl(160, 84%, 39%)", "hsl(38, 92%, 50%)"][i % 3],
+                    type: "bar",
+                  }))}
+                  note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
                 />
               </div>
             </div>
 
-            {/* Analytical Row 3: Bento Grid (Revenue, Match, Gender, Heatmap) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-              {/* Left Column: Revenue Breakdown */}
-              <div className="lg:col-span-4 h-full">
-                <RevenueBreakdown
-                  data={dashboardData?.revenueBreakdown}
-                  revenueChartsData={dashboardData?.revenueChartsData}
-                />
-              </div>
-
-              {/* Right Column: Stats & Heatmap */}
-              <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
-                <div className="flex-1">
-                  <ActivityHeatmap data={dashboardData?.engagementChartsData} />
+            {false && (
+              <>
+                {/* Content Performance */}
+                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="w-full flex flex-col h-full min-w-0">
+                    <ContentPerformance data={dashboardData?.contentChartsData} />
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex flex-col xl:flex-row gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-              <div className="flex-[1.2] min-w-0 flex flex-col h-full w-full">
-                <RevenueTrendChart data={dashboardData?.revenueChartsData} />
+                {/* Recent Joined Users */}
+                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
+                    <RecentUsersTable
+                      recentActivityData={dashboardData?.recentActivityData}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Drill-down lists */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start gap-1">
+                <h2 className="text-base font-bold text-slate-900">Follow-ups & Roster</h2>
+                <p className="text-[11px] font-medium text-slate-500 leading-none">
+                  Renewals, abandoned checkouts and platform admin/notification activity
+                </p>
               </div>
-              <div className="flex-1 min-w-0 flex flex-col h-full w-full">
-                <ChartUserDistribution
-                  data={{
-                    active: dashboardData?.summaryData?.activeUsers || 0,
-                    inactive: dashboardData?.summaryData?.inactiveUsers || 0,
-                  }}
+
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                <DashboardTableCard
+                  title="Recent Transactions"
+                  subtitle="Latest 10"
+                  Icon={Receipt}
+                  iconColor="text-emerald-600"
+                  iconBg="bg-emerald-50"
+                  rows={dashboardExtras?.tables?.recentTransactions || []}
+                  emptyMessage="No transactions yet."
+                  columns={[
+                    { key: "user_name", label: "User" },
+                    { key: "plan_title", label: "Plan" },
+                    { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
+                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
+                    { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
+                  ]}
                 />
-              </div>
-            </div>
 
-            {/* Content Performance */}
-            <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-              <div className="w-full flex flex-col h-full min-w-0">
-                <ContentPerformance data={dashboardData?.contentChartsData} />
-              </div>
-            </div>
+                <DashboardTableCard
+                  title="Users Nearing Plan Expiry"
+                  subtitle="Renewal follow-up list"
+                  Icon={TrendingUp}
+                  iconColor="text-amber-600"
+                  iconBg="bg-amber-50"
+                  rows={dashboardExtras?.tables?.expiringSoon || []}
+                  emptyMessage="No plans expiring soon."
+                  actionLabel="Renew"
+                  onAction={(row) => navigate(`/admin/subscription-management/subscribers`, { state: { user: row.name } })}
+                  columns={[
+                    { key: "name", label: "User" },
+                    { key: "plan_title", label: "Plan" },
+                    { key: "expires_at", label: "Expiry", render: (r) => format(new Date(r.expires_at), "MMM dd, yyyy") },
+                    {
+                      key: "days_left",
+                      label: "Days Left",
+                      render: (r) => (
+                        <span className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}>
+                          {r.days_left}d
+                        </span>
+                      ),
+                    },
+                  ]}
+                />
 
-            {/* Recent Joined Users */}
-            <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-              <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
-                <RecentUsersTable
-                  recentActivityData={dashboardData?.recentActivityData}
+                <DashboardTableCard
+                  title="Pending / Abandoned Checkouts"
+                  subtitle="Signed up but haven't paid in 24–48h"
+                  Icon={Wallet}
+                  iconColor="text-rose-600"
+                  iconBg="bg-rose-50"
+                  rows={dashboardExtras?.tables?.abandonedCheckouts || []}
+                  emptyMessage="No abandoned checkouts right now."
+                  actionLabel="Follow Up"
+                  onAction={(row) => navigate(`/admin/users`, { state: { user: row.name } })}
+                  columns={[
+                    { key: "name", label: "User" },
+                    { key: "signed_up_at", label: "Signed Up", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm") },
+                    { key: "hours_since_signup", label: "Hours Since", render: (r) => `${r.hours_since_signup}h` },
+                  ]}
+                />
+
+                <DashboardTableCard
+                  title="Sub-Admin Roster"
+                  subtitle="Managers & how many users they cover"
+                  Icon={ShieldCheck}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-100"
+                  rows={dashboardExtras?.tables?.subAdminRoster || []}
+                  emptyMessage="No sub-admins yet."
+                  columns={[
+                    { key: "name", label: "Name" },
+                    { key: "role", label: "Role", render: (r) => <span className="capitalize">{r.role}</span> },
+                    { key: "managed_users", label: "Users Managed", align: "right" },
+                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
+                  ]}
+                />
+
+                <DashboardTableCard
+                  title="Recent Notifications Sent"
+                  subtitle="Latest broadcast/push activity"
+                  Icon={Bell}
+                  iconColor="text-brand-blue"
+                  iconBg="bg-blue-50"
+                  rows={dashboardExtras?.tables?.recentNotifications || []}
+                  emptyMessage="No notifications sent yet."
+                  columns={[
+                    { key: "title", label: "Title" },
+                    { key: "target_audience", label: "Audience", render: (r) => <span className="capitalize">{r.target_audience}</span> },
+                    { key: "created_at", label: "Sent", render: (r) => formatDistanceToNow(new Date(r.created_at), { addSuffix: true }) },
+                  ]}
                 />
               </div>
             </div>
