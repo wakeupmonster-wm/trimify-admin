@@ -23,6 +23,8 @@ const ViewUserProfilePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  console.log("userData: ", location.state?.userData);
+
   const userData = location.state?.userData || {
     name: "Load Test User 8",
     email: "loadtest_8@trimify.com.au",
@@ -94,30 +96,30 @@ const ViewUserProfilePage = () => {
         </Header>
       </div>
 
-      <ProfileHeader 
-        userData={userData} 
-        isActive={isActive} 
-        formatDate={formatDate} 
+      <ProfileHeader
+        userData={userData}
+        isActive={isActive}
+        formatDate={formatDate}
       />
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-12">
         <div className="xl:col-span-8 flex flex-col gap-6">
-           <PersonalInfoCard 
-              userData={userData} 
-              formatDate={formatDate} 
-              bmi={bmi} 
-              getYesNo={getYesNo} 
-           />
-           <GoalsNutritionCard userData={userData} />
-           <EngagementCard />
-           <RecentActivityTimelineCard />
+          <PersonalInfoCard
+            userData={userData}
+            formatDate={formatDate}
+            bmi={bmi}
+            getYesNo={getYesNo}
+          />
+          <GoalsNutritionCard userData={userData} />
+          <EngagementCard />
+          <RecentActivityTimelineCard />
         </div>
 
         <div className="xl:col-span-4 flex flex-col gap-6">
-           <ContactCard userData={userData} />
-           <SubscriptionCard userData={userData} formatDate={formatDate} />
-           <SecurityCard userData={userData} />
-           <RecentLoginsCard />
+          <ContactCard userData={userData} />
+          <SubscriptionCard userData={userData} formatDate={formatDate} />
+          <SecurityCard userData={userData} />
+          <RecentLoginsCard />
         </div>
       </div>
     </Container>

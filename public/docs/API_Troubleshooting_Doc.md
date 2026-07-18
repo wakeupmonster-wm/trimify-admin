@@ -812,3 +812,121 @@ The endpoint is strictly requiring the `icon` field and returning a 422 Unproces
 #### Recommended Action for Backend Dev
 
 Update the validation rules for the `update-blogcategory` endpoint to make the `icon` field `nullable` or `sometimes|required|image` instead of strictly `required`.
+
+---
+
+# 8. User Profile Enhancements
+
+### GET /admin/view-user-profile/{id}
+
+#### Description
+
+Retrieves the comprehensive data required to display a single user's profile view in the admin panel. 
+
+**Why is this API needed?**
+Currently, the admin panel's user profile page relies heavily on static, hard-coded fallback values for key metrics and visualizations (e.g., Engagement Stats, Recent Activities, Login History). To make the dashboard fully dynamic and accurate, the backend must supply these additional data points within a single comprehensive object. Returning all required information in one call optimizes network performance, prevents frontend cascading requests, and ensures the UI truthfully reflects the real-time state of the user.
+
+#### Endpoint
+
+```http
+GET /admin/view-user-profile/{id}
+```
+
+#### Expected Comprehensive Response Object
+
+To ensure the frontend is fully dynamic without requiring any hard-coded data, the backend response should match the structure below. This includes the new `access_level`, `two_factor_enabled`, `engagement_stats`, `recent_activities`, and `recent_logins` keys.
+
+```json
+{
+    "id": 1762,
+    "user_id": "aIsUz",
+    "subadmin_id": 8,
+    "name": "raju singh",
+    "email": "patelrajeev104320342@gmail.com",
+    "mobileNo": "9876543214",
+    "dob": "1998-01-01",
+    "height": "170.00",
+    "weight": "70.00",
+    "gender": "male",
+    "image": null,
+    "water_goal": 2500,
+    "calories_goal": 2000,
+    "carbs_goal": 50,
+    "fat_goal": 50,
+    "protein_goal": 50,
+    "email_verified_at": null,
+    "status": "Active",
+    "admin_status": null,
+    "device_token": "",
+    "notification_status": 1,
+    "created_at": "2026-07-14T09:52:21.000000Z",
+    "updated_at": "2026-07-14T09:52:42.000000Z",
+    "timezone": null,
+    "fluid_restrictions": 0,
+    "fluid_quantity": null,
+    "weight_goal": 40,
+    "main_goal": "Maintain Weight",
+    "body_shape": "Hourglass",
+    "body_shape_goal": "Hourglass",
+    "ideal_weight_period": "Right now",
+    "fitness_level": "Intermediate",
+    "vegetarian": 0,
+    "plan": null,
+    "plan_expiry": null,
+    "revoked_at": null,
+    "paid": 0,
+    "targetSteps": "6000",
+    "sub_admin": {
+        "id": 8,
+        "name": "Self Registration",
+        "email": "registration@gmail.com",
+        "location": "Australia",
+        "status": "Inactive"
+    },
+    "transactions": [],
+    "access_level": "Standard User",
+    "two_factor_enabled": false,
+    "engagement_stats": {
+        "total_logins": 6,
+        "workouts_completed": 0,
+        "programs_enrolled": 0,
+        "blogs_read": 0,
+        "sessions_completed": 0,
+        "days_active": 5
+    },
+    "recent_activities": [
+        {
+            "id": 1,
+            "title": "Profile Updated",
+            "description": "User updated their weight goal to 65kg.",
+            "created_at": "2026-07-18T10:30:00.000000Z",
+            "type": "profile_update"
+        },
+        {
+            "id": 2,
+            "title": "Password Changed",
+            "description": "User successfully changed their password via email link.",
+            "created_at": "2026-07-17T14:32:00.000000Z",
+            "type": "security"
+        }
+    ],
+    "recent_logins": [
+        {
+            "browser": "Chrome (Windows)",
+            "location": "Sydney",
+            "login_at": "2026-07-13T10:24:00.000000Z",
+            "is_current_session": true
+        },
+        {
+            "browser": "Mobile App (Android)",
+            "location": "Sydney",
+            "login_at": "2026-07-10T18:32:00.000000Z",
+            "is_current_session": false
+        }
+    ]
+}
+```
+
+#### Recommended Action for Backend Dev
+
+Update the user profile response object to append `access_level`, `two_factor_enabled`, `engagement_stats`, `recent_activities`, and `recent_logins`. This allows the frontend to fully render the view profile dashboard without hard-coded data.
