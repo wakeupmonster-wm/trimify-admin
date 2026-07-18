@@ -28,6 +28,7 @@ const DashboardTableCard = ({
   emptyMessage = "Nothing to show here.",
   actionLabel,
   onAction,
+  footerStat,
 }) => {
   return (
     <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
@@ -59,7 +60,7 @@ const DashboardTableCard = ({
               </TableRow>
             ) : (
               rows.map((row, idx) => (
-                <TableRow key={row.id ?? idx} className="hover:bg-slate-50/70">
+                <TableRow key={row.list_key ?? row.id ?? idx} className="hover:bg-slate-50/70">
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}
@@ -87,6 +88,13 @@ const DashboardTableCard = ({
           </TableBody>
         </Table>
       </div>
+
+      {footerStat && (
+        <div className="px-6 py-2.5 border-t border-slate-200 bg-slate-50/60 flex items-center justify-between shrink-0">
+          <span className="text-[11px] font-semibold text-slate-500">{footerStat.label}</span>
+          <span className="text-xs font-extrabold text-slate-800">{footerStat.value}</span>
+        </div>
+      )}
     </div>
   );
 };

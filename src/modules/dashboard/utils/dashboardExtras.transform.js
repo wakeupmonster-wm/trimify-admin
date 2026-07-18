@@ -62,15 +62,23 @@ export const toLabeledPie = (items = []) =>
   }));
 
 /**
- * dashboard/conversion-funnel only gives 2 real checkpoints (signups, paid) —
- * we render exactly those, no fabricated intermediate stages.
+ * dashboard/conversion-funnel only gives 2 real checkpoints (signups, paid),
+ * so the visual funnel bars stay exactly those two — no fabricated
+ * intermediate stages. But the app's signup flow ends with every user
+ * eventually buying a subscription, so notPaidUsers/conversionRate/
+ * dropOffRate are surfaced as their own top-level fields too (not just
+ * baked into the insight sentence), so the widget can show the complete
+ * picture: how many haven't converted yet, not just the two raw counts.
  */
 export const buildFunnel = (data) => {
   if (!data) return { stages: [], insight: "" };
-  const { totalSignups = 0, paidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
+  const { totalSignups = 0, paidUsers = 0, notPaidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
   return {
     subtitle: "Signup → Payment, this period",
-    insight: `${conversionRate}% of signups convert to a paid subscription (${dropOffRate}% drop-off).`,
+    notPaidUsers,
+    conversionRate,
+    dropOffRate,
+    insight: `${conversionRate}% of signups have converted to a paid subscription. Since every user is expected to subscribe eventually, the ${notPaidUsers.toLocaleString()} who haven't yet (${dropOffRate}%) are the ones to follow up with.`,
     stages: [
       { label: "Total Signups", value: totalSignups, color: CATEGORICAL_COLORS[0], dropOff: 0 },
       { label: "Paid Users", value: paidUsers, color: STATUS_COLORS.success, dropOff: -Math.round(dropOffRate) },
@@ -78,17 +86,22 @@ export const buildFunnel = (data) => {
   };
 };
 
-export const buildSecondaryKpis = (summary, overview) => {
+// Flat, single-purpose KPI set for the main Dashboard's secondary KPI row.
+// "Active Subscriptions"/"Churn"/"Failed Transactions"/"Conversion Rate" all
+// live on the Subscription Dashboard instead — this row sticks to platform
+// signup/content stats that don't belong there.
+export const buildSecondaryKpis = (summary) => {
   if (!summary) return null;
   return {
-    newSignups: {
-      today: summary.newSignupsToday || 0,
-      week: summary.newSignupsThisWeek || 0,
-      month: summary.newSignupsThisMonth || 0,
-    },
-    activeSubscriptions: { value: overview?.activeSubscribers ?? 0 },
-    expiringSoon: { count: summary.expiringSoonCount || 0 },
-    churn: { count: summary.churnCount || 0, rate: `${summary.churnRate ?? 0}%` },
-    failedTransactions: { count: summary.failedTransactions || 0 },
+    newSignupsToday: summary.newSignupsToday || 0,
+    expiringSoon: summary.expiringSoonCount || 0,
+    totalRevenueAllTime: summary.totalRevenueAllTime || 0,
+    inactiveUsers: summary.inactiveUsers || 0,
+    totalUsersAllTime: summary.totalUsersAllTime || 0,
+    totalPrograms: summary.totalPrograms || 0,
+    totalFitzoneSessions: summary.totalFitzoneSessions || 0,
+    totalBlogs: summary.totalBlogs || 0,
+    totalPublishedBlogs: summary.totalPublishedBlogs || 0,
+    totalSubAdmins: summary.totalSubAdmins || 0,
   };
 };

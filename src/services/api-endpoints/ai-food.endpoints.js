@@ -22,8 +22,13 @@ export const AI_FOOD_ENDPOINTS = {
   /** POST — Retry a failed item */
   RETRY: (id) => `${ADMIN}/ai-food/${id}/retry`,
 
-  /** POST — Regenerate image for a pre-save (draft/review) item */
+  /** POST — Regenerate image for a pre-save (draft/review) item. Optional
+   *  body: { image_prompt }. Fire-and-forget — poll batch/list for the result. */
   REGENERATE_IMAGE: (id) => `${ADMIN}/ai-food/${id}/regenerate-image`,
+
+  /** POST (multipart) — Regenerate image for a pre-save item from a new
+   *  audio recording (image only — name/nutrition untouched). Fire-and-forget. */
+  REGENERATE_IMAGE_AUDIO: (id) => `${ADMIN}/ai-food/${id}/regenerate-image-audio`,
 
   /** POST — Regenerate image for an already-saved catalog item */
   REGENERATE_SAVED_IMAGE: (id) => `${ADMIN}/nutrition/${id}/regenerate-image`,

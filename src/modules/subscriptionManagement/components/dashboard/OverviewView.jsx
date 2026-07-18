@@ -1,8 +1,6 @@
-import React, { useMemo } from "react";
-import { DollarSign, Crown, UserCheck, Percent } from "lucide-react";
-import StatsGrid from "@/components/common/stats.grid";
+import React from "react";
+import { DollarSign, Crown, UserCheck, UserMinus, CreditCard, PieChart as PieChartIcon, Receipt } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { colorMap, bgMap } from "@/constants/colors";
 import ErrorState from "@/components/shared/ErrorState";
 import DashboardOverviewSkeleton from "./DashboardOverviewSkeleton";
 import RevenueTrendChart from "./overview/RevenueTrendChart";
@@ -10,6 +8,10 @@ import SubscriberGrowthChart from "./overview/SubscriberGrowthChart";
 import PlanDistributionChart from "./overview/PlanDistributionChart";
 import TopSellingPlansCard from "./overview/TopSellingPlansCard";
 import RecentTransactionsCard from "./overview/RecentTransactionsCard";
+// Moved here from the main Dashboard — plan/revenue breakdowns belong with
+// the rest of subscription analytics.
+import DonutStatCard from "@/modules/dashboard/components/DonutStatCard";
+import KpiCard from "@/modules/dashboard/components/KpiCard";
 
 function SectionLabel({ children, live }) {
   return (
@@ -26,43 +28,10 @@ export default function OverviewView({
   overviewError,
   charts,
   dailyPerformance,
+  dashboardExtras,
   rangeLabel,
   onRetry,
 }) {
-  const stats = useMemo(() => {
-    if (!overview) return [];
-    return [
-      {
-        label: "Today's Revenue",
-        val: `$${Number(overview.todaysRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: <DollarSign size={22} />,
-        color: "blue",
-        description: "Successful transactions today",
-      },
-      {
-        label: "MRR",
-        val: `$${Number(overview.mrr || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: <Crown size={22} />,
-        color: "amber",
-        description: "Monthly recurring revenue",
-      },
-      {
-        label: "Active Subscribers",
-        val: overview.activeSubscribers || 0,
-        icon: <UserCheck size={22} />,
-        color: "emerald",
-        description: "Not revoked, not expired",
-      },
-      {
-        label: "Conversion Rate",
-        val: `${overview.conversionRate || 0}%`,
-        icon: <Percent size={22} />,
-        color: "aqua",
-        description: "Active subscribers / total users",
-      },
-    ];
-  }, [overview]);
-
   if (overviewLoading && !overview) return <DashboardOverviewSkeleton />;
 
   if (overviewError && !overview) {
@@ -75,12 +44,42 @@ export default function OverviewView({
 
   return (
     <div className="space-y-3 px-3 md:px-6 py-6">
-      {stats.length > 0 && (
-        <div className="space-y-3">
-          <SectionLabel live>Live Snapshot</SectionLabel>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
-          </div>
+      {overview && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <KpiCard
+            icon={DollarSign}
+            label="Today's Revenue"
+            value={`$${Number(overview.todaysRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+            description="Successful transactions today"
+          />
+          <KpiCard
+            icon={Crown}
+            label="MRR"
+            value={`$${Number(overview.mrr || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+            description="Monthly recurring revenue"
+            tone="amber"
+          />
+          <KpiCard
+            icon={UserCheck}
+            label="Active Subscribers"
+            value={(overview.activeSubscribers || 0).toLocaleString()}
+            description="Not revoked, not expired"
+            tone="emerald"
+          />
+          <KpiCard
+            icon={UserMinus}
+            label="Churn"
+            value={(dashboardExtras?.churn?.count || 0).toLocaleString()}
+            description={`${dashboardExtras?.churn?.rate || "0%"} churn rate`}
+            tone="rose"
+          />
+          <KpiCard
+            icon={CreditCard}
+            label="Failed Transactions"
+            value={(dashboardExtras?.failedTransactions?.count || 0).toLocaleString()}
+            description={rangeLabel ? `In ${rangeLabel.toLowerCase()}` : "Selected period"}
+            tone="rose"
+          />
         </div>
       )}
 
@@ -92,13 +91,40 @@ export default function OverviewView({
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <RevenueTrendChart data={charts?.revenueTrend || []} />
-          <SubscriberGrowthChart data={charts?.subscriberGrowth || []} />
-        </div>
+        {/* Revenue Trend / Subscriber Growth / Plan Distribution —
+            temporarily disabled, not deleted. Flip back to `true` to restore. */}
+        {false && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <RevenueTrendChart data={charts?.revenueTrend || []} />
+            <SubscriberGrowthChart data={charts?.subscriberGrowth || []} />
+          </div>
+        )}
+        {false && (
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
+            <PlanDistributionChart data={charts?.planDistribution || []} />
+          </div>
+        )}
 
-        <div className="grid grid-cols-1 gap-4 sm:gap-6">
-          <PlanDistributionChart data={charts?.planDistribution || []} />
+        {/* Users by Plan Type / Transaction Status — moved here from the
+            main Dashboard's Composition section. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <DonutStatCard
+            title="Users by Plan Type"
+            subtitle="Monthly vs Quarterly"
+            Icon={PieChartIcon}
+            iconColor="text-brand-blue"
+            iconBg="bg-blue-50"
+            data={dashboardExtras?.pieCharts?.planType || []}
+            footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
+          />
+          <DonutStatCard
+            title="Transaction Status"
+            subtitle="Success / failed / pending"
+            Icon={Receipt}
+            iconColor="text-emerald-600"
+            iconBg="bg-emerald-50"
+            data={dashboardExtras?.pieCharts?.txStatus || []}
+          />
         </div>
       </div>
 

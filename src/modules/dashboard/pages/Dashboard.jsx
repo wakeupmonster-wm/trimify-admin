@@ -8,7 +8,6 @@ import { fetchDashboardExtras, setDashboardDateRange } from "../store/dashboard.
 import { PageHeader } from "@/components/common/headSubhead";
 import {
   LayoutDashboard,
-  PieChart as PieChartIcon,
   Receipt,
   Target,
   Users2,
@@ -344,7 +343,7 @@ export default function Dashboard() {
               </>
             )}
 
-            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} selectedDate={selectedDate} />
+            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
 
             {/* Composition — pie/donut breakdowns */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
@@ -355,23 +354,9 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <DonutStatCard
-                  title="Users by Plan Type"
-                  subtitle="Monthly vs Quarterly"
-                  Icon={PieChartIcon}
-                  iconColor="text-brand-blue"
-                  iconBg="bg-blue-50"
-                  data={dashboardExtras?.pieCharts?.planType || []}
-                  footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
-                />
-                <DonutStatCard
-                  title="Transaction Status"
-                  subtitle="Success / failed / pending"
-                  Icon={Receipt}
-                  iconColor="text-emerald-600"
-                  iconBg="bg-emerald-50"
-                  data={dashboardExtras?.pieCharts?.txStatus || []}
-                />
+                {/* "Users by Plan Type" and "Transaction Status" moved to the
+                    Subscription Dashboard (OverviewView.jsx) — plan/revenue
+                    breakdowns belong with the rest of subscription analytics. */}
                 <DonutStatCard
                   title="User Goal Distribution"
                   subtitle="Primary goal, main_goal field"
@@ -415,7 +400,7 @@ export default function Dashboard() {
                   Icon={TrendingUp}
                   iconColor="text-brand-blue"
                   iconBg="bg-blue-50"
-                  tooltipText="Approximate — churnedUsers can only reflect plans that lapsed and haven't been renewed as of today, not a full historical ledger."
+                  tooltipText="Churned figures are approximate."
                   data={dashboardExtras?.trends?.activeVsChurned || []}
                   xKey="month"
                   series={[
@@ -511,6 +496,48 @@ export default function Dashboard() {
                 />
 
                 <DashboardTableCard
+                  title="Sub-Admin Roster"
+                  subtitle="Managers & how many users they cover"
+                  Icon={ShieldCheck}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-100"
+                  rows={dashboardExtras?.tables?.subAdminRoster || []}
+                  emptyMessage="No sub-admins yet."
+                  columns={[
+                    { key: "name", label: "Name" },
+                    { key: "role", label: "Role", render: (r) => <span className="capitalize">{r.role}</span> },
+                    { key: "managed_users", label: "Users Managed", align: "right" },
+                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
+                  ]}
+                  footerStat={
+                    dashboardExtras?.tables?.unassignedUsers != null
+                      ? { label: "Unassigned Users", value: dashboardExtras.tables.unassignedUsers.toLocaleString() }
+                      : undefined
+                  }
+                />
+
+                <div className="xl:col-span-2">
+                  <DashboardTableCard
+                    title="Pending / Abandoned Checkouts"
+                    subtitle="Signed up but haven't paid in 7+ days"
+                    Icon={Wallet}
+                    iconColor="text-rose-600"
+                    iconBg="bg-rose-50"
+                    rows={dashboardExtras?.tables?.abandonedCheckouts || []}
+                    emptyMessage="No abandoned checkouts right now."
+                    actionLabel="Follow Up"
+                    onAction={(row) => navigate(`/admin/users`, { state: { user: row.name } })}
+                    columns={[
+                      { key: "name", label: "User" },
+                      { key: "signed_up_at", label: "Signed Up", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm") },
+                      { key: "days_since_signup", label: "Days Since", render: (r) => `${r.days_since_signup}d` },
+                      { key: "main_goal", label: "Goal", render: (r) => <span className="capitalize">{r.main_goal}</span> },
+                      { key: "gender", label: "Gender", render: (r) => <span className="capitalize">{r.gender}</span> },
+                    ]}
+                  />
+                </div>
+
+                <DashboardTableCard
                   title="Users Nearing Plan Expiry"
                   subtitle="Renewal follow-up list"
                   Icon={TrendingUp}
@@ -537,39 +564,6 @@ export default function Dashboard() {
                 />
 
                 <DashboardTableCard
-                  title="Pending / Abandoned Checkouts"
-                  subtitle="Signed up but haven't paid in 24–48h"
-                  Icon={Wallet}
-                  iconColor="text-rose-600"
-                  iconBg="bg-rose-50"
-                  rows={dashboardExtras?.tables?.abandonedCheckouts || []}
-                  emptyMessage="No abandoned checkouts right now."
-                  actionLabel="Follow Up"
-                  onAction={(row) => navigate(`/admin/users`, { state: { user: row.name } })}
-                  columns={[
-                    { key: "name", label: "User" },
-                    { key: "signed_up_at", label: "Signed Up", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm") },
-                    { key: "hours_since_signup", label: "Hours Since", render: (r) => `${r.hours_since_signup}h` },
-                  ]}
-                />
-
-                <DashboardTableCard
-                  title="Sub-Admin Roster"
-                  subtitle="Managers & how many users they cover"
-                  Icon={ShieldCheck}
-                  iconColor="text-slate-700"
-                  iconBg="bg-slate-100"
-                  rows={dashboardExtras?.tables?.subAdminRoster || []}
-                  emptyMessage="No sub-admins yet."
-                  columns={[
-                    { key: "name", label: "Name" },
-                    { key: "role", label: "Role", render: (r) => <span className="capitalize">{r.role}</span> },
-                    { key: "managed_users", label: "Users Managed", align: "right" },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
-                  ]}
-                />
-
-                <DashboardTableCard
                   title="Recent Notifications Sent"
                   subtitle="Latest broadcast/push activity"
                   Icon={Bell}
@@ -579,7 +573,24 @@ export default function Dashboard() {
                   emptyMessage="No notifications sent yet."
                   columns={[
                     { key: "title", label: "Title" },
-                    { key: "target_audience", label: "Audience", render: (r) => <span className="capitalize">{r.target_audience}</span> },
+                    {
+                      key: "channel",
+                      label: "Channel",
+                      render: (r) => (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                            r.channel === "Push"
+                              ? "bg-blue-50 text-blue-600 border-blue-100"
+                              : "bg-violet-50 text-violet-600 border-violet-100"
+                          }`}
+                        >
+                          {r.channel}
+                        </span>
+                      ),
+                    },
+                    { key: "total_recipients", label: "Recipients", align: "right", render: (r) => r.total_recipients ?? "–" },
+                    { key: "success_count", label: "Success", align: "right", render: (r) => r.success_count ?? "–" },
+                    { key: "failed_count", label: "Failed", align: "right", render: (r) => r.failed_count ?? "–" },
                     { key: "created_at", label: "Sent", render: (r) => formatDistanceToNow(new Date(r.created_at), { addSuffix: true }) },
                   ]}
                 />

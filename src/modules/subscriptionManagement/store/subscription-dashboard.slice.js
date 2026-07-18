@@ -8,6 +8,11 @@ import {
   getTransactionsAPI,
   exportTransactionsAPI,
 } from "../services/subscription-dashboard.services";
+// Reused from the main Dashboard module — "Users by Plan Type" / "Transaction
+// Status" pies and the Churn / Failed Transactions KPIs moved here from the
+// main Dashboard, so they need the same source endpoints + transforms.
+import { dashboardSummaryAPI, dashboardRevenueChartsAPI } from "@/modules/dashboard/services/dashboard.services";
+import { toCategoricalPie, toStatusPie } from "@/modules/dashboard/utils/dashboardExtras.transform";
 
 // Shape B envelope: { success: true|false, message, data }
 
@@ -33,6 +38,34 @@ export const fetchCharts = createAsyncThunk(
       return rejectWithValue(response);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Pulls the pieces that moved over from the main Dashboard: plan-type /
+// transaction-status pies (from revenue-charts) and Churn / Failed
+// Transactions counts (from dashboard summary). Range-aware, same as fetchCharts.
+export const fetchDashboardExtrasForSubscription = createAsyncThunk(
+  "subscriptionDashboard/fetchDashboardExtras",
+  async (dateRange, { rejectWithValue }) => {
+    try {
+      const [summaryRes, revenueRes] = await Promise.allSettled([
+        dashboardSummaryAPI(dateRange),
+        dashboardRevenueChartsAPI(dateRange),
+      ]);
+      const summary = summaryRes.status === "fulfilled" && summaryRes.value?.success ? summaryRes.value.data : null;
+      const revenue = revenueRes.status === "fulfilled" && revenueRes.value?.success ? revenueRes.value.data : null;
+
+      return {
+        churn: { count: summary?.churnCount || 0, rate: `${summary?.churnRate ?? 0}%` },
+        failedTransactions: { count: summary?.failedTransactions || 0 },
+        pieCharts: {
+          planType: revenue?.planWiseSubscribers ? toCategoricalPie(revenue.planWiseSubscribers, "title", "total") : [],
+          txStatus: revenue?.transactionStatus ? toStatusPie(revenue.transactionStatus) : [],
+        },
+      };
+    } catch (err) {
+      return rejectWithValue(err.message || "Server Error");
     }
   }
 );
@@ -116,6 +149,11 @@ const initialState = {
   chartsError: null,
   chartsRequestId: null,
 
+  dashboardExtras: null,
+  dashboardExtrasLoading: false,
+  dashboardExtrasError: null,
+  dashboardExtrasRequestId: null,
+
   dailyPerformance: null,
   dailyPerformanceLoading: false,
   dailyPerformanceError: null,
@@ -176,6 +214,23 @@ const subscriptionDashboardSlice = createSlice({
         if (action.meta.requestId !== state.chartsRequestId) return;
         state.chartsLoading = false;
         state.chartsError = action.payload;
+      })
+      // Dashboard extras (moved-over plan/tx pies + churn/failed-tx KPIs) —
+      // request-id guarded, same pattern as charts.
+      .addCase(fetchDashboardExtrasForSubscription.pending, (state, action) => {
+        state.dashboardExtrasLoading = true;
+        state.dashboardExtrasError = null;
+        state.dashboardExtrasRequestId = action.meta.requestId;
+      })
+      .addCase(fetchDashboardExtrasForSubscription.fulfilled, (state, action) => {
+        if (action.meta.requestId !== state.dashboardExtrasRequestId) return;
+        state.dashboardExtrasLoading = false;
+        state.dashboardExtras = action.payload;
+      })
+      .addCase(fetchDashboardExtrasForSubscription.rejected, (state, action) => {
+        if (action.meta.requestId !== state.dashboardExtrasRequestId) return;
+        state.dashboardExtrasLoading = false;
+        state.dashboardExtrasError = action.payload;
       })
       // Daily performance
       .addCase(fetchDailyPerformance.pending, (state) => {

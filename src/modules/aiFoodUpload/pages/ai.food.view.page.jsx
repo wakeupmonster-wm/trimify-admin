@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -34,6 +34,7 @@ import {
   updateAiFoodItem,
   retryAiFoodItem,
   regenerateAiFoodImage,
+  regenerateAiFoodImageFromAudio,
   deleteAiFoodItem,
   generateAiFood,
 } from "../store/ai.food.slice";
@@ -110,6 +111,19 @@ const AiFoodViewPage = () => {
   const [nameDraft, setNameDraft] = useState(item?.food_name || "");
   const [viewingExisting, setViewingExisting] = useState(false);
 
+  // Tracks an image-only regenerate (icon button / prompt / audio) on an
+  // item that already has its data — distinct from the initial draft ->
+  // pending_review pipeline, since the backend flips status to "processing"
+  // for both. Kept local so the whole review form doesn't disappear behind
+  // a blocking full-page spinner just because the photo is being redone.
+  const [imageRegenerating, setImageRegenerating] = useState(false);
+
+  useEffect(() => {
+    if (item && item.status !== "processing") {
+      setImageRegenerating(false);
+    }
+  }, [item?.status]);
+
   if (!item) {
     return (
       <Container>
@@ -132,7 +146,8 @@ const AiFoodViewPage = () => {
   }
 
   const statusMeta = STATUS_META[item.status] || STATUS_META.draft;
-  const isInFlight = item.status === "draft" || item.status === "processing";
+  const isInFlight = (item.status === "draft" || item.status === "processing") && !imageRegenerating;
+  const showReviewForm = item.status === "pending_review" || (item.status === "processing" && imageRegenerating);
 
   const handleChange = (name, value) => {
     setFields((prev) => ({ ...prev, [name]: value }));
@@ -165,18 +180,47 @@ const AiFoodViewPage = () => {
   };
 
   const handleRegenerateImage = () => {
-    dispatch(regenerateAiFoodImage(item.id))
+    setImageRegenerating(true);
+    dispatch(regenerateAiFoodImage({ id: item.id }))
       .unwrap()
       .then(() => toast.success("Regenerating image…"))
-      .catch((error) => toast.error(error || "Failed to regenerate image."));
+      .catch((error) => {
+        setImageRegenerating(false);
+        toast.error(error || "Failed to regenerate image.");
+      });
   };
 
-  const handleGenerateFromPrompt = () => {
-    toast.info("Prompt-based image generation is coming soon — this will start creating images once the backend is wired up.");
+  // Fire-and-forget, same as the plain regenerate button — the response
+  // doesn't carry the new image yet, useAiFoodPolling picks it up once the
+  // item flips back out of "processing".
+  const handleGenerateFromPrompt = (prompt) => {
+    setImageRegenerating(true);
+    dispatch(regenerateAiFoodImage({ id: item.id, imagePrompt: prompt }))
+      .unwrap()
+      .then(() => toast.success("Regenerating image from your prompt…"))
+      .catch((error) => {
+        setImageRegenerating(false);
+        toast.error(error || "Failed to regenerate image.");
+      });
   };
 
-  const handleGenerateFromAudio = () => {
-    toast.info("Audio-based image generation is coming soon — this will start creating images once the backend is wired up.");
+  const handleGenerateFromAudio = (audioBlob) => {
+    setImageRegenerating(true);
+    dispatch(regenerateAiFoodImageFromAudio({ id: item.id, audioBlob }))
+      .unwrap()
+      .then(() => toast.success("Regenerating image from your recording…"))
+      .catch((error) => {
+        setImageRegenerating(false);
+        toast.error(error || "Couldn't process that recording — please try again.");
+      });
+  };
+
+  // Doesn't cancel the backend job (fire-and-forget, no cancel endpoint) —
+  // just stops blocking this screen on it. useAiFoodPolling still picks up
+  // the result whenever it's ready, cancelled or not.
+  const handleCancelRegenerate = () => {
+    setImageRegenerating(false);
+    toast.info("Stopped waiting — the image will still update automatically once it's ready.");
   };
 
   const handleRemove = () => {
@@ -381,7 +425,7 @@ const AiFoodViewPage = () => {
           </div>
         )}
 
-        {item.status === "pending_review" && (
+        {showReviewForm && (
           <>
           <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
             <div className="bg-white rounded-md shadow-sm border border-slate-300 p-4 space-y-3">
@@ -397,7 +441,7 @@ const AiFoodViewPage = () => {
                     <img
                       src={item.Meal_Image_url}
                       alt={item.food_name}
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      className={`w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 ${imageRegenerating ? "opacity-40" : ""}`}
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
                       <Eye className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -408,10 +452,23 @@ const AiFoodViewPage = () => {
                     <ImageIcon className="w-10 h-10" />
                   </div>
                 )}
+                {imageRegenerating && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70">
+                    <Loader2 className="w-6 h-6 text-brand-blue animate-spin" />
+                    <p className="text-[11px] font-semibold text-slate-600">Regenerating…</p>
+                    <button
+                      type="button"
+                      onClick={handleCancelRegenerate}
+                      className="text-[11px] font-semibold text-slate-500 underline hover:text-slate-800"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={handleRegenerateImage}
-                  disabled={isBusy}
+                  disabled={isBusy || imageRegenerating}
                   title="Regenerate image"
                   className="absolute bottom-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow border border-slate-200 disabled:opacity-50"
                 >
@@ -518,6 +575,8 @@ const AiFoodViewPage = () => {
           <AiFoodImagePromptPanel
             onGenerateFromPrompt={handleGenerateFromPrompt}
             onGenerateFromAudio={handleGenerateFromAudio}
+            onCancel={handleCancelRegenerate}
+            busy={isBusy || imageRegenerating}
           />
           </>
         )}
