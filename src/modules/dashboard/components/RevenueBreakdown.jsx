@@ -15,7 +15,12 @@ export function RevenueBreakdown({ data, revenueChartsData }) {
   if (revenueChartsData?.planWiseSubscribers?.length > 0) {
     const plans = revenueChartsData.planWiseSubscribers;
     const sum = plans.reduce((acc, curr) => acc + curr.total, 0);
-    const colors = ["hsl(182 59% 75%)", "hsl(182 59% 54%)", "hsl(182 59% 35%)", "hsl(215 50% 50%)"];
+    const colors = [
+      "hsl(182 59% 75%)",
+      "hsl(182 59% 54%)",
+      "hsl(182 59% 35%)",
+      "hsl(215 50% 50%)",
+    ];
     totalValue = String(sum);
     insightText = "Revenue by plan distribution.";
     categories = plans.map((p, i) => {
@@ -25,7 +30,7 @@ export function RevenueBreakdown({ data, revenueChartsData }) {
         value: p.total,
         displayValue: String(p.total),
         percentage,
-        color: colors[i % colors.length]
+        color: colors[i % colors.length],
       };
     });
   }
@@ -76,9 +81,9 @@ export function RevenueBreakdown({ data, revenueChartsData }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="pt-5 pb-4 px-6 border-b border-slate-200">
+      <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title="Revenue Breakdown"
           subtitle={data?.subtitle || "Last 30 Days revenue by source"}

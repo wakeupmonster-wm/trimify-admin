@@ -143,7 +143,7 @@ export default function ADSMobPage() {
   return (
     <Container className="p-0 min-h-fit h-auto !pb-6">
       <main className="flex-1 w-full">
-        <header className="px-2 mb-5 border-b border-slate-200 pb-4">
+        <header className="px-2 mb-5 border-b border-slate-300/60 pb-4">
           <h1 className="text-lg font-bold text-foreground/90">Ads Settings</h1>
           <p className="text-xs font-medium text-slate-500">
             Configure advertisement settings for Android and iOS applications.
@@ -178,7 +178,7 @@ export default function ADSMobPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="h-10 px-6 border-slate-200 text-muted-foreground/70 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-50"
+                className="h-10 px-6 border-slate-300/60 text-muted-foreground/70 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-50"
                 onClick={() => form.reset()}
                 disabled={loading || fetching || !isDirty}
               >
@@ -186,7 +186,7 @@ export default function ADSMobPage() {
               </Button>
               <Button
                 type="submit"
-                className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
+                className="h-10 px-6 bg-app-primary2 hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
                 disabled={loading || fetching || !isDirty}
               >
                 {loading ? (
@@ -207,7 +207,7 @@ export default function ADSMobPage() {
 
         {/* Confirmation Dialog */}
         <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-          <DialogContent className="sm:max-w-md bg-white border-slate-200">
+          <DialogContent className="sm:max-w-md bg-white border-slate-300/60">
             <DialogHeader>
               <DialogTitle className="text-lg font-bold text-slate-800">
                 Confirm Changes
@@ -222,14 +222,14 @@ export default function ADSMobPage() {
                 type="button"
                 variant="outline"
                 onClick={() => setIsConfirmOpen(false)}
-                className="h-10 px-6 border-slate-200 text-slate-600 font-semibold rounded-md hover:bg-slate-50"
+                className="h-10 px-6 border-slate-300/60 text-slate-600 font-semibold rounded-md hover:bg-slate-50"
               >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={confirmSave}
-                className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold rounded-md shadow-sm"
+                className="h-10 px-6 bg-app-primary2 hover:bg-brand-hoverAqua text-white font-semibold rounded-md shadow-sm"
               >
                 Yes, Save Changes
               </Button>

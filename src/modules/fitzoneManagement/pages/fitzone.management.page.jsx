@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { DataTable } from "@/components/shared/datatable";
 import { getFitzoneManagementColumns } from "@/components/columns/fitzone.management.columns";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import {
   fetchFitzoneList,
   toggleFitzoneStatus,
@@ -28,7 +29,15 @@ const FitzoneManagementPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    rowData: null,
+  });
+  const [toggleModal, setToggleModal] = useState({
+    open: false,
+    rowData: null,
+    targetStatus: false,
+  });
 
   useEffect(() => {
     dispatch(
@@ -47,9 +56,7 @@ const FitzoneManagementPage = () => {
 
   const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
-      console.log("Toggle status for:", row.id, "to", value);
-      const status = value ? "Active" : "Inactive";
-      dispatch(toggleFitzoneStatus({ id: row.id, status }));
+      setToggleModal({ open: true, rowData: row, targetStatus: value });
     } else if (action === "open-program") {
       navigate(`manage/${row.id}`);
     } else if (action === "edit") {
@@ -59,10 +66,13 @@ const FitzoneManagementPage = () => {
     }
   };
 
-  const handleConfirmDelete = async () => {
-    if (!deleteModal.rowData) return;
-    const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
-    if (deleteFitzone.fulfilled.match(result)) {
+  const handleConfirmToggle = async () => {
+    if (!toggleModal.rowData) return;
+    const rowId = toggleModal.rowData.id;
+    const status = toggleModal.targetStatus ? "Active" : "Inactive";
+    const result = await dispatch(toggleFitzoneStatus({ id: rowId, status }));
+    if (toggleFitzoneStatus.fulfilled.match(result)) {
+      toast.success("Fitzone status updated successfully.");
       dispatch(
         fetchFitzoneList({
           page: pagination.pageIndex + 1,
@@ -70,6 +80,26 @@ const FitzoneManagementPage = () => {
           search: debouncedSearchTerm,
         }),
       );
+    } else {
+      toast.error("Failed to update status.");
+    }
+    setToggleModal({ open: false, rowData: null, targetStatus: false });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
+    if (deleteFitzone.fulfilled.match(result)) {
+      toast.success("Fitzone deleted successfully.");
+      dispatch(
+        fetchFitzoneList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+        }),
+      );
+    } else {
+      toast.error("Failed to delete fitzone.");
     }
     setDeleteModal({ open: false, rowData: null });
   };
@@ -89,12 +119,12 @@ const FitzoneManagementPage = () => {
           <PageHeader
             heading="Fitzone Management"
             icon={<Dumbbell className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Create, configure, and monitor Fitzone workouts and sessions."
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               onClick={() => navigate("add-fitzone")}
             >
               <Plus className="w-4 h-4" />
@@ -125,6 +155,15 @@ const FitzoneManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this fitzone? This action cannot be undone."
+      />
+      <ConfirmModal
+        isOpen={toggleModal.open}
+        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onConfirm={handleConfirmToggle}
+        title="Confirm Status Change"
+        message={`Are you sure you want to change the status of this fitzone to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
+        type="brand"
+        confirmText="Update"
       />
     </Container>
   );

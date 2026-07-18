@@ -13,10 +13,6 @@ export const updateFitzoneAPI = async (id, data) => {
   return apiConnector("POST", FITZONE_CRUD.FITZONE_UPDATE(id), data);
 };
 
-export const updateFitzoneAPI = async (id, data) => {
-  return apiConnector("POST", `${FITZONE_CRUD.FITZONE_ADD}/update/${id}`, data);
-};
-
 export const toggleFitzoneStatusAPI = async (id, statusData) => {
   return apiConnector("PATCH", FITZONE_CRUD.FITZONE_TOGGLE_STATUS(id), statusData);
 };

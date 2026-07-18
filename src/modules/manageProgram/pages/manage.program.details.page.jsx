@@ -72,7 +72,7 @@ const ManageProgramDetailsPage = () => {
           <PageHeader
             heading="Manage Program Modules"
             icon={<Settings className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Manage program details like Introduction,   Foods, and Diet Plan."
           />
         </Header>

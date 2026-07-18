@@ -7,11 +7,17 @@ import DashboardHead from "@/components/shared/dashboard.head";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// const COLORS = [
+//   "#CCF2F4", // Lightest (New Subs)
+//   "#7FE5E5", // Medium Light (Consumables)
+//   "#2CBDBD", // Medium Dark (Cancellations)
+//   "#1A8F8F", // Darkest (Expiring)
+// ];
 const COLORS = [
-  "#CCF2F4", // Lightest (New Subs)
-  "#7FE5E5", // Medium Light (Consumables)
-  "#2CBDBD", // Medium Dark (Cancellations)
-  "#1A8F8F", // Darkest (Expiring)
+  "#007FC0", // primary2 (New Subs)
+  "#DC6B1B", // cardOrange (Consumables)
+  "#FF5252", // caloriesRed (Cancellations)
+  "#2B2829", // darkGrey (Expiring)
 ];
 
 const LABELS = [
@@ -154,7 +160,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
         />
 
         {/* Total Events Box */}
-        <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+        <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-slate-300/60">
           <Calendar size={18} className="text-[#2CBDBD]" strokeWidth={2} />
           <div className="flex flex-col">
             <span className="text-[10px] font-semibold text-slate-500 leading-none">
@@ -254,7 +260,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
         </div>
 
         {/* Legend Side */}
-        <div className="w-full lg:w-8/12 flex flex-col gap-0 border border-slate-200/60 rounded-2xl p-2 bg-white">
+        <div className="w-full lg:w-8/12 flex flex-col gap-0 border border-slate-300/60/60 rounded-2xl p-2 bg-white">
           {isEmpty ? (
             <div className="flex flex-col items-center justify-center text-[#9CA3AF] py-10">
               <p className="text-[11px] font-medium text-center">
@@ -305,7 +311,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
 
       {/* ─── FOOTER BANNER ─── */}
       <div className="px-5 pb-5">
-        <div className="w-full bg-brand-blue border border-brand-blue rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
+        <div className="w-full bg-app-primary2 border border-brand-blue rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#edffff] flex items-center justify-center flex-shrink-0 text-white shadow-sm">
             <TrendingUp
               size={16}

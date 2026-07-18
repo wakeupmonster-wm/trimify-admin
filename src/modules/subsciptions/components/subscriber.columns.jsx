@@ -81,7 +81,7 @@ export const getSubscriberColumns = (navigate) => [
         <div className="flex items-center gap-3">
           <Avatar className="h-8 w-8 border border-slate-100 shadow-sm rounded-full">
             <AvatarImage src={avatar} className="object-cover" />
-            <AvatarFallback className="bg-brand-blue text-brand-blue text-[10px] font-black">
+            <AvatarFallback className="bg-app-primary2 text-brand-blue text-[10px] font-black">
               {String(name).charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -129,17 +129,17 @@ export const getSubscriberColumns = (navigate) => [
     cell: ({ row }) => {
       const platform = row.original?.platform?.toLowerCase();
       let icon = <PiDevicesDuotone className="size-3.5" />;
-      let style = "text-slate-600 border-slate-200 bg-slate-50";
+      let style = "text-slate-600 border-slate-300/60 bg-slate-50";
 
       if (platform === "ios") {
         icon = <AiFillApple className="size-3.5" />;
-        style = "text-slate-900 border-slate-200 bg-slate-100";
+        style = "text-slate-900 border-slate-300/60 bg-slate-100";
       } else if (platform === "android") {
         icon = <AiFillAndroid className="size-3.5" />;
         style = "text-emerald-600 border-emerald-100 bg-emerald-50";
       } else if (platform === "admin_granted" || platform === "admin") {
         icon = <FaUserTie className="size-3.5" />;
-        style = "text-brand-blue border-brand-blue bg-brand-blue";
+        style = "text-brand-blue border-brand-blue bg-app-primary2";
       }
 
       return (
@@ -311,7 +311,7 @@ export const getSubscriberColumns = (navigate) => [
   //     }
 
   //     if (label === "ADMIN") {
-  //       style = "bg-brand-blue text-brand-blue";
+  //       style = "bg-app-primary2 text-brand-blue";
   //       icon = <LiaUserTieSolid className="size-4" />;
   //     } else if (label === "GIVEAWAY") {
   //       style = "bg-amber-500/10 text-amber-600";
@@ -355,13 +355,13 @@ export const getSubscriberColumns = (navigate) => [
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-44 p-2 shadow-sm rounded-2xl border-slate-200"
+              className="w-44 p-2 shadow-sm rounded-2xl border-slate-300/60"
             >
               <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1">
                 Subscription Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-brand-blue focus:text-brand-blue text-slate-500 font-semibold text-xs"
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-app-primary2 focus:text-brand-blue text-slate-500 font-semibold text-xs"
                 onClick={() => {
                   const targetId =
                     sub.user?._id || sub.userId?._id || sub.userId;
@@ -376,7 +376,7 @@ export const getSubscriberColumns = (navigate) => [
                 View Details
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-brand-blue focus:text-brand-blue text-slate-500 font-semibold text-xs"
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-app-primary2 focus:text-brand-blue text-slate-500 font-semibold text-xs"
                 onClick={() => {
                   navigator.clipboard.writeText(sub._id);
                   toast.success("Subscription ID copied");

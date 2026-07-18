@@ -199,7 +199,7 @@ export default function TransactionDetails({ transaction, onBack }) {
            .main-print-grid {
              display: block !important;
            }
-           .bg-white, .bg-slate-100, .bg-slate-50, .bg-brand-blue\\/10, .bg-emerald-100, .bg-amber-100 {
+           .bg-white, .bg-slate-100, .bg-slate-50, .bg-app-primary2\\/10, .bg-emerald-100, .bg-amber-100 {
              print-color-adjust: exact !important;
              -webkit-print-color-adjust: exact !important;
            }
@@ -216,7 +216,7 @@ export default function TransactionDetails({ transaction, onBack }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95 no-print"
+            className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-300/60 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95 no-print"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -250,7 +250,7 @@ export default function TransactionDetails({ transaction, onBack }) {
             onClick={handleDownloadReceipt}
             disabled={hasDownloaded || isDownloading}
             variant="outline"
-            className="h-10 px-4 gap-2.5 font-bold rounded-lg border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm transition-all text-xs group disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-10 px-4 gap-2.5 font-bold rounded-lg border-slate-300/60 hover:bg-slate-50 text-slate-700 shadow-sm transition-all text-xs group disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IconDownload
               size={16}
@@ -271,18 +271,18 @@ export default function TransactionDetails({ transaction, onBack }) {
         {/* Left Column */}
         <div className="flex flex-col gap-6">
           {/* Payment Information */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm transition-shadow break-inside-avoid">
-            <div className="pb-4 border-b border-slate-200 mb-5">
+          <div className="bg-white rounded-xl border border-slate-300/60 p-5 shadow-sm transition-shadow break-inside-avoid">
+            <div className="pb-4 border-b border-slate-300/60 mb-5">
               <DashboardHead
                 title="Payment Details"
                 subtitle="Transaction amount and payment gateway info"
                 Icon={IconReceipt}
                 iconColor="text-brand-blue"
-                iconBg="bg-brand-blue"
+                iconBg="bg-app-primary2"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="col-span-1 sm:col-span-2 p-4 rounded-xl border bg-slate-100 border-slate-200 flex flex-col justify-center">
+              <div className="col-span-1 sm:col-span-2 p-4 rounded-xl border bg-slate-100 border-slate-300/60 flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Transaction ID
                 </div>
@@ -294,7 +294,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Amount Paid
                 </div>
@@ -306,7 +306,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Date & Time
                 </div>
@@ -320,7 +320,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Payment Platform
                 </div>
@@ -329,7 +329,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Gateway Txn ID
                 </div>
@@ -344,18 +344,18 @@ export default function TransactionDetails({ transaction, onBack }) {
           </div>
 
           {/* Product Details */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm transition-shadow break-inside-avoid">
-            <div className="pb-4 border-b border-slate-200 mb-5">
+          <div className="bg-white rounded-xl border border-slate-300/60 p-5 shadow-sm transition-shadow break-inside-avoid">
+            <div className="pb-4 border-b border-slate-300/60 mb-5">
               <DashboardHead
                 title="Product Details"
                 subtitle="Purchased plan or consumable item information"
                 Icon={IconBox}
                 iconColor="text-brand-blue"
-                iconBg="bg-brand-blue"
+                iconBg="bg-app-primary2"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="col-span-1 sm:col-span-2 p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="col-span-1 sm:col-span-2 p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Product Name
                 </div>
@@ -364,7 +364,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Type
                 </div>
@@ -381,7 +381,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-100/60 transition-all flex flex-col justify-center">
+              <div className="p-4 rounded-xl border border-slate-300/60 bg-slate-100/60 transition-all flex flex-col justify-center">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   Quantity
                 </div>
@@ -393,8 +393,8 @@ export default function TransactionDetails({ transaction, onBack }) {
         {/* Right Column */}
         <div className="flex flex-col gap-6 print-page-break">
           {/* Customer Info */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm transition-shadow break-inside-avoid">
-            <div className="pb-4 border-b border-slate-200 mb-5">
+          <div className="bg-white rounded-xl border border-slate-300/60 p-5 shadow-sm transition-shadow break-inside-avoid">
+            <div className="pb-4 border-b border-slate-300/60 mb-5">
               <DashboardHead
                 title="Customer Info"
                 subtitle="User identification and account status"
@@ -403,13 +403,13 @@ export default function TransactionDetails({ transaction, onBack }) {
                 iconBg="bg-slate-100/50"
               />
             </div>
-            <div className="flex items-center gap-4 p-4 bg-slate-100/60 rounded-xl border border-slate-200 mb-4 shadow-sm">
+            <div className="flex items-center gap-4 p-4 bg-slate-100/60 rounded-xl border border-slate-300/60 mb-4 shadow-sm">
               <div
                 className={cn(
                   "w-11 h-11 rounded-full text-brand-blue flex items-center justify-center text-lg font-black shrink-0 shadow-sm border-2 border-white overflow-hidden",
                   transaction.user?.selfieUrl
                     ? "cursor-pointer"
-                    : "bg-brand-blue",
+                    : "bg-app-primary2",
                 )}
                 onClick={() =>
                   transaction.user?.selfieUrl && setIsSelfieOpen(true)
@@ -442,7 +442,7 @@ export default function TransactionDetails({ transaction, onBack }) {
             </div>
 
             <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-100/60 shadow-sm">
+              <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-300/60 bg-slate-100/60 shadow-sm">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   Account Status
                 </span>
@@ -452,7 +452,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-100/60 flex flex-col justify-center shadow-sm">
+              <div className="p-3.5 rounded-xl border border-slate-300/60 bg-slate-100/60 flex flex-col justify-center shadow-sm">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
                   User ID
                 </div>
@@ -474,7 +474,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                   },
                 })
               }
-              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-hoverBlue hover:text-white rounded-lg border-slate-200 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
+              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-white rounded-lg border-slate-300/60 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
             >
               <IconUserCircle className="w-4 h-4 text-slate-400 group-hover:text-white transition-all duration-300 ease-in-out" />
               View Full Profile
@@ -482,20 +482,20 @@ export default function TransactionDetails({ transaction, onBack }) {
           </div>
 
           {/* Transaction Context & Insights */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm transition-shadow break-inside-avoid">
-            <div className="pb-4 border-b border-slate-200 mb-5">
+          <div className="bg-white rounded-xl border border-slate-300/60 p-5 shadow-sm transition-shadow break-inside-avoid">
+            <div className="pb-4 border-b border-slate-300/60 mb-5">
               <DashboardHead
                 title="Timeline"
                 subtitle="Step-by-step transaction processing history"
                 Icon={IconClock}
                 iconColor="text-brand-blue"
-                iconBg="bg-brand-blue"
+                iconBg="bg-app-primary2"
               />
             </div>
 
             <div className="space-y-4">
               {/* Environment Tag */}
-              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-100/60 border border-slate-200">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-100/60 border border-slate-300/60">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   Environment
                 </span>
@@ -522,7 +522,7 @@ export default function TransactionDetails({ transaction, onBack }) {
               </div>
 
               {/* Revenue Breakdown */}
-              <div className="p-5 rounded-xl border border-slate-200 bg-slate-100/60 shadow-sm">
+              <div className="p-5 rounded-xl border border-slate-300/60 bg-slate-100/60 shadow-sm">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-4">
                   Revenue Split (Actual)
                 </div>
@@ -555,7 +555,7 @@ export default function TransactionDetails({ transaction, onBack }) {
 
               {/* Platform Info */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-100/60">
+                <div className="p-3.5 rounded-xl border border-slate-300/60 bg-slate-100/60">
                   <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                     Store Type
                   </div>
@@ -571,7 +571,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                           : transaction.platform || "Unknown"}
                   </div>
                 </div>
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-100/60">
+                <div className="p-3.5 rounded-xl border border-slate-300/60 bg-slate-100/60">
                   <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                     Purchase Type
                   </div>
@@ -603,7 +603,7 @@ export default function TransactionDetails({ transaction, onBack }) {
         className="hidden bg-white w-full h-auto p-4 text-slate-800 relative mx-auto max-w-5xl"
       >
         {/* ── Logo + Payment Receipt Heading ── */}
-        <div className="text-center pb-6 mb-6 border-b border-slate-200">
+        <div className="text-center pb-6 mb-6 border-b border-slate-300/60">
           {logoUrl ? (
             <img
               src="https://res.cloudinary.com/dew7qscdq/image/upload/v1780388090/mustardLogo2_qanbxz.webp"
@@ -611,7 +611,7 @@ export default function TransactionDetails({ transaction, onBack }) {
               className="w-16 h-16 object-contain mx-auto mb-3 rounded-xl"
             />
           ) : (
-            <div className="w-16 h-16 rounded-xl bg-brand-blue flex items-center justify-center mx-auto mb-3">
+            <div className="w-16 h-16 rounded-xl bg-app-primary2 flex items-center justify-center mx-auto mb-3">
               <IconReceipt size={28} className="text-brand-blue" />
             </div>
           )}
@@ -636,7 +636,7 @@ export default function TransactionDetails({ transaction, onBack }) {
         </div>
 
         {/* ── Customer Info ── */}
-        <div className="mb-6 p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+        <div className="mb-6 p-4 rounded-xl border border-slate-300/60 bg-slate-50/50">
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2.5">
             Customer Information
           </div>
@@ -660,7 +660,7 @@ export default function TransactionDetails({ transaction, onBack }) {
 
         {/* ── Subscription Details ── */}
         <div className="mb-6">
-          <div className="text-sm font-black text-slate-900 uppercase tracking-wider mb-2.5 pb-2 border-b border-slate-200">
+          <div className="text-sm font-black text-slate-900 uppercase tracking-wider mb-2.5 pb-2 border-b border-slate-300/60">
             Subscription Details
           </div>
           <div className="grid grid-cols-[130px_1fr] gap-y-2 text-sm px-1">
@@ -710,7 +710,7 @@ export default function TransactionDetails({ transaction, onBack }) {
 
         {/* ── Transaction Details ── */}
         <div className="mb-8">
-          <div className="text-sm font-black text-slate-900 uppercase tracking-wider mb-2.5 pb-2 border-b border-slate-200">
+          <div className="text-sm font-black text-slate-900 uppercase tracking-wider mb-2.5 pb-2 border-b border-slate-300/60">
             Transaction Details
           </div>
           <div className="grid grid-cols-[130px_1fr] gap-y-2 text-sm px-1">
@@ -753,7 +753,7 @@ export default function TransactionDetails({ transaction, onBack }) {
         </div>
 
         {/* ── Footer ── */}
-        <div className="text-center pt-6 border-t border-slate-200">
+        <div className="text-center pt-6 border-t border-slate-300/60">
           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
             This is a computer-generated document. No signature is required.
           </p>

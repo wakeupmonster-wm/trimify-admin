@@ -122,13 +122,13 @@ const AddDietProgramPage = () => {
             <PageHeader
               heading="Add Diet Meal Plan"
               icon={<CalendarCheck className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-blue-200"
+              color="bg-app-primary2 shadow-blue-200"
               subheading="Add a new diet meal to this plan."
             />
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60">
           <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}
@@ -137,7 +137,7 @@ const AddDietProgramPage = () => {
                   Choose Week
                 </Label>
                 <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Week" />
                   </SelectTrigger>
                   <SelectContent>
@@ -156,7 +156,7 @@ const AddDietProgramPage = () => {
                   Choose Day
                 </Label>
                 <Select value={selectedDay} onValueChange={setSelectedDay}>
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Day" />
                   </SelectTrigger>
                   <SelectContent>
@@ -178,7 +178,7 @@ const AddDietProgramPage = () => {
                   value={selectedMealType}
                   onValueChange={setSelectedMealType}
                 >
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Meal" />
                   </SelectTrigger>
                   <SelectContent>
@@ -197,7 +197,7 @@ const AddDietProgramPage = () => {
                   <Label className="text-xs font-bold text-slate-800">
                     Selected Food
                   </Label>
-                  <div className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md flex items-center justify-between bg-white font-medium">
+                  <div className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md flex items-center justify-between bg-white font-medium">
                     <span className="truncate">
                       {selectedMeals[0].title ||
                         selectedMeals[0].name ||
@@ -219,12 +219,12 @@ const AddDietProgramPage = () => {
                   <Input
                     type="text"
                     placeholder="Search Food..."
-                    className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
                   {isDropdownOpen && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-60 overflow-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300/60 rounded-md shadow-lg max-h-60 overflow-auto">
                       {loading ? (
                         <div className="p-3 text-sm text-slate-500 text-center">
                           Searching...
@@ -257,13 +257,13 @@ const AddDietProgramPage = () => {
             <div className="mt-8 flex justify-end gap-4">
               <Button
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
               </Button>
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
                 onClick={handleAddDietMeal}
                 disabled={loading}
               >

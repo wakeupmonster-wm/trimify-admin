@@ -3,7 +3,10 @@ import { RefreshCw } from "lucide-react";
 
 const formatTime = (ts) => {
   if (!ts) return "—";
-  return new Date(ts).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  return new Date(ts).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 /**
@@ -18,9 +21,11 @@ const LastUpdatedIndicator = ({ lastUpdated, onRefresh, refreshing }) => {
       onClick={onRefresh}
       disabled={refreshing}
       title="Refresh dashboard data"
-      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 h-9 text-[11px] font-semibold text-slate-500 hover:text-brand-blue hover:border-brand-blue transition-colors disabled:opacity-60 shrink-0"
+      className="inline-flex items-center gap-1.5 rounded-full border border-slate-300/60 bg-white px-3 h-9 text-[11px] font-semibold text-slate-500 hover:text-brand-blue hover:border-brand-blue transition-colors disabled:opacity-60 shrink-0"
     >
-      <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
+      <RefreshCw
+        className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`}
+      />
       As of {formatTime(lastUpdated)}
     </button>
   );

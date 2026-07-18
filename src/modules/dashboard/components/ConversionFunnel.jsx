@@ -20,8 +20,8 @@ export const ConversionFunnel = ({ data }) => {
   const reductionPerSegment = totalReduction / totalStages;
 
   return (
-    <Card className="flex flex-col h-full bg-white border-slate-200 hover:border-blue-200 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
+    <Card className="flex flex-col h-full bg-white border-slate-300/60 hover:border-blue-200 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
+      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title="Conversion Funnel"
           subtitle="Where users drop off"
@@ -121,7 +121,7 @@ export const ConversionFunnel = ({ data }) => {
         </div>
 
         {/* Insight Box */}
-        {/* <div className="mt-2 flex items-center gap-3 px-4 py-3 bg-brand-blue border border-brand-blue rounded-xl text-muted-foreground text-[10px] font-bold leading-snug">
+        {/* <div className="mt-2 flex items-center gap-3 px-4 py-3 bg-app-primary2 border border-brand-blue rounded-xl text-muted-foreground text-[10px] font-bold leading-snug">
           <Info size={15} className="text-[#46C7CD] shrink-0" />
           {data.insight}
         </div> */}

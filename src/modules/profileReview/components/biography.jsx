@@ -6,7 +6,7 @@ export const Biography = ({ bio }) => {
   const hasBio = bio && bio.trim().length > 0;
 
   return (
-    <Card className="group p-6 shadow-sm border-slate-200 bg-white transition-all hover:shadow-md">
+    <Card className="group p-6 shadow-sm border-slate-300/60 bg-white transition-all hover:shadow-md">
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-gray-900 flex items-center gap-2.5">
           <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
@@ -27,7 +27,7 @@ export const Biography = ({ bio }) => {
           "relative p-5 rounded-2xl border transition-all duration-300",
           hasBio
             ? "bg-slate-50/30 border-slate-100 shadow-inner"
-            : "bg-amber-50/30 border-amber-100 border-dashed"
+            : "bg-amber-50/30 border-amber-100 border-dashed",
         )}
       >
         {hasBio ? (

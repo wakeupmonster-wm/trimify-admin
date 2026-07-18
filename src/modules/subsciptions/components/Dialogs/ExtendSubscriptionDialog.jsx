@@ -53,7 +53,7 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
               <CalendarPlus className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
@@ -80,7 +80,7 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
                 value={days}
                 onChange={(e) => setDays(e.target.value)}
                 min={1}
-                className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
                 placeholder="Write a reason for this extension..."
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="min-h-[100px] pl-10 pt-2.5 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500 resize-none"
+                className="min-h-[100px] pl-10 pt-2.5 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500 resize-none"
               />
             </div>
           </div>
@@ -109,7 +109,7 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={localLoading || success}
-            className="font-semibold text-[13px] text-slate-600 border-slate-300 h-10 px-6 rounded-md hover:bg-slate-100"
+            className="font-semibold text-[13px] text-slate-600 border-slate-300/60 h-10 px-6 rounded-md hover:bg-slate-100"
           >
             Cancel
           </Button>
@@ -120,7 +120,7 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
               "text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2 transition-all duration-300 flex items-center justify-center min-w-[140px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-sm",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-sm",
             )}
           >
             {localLoading ? (

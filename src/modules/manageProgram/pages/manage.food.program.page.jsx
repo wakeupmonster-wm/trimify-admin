@@ -88,12 +88,12 @@ const ManageFoodProgramPage = () => {
           <PageHeader
             heading="Food Category"
             icon={<Utensils className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Manage approved and non-approved foods and food categories for this program."
           />
           <div className="flex flex-wrap items-center gap-3">
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               onClick={() =>
                 navigate("/admin/manage-program/manage/food/add-food-category")
               }
@@ -108,6 +108,7 @@ const ManageFoodProgramPage = () => {
           columns={columns}
           data={categories}
           rowCount={serverPagination.total || categories.length}
+          searchPlaceholder="Search by category name..."
           pagination={pagination}
           setPagination={setPagination}
           globalFilter={globalFilter}

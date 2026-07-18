@@ -24,7 +24,7 @@ export const Header = ({ p }) => {
       <div className="flex items-center gap-3">
         <Link
           to="/admin/management/profile-reports"
-          className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
+          className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-300/60 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>

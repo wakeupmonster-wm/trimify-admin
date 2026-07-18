@@ -85,7 +85,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start group text-left font-medium bg-white hover:bg-brand-hoverBlue text-slate-500 border border-slate-200 hover:border-transparent transition-all duration-300 shadow-sm hover:text-white rounded-lg",
+              "w-full justify-start group text-left font-medium bg-white hover:bg-app-primary5 text-slate-500 border border-slate-300/60 hover:border-transparent transition-all duration-300 shadow-sm hover:text-white rounded-lg",
               compact
                 ? "w-auto h-8 text-[12px] px-2.5"
                 : "max-w-xs h-9 text-[13px]",
@@ -115,7 +115,7 @@ export function CalendarDateRangePicker({
           className="w-auto p-0 rounded-xl flex flex-col sm:flex-row"
           align="end"
         >
-          <div className="flex flex-col gap-2 p-3 border-b sm:border-b-0 sm:border-r border-slate-200 min-w-[140px]">
+          <div className="flex flex-col gap-2 p-3 border-b sm:border-b-0 sm:border-r border-slate-300/60 min-w-[140px]">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
               Presets
             </span>

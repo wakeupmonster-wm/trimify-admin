@@ -11,7 +11,7 @@ export const EVENT_TYPE_MAP = {
   REFUND: { label: "Refund", color: "bg-red-50 text-red-700 border-red-200" },
   FAILED: {
     label: "Failed",
-    color: "bg-slate-100 text-slate-600 border-slate-200",
+    color: "bg-slate-100 text-slate-600 border-slate-300/60",
   },
   CONSUMABLE_PURCHASE: {
     label: "Consumable",
@@ -38,5 +38,5 @@ export const STATUS_MAP = {
   PENDING: "bg-amber-50 text-amber-600 border-amber-200",
   SUCCESS: "bg-emerald-50 text-emerald-600 border-emerald-200",
   FAILED: "bg-rose-50 text-rose-600 border-rose-200",
-  REFUNDED: "bg-slate-100 text-slate-600 border-slate-200",
+  REFUNDED: "bg-slate-100 text-slate-600 border-slate-300/60",
 };

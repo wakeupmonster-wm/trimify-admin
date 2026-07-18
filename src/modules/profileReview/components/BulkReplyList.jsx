@@ -17,7 +17,7 @@ export const BulkReplyList = ({ reports }) => {
           <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">
             Targeted Reporters ({reports.length})
           </h4>
-          <span className="text-[9px] font-bold px-2 py-0.5 bg-brand-blue text-brand-blue rounded-full">
+          <span className="text-[9px] font-bold px-2 py-0.5 bg-app-primary2 text-brand-blue rounded-full">
             Bulk Mode Active
           </span>
         </div>
@@ -31,7 +31,7 @@ export const BulkReplyList = ({ reports }) => {
               key={r._id}
               className={cn(
                 "p-3 rounded-xl border transition-all duration-300",
-                "bg-slate-50/30 border-slate-200",
+                "bg-slate-50/30 border-slate-300/60",
               )}
             >
               <div className="flex items-center justify-between">

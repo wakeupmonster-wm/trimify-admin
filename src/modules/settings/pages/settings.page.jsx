@@ -114,7 +114,7 @@ export default function SettingsPage() {
         {/* <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" /> */}
         <CardHeader className="pb-2">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-brand-blue rounded-xl text-brand-blue shadow-inner">
+            <div className="p-3 bg-app-primary2 rounded-xl text-brand-blue shadow-inner">
               <IconLock size={28} />
             </div>
             <div>
@@ -138,7 +138,7 @@ export default function SettingsPage() {
               <div className="relative">
                 <Input
                   type={showPasswords.current ? "text" : "password"}
-                  className="h-12 border-slate-200 bg-slate-50/50 focus:bg-white pr-12 rounded-xl"
+                  className="h-12 border-slate-300/60 bg-slate-50/50 focus:bg-white pr-12 rounded-xl"
                   value={form.currentPassword}
                   onChange={(e) =>
                     setForm({ ...form, currentPassword: e.target.value })
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                 <div className="relative">
                   <Input
                     type={showPasswords.new ? "text" : "password"}
-                    className="h-12 border-slate-200 rounded-xl pr-12"
+                    className="h-12 border-slate-300/60 rounded-xl pr-12"
                     value={form.newPassword}
                     onChange={(e) =>
                       setForm({ ...form, newPassword: e.target.value })
@@ -182,7 +182,7 @@ export default function SettingsPage() {
                 <div className="relative">
                   <Input
                     type={showPasswords.confirm ? "text" : "password"}
-                    className={`h-12 border-slate-200 rounded-xl pr-12 transition-all ${
+                    className={`h-12 border-slate-300/60 rounded-xl pr-12 transition-all ${
                       passwordsMatch
                         ? "border-success/50 bg-success/5"
                         : passwordsMismatch
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                 form.newPassword !== form.confirmPassword ||
                 !form.newPassword
               }
-              className="h-14 bg-brand-blue hover:bg-brand-hoverBlue border border-brand-blue text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-14 bg-app-primary2 hover:bg-app-primary5 border border-brand-blue text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

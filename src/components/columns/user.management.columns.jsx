@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Edit, Trash2, Eye } from "lucide-react";
+import { MoreVertical, Eye } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +19,14 @@ export const getUserManagementColumns = (onAction) => [
       </div>
     ),
     size: 50,
-    minSize: 40,
+    minSize: 50,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-10 text-left font-bold text-[11px] text-foreground/90">
+        <div className="w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -42,7 +42,7 @@ export const getUserManagementColumns = (onAction) => [
       </div>
     ),
     size: 100,
-    minSize: 80,
+    minSize: 100,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
         {row.original.user_id || "-"}
@@ -56,8 +56,8 @@ export const getUserManagementColumns = (onAction) => [
         User Name
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 180,
+    minSize: 180,
     cell: ({ row }) => (
       <span className="capitalize font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.name || "-"}
@@ -74,9 +74,11 @@ export const getUserManagementColumns = (onAction) => [
     size: 100,
     minSize: 100,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-[100px]">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-[100px]"
+      title={row.original.email}
+      >
         {row.original.email || "-"}
-      </span>
+      </div>
     ),
   },
   {
@@ -86,8 +88,8 @@ export const getUserManagementColumns = (onAction) => [
         Contact No.
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 60,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-600 tracking-tight">
         {row.original.mobileNo || "-"}
@@ -132,8 +134,8 @@ export const getUserManagementColumns = (onAction) => [
         Plan Buy
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 60,
     cell: ({ row }) => {
       const dateValue = row.original.planBuy;
       if (
@@ -157,8 +159,8 @@ export const getUserManagementColumns = (onAction) => [
         Plan Expiry
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 60,
     cell: ({ row }) => {
       const dateValue = row.original.plan_expiry;
       if (
@@ -182,8 +184,8 @@ export const getUserManagementColumns = (onAction) => [
         Added by
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 180,
+    minSize: 180,
     cell: ({ row }) => {
       const addedBy = row.original.sub_admin
         ? row.original.sub_admin.name || row.original.sub_admin
@@ -237,13 +239,13 @@ export const getUserManagementColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

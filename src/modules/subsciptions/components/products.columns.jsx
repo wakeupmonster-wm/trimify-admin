@@ -221,7 +221,7 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
         <div>
           <div className="w-max flex flex-col items-start gap-1.5">
             {product.badge && (
-              <span className="text-[10px] font-bold text-slate-800 px-2 py-0.5 rounded border border-slate-200 bg-slate-50 leading-none">
+              <span className="text-[10px] font-bold text-slate-800 px-2 py-0.5 rounded border border-slate-300/60 bg-slate-50 leading-none">
                 {product.badge}
               </span>
             )}
@@ -294,7 +294,7 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
           variant="ghost"
           size="icon"
           onClick={() => onEdit(row.original)}
-          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-brand-hoverBlue transition-all duration-300 rounded-lg"
+          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 transition-all duration-300 rounded-lg"
         >
           <Eye size={14} />
         </Button>

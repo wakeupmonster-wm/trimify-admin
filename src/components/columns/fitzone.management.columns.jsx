@@ -61,7 +61,7 @@ export const getFitzoneManagementColumns = (onAction) => [
       <div className="flex">
         <Button
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-brand-blue hover:bg-brand-hoverBlue text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-app-primary5 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
         >
           Open Program
         </Button>
@@ -87,7 +87,7 @@ export const getFitzoneManagementColumns = (onAction) => [
             onCheckedChange={(checked) =>
               onAction && onAction(row.original, "toggle-status", checked)
             }
-            className="data-[state=checked]:bg-brand-blue"
+            className="data-[state=checked]:bg-app-primary2"
           />
         </div>
       );
@@ -115,13 +115,13 @@ export const getFitzoneManagementColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

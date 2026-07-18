@@ -200,7 +200,7 @@ export default function ProfileReviewPage() {
           </motion.div> */}
 
           {/* 2. Tab Bar */}
-          <div className="flex items-center gap-8 border-b border-slate-200 px-1">
+          <div className="flex items-center gap-8 border-b border-slate-300/60 px-1">
             {tabs.map((t) => {
               const isActive = activeTab === t.key;
               return (
@@ -221,7 +221,7 @@ export default function ProfileReviewPage() {
                         className={cn(
                           "text-[9px] px-1.5 py-0.5 rounded-md font-bold",
                           isActive
-                            ? "bg-brand-blue text-brand-blue"
+                            ? "bg-app-primary2 text-brand-blue"
                             : "bg-slate-100 text-slate-400",
                         )}
                       >
@@ -232,7 +232,7 @@ export default function ProfileReviewPage() {
                   {isActive && (
                     <motion.div
                       layoutId="activeTabReview"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-blue rounded-t-full"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-app-primary2 rounded-t-full"
                     />
                   )}
                 </button>

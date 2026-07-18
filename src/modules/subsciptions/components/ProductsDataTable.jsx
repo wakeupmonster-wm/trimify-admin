@@ -56,7 +56,7 @@ export function ProductsDataTable({
   });
 
   return (
-    <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div className="relative rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
       <div className="overflow-x-auto relative">
         <AnimatePresence>
           {loading && data.length > 0 && (
@@ -75,7 +75,7 @@ export function ProductsDataTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <ShadcnTableRow
                 key={headerGroup.id}
-                className="hover:bg-transparent border-b border-slate-200"
+                className="hover:bg-transparent border-b border-slate-300/60"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
@@ -104,7 +104,7 @@ export function ProductsDataTable({
                     exit={{ opacity: 0 }}
                     transition={{ delay: index * 0.03, duration: 0.2 }}
                     className={cn(
-                      "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-200/50 group cursor-pointer",
+                      "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group cursor-pointer",
                       !row.original.isActive && "opacity-50",
                       loading && "opacity-50 pointer-events-none",
                     )}
@@ -148,7 +148,7 @@ export function ProductsDataTable({
       </div>
 
       {/* --- PAGINATION SECTION (MERGED) --- */}
-      <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-200 gap-6 sm:flex-row sm:gap-4">
+      <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
         {/* Left Side: Showing results count */}
         <div className="text-xs font-medium text-slate-400 order-1 text-center sm:text-left">
           Showing {pagination.pageIndex * pagination.pageSize + 1}-
@@ -172,10 +172,10 @@ export function ProductsDataTable({
                 setPagination({ pageIndex: 0, pageSize: Number(value) })
               }
             >
-              <SelectTrigger className="h-8 w-[65px] border-slate-200 rounded-md bg-white text-xs font-semibold focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all shadow-sm">
+              <SelectTrigger className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all shadow-sm">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+              <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                 {[10, 15, 25, 50].map((size) => (
                   <SelectItem
                     key={size}
@@ -193,7 +193,7 @@ export function ProductsDataTable({
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+              className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
               onClick={() =>
                 setPagination((prev) => ({
                   ...prev,
@@ -259,8 +259,8 @@ export function ProductsDataTable({
                       className={cn(
                         "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                         isActive
-                          ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
-                          : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
+                          ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                          : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                       )}
                     >
                       {page}
@@ -273,7 +273,7 @@ export function ProductsDataTable({
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+              className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
               onClick={() =>
                 setPagination((prev) => ({
                   ...prev,

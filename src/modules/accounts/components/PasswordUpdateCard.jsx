@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  IconLock,
-  IconEye,
-  IconEyeOff,
-} from "@tabler/icons-react";
+import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -55,7 +51,7 @@ export const PasswordUpdateCard = () => {
   };
 
   return (
-    <Card className="border-slate-200 shadow-sm">
+    <Card className="border-slate-300/60 shadow-sm">
       <CardHeader className="bg-slate-50/50 border-b border-slate-100">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-purple-100 rounded-lg text-purple-600">

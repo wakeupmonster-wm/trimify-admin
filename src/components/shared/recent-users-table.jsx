@@ -21,10 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dummyImg from "@/assets/web/dummyImg.webp";
-import {
-  Eye,
-  MoreHorizontal,
-} from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 import DashboardHead from "./dashboard.head";
 import { Button } from "../ui/button";
 import { RiUserAddLine } from "react-icons/ri";
@@ -37,8 +34,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // import { UserActionModal } from "@/modules/users/components/UserActionModal";
-
-
 
 const STATUS_STYLES = {
   active: {
@@ -83,26 +78,27 @@ export function RecentUsersTable({ recentActivityData }) {
   const location = useLocation();
 
   const items = useMemo(() => {
-    return recentActivityData?.recentUsers?.map(u => ({
-      _id: u.id,
-      profile: {
-        nickname: u.name,
-        totalCompletion: 0,
-      },
-      account: {
-        email: u.email,
-        status: u.status?.toLowerCase() || 'active',
-        isPremium: !!u.plan_title && !u.plan_title.toLowerCase().includes('free'),
-      },
-      createdAt: u.created_at,
-      plan_title: u.plan_title,
-      main_goal: u.main_goal,
-    })) || [];
+    return (
+      recentActivityData?.recentUsers?.map((u) => ({
+        _id: u.id,
+        profile: {
+          nickname: u.name,
+          totalCompletion: 0,
+        },
+        account: {
+          email: u.email,
+          status: u.status?.toLowerCase() || "active",
+          isPremium:
+            !!u.plan_title && !u.plan_title.toLowerCase().includes("free"),
+        },
+        createdAt: u.created_at,
+        plan_title: u.plan_title,
+        main_goal: u.main_goal,
+      })) || []
+    );
   }, [recentActivityData]);
 
   const loading = false;
-
-
 
   const [imageModal, setImageModal] = useState({
     open: false,
@@ -110,7 +106,6 @@ export function RecentUsersTable({ recentActivityData }) {
     title: "Profile Photo",
     userName: "",
   });
-
 
   const recentUsers = useMemo(() => {
     return [...(items || [])]
@@ -126,7 +121,7 @@ export function RecentUsersTable({ recentActivityData }) {
 
   return (
     <>
-      <Card className="rounded-xl shadow-sm gap-4 pb-2 bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 overflow-hidden flex flex-col h-full">
+      <Card className="rounded-xl shadow-sm gap-4 pb-2 bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 overflow-hidden flex flex-col h-full">
         <CardHeader className="px-5">
           <div className="flex items-center justify-between">
             <DashboardHead
@@ -141,7 +136,7 @@ export function RecentUsersTable({ recentActivityData }) {
               size="sm"
               onClick={() => navigate("/admin/management/users-management")}
               className={cn(
-                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-200 hover:bg-brand-hoverBlue transition-all duration-300 group overflow-hidden",
+                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-300/60 hover:bg-app-primary5 transition-all duration-300 group overflow-hidden",
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -153,10 +148,10 @@ export function RecentUsersTable({ recentActivityData }) {
         </CardHeader>
 
         <CardContent className="p-0 flex-1 overflow-auto">
-          <div className="block bg-white overflow-hidden border-t border-slate-200">
+          <div className="block bg-white overflow-hidden border-t border-slate-300/60">
             <Table>
               <TableHeader className="bg-slate-50/80">
-                <TableRow className="hover:bg-transparent border-slate-200">
+                <TableRow className="hover:bg-transparent border-slate-300/60">
                   <TableHead className="text-[10px] font-bold uppercase tracking-wider text-foreground/80 h-10 px-4">
                     Sr.No
                   </TableHead>
@@ -241,7 +236,7 @@ export function RecentUsersTable({ recentActivityData }) {
                             },
                           )
                         }
-                        className="even:bg-slate-50/30 hover:bg-slate-50/80 transition-colors cursor-pointer group border-slate-200 last:border-0"
+                        className="even:bg-slate-50/30 hover:bg-slate-50/80 transition-colors cursor-pointer group border-slate-300/60 last:border-0"
                       >
                         <TableCell className="py-2.5 px-6 text-xs font-semibold text-slate-500">
                           {idx + 1}
@@ -317,7 +312,6 @@ export function RecentUsersTable({ recentActivityData }) {
                           </span>
                         </TableCell>
 
-
                         {/* Status */}
                         <TableCell className="p-2 px-5">
                           <Badge
@@ -365,14 +359,14 @@ export function RecentUsersTable({ recentActivityData }) {
                             <DropdownMenuTrigger asChild>
                               <button
                                 onClick={(e) => e.stopPropagation()}
-                                className="p-1 px-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100/50 transition-all border border-transparent hover:border-slate-200 shadow-none bg-transparent"
+                                className="p-1 px-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100/50 transition-all border border-transparent hover:border-slate-300/60 shadow-none bg-transparent"
                               >
                                 <MoreHorizontal size={18} />
                               </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                               align="end"
-                              className="w-44 p-2 rounded-2xl shadow-lg border-slate-200"
+                              className="w-44 p-2 rounded-2xl shadow-lg border-slate-300/60"
                             >
                               <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5">
                                 Actions
@@ -384,11 +378,16 @@ export function RecentUsersTable({ recentActivityData }) {
                                   navigate(
                                     "/admin/management/users-management/view-profile",
                                     {
-                                      state: { userId: user._id, from: location.pathname || "/admin/dashboard" },
+                                      state: {
+                                        userId: user._id,
+                                        from:
+                                          location.pathname ||
+                                          "/admin/dashboard",
+                                      },
                                     },
                                   );
                                 }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-brand-hoverBlue transition-colors group"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary5 transition-colors group"
                               >
                                 <Eye
                                   size={14}
@@ -422,7 +421,6 @@ export function RecentUsersTable({ recentActivityData }) {
           </div>
         </CardContent>
       </Card>
-
 
       <Dialog
         open={imageModal.open}

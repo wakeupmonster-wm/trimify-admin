@@ -171,7 +171,7 @@ const AddFitzoneSessionPage = () => {
           <PageHeader
             heading={isEdit ? "Edit Session" : "Add Session"}
             icon={<PlayCircle className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading={
               isEdit
                 ? "Edit existing workout session details and videos."
@@ -180,7 +180,7 @@ const AddFitzoneSessionPage = () => {
           />
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -194,7 +194,7 @@ const AddFitzoneSessionPage = () => {
                 value={sessionTitle}
                 onChange={(e) => setSessionTitle(e.target.value)}
                 placeholder="Enter Title Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -208,7 +208,7 @@ const AddFitzoneSessionPage = () => {
                 value={sessionDetails}
                 onChange={(e) => setSessionDetails(e.target.value)}
                 placeholder="Enter Details Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
               />
             </div>
 
@@ -238,7 +238,7 @@ const AddFitzoneSessionPage = () => {
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
                     ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -273,7 +273,7 @@ const AddFitzoneSessionPage = () => {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="Enter Video URL here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
               />
             </div>
 
@@ -286,7 +286,7 @@ const AddFitzoneSessionPage = () => {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="Enter Video Duration"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
               />
             </div>
 
@@ -301,7 +301,7 @@ const AddFitzoneSessionPage = () => {
                 onValueChange={(val) => setSessionCategoryId(val)}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -323,7 +323,7 @@ const AddFitzoneSessionPage = () => {
                 value={stepDescription}
                 onChange={(e) => setStepDescription(e.target.value)}
                 placeholder="Enter description"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Note: Please enter each step on a new line.
@@ -342,7 +342,7 @@ const AddFitzoneSessionPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>

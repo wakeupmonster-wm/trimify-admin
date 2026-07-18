@@ -39,6 +39,8 @@ export const FOOD = {
   
   /** PATCH — Toggle food item approval status (Approved / Unapproved) */
   FOOD_TOGGLE_APPROVAL_STATUS: (id) => `${ADMIN}/toggle-status-approveunapprove/${id}`,
+
+  FOOD_GET_SEARCH: `${ADMIN}/getsearchfood`,
   
   /** DELETE — Permanently delete a food item */
   FOOD_DELETE: (id) => `${ADMIN}/delete-food/${id}`,

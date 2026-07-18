@@ -337,7 +337,7 @@ export function ChartAreaInteractive({
 
   if (loading) {
     return (
-      <Card className="rounded-[24px] shadow-sm bg-white border border-slate-200 flex-1">
+      <Card className="rounded-[24px] shadow-sm bg-white border border-slate-300/60 flex-1">
         <CardContent className="h-[400px] flex items-center justify-center">
           <PreLoader />
         </CardContent>
@@ -350,9 +350,9 @@ export function ChartAreaInteractive({
   }
 
   return (
-    <Card className="rounded-xl border border-slate-200 hover:border-blue-200 transition-all duration-300 shadow-sm py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
+    <Card className="rounded-xl border border-slate-300/60 hover:border-blue-200 transition-all duration-300 shadow-sm py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
       <CardHeader className="flex flex-col items-end justify-between px-0 tracking-tight shrink-0">
-        <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-200">
+        <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-300/60">
           <DashboardHead
             title="Platform Visitors"
             subtitle={getSubtitle(selectedDate)}
@@ -372,7 +372,7 @@ export function ChartAreaInteractive({
 
       <CardContent className="flex-1 flex flex-col justify-end px-4 pb-2 mt-4 relative">
         {filteredData.length === 0 ? (
-          <div className="h-[220px] w-full flex flex-col items-center justify-center text-slate-400 gap-2 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50">
+          <div className="h-[220px] w-full flex flex-col items-center justify-center text-slate-400 gap-2 border-2 border-dashed border-slate-300/60 rounded-2xl bg-slate-50">
             <PiDeviceTabletCameraLight className="w-10 h-10" />
             <p className="text-[11px] font-medium capitalize tracking-wide">
               No data available for selected filter

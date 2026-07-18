@@ -59,9 +59,9 @@ export function MatchLiquidity({ data, preset }) {
   const trendValue = parseFloat(metric.trend) || 0;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-3 shadow-sm hover:border-blue-200 transition-all duration-300">
+    <div className="bg-white border border-slate-300/60 rounded-2xl pt-5 pb-3 shadow-sm hover:border-blue-200 transition-all duration-300">
       {/* Header */}
-      <div className="flex items-start gap-3 px-6 pb-4 border-b border-slate-200">
+      <div className="flex items-start gap-3 px-6 pb-4 border-b border-slate-300/60">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100/50">
           <TbSwipe className="h-5 w-5 text-slate-600" />
         </div>
@@ -175,7 +175,7 @@ export function MatchLiquidity({ data, preset }) {
                 ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                 : trendValue < 0
                   ? "bg-rose-50 text-rose-600 border-rose-100"
-                  : "bg-slate-50 text-slate-500 border-slate-200",
+                  : "bg-slate-50 text-slate-500 border-slate-300/60",
             )}
           >
             <div className="flex items-center gap-2">

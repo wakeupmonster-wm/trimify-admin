@@ -54,7 +54,7 @@ const TransactionManagementPage = () => {
             <PageHeader
               heading="All Transactions"
               icon={<Receipt className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-md"
+              color="bg-app-primary2 shadow-md"
               subheading="View and manage all user transactions and download invoices."
             />
           </div>

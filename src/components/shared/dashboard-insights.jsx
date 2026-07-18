@@ -198,7 +198,7 @@ export function DashboardInsights() {
   const activeConfig = TABS.find((t) => t.id === activeTab);
 
   return (
-    <Card className="rounded-[24px] gap-4 shadow-md bg-slate-50 border border-slate-200 text-slate-900 overflow-hidden p-0">
+    <Card className="rounded-[24px] gap-4 shadow-md bg-slate-50 border border-slate-300/60 text-slate-900 overflow-hidden p-0">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 pb-2">
         <div>
           <CardTitle className="text-xl font-bold tracking-tight text-slate-900 mb-1">
@@ -211,7 +211,7 @@ export function DashboardInsights() {
         <Button
           onClick={() => navigate(activeConfig.path)}
           variant="outline"
-          className="rounded-xl border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-9 px-4 text-xs font-semibold"
+          className="rounded-xl border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-9 px-4 text-xs font-semibold"
         >
           View More <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
         </Button>
@@ -317,7 +317,7 @@ export function DashboardInsights() {
                 return (
                   <div
                     key={idx}
-                    className="bg-slate-50 p-5 rounded-[20px] border border-slate-200/60 hover:border-slate-300 hover:bg-white hover:shadow-sm transition-all group"
+                    className="bg-slate-50 p-5 rounded-[20px] border border-slate-300/60/60 hover:border-slate-300/60 hover:bg-white hover:shadow-sm transition-all group"
                   >
                     <div className="flex items-center gap-4 mb-2">
                       <div className="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 group-hover:scale-110 transition-transform duration-300">

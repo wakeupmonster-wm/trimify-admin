@@ -93,7 +93,7 @@ export default function RevenueTrendChart({
             <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-700 cursor-pointer hover:text-indigo-600 transition-colors">
               <input
                 type="checkbox"
-                className="rounded text-indigo-500 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer border-slate-300"
+                className="rounded text-indigo-500 focus:ring-indigo-500 w-3.5 h-3.5 cursor-pointer border-slate-300/60"
                 checked={activeSubFilters.includes("subscription_1_month")}
                 onChange={(e) => {
                   if (e.target.checked)
@@ -112,7 +112,7 @@ export default function RevenueTrendChart({
             <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-700 cursor-pointer hover:text-indigo-600 transition-colors">
               <input
                 type="checkbox"
-                className="rounded text-indigo-600 focus:ring-indigo-600 w-3.5 h-3.5 cursor-pointer border-slate-300"
+                className="rounded text-indigo-600 focus:ring-indigo-600 w-3.5 h-3.5 cursor-pointer border-slate-300/60"
                 checked={activeSubFilters.includes("subscription_3_month")}
                 onChange={(e) => {
                   if (e.target.checked)
@@ -136,7 +136,7 @@ export default function RevenueTrendChart({
             <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-700 cursor-pointer hover:text-amber-500 transition-colors">
               <input
                 type="checkbox"
-                className="rounded text-amber-400 focus:ring-amber-400 w-3.5 h-3.5 cursor-pointer border-slate-300"
+                className="rounded text-amber-400 focus:ring-amber-400 w-3.5 h-3.5 cursor-pointer border-slate-300/60"
                 checked={activeSubFilters.includes("consumable_super_keen")}
                 onChange={(e) => {
                   if (e.target.checked)
@@ -155,7 +155,7 @@ export default function RevenueTrendChart({
             <label className="flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-slate-700 cursor-pointer hover:text-amber-600 transition-colors">
               <input
                 type="checkbox"
-                className="rounded text-amber-500 focus:ring-amber-500 w-3.5 h-3.5 cursor-pointer border-slate-300"
+                className="rounded text-amber-500 focus:ring-amber-500 w-3.5 h-3.5 cursor-pointer border-slate-300/60"
                 checked={activeSubFilters.includes("consumable_boost")}
                 onChange={(e) => {
                   if (e.target.checked)
@@ -176,7 +176,7 @@ export default function RevenueTrendChart({
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Select value={chartType} onValueChange={setChartType}>
-            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-brand-hoverBlue border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
+            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-app-primary5 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
               <SelectValue placeholder="Revenue Type" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -267,7 +267,8 @@ export default function RevenueTrendChart({
               {chartType === "all" && (
                 <Bar
                   dataKey="total"
-                  fill="#46C7CD"
+                  // fill="#46C7CD"
+                  fill="#5AA0C1" // primary3
                   radius={[4, 4, 0, 0]}
                   name="Total Revenue"
                   maxBarSize={40}
@@ -277,7 +278,8 @@ export default function RevenueTrendChart({
                 activeSubFilters.length === 0 && (
                   <Bar
                     dataKey="subscription"
-                    fill="#4F46E5"
+                    // fill="#4F46E5"
+                    fill="#007FC0" // primary2
                     radius={[4, 4, 0, 0]}
                     name="Subscriptions"
                     maxBarSize={40}
@@ -287,7 +289,8 @@ export default function RevenueTrendChart({
                 activeSubFilters.includes("subscription_1_month") && (
                   <Bar
                     dataKey="subscription_1_month"
-                    fill="#3b82f6"
+                    // fill="#3b82f6"
+                    fill="#15B097" // cardGreen
                     radius={[4, 4, 0, 0]}
                     name="1 Month Sub"
                     maxBarSize={40}
@@ -297,7 +300,8 @@ export default function RevenueTrendChart({
                 activeSubFilters.includes("subscription_3_month") && (
                   <Bar
                     dataKey="subscription_3_month"
-                    fill="#ec4899"
+                    // fill="#ec4899"
+                    fill="#EDA145" // cardYellow
                     radius={[4, 4, 0, 0]}
                     name="3 Month Sub"
                     maxBarSize={40}
@@ -306,7 +310,8 @@ export default function RevenueTrendChart({
               {chartType === "consumable" && activeSubFilters.length === 0 && (
                 <Bar
                   dataKey="consumable"
-                  fill="#f59e0b"
+                  // fill="#f59e0b"
+                  fill="#DC6B1B" // cardOrange
                   radius={[4, 4, 0, 0]}
                   name="Consumables"
                   maxBarSize={40}
@@ -316,7 +321,8 @@ export default function RevenueTrendChart({
                 activeSubFilters.includes("consumable_super_keen") && (
                   <Bar
                     dataKey="consumable_super_keen"
-                    fill="#f59e0b"
+                    // fill="#f59e0b"
+                    fill="#FF5252" // caloriesRed
                     radius={[4, 4, 0, 0]}
                     name="Super Keen"
                     maxBarSize={40}
@@ -326,7 +332,8 @@ export default function RevenueTrendChart({
                 activeSubFilters.includes("consumable_boost") && (
                   <Bar
                     dataKey="consumable_boost"
-                    fill="#10b981"
+                    // fill="#10b981"
+                    fill="#4A90E2" // proteinBlue
                     radius={[4, 4, 0, 0]}
                     name="Super Charge"
                     maxBarSize={40}

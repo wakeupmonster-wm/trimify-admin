@@ -2,10 +2,19 @@ import React from "react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 
-export default function ChartCard({ title, subtitle, icon, isEmpty, emptyMessage, height = 320, headerRight, children }) {
+export default function ChartCard({
+  title,
+  subtitle,
+  icon,
+  isEmpty,
+  emptyMessage,
+  height = 320,
+  headerRight,
+  children,
+}) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
-      <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between gap-3">
+    <div className="bg-white border border-slate-300/60 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+      <div className="px-5 py-4 border-b border-slate-300/60 flex items-center justify-between gap-3">
         <DashboardHead
           title={title}
           subtitle={subtitle}

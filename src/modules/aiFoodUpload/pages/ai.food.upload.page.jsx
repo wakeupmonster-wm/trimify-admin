@@ -24,7 +24,11 @@ import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 
 const OUTCOME_META = {
   saved: { label: "Saved", icon: CheckCircle2, className: "text-emerald-600" },
-  already_saved: { label: "Already saved", icon: CheckCircle2, className: "text-emerald-600" },
+  already_saved: {
+    label: "Already saved",
+    icon: CheckCircle2,
+    className: "text-emerald-600",
+  },
   duplicate: { label: "Duplicate", icon: XCircle, className: "text-amber-600" },
   invalid: { label: "Invalid", icon: XCircle, className: "text-red-600" },
   not_ready: { label: "Not ready", icon: XCircle, className: "text-red-600" },
@@ -97,7 +101,12 @@ const AiFoodUploadPage = () => {
   };
 
   const columns = useMemo(
-    () => getAiFoodColumns({ selectedIds, onToggleSelect: handleToggleSelect, onView: handleView }),
+    () =>
+      getAiFoodColumns({
+        selectedIds,
+        onToggleSelect: handleToggleSelect,
+        onView: handleView,
+      }),
     [selectedIds],
   );
 
@@ -113,14 +122,16 @@ const AiFoodUploadPage = () => {
             <PageHeader
               heading="AI Food Upload"
               icon={<Sparkles className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Generate nutrition data & images with AI, review, then save to the catalog."
             />
 
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 variant="outline"
-                onClick={() => navigate("/admin/data-management/nutrition-food")}
+                onClick={() =>
+                  navigate("/admin/data-management/nutrition-food")
+                }
                 className="w-full xs:w-auto flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -129,21 +140,30 @@ const AiFoodUploadPage = () => {
               <Button
                 onClick={() => setConfirmOpen(true)}
                 disabled={selectedIds.length === 0 || saveLoading}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
               >
-                {saveLoading ? <Spinner className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+                {saveLoading ? (
+                  <Spinner className="w-4 h-4" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
                 Save Selected ({selectedIds.length})
               </Button>
             </div>
           </div>
         </Header>
 
-        <AiFoodNameInput onGenerate={handleGenerate} loading={generateLoading} />
+        <AiFoodNameInput
+          onGenerate={handleGenerate}
+          loading={generateLoading}
+        />
 
         {visibleItems.length > 0 && (
           <p className="text-xs font-medium text-slate-500 px-1">
-            {visibleItems.length} item{visibleItems.length !== 1 ? "s" : ""} awaiting review
-            {pendingReviewCount > 0 && ` · ${pendingReviewCount} ready for review`}
+            {visibleItems.length} item{visibleItems.length !== 1 ? "s" : ""}{" "}
+            awaiting review
+            {pendingReviewCount > 0 &&
+              ` · ${pendingReviewCount} ready for review`}
           </p>
         )}
 
@@ -166,9 +186,13 @@ const AiFoodUploadPage = () => {
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add {selectedIds.length} item{selectedIds.length !== 1 ? "s" : ""} to the food catalog?</DialogTitle>
+            <DialogTitle>
+              Add {selectedIds.length} item{selectedIds.length !== 1 ? "s" : ""}{" "}
+              to the food catalog?
+            </DialogTitle>
             <DialogDescription>
-              These items will become visible in the live app immediately after saving.
+              These items will become visible in the live app immediately after
+              saving.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -177,7 +201,7 @@ const AiFoodUploadPage = () => {
             </Button>
             <Button
               onClick={handleConfirmSave}
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white"
             >
               Confirm & Save
             </Button>
@@ -201,9 +225,11 @@ const AiFoodUploadPage = () => {
               return (
                 <div
                   key={result.id}
-                  className="flex items-start gap-2 text-sm border border-slate-200 rounded-md px-3 py-2"
+                  className="flex items-start gap-2 text-sm border border-slate-300/60 rounded-md px-3 py-2"
                 >
-                  <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${meta.className}`} />
+                  <Icon
+                    className={`w-4 h-4 mt-0.5 shrink-0 ${meta.className}`}
+                  />
                   <div className="min-w-0">
                     <p className="font-semibold text-slate-700 truncate">
                       {item?.food_name || `Item #${result.id}`}

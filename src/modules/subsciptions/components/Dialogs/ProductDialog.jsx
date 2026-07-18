@@ -62,7 +62,7 @@ export const ProductDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
               <Package className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
@@ -119,7 +119,7 @@ export const ProductDialog = ({
                         : "Consumable"
                     }
                     disabled
-                    className="h-12 pl-10 pr-9 text-sm font-medium rounded-md border-slate-300 bg-slate-50 text-slate-600 shadow-none cursor-not-allowed"
+                    className="h-12 pl-10 pr-9 text-sm font-medium rounded-md border-slate-300/60 bg-slate-50 text-slate-600 shadow-none cursor-not-allowed"
                   />
                 </div>
               ) : (
@@ -137,8 +137,8 @@ export const ProductDialog = ({
                       className={cn(
                         "rounded-md font-bold text-[11px] uppercase tracking-wider border-2 transition-all",
                         formData.type === t
-                          ? "border-brand-blue bg-brand-blue text-brand-blue"
-                          : "border-slate-200 bg-slate-50 text-slate-400 hover:border-slate-300",
+                          ? "border-brand-blue bg-app-primary2 text-brand-blue"
+                          : "border-slate-300/60 bg-slate-50 text-slate-400 hover:border-slate-300/60",
                       )}
                     >
                       {t === "SUBSCRIPTION" ? "Subscription" : "Consumable"}
@@ -168,7 +168,7 @@ export const ProductDialog = ({
                         formData.category
                       }
                       disabled
-                      className="h-12 pl-10 pr-9 text-sm font-medium rounded-md border-slate-300 bg-slate-50 text-slate-600 shadow-none cursor-not-allowed"
+                      className="h-12 pl-10 pr-9 text-sm font-medium rounded-md border-slate-300/60 bg-slate-50 text-slate-600 shadow-none cursor-not-allowed"
                     />
                   </div>
                 ) : (
@@ -177,7 +177,7 @@ export const ProductDialog = ({
                       value={formData.category}
                       onValueChange={(v) => updateField("category", v)}
                     >
-                      <SelectTrigger className="h-12 pl-3.5 rounded-md border-slate-300 shadow-none focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 text-sm font-medium bg-white">
+                      <SelectTrigger className="h-12 pl-3.5 rounded-md border-slate-300/60 shadow-none focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 text-sm font-medium bg-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl shadow-lg border-slate-100">
@@ -228,8 +228,8 @@ export const ProductDialog = ({
                   className={cn(
                     "h-12 pl-10 text-sm font-medium rounded-md shadow-none focus-visible:border-slate-500",
                     isEditMode
-                      ? "border-slate-300 bg-slate-50 text-slate-600 cursor-not-allowed"
-                      : "border-slate-300 bg-white",
+                      ? "border-slate-300/60 bg-slate-50 text-slate-600 cursor-not-allowed"
+                      : "border-slate-300/60 bg-white",
                   )}
                 />
               </div>
@@ -247,7 +247,7 @@ export const ProductDialog = ({
                   value={formData.displayName}
                   onChange={(e) => updateField("displayName", e.target.value)}
                   placeholder="e.g. Gold Monthly Plan"
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -278,8 +278,8 @@ export const ProductDialog = ({
                   className={cn(
                     "h-12 px-3.5 text-sm font-medium rounded-md shadow-none focus-visible:border-slate-500 font-mono",
                     isEditMode && !!formData.appleProductId
-                      ? "border-slate-300 bg-slate-50 text-slate-600 cursor-not-allowed"
-                      : "border-slate-300 bg-white",
+                      ? "border-slate-300/60 bg-slate-50 text-slate-600 cursor-not-allowed"
+                      : "border-slate-300/60 bg-white",
                   )}
                 />
               </div>
@@ -308,8 +308,8 @@ export const ProductDialog = ({
                   className={cn(
                     "h-12 px-3.5 text-sm font-medium rounded-md shadow-none focus-visible:border-slate-500 font-mono",
                     isEditMode && !!formData.googleProductId
-                      ? "border-slate-300 bg-slate-50 text-slate-600 cursor-not-allowed"
-                      : "border-slate-300 bg-white",
+                      ? "border-slate-300/60 bg-slate-50 text-slate-600 cursor-not-allowed"
+                      : "border-slate-300/60 bg-white",
                   )}
                 />
               </div>
@@ -335,7 +335,7 @@ export const ProductDialog = ({
                     if (valStr.startsWith("-")) valStr = valStr.substring(1);
                     updateField("displayPrice", valStr);
                   }}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -348,7 +348,7 @@ export const ProductDialog = ({
                 <Input
                   value={formData.currency || "AUD"}
                   readOnly
-                  className="h-12 px-3.5 text-sm font-bold rounded-md border-slate-300 bg-slate-50 text-slate-600 cursor-not-allowed shadow-none"
+                  className="h-12 px-3.5 text-sm font-bold rounded-md border-slate-300/60 bg-slate-50 text-slate-600 cursor-not-allowed shadow-none"
                 />
               </div>
             </div>
@@ -369,7 +369,7 @@ export const ProductDialog = ({
                   onChange={(e) =>
                     updateField("quantity", Number(e.target.value))
                   }
-                  className="max-w-[200px] h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="max-w-[200px] h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -386,14 +386,14 @@ export const ProductDialog = ({
                   type="color"
                   value={formData.badgeColor || "#00BCD4"}
                   onChange={(e) => updateField("badgeColor", e.target.value)}
-                  className="w-12 h-12 rounded-md border border-slate-300 cursor-pointer p-0.5 bg-white shrink-0"
+                  className="w-12 h-12 rounded-md border border-slate-300/60 cursor-pointer p-0.5 bg-white shrink-0"
                 />
                 <div className="relative flex-1">
                   <Input
                     placeholder="e.g. MOST POPULAR"
                     value={formData.badgeText || ""}
                     onChange={(e) => updateField("badgeText", e.target.value)}
-                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue w-full pr-24"
+                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue w-full pr-24"
                   />
                   {formData.badgeText && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -433,7 +433,7 @@ export const ProductDialog = ({
                   placeholder="e.g. Best Value"
                   value={formData.subtitle || ""}
                   onChange={(e) => updateField("subtitle", e.target.value)}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div> */}
@@ -452,7 +452,7 @@ export const ProductDialog = ({
                   placeholder="e.g. Best Value"
                   value={formData.subtitle || ""}
                   onChange={(e) => updateField("subtitle", e.target.value)}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -482,7 +482,7 @@ export const ProductDialog = ({
                   placeholder="e.g. 🔥 HOT"
                   value={formData.badge || ""}
                   onChange={(e) => updateField("badge", e.target.value)}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div> */}
@@ -501,7 +501,7 @@ export const ProductDialog = ({
                   placeholder="e.g. 🔥 HOT"
                   value={formData.badge || ""}
                   onChange={(e) => updateField("badge", e.target.value)}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -520,7 +520,7 @@ export const ProductDialog = ({
                     const val = Number(e.target.value);
                     updateField("sortOrder", val < 0 ? 0 : val);
                   }}
-                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:border-slate-500"
+                  className="h-12 pl-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:border-slate-500"
                 />
               </div>
             </div>
@@ -542,7 +542,7 @@ export const ProductDialog = ({
                       placeholder={`Feature ${i + 1}`}
                       value={f}
                       onChange={(e) => updateFeature(i, e.target.value)}
-                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue"
+                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue"
                     />
                     <button
                       onClick={() => removeFeature(i)}
@@ -554,7 +554,7 @@ export const ProductDialog = ({
                 ))}
                 <button
                   onClick={addFeature}
-                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-brand-blue bg-brand-blue hover:bg-brand-hoverBlue rounded-md transition-colors border border-brand-blue"
+                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-brand-blue bg-app-primary2 hover:bg-app-primary5 rounded-md transition-colors border border-brand-blue"
                 >
                   <Plus className="w-4 h-4" /> Add Feature
                 </button>
@@ -572,7 +572,7 @@ export const ProductDialog = ({
                 Activate or deactivate this product
               </p>
             </div>
-            <div className="flex items-center gap-3 bg-slate-50 px-4 h-12 rounded-md border border-slate-200">
+            <div className="flex items-center gap-3 bg-slate-50 px-4 h-12 rounded-md border border-slate-300/60">
               <span
                 className={cn(
                   "text-sm font-black",
@@ -594,14 +594,14 @@ export const ProductDialog = ({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="font-semibold text-[13px] text-slate-600 border-slate-300 h-10 px-6 rounded-md hover:bg-slate-100"
+            className="font-semibold text-[13px] text-slate-600 border-slate-300/60 h-10 px-6 rounded-md hover:bg-slate-100"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={actionLoading}
-            className="bg-brand-blue hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
+            className="bg-app-primary2 hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
           >
             {actionLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

@@ -49,7 +49,7 @@ export const DecisionCenter = ({
 
   if (allReportsResolved) {
     return (
-      <Card className="w-full rounded-xl border-slate-200 shadow-sm bg-white py-8 overflow-hidden">
+      <Card className="w-full rounded-xl border-slate-300/60 shadow-sm bg-white py-8 overflow-hidden">
         <CardContent className="px-6 flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-200 mb-2">
             <CheckCircle2 className="w-8 h-8 text-emerald-600" />
@@ -69,9 +69,9 @@ export const DecisionCenter = ({
 
   return (
     <>
-      <Card className="w-full rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
+      <Card className="w-full rounded-xl border-slate-300/60 shadow-sm bg-white overflow-hidden">
         <CardHeader className="px-8">
-          <div className="w-full flex items-center justify-between gap-2 pb-4 border-b border-slate-200">
+          <div className="w-full flex items-center justify-between gap-2 pb-4 border-b border-slate-300/60">
             <DashboardHead
               Icon={ShieldCheck}
               title="Decision Center"
@@ -219,10 +219,10 @@ export const DecisionCenter = ({
                       }
                     }}
                   >
-                    <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-200 rounded-lg">
+                    <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-300/60 rounded-lg">
                       <SelectValue placeholder="Select a reason..." />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200">
+                    <SelectContent className="rounded-xl border-slate-300/60">
                       {REASON_CONFIGS[
                         formData.action === "suspend" ? "suspended" : "banned"
                       ]?.map((r) => (
@@ -262,7 +262,7 @@ export const DecisionCenter = ({
                       "min-h-[100px] rounded-lg bg-slate-50 text-sm font-medium focus:ring-slate-200 resize-none border",
                       (formData.reason || "").length > 500
                         ? "border-red-400 focus-visible:border-red-500"
-                        : "border-slate-200 focus-visible:border-slate-500",
+                        : "border-slate-300/60 focus-visible:border-slate-500",
                     )}
                   />
                   <div className="flex justify-between items-center">
@@ -321,10 +321,10 @@ export const DecisionCenter = ({
                           onUpdate("selectedReportId", val)
                         }
                       >
-                        <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-200 rounded-lg">
+                        <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-300/60 rounded-lg">
                           <SelectValue placeholder="Select report to reply to..." />
                         </SelectTrigger>
-                        <SelectContent className="rounded-xl border-slate-200">
+                        <SelectContent className="rounded-xl border-slate-300/60">
                           {p?.reports
                             ?.filter((r) => r.status !== "resolved")
                             .map((r) => (
@@ -361,7 +361,7 @@ export const DecisionCenter = ({
                       }
                       value={formData.replyMessage}
                       onChange={(e) => onUpdate("replyMessage", e.target.value)}
-                      className="min-h-[100px] rounded-lg bg-slate-50 border-slate-200 text-sm font-medium focus:ring-slate-200 resize-none"
+                      className="min-h-[100px] rounded-lg bg-slate-50 border-slate-300/60 text-sm font-medium focus:ring-slate-200 resize-none"
                     />
                   </div>
                 </div>
@@ -385,10 +385,10 @@ export const DecisionCenter = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-200 rounded-lg">
+                      <SelectTrigger className="h-11 w-full bg-slate-50 border-slate-300/60 rounded-lg">
                         <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-slate-200">
+                      <SelectContent className="rounded-xl border-slate-300/60">
                         <SelectItem
                           value="12"
                           className="text-xs font-medium py-2.5"
@@ -452,7 +452,7 @@ export const DecisionCenter = ({
                           onUpdate("suspendDuration", e.target.value)
                         }
                         className={cn(
-                          "h-11 rounded-lg bg-slate-50 border-slate-200",
+                          "h-11 rounded-lg bg-slate-50 border-slate-300/60",
                           (formData.suspendDuration > 168 ||
                             (formData.suspendDuration !== "" &&
                               Number(formData.suspendDuration) < 1)) &&
@@ -470,7 +470,7 @@ export const DecisionCenter = ({
               <Button
                 type="button"
                 variant="outline"
-                className="px-6 h-10 rounded-md text-muted-foreground/60 border-slate-300 font-bold text-xs uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-6 h-10 rounded-md text-muted-foreground/60 border-slate-300/60 font-bold text-xs uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => onUpdate("action", "")}
                 disabled={!formData.action || isSubmitting}
               >
@@ -499,8 +499,8 @@ export const DecisionCenter = ({
                   "px-6 h-10 rounded-md font-bold text-xs uppercase tracking-widest text-white transition-all shadow-sm disabled:opacity-95 disabled:cursor-not-allowed",
                   ["suspend", "ban", "resolve"].includes(formData.action) &&
                     (formData.reason || "").length > 500
-                    ? "bg-slate-200 text-slate-400 cursor-not-allowed border-slate-200 hover:bg-slate-200 hover:text-slate-400"
-                    : "bg-brand-blue hover:bg-brand-hoverAqua",
+                    ? "bg-slate-200 text-slate-400 cursor-not-allowed border-slate-300/60 hover:bg-slate-200 hover:text-slate-400"
+                    : "bg-app-primary2 hover:bg-brand-hoverAqua",
                 )}
               >
                 {isSubmitting ? (

@@ -37,8 +37,8 @@ export function DataTableFilters({ filterConfig = [] }) {
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-blue text-brand-blue",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
                     )}
                   >
                     <span className="text-xs">
@@ -47,7 +47,9 @@ export function DataTableFilters({ filterConfig = [] }) {
                         : isActive
                           ? (() => {
                               const matched = filter.options?.find(
-                                (o) => (typeof o === "object" ? o.value : o) === filter.value
+                                (o) =>
+                                  (typeof o === "object" ? o.value : o) ===
+                                  filter.value,
                               );
                               const lbl = matched
                                 ? typeof matched === "object"
@@ -117,12 +119,12 @@ export function DataTableFilters({ filterConfig = [] }) {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-blue text-brand-blue",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4 text-brand-blue" />
+                      <CalendarIcon className="h-4 w-4 text-app-primary2" />
                       <span className="text-sm">
                         {isActive
                           ? format(filter.value, "PPP")
@@ -161,8 +163,8 @@ export function DataTableFilters({ filterConfig = [] }) {
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-brand-blue text-brand-blue",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
                     )}
                   >
                     <span className="text-xs">

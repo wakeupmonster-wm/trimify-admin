@@ -29,7 +29,7 @@ const ConfirmModal = ({
     type === "danger"
       ? "bg-red-600 text-white"
       : type === "brand"
-        ? "bg-brand-blue text-white"
+        ? "bg-app-primary2 text-white"
         : type === "success"
           ? "bg-emerald-600 text-white"
           : "bg-orange-500 text-white";
@@ -37,12 +37,12 @@ const ConfirmModal = ({
   const buttonStyle = success
     ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
     : type === "danger"
-      ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-100"
+      ? "bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-100"
       : type === "brand"
-        ? "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue"
+        ? "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-sm shadow-brand-blue"
         : type === "success"
-          ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-100"
-          : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-100";
+          ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100"
+          : "bg-orange-500 hover:bg-orange-600 text-white shadow-sm shadow-orange-100";
 
   return createPortal(
     <div
@@ -84,11 +84,11 @@ const ConfirmModal = ({
         </div>
 
         {/* Actions - matching Dialog UI */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center gap-3 justify-end">
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-300/60 flex items-center gap-3 justify-end">
           <Button
             variant="outline"
             onClick={onClose}
-            className="font-semibold text-slate-500 border border-slate-200"
+            className="font-semibold text-slate-500 border border-slate-300/60"
           >
             Cancel
           </Button>

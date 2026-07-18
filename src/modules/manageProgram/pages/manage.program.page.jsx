@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { toast } from "sonner";
 
 const ManageProgramPage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const ManageProgramPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toggleConfirm, setToggleConfirm] = useState(null);
 
   useEffect(() => {
     dispatch(
@@ -56,12 +58,21 @@ const ManageProgramPage = () => {
 
   const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
-      console.log("Toggle status for:", row.id, "to", value);
-      const status = value ? "Active" : "Inactive";
-      dispatch(toggleProgramStatus({ id: row.id, status }));
+      setToggleConfirm({
+        row,
+        action,
+        value,
+        title: "Change Status",
+        message: "Are you sure you want to change the status of this program?",
+      });
     } else if (action === "toggle-food-visibility") {
-      console.log("Toggle food visibility for:", row.id, "to", value);
-      dispatch(toggleFoodVisibility(row.id));
+      setToggleConfirm({
+        row,
+        action,
+        value,
+        title: "Change Food Visibility",
+        message: "Are you sure you want to change the food visibility setting?",
+      });
     } else if (action === "view-user") {
       navigate(`view-user/${row.id}`);
     } else if (action === "open-program") {
@@ -100,6 +111,22 @@ const ManageProgramPage = () => {
       );
     }
     setDeleteTarget(null);
+  };
+
+  const handleConfirmToggle = () => {
+    if (!toggleConfirm) return;
+    const { row, action, value } = toggleConfirm;
+
+    if (action === "toggle-status") {
+      const status = value ? "Active" : "Inactive";
+      dispatch(toggleProgramStatus({ id: row.id, status }));
+      toast.success("Status updated successfully!");
+    } else if (action === "toggle-food-visibility") {
+      dispatch(toggleFoodVisibility(row.id));
+      toast.success("Food visibility updated successfully!");
+    }
+
+    setToggleConfirm(null);
   };
 
   const columns = useMemo(() => getManageProgramColumns(handleAction), []);
@@ -141,13 +168,13 @@ const ManageProgramPage = () => {
             <PageHeader
               heading="Manage Program"
               icon={<LayoutDashboard className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-blue-200"
+              color="bg-app-primary2 shadow-blue-200"
               subheading="Create, configure, and monitor health and wellness programs."
             />
 
             <div className="flex flex-wrap items-center gap-3">
               <Button
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
                 onClick={() => navigate("add-program")}
               >
                 <Plus className="w-4 h-4" />
@@ -167,7 +194,7 @@ const ManageProgramPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search programs..."
+          searchPlaceholder="Search program name..."
           itemName="entries"
           isLoading={loading}
           manualPagination={isManual}
@@ -188,6 +215,16 @@ const ManageProgramPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Program"
         message="Are you sure you want to delete this program? This action cannot be undone."
+      />
+
+      <ConfirmModal
+        isOpen={!!toggleConfirm}
+        onClose={() => setToggleConfirm(null)}
+        onConfirm={handleConfirmToggle}
+        title={toggleConfirm?.title || ""}
+        message={toggleConfirm?.message || ""}
+        type="brand"
+        confirmText="Update"
       />
     </Container>
   );

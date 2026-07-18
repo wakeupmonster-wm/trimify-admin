@@ -82,13 +82,13 @@ const EditFitzoneIntroPage = () => {
           <PageHeader
             heading="Introduction"
             icon={<FileText className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Edit the introduction content for this fitzone."
           />
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
@@ -99,7 +99,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Begin Your Path to Better Health"
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
@@ -112,7 +112,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Embrace a healthier lifestyle with our tailored fitness programs"
                 value={subheading}
                 onChange={(e) => setSubheading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
@@ -134,7 +134,7 @@ const EditFitzoneIntroPage = () => {
             <div className="mt-8 flex justify-end gap-4">
               <Button
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -142,7 +142,7 @@ const EditFitzoneIntroPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 <Save size={16} />
                 {loading ? "Updating..." : "Update"}

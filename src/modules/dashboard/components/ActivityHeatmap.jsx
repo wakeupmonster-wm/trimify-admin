@@ -17,11 +17,14 @@ const hoursOfDay = Array.from({ length: 24 }, (_, i) => i);
 const getIntensityColor = (intensity) => {
   switch (intensity) {
     case 3:
-      return "bg-[#46C7CD]"; // High
+      // return "bg-[#46C7CD]"; // High
+      return "bg-[#5AA0C1]"; // High
     case 2:
-      return "bg-[#46C7CD]/70"; // Medium
+      // return "bg-[#46C7CD]/70"; // Medium
+      return "bg-[#5AA0C1]/70"; // Medium
     case 1:
-      return "bg-[#46C7CD]/40"; // Low
+      // return "bg-[#46C7CD]/40"; // Low
+      return "bg-[#5AA0C1]/40"; // Low
     case 0:
       return "bg-slate-100"; // No activity
     default:
@@ -43,8 +46,8 @@ export function ActivityHeatmap({ data }) {
     const map = {};
     let maxTotal = 0;
 
-    const items = Array.isArray(data) ? data : (data.peakActivityHeatmap || []);
-    
+    const items = Array.isArray(data) ? data : data.peakActivityHeatmap || [];
+
     items.forEach((item) => {
       const day = item.day_of_week; // 1 (Mon) - 7 (Sun)
       const hour = item.hour_of_day;
@@ -59,8 +62,8 @@ export function ActivityHeatmap({ data }) {
 
   const getIntensity = (total, max) => {
     if (!total || total === 0) return 0;
-    if (total > (max * 0.66)) return 3;
-    if (total > (max * 0.33)) return 2;
+    if (total > max * 0.66) return 3;
+    if (total > max * 0.33) return 2;
     return 1;
   };
 
@@ -78,9 +81,9 @@ export function ActivityHeatmap({ data }) {
   }, [dataMap]);
 
   return (
-    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
+    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
       <CardHeader className="px-0">
-        <div className="flex items-start justify-between pb-4 px-5 border-b border-slate-200">
+        <div className="flex items-start justify-between pb-4 px-5 border-b border-slate-300/60">
           <DashboardHead
             title="Peak Activity Heatmap"
             subtitle="When your users are most active"
@@ -100,7 +103,7 @@ export function ActivityHeatmap({ data }) {
                 key={hour}
                 className="flex-1 text-center text-[9px] font-bold text-slate-400"
               >
-                {hour % 2 === 0 ? formatHour(hour).replace(' ', '') : ''}
+                {hour % 2 === 0 ? formatHour(hour).replace(" ", "") : ""}
               </div>
             ))}
           </div>
@@ -121,7 +124,10 @@ export function ActivityHeatmap({ data }) {
                     {hoursOfDay.map((hour) => {
                       const total = dataMap.map[`${day}-${hour}`] || 0;
                       const intensity = getIntensity(total, dataMap.maxTotal);
-                      const isPeak = peakCell && peakCell.day === day && peakCell.hour === hour;
+                      const isPeak =
+                        peakCell &&
+                        peakCell.day === day &&
+                        peakCell.hour === hour;
 
                       return (
                         <Tooltip key={hour}>
@@ -182,7 +188,8 @@ export function ActivityHeatmap({ data }) {
               </div>
               {peakCell ? (
                 <span>
-                  Peak activity occurs on {daysOfWeek[peakCell.day - 1]}s at {formatHour(peakCell.hour)}.
+                  Peak activity occurs on {daysOfWeek[peakCell.day - 1]}s at{" "}
+                  {formatHour(peakCell.hour)}.
                 </span>
               ) : (
                 <span>No activity data found.</span>

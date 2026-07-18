@@ -223,7 +223,7 @@ export default function ViewSubscriptionDetailPage() {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/management/subscription-management/manage-subscribers"
-              className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
+              className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-300/60 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
             >
               <ChevronLeft className="w-5 h-5" />
             </Link>
@@ -243,9 +243,9 @@ export default function ViewSubscriptionDetailPage() {
             <button
               onClick={handleCopy}
               className={cn(
-                "group flex items-center gap-2 bg-slate-50 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-slate-200 transition-all active:scale-95 shadow-sm",
+                "group flex items-center gap-2 bg-slate-50 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-slate-300/60 transition-all active:scale-95 shadow-sm",
                 copied
-                  ? "text-brand-blue border-brand-blue bg-brand-blue"
+                  ? "text-brand-blue border-brand-blue bg-app-primary2"
                   : "text-slate-500 hover:border-brand-blue hover:text-brand-blue hover:bg-white",
               )}
             >
@@ -256,7 +256,7 @@ export default function ViewSubscriptionDetailPage() {
         </header>
 
         {/* --- DETAIL HEADER CARD --- */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-6 transition-all">
+        <div className="bg-white p-5 rounded-xl border border-slate-300/60 shadow-sm flex flex-wrap items-center justify-between gap-6 transition-all">
           <div className="flex items-center gap-5">
             <div className="relative group">
               <Avatar
@@ -273,7 +273,7 @@ export default function ViewSubscriptionDetailPage() {
                   className="rounded-lg object-cover"
                   src={user?.photo || user?.avatar?.url || dummyImg}
                 />
-                <AvatarFallback className="text-2xl font-black bg-brand-blue text-brand-blue rounded-lg">
+                <AvatarFallback className="text-2xl font-black bg-app-primary2 text-brand-blue rounded-lg">
                   {user?.nickname?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
@@ -311,7 +311,7 @@ export default function ViewSubscriptionDetailPage() {
           <div className="flex items-center gap-3">
             {/* <Button
               size="sm"
-              className="h-10 px-4 gap-2 rounded-lg shadow-sm text-white font-bold text-xs bg-brand-blue hover:bg-brand-hoverAqua transition-all active:scale-95"
+              className="h-10 px-4 gap-2 rounded-lg shadow-sm text-white font-bold text-xs bg-app-primary2 hover:bg-brand-hoverAqua transition-all active:scale-95"
               onClick={() => setIsExtendOpen(true)}
             >
               <CalendarPlus className="h-4 w-4" />
@@ -410,20 +410,20 @@ export default function ViewSubscriptionDetailPage() {
         {/* --- MAIN CONTENT ROW: Access Cycle & Grant Side-by-Side --- */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
           {/* Access Cycle */}
-          <div className="bg-white col-span-2 rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all flex flex-col">
-            <div className="py-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
+          <div className="bg-white col-span-2 rounded-xl border border-slate-300/60 shadow-sm overflow-hidden transition-all flex flex-col">
+            <div className="py-4 px-6 border-b border-slate-300/60 flex items-center justify-between bg-slate-50/30">
               <DashboardHead
                 title="Access Cycle"
                 subtitle="Entitlement Roadmap"
                 Icon={Clock}
                 iconColor="text-brand-blue"
-                iconBg="bg-brand-blue"
+                iconBg="bg-app-primary2"
                 titleSizeClass="text-[15px]"
               />
             </div>
             <div className="p-6 flex-1">
-              <div className="bg-slate-50/50 border border-slate-200 px-6 pb-4 rounded-xl space-y-6 relative overflow-hidden group h-full">
-                <div className="py-4 flex items-center justify-between border-b border-slate-200 mb-6">
+              <div className="bg-slate-50/50 border border-slate-300/60 px-6 pb-4 rounded-xl space-y-6 relative overflow-hidden group h-full">
+                <div className="py-4 flex items-center justify-between border-b border-slate-300/60 mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 shadow-sm border border-white">
                       <Gem size={20} strokeWidth={1.5} />
@@ -473,7 +473,7 @@ export default function ViewSubscriptionDetailPage() {
                         : "No expiry"}
                     </span>
                   </div>
-                  <div className="h-2.5 bg-slate-100 border border-slate-200/60 rounded-full overflow-hidden shadow-inner p-[1px]">
+                  <div className="h-2.5 bg-slate-100 border border-slate-300/60/60 rounded-full overflow-hidden shadow-inner p-[1px]">
                     <div
                       className="h-full bg-gradient-to-r from-brand-blue to-blue-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,217,214,0.3)]"
                       style={{ width: `${progress}%` }}
@@ -482,9 +482,9 @@ export default function ViewSubscriptionDetailPage() {
                 </div>
 
                 {/* DETAILS ROW */}
-                <div className="grid grid-cols-1 md:grid-cols-3 border border-slate-200 rounded-xl bg-white overflow-hidden relative z-10 mt-8 shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 border border-slate-300/60 rounded-xl bg-white overflow-hidden relative z-10 mt-8 shadow-sm">
                   {/* BILLING CYCLE */}
-                  <div className="flex items-center gap-4 px-5 py-5 border-b md:border-b-0 md:border-r border-slate-200">
+                  <div className="flex items-center gap-4 px-5 py-5 border-b md:border-b-0 md:border-r border-slate-300/60">
                     <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0 border border-emerald-100">
                       <Clock size={16} strokeWidth={2} />
                     </div>
@@ -501,7 +501,7 @@ export default function ViewSubscriptionDetailPage() {
                   </div>
 
                   {/* AUTO RENEW */}
-                  <div className="flex items-center gap-4 px-5 py-5 border-b md:border-b-0 md:border-r border-slate-200">
+                  <div className="flex items-center gap-4 px-5 py-5 border-b md:border-b-0 md:border-r border-slate-300/60">
                     <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0 border border-amber-100">
                       <RefreshCcw size={16} strokeWidth={2} />
                     </div>
@@ -546,8 +546,8 @@ export default function ViewSubscriptionDetailPage() {
           </div>
 
           {/* Grant Consumables Form */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all flex flex-col h-full">
-            <div className="py-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
+          <div className="bg-white rounded-xl border border-slate-300/60 shadow-sm overflow-hidden transition-all flex flex-col h-full">
+            <div className="py-4 px-6 border-b border-slate-300/60 flex items-center justify-between bg-slate-50/30">
               <DashboardHead
                 title="Grant Consumables"
                 subtitle="Add Super Keens / Charge"
@@ -567,10 +567,10 @@ export default function ViewSubscriptionDetailPage() {
                     value={consumableType}
                     onValueChange={setConsumableType}
                   >
-                    <SelectTrigger className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm">
+                    <SelectTrigger className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm">
                       <SelectValue placeholder="Select Asset" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-lg border-slate-200 shadow-xl">
+                    <SelectContent className="rounded-lg border-slate-300/60 shadow-xl">
                       <SelectItem
                         value="SUPER_KEEN"
                         className="text-xs font-bold rounded-lg"
@@ -594,7 +594,7 @@ export default function ViewSubscriptionDetailPage() {
                     type="number"
                     value={consumableAmount}
                     onChange={(e) => setConsumableAmount(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm"
+                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -605,7 +605,7 @@ export default function ViewSubscriptionDetailPage() {
                     placeholder="Admin Grant"
                     value={consumableReason}
                     onChange={(e) => setConsumableReason(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm placeholder:text-slate-300"
+                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm placeholder:text-slate-300"
                   />
                 </div>
                 <Button
@@ -620,7 +620,7 @@ export default function ViewSubscriptionDetailPage() {
                     "w-full font-bold h-10 rounded-md transition-all duration-300 text-xs shadow-sm mt-2 flex items-center justify-center gap-2",
                     grantSuccess
                       ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                      : "bg-brand-blue hover:bg-brand-hoverAqua text-white",
+                      : "bg-app-primary2 hover:bg-brand-hoverAqua text-white",
                   )}
                 >
                   {actionLoading ? (
@@ -648,24 +648,24 @@ export default function ViewSubscriptionDetailPage() {
         {/* FULL WIDTH: History Tables */}
         <div className="space-y-5">
           {/* History Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all w-full">
-            <div className="py-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
+          <div className="bg-white rounded-xl border border-slate-300/60 shadow-sm overflow-hidden transition-all w-full">
+            <div className="py-4 px-6 border-b border-slate-300/60 flex items-center justify-between bg-slate-50/30">
               <DashboardHead
                 title="Subscription History"
                 subtitle="Past entitlement logs"
                 Icon={History}
                 iconColor="text-brand-blue"
-                iconBg="bg-brand-blue"
+                iconBg="bg-app-primary2"
                 titleSizeClass="text-[15px]"
               />
-              <Badge className="bg-white border border-slate-200 rounded-lg text-slate-500 shadow-sm px-3 py-1 font-black text-[10px] uppercase tracking-widest">
+              <Badge className="bg-white border border-slate-300/60 rounded-lg text-slate-500 shadow-sm px-3 py-1 font-black text-[10px] uppercase tracking-widest">
                 {subscriptionHistory?.length || 0} Records
               </Badge>
             </div>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader className="bg-slate-50/50">
-                  <TableRow className="hover:bg-transparent border-b border-slate-200">
+                  <TableRow className="hover:bg-transparent border-b border-slate-300/60">
                     <TableHead className="text-foreground/80 px-6 font-bold uppercase h-11 bg-transparent text-[11px] text-center tracking-wider whitespace-nowrap">
                       SR.No
                     </TableHead>
@@ -693,7 +693,7 @@ export default function ViewSubscriptionDetailPage() {
                       .map((h, i) => (
                         <TableRow
                           key={i}
-                          className="even:bg-slate-50 hover:bg-slate-100/70 transition-colors border-b border-slate-200 cursor-pointer"
+                          className="even:bg-slate-50 hover:bg-slate-100/70 transition-colors border-b border-slate-300/60 cursor-pointer"
                         >
                           <TableCell className="px-6 py-3.5 text-center text-xs font-bold text-slate-600 whitespace-nowrap">
                             {subHistoryPage * subPageSize + i + 1}
@@ -776,8 +776,8 @@ export default function ViewSubscriptionDetailPage() {
           </div>
 
           {/* Transaction History Table */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all w-full">
-            <div className="py-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/30">
+          <div className="bg-white rounded-xl border border-slate-300/60 shadow-sm overflow-hidden transition-all w-full">
+            <div className="py-4 px-6 border-b border-slate-300/60 flex items-center justify-between bg-slate-50/30">
               <DashboardHead
                 title="Transaction History"
                 subtitle="Past payment records"
@@ -786,14 +786,14 @@ export default function ViewSubscriptionDetailPage() {
                 iconBg="bg-violet-50"
                 titleSizeClass="text-[15px]"
               />
-              <Badge className="bg-white border border-slate-200 rounded-lg text-slate-500 shadow-sm px-3 py-1 font-black text-[10px] uppercase tracking-widest">
+              <Badge className="bg-white border border-slate-300/60 rounded-lg text-slate-500 shadow-sm px-3 py-1 font-black text-[10px] uppercase tracking-widest">
                 {auditLogs?.length || 0} Records
               </Badge>
             </div>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader className="bg-slate-50/50">
-                  <TableRow className="hover:bg-transparent border-b border-slate-200">
+                  <TableRow className="hover:bg-transparent border-b border-slate-300/60">
                     <TableHead className="text-foreground/80 px-5 font-bold uppercase h-11 bg-transparent text-[11px] text-center tracking-wider whitespace-nowrap">
                       SR.No
                     </TableHead>
@@ -830,7 +830,7 @@ export default function ViewSubscriptionDetailPage() {
                       .map((txn, i) => (
                         <TableRow
                           key={txn._id || i}
-                          className="even:bg-slate-50 hover:bg-slate-100/70 transition-colors border-b border-slate-200 cursor-pointer"
+                          className="even:bg-slate-50 hover:bg-slate-100/70 transition-colors border-b border-slate-300/60 cursor-pointer"
                         >
                           <TableCell className="px-4 py-3.5 text-center text-xs font-bold text-slate-600 whitespace-nowrap">
                             {txnHistoryPage * txnPageSize + i + 1}
@@ -873,12 +873,12 @@ export default function ViewSubscriptionDetailPage() {
                                 <PiDevicesDuotone className="size-4" />
                               );
                               let style =
-                                "text-slate-600 border-slate-200 bg-slate-50";
+                                "text-slate-600 border-slate-300/60 bg-slate-50";
 
                               if (platform === "ios") {
                                 icon = <AiFillApple className="size-4" />;
                                 style =
-                                  "text-slate-900 border-slate-200 bg-slate-100";
+                                  "text-slate-900 border-slate-300/60 bg-slate-100";
                               } else if (platform === "android") {
                                 icon = <AiFillAndroid className="size-4" />;
                                 style =
@@ -889,7 +889,7 @@ export default function ViewSubscriptionDetailPage() {
                               ) {
                                 icon = <FaUserTie className="size-3.5" />;
                                 style =
-                                  "text-brand-blue border-brand-blue bg-brand-blue";
+                                  "text-brand-blue border-brand-blue bg-app-primary2";
                               }
 
                               return (
@@ -918,7 +918,7 @@ export default function ViewSubscriptionDetailPage() {
                             {(() => {
                               const event = txn.eventType?.toUpperCase();
                               let style =
-                                "bg-slate-100 text-slate-500 border-slate-200";
+                                "bg-slate-100 text-slate-500 border-slate-300/60";
 
                               if (
                                 event?.includes("PURCHASE") ||
@@ -1071,7 +1071,7 @@ const LocalPagination = ({
   if (totalItems === 0) return null;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-slate-200 bg-slate-50/30 gap-4">
+    <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-slate-300/60 bg-slate-50/30 gap-4">
       <div className="flex items-center gap-6">
         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
           Showing {totalItems === 0 ? 0 : currentPage * pageSize + 1} to{" "}
@@ -1093,10 +1093,10 @@ const LocalPagination = ({
                 onPageChange(0);
               }}
             >
-              <SelectTrigger className="h-7 w-[60px] border-slate-200 rounded-md bg-white text-[10px] font-bold focus:ring-0">
+              <SelectTrigger className="h-7 w-[60px] border-slate-300/60 rounded-md bg-white text-[10px] font-bold focus:ring-0">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+              <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                 {[5, 10, 15, 20].map((size) => (
                   <SelectItem
                     key={size}
@@ -1113,7 +1113,7 @@ const LocalPagination = ({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+          className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0}
         >
@@ -1130,8 +1130,8 @@ const LocalPagination = ({
                 className={cn(
                   "h-8 w-8 text-xs font-bold rounded-md transition-all",
                   isActive
-                    ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
-                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
+                    ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                    : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                 )}
               >
                 {idx + 1}
@@ -1143,7 +1143,7 @@ const LocalPagination = ({
         <Button
           variant="outline"
           size="icon"
-          className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+          className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1 || totalPages === 0}
         >
@@ -1155,11 +1155,11 @@ const LocalPagination = ({
 };
 
 const KPICard = ({ label, value, subtext, color, onGrant, hasPulse }) => (
-  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-1 group">
+  <div className="bg-white p-5 rounded-xl border border-slate-300/60 shadow-sm relative overflow-hidden transition-all hover:shadow-md hover:-translate-y-1 group">
     {onGrant && (
       <button
         onClick={onGrant}
-        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 transition-all hover:bg-brand-hoverBlue hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
+        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-300/60 flex items-center justify-center text-slate-400 transition-all hover:bg-app-primary5 hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
       >
         <Plus className="h-4 w-4" strokeWidth={3} />
       </button>

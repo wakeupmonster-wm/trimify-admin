@@ -43,27 +43,29 @@ export function LiveActivity({ data }) {
 
   const events = React.useMemo(() => {
     if (!data) return [];
-    
-    const users = (data.recentUsers || []).map(u => ({
+
+    const users = (data.recentUsers || []).map((u) => ({
       id: `u-${u.id}`,
       time: u.created_at,
       description: `New user ${u.name} registered.`,
-      color: "hsl(182 59% 54%)"
+      color: "hsl(182 59% 54%)",
     }));
 
-    const txs = (data.recentTransactions || []).map(t => ({
+    const txs = (data.recentTransactions || []).map((t) => ({
       id: `t-${t.id}`,
       time: t.created_at,
       description: `${t.user_name} subscribed to ${t.plan_title} ($${t.amount}).`,
-      color: "hsl(160, 60%, 45%)"
+      color: "hsl(160, 60%, 45%)",
     }));
 
-    return [...users, ...txs].sort((a, b) => new Date(b.time) - new Date(a.time));
+    return [...users, ...txs].sort(
+      (a, b) => new Date(b.time) - new Date(a.time),
+    );
   }, [data]);
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl py-5 shadow-sm flex flex-col h-full">
-      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl py-5 shadow-sm flex flex-col h-full">
+      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title="Live Activity"
           subtitle="Recent registrations and transactions"
@@ -100,7 +102,7 @@ export function LiveActivity({ data }) {
           </div>
         </ScrollArea>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center mt-6 mx-6 border-2 border-dashed border-slate-200/80 rounded-2xl bg-slate-50/30 p-6">
+        <div className="flex-1 flex flex-col items-center justify-center mt-6 mx-6 border-2 border-dashed border-slate-300/60/80 rounded-2xl bg-slate-50/30 p-6">
           <div className="bg-slate-100 p-2.5 rounded-full mb-3">
             <Inbox size={18} className="text-slate-400" strokeWidth={1.5} />
           </div>

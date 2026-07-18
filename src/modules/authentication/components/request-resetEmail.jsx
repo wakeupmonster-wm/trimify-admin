@@ -79,7 +79,7 @@ export default function RequestResetEmailForm() {
 
         <Button
           type="submit"
-          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-brand-hoverBlue hover:shadow-md border border-slate-300 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
+          className="py-5 mb-5 rounded-md bg-slate-50 hover:bg-app-primary5 hover:shadow-md border border-slate-300/60 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

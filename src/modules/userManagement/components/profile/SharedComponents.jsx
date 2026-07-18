@@ -9,9 +9,9 @@ export const SectionCard = ({
   className = "",
 }) => (
   <div
-    className={`bg-slate-50 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-200 flex flex-col transition-all duration-200 ${className}`}
+    className={`bg-slate-50 rounded-2xl shadow-sm border border-slate-300/60 hover:border-blue-200 flex flex-col transition-all duration-200 ${className}`}
   >
-    <div className="p-6 border-b border-slate-200 flex items-center justify-between bg-slate-50/30 rounded-t-2xl">
+    <div className="p-6 border-b border-slate-300/60 flex items-center justify-between bg-slate-50/30 rounded-t-2xl">
       <div className="flex items-center gap-2.5">
         {Icon && (
           <div className="p-2 bg-slate-100/60 rounded-3xl text-slate-500">
@@ -23,9 +23,7 @@ export const SectionCard = ({
             {title}
           </h3>
           {subheading && (
-            <p className="text-xs text-slate-500 font-medium">
-              {subheading}
-            </p>
+            <p className="text-xs text-slate-500 font-medium">{subheading}</p>
           )}
         </div>
       </div>

@@ -26,7 +26,7 @@ export const SubscriptionDashboardSkeleton = () => {
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <Card
             key={i}
-            className="border border-slate-200 bg-white rounded-2xl shadow-sm p-6 min-h-[110px]"
+            className="border border-slate-300/60 bg-white rounded-2xl shadow-sm p-6 min-h-[110px]"
           >
             <div className="flex items-start gap-4">
               {/* Circular Icon badge skeleton */}
@@ -45,7 +45,7 @@ export const SubscriptionDashboardSkeleton = () => {
       </div>
 
       {/* Milestone Program Skeleton */}
-      <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm mb-6 p-6">
+      <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm mb-6 p-6">
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <div className="space-y-2">
@@ -70,7 +70,7 @@ export const SubscriptionDashboardSkeleton = () => {
         {/* Row 1: Revenue Trend & Platform Mix */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Revenue Trend Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-9 w-9 rounded-lg" />
@@ -98,7 +98,7 @@ export const SubscriptionDashboardSkeleton = () => {
           </Card>
 
           {/* Platform Mix Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
               <Skeleton className="h-9 w-9 rounded-lg" />
               <div className="space-y-1.5">
@@ -132,7 +132,7 @@ export const SubscriptionDashboardSkeleton = () => {
         {/* Row 2: Subscriber Growth & Plan Distribution */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Subscriber Growth Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-9 w-9 rounded-lg" />
@@ -167,7 +167,7 @@ export const SubscriptionDashboardSkeleton = () => {
           </Card>
 
           {/* Plan Distribution Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
               <Skeleton className="h-9 w-9 rounded-lg" />
               <div className="space-y-1.5">
@@ -191,7 +191,7 @@ export const SubscriptionDashboardSkeleton = () => {
         {/* Row 3: Top Selling Products & Last 24 Hours Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Selling Products Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
               <Skeleton className="h-9 w-9 rounded-lg" />
               <div className="space-y-1.5">
@@ -220,7 +220,7 @@ export const SubscriptionDashboardSkeleton = () => {
           </Card>
 
           {/* Last 24 Hours Activity Skeleton */}
-          <Card className="border border-slate-200 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
+          <Card className="border border-slate-300/60 bg-white rounded-2xl shadow-sm h-[440px] p-6 flex flex-col justify-between">
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
               <Skeleton className="h-9 w-9 rounded-lg" />
               <div className="space-y-1.5">

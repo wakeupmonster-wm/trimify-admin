@@ -13,7 +13,7 @@ export default function SubscriptionSubscribersPage() {
           <PageHeader
             heading="Subscribers"
             icon={<Users className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Monitor and manage all subscription subscribers."
           />
 

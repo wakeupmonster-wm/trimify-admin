@@ -32,6 +32,7 @@ const AddSubAdminPage = () => {
     role: "",
   });
 
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -39,17 +40,40 @@ const AddSubAdminPage = () => {
     if (name === "phone") {
       const onlyNums = value.replace(/[^0-9]/g, "");
       setFormData((prev) => ({ ...prev, [name]: onlyNums }));
+      if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
       return;
     }
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleRoleChange = (value) => {
     setFormData((prev) => ({ ...prev, role: value }));
+    if (errors.role) setErrors((prev) => ({ ...prev, role: null }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email address";
+    }
+    if (!formData.hospital.trim()) newErrors.hospital = "Hospital/Clinic Name is required";
+    if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
+    if (!formData.designation.trim()) newErrors.designation = "Designation is required";
+    if (!formData.password) newErrors.password = "Password is required";
+    if (!formData.role) newErrors.role = "Role is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setIsSubmitting(true);
     try {
       const submitData = { ...formData };
@@ -73,13 +97,13 @@ const AddSubAdminPage = () => {
             <PageHeader
               heading="Add Sub Admin"
               icon={<UserPlus className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Create a new sub-administrator account."
             />
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <form onSubmit={handleSubmit} className="px-6 md:px-8 pt-5 pb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Name */}
@@ -90,9 +114,9 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                  required
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.name ? 'border-red-500' : 'border-slate-300/60'}`}
                 />
+                {errors.name && <p className="text-red-500 text-[10px] mt-1">{errors.name}</p>}
               </div>
 
               {/* Email address */}
@@ -106,9 +130,9 @@ const AddSubAdminPage = () => {
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                  required
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.email ? 'border-red-500' : 'border-slate-300/60'}`}
                 />
+                {errors.email && <p className="text-red-500 text-[10px] mt-1">{errors.email}</p>}
               </div>
 
               {/* Hospital/Clinic Name */}
@@ -121,9 +145,9 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Hospital/Clinic name"
                   value={formData.hospital}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                  required
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.hospital ? 'border-red-500' : 'border-slate-300/60'}`}
                 />
+                {errors.hospital && <p className="text-red-500 text-[10px] mt-1">{errors.hospital}</p>}
               </div>
 
               {/* Country */}
@@ -135,7 +159,7 @@ const AddSubAdminPage = () => {
                   name="location"
                   value={formData.location}
                   disabled
-                  className="h-10 text-sm bg-slate-100 text-slate-500 font-medium border-slate-300 cursor-not-allowed"
+                  className="h-10 text-sm bg-slate-100 text-slate-500 font-medium border-slate-300/60 cursor-not-allowed"
                 />
               </div>
 
@@ -150,9 +174,9 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                  required
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.phone ? 'border-red-500' : 'border-slate-300/60'}`}
                 />
+                {errors.phone && <p className="text-red-500 text-[10px] mt-1">{errors.phone}</p>}
               </div>
 
               {/* Designation */}
@@ -165,9 +189,9 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                  required
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.designation ? 'border-red-500' : 'border-slate-300/60'}`}
                 />
+                {errors.designation && <p className="text-red-500 text-[10px] mt-1">{errors.designation}</p>}
               </div>
 
               {/* Password */}
@@ -182,8 +206,7 @@ const AddSubAdminPage = () => {
                     placeholder="Enter Password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 pr-10"
-                    required
+                    className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium pr-10 ${errors.password ? 'border-red-500' : 'border-slate-300/60'}`}
                   />
                   <button
                     type="button"
@@ -193,6 +216,7 @@ const AddSubAdminPage = () => {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+                {errors.password && <p className="text-red-500 text-[10px] mt-1">{errors.password}</p>}
               </div>
 
               {/* Role */}
@@ -201,9 +225,8 @@ const AddSubAdminPage = () => {
                 <Select
                   value={formData.role}
                   onValueChange={handleRoleChange}
-                  required
                 >
-                  <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
+                  <SelectTrigger className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.role ? 'border-red-500' : 'border-slate-300/60'}`}>
                     <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                   <SelectContent>
@@ -215,6 +238,7 @@ const AddSubAdminPage = () => {
                     </SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.role && <p className="text-red-500 text-[10px] mt-1">{errors.role}</p>}
               </div>
             </div>
 
@@ -230,7 +254,7 @@ const AddSubAdminPage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2"
               >
                 {isSubmitting ? (
                   <>

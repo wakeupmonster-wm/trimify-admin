@@ -81,7 +81,7 @@ export default function TransactionDataTables({
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
             <Input
               placeholder={searchPlaceholder}
-              className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+              className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -105,7 +105,7 @@ export default function TransactionDataTables({
               >
                 <SelectTrigger
                   className={cn(
-                    "h-9 3xl:h-10 w-full md:w-auto md:min-w-[130px] bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all justify-between",
+                    "h-9 3xl:h-10 w-full md:w-auto md:min-w-[130px] bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all justify-between",
                     filters.platform && "border-brand-blue text-brand-blue",
                   )}
                 >
@@ -134,7 +134,7 @@ export default function TransactionDataTables({
             </div>
 
             {/* 2. ITEM COUNT INDICATOR */}
-            <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-200">
+            <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-300/60">
               <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
                 {rowCount ?? data.length}
               </span>
@@ -158,7 +158,7 @@ export default function TransactionDataTables({
                 {filters.platform && (
                   <Badge
                     variant="outline"
-                    className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+                    className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
                   >
                     <span className="text-[10px] font-bold uppercase opacity-50">
                       Platform:
@@ -177,7 +177,7 @@ export default function TransactionDataTables({
                 {filters.drawStatus && (
                   <Badge
                     variant="outline"
-                    className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+                    className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
                   >
                     <span className="text-[10px] font-bold uppercase opacity-50">
                       Status:
@@ -211,7 +211,7 @@ export default function TransactionDataTables({
       </div>
 
       {/* --- DATA AREA (RESPONSIBLE) & PAGINATION MERGED --- */}
-      <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="relative rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto relative">
           <AnimatePresence>
             {isLoading && data.length > 0 && (
@@ -259,7 +259,7 @@ export default function TransactionDataTables({
                       exit={{ opacity: 0 }}
                       transition={{ delay: index * 0.03, duration: 0.2 }}
                       className={cn(
-                        "transition-all duration-200 hover:bg-slate-50/50 border-b border-slate-200/50 group cursor-pointer",
+                        "transition-all duration-200 hover:bg-slate-50/50 border-b border-slate-300/60/50 group cursor-pointer",
                         isLoading && "opacity-50 pointer-events-none",
                       )}
                     >
@@ -296,7 +296,7 @@ export default function TransactionDataTables({
         </div>
 
         {/* --- PAGINATION SECTION (MERGED) --- */}
-        <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-200 gap-6 sm:flex-row sm:gap-4">
+        <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
           {/* Left Side: Showing results count */}
           <div className="text-xs font-medium text-slate-400 order-1 text-center sm:text-left">
             Showing{" "}
@@ -323,10 +323,10 @@ export default function TransactionDataTables({
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => table.setPageSize(Number(value))}
               >
-                <SelectTrigger className="h-8 w-[65px] border-slate-200 rounded-md bg-white text-xs font-semibold focus:ring-0">
+                <SelectTrigger className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                   {[10, 20, 50].map((size) => (
                     <SelectItem
                       key={size}
@@ -345,7 +345,7 @@ export default function TransactionDataTables({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -405,8 +405,8 @@ export default function TransactionDataTables({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
-                            : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
+                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
+                            : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                         )}
                       >
                         {page}
@@ -420,7 +420,7 @@ export default function TransactionDataTables({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
+                className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >

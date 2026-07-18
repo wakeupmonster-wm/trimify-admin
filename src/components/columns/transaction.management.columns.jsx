@@ -145,7 +145,7 @@ export const getTransactionManagementColumns = (onAction) => [
       <div className="flex justify-center">
         <Button
           variant="outline"
-          className="h-7 px-3 bg-brand-blue hover:bg-brand-hoverBlue text-white rounded text-[10px] font-semibold shadow-none border-none flex items-center gap-1.5"
+          className="h-7 px-3 bg-app-primary2 hover:bg-app-primary5 text-white rounded text-[10px] font-semibold shadow-none border-none flex items-center gap-1.5"
           onClick={() => onAction && onAction(row.original, "download-invoice")}
         >
           <Download className="w-3 h-3" />

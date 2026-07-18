@@ -114,7 +114,10 @@ export function CalendarDateRangePicker({
         break;
       case "lastMonth": {
         const lastMonth = subMonths(today, 1);
-        newDate = { from: startOfMonth(lastMonth), to: endOfDay(endOfMonth(lastMonth)) };
+        newDate = {
+          from: startOfMonth(lastMonth),
+          to: endOfDay(endOfMonth(lastMonth)),
+        };
         break;
       }
       default:
@@ -148,7 +151,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-brand-blue focus-visible:ring-0",
+              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-300/60 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-brand-blue focus-visible:ring-0",
               compact ? "h-8 text-xs px-2 gap-2" : "h-10 text-xs gap-3",
               !date && "text-slate-400",
             )}
@@ -203,7 +206,7 @@ export function CalendarDateRangePicker({
           {/* Calendar Section (Always show if custom, or keep it if you want presets to be previewable) */}
           {presetValue === "custom" && (
             <>
-              <div className="border-t border-slate-300/80 my-3" />
+              <div className="border-t border-slate-300/60/80 my-3" />
               <div className="mt-2 p-1 relative animate-in fade-in slide-in-from-top-1 duration-300">
                 <Calendar
                   initialFocus
@@ -219,9 +222,9 @@ export function CalendarDateRangePicker({
                     month: "w-full space-y-4",
                     nav: "flex items-center justify-between absolute w-full pr-5 top-0",
                     button_previous:
-                      "h-7 w-7 sm:h-8 sm:w-8 bg-white border border-slate-300/80 rounded-lg flex items-center justify-center hover:bg-slate-50 hover:border-slate-200 transition-all",
+                      "h-7 w-7 sm:h-8 sm:w-8 bg-white border border-slate-300/60/80 rounded-lg flex items-center justify-center hover:bg-slate-50 hover:border-slate-300/60 transition-all",
                     button_next:
-                      "h-7 w-7 sm:h-8 sm:w-8 bg-white border border-slate-300/80 rounded-lg flex items-center justify-center hover:bg-slate-50 hover:border-slate-200 transition-all",
+                      "h-7 w-7 sm:h-8 sm:w-8 bg-white border border-slate-300/60/80 rounded-lg flex items-center justify-center hover:bg-slate-50 hover:border-slate-300/60 transition-all",
                     month_caption:
                       "flex justify-center items-center h-6 sm:h-9 font-bold text-foreground text-xs mb-1 tracking-tight",
                     weekdays: "flex w-full mt-2",
@@ -231,11 +234,12 @@ export function CalendarDateRangePicker({
                     day: "relative p-0 flex-1 aspect-square flex items-center justify-center",
                     day_button:
                       "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-[11px] sm:text-xs font-semibold rounded-xl transition-all",
-                    range_start: "bg-brand-blue text-white rounded-l-xl my-0.5",
-                    range_end: "bg-brand-blue text-white rounded-r-xl my-0.5",
+                    range_start:
+                      "bg-app-primary2 text-white rounded-l-xl my-0.5",
+                    range_end: "bg-app-primary2 text-white rounded-r-xl my-0.5",
                     range_middle:
-                      "bg-brand-blue text-brand-blue rounded-none my-0.5",
-                    selected: "bg-brand-blue text-white",
+                      "bg-app-primary2 text-brand-blue rounded-none my-0.5",
+                    selected: "bg-app-primary2 text-white",
                     today:
                       "text-brand-blue font-bold underline decoration-2 underline-offset-4",
                     outside: "text-slate-300 opacity-50",
@@ -247,20 +251,20 @@ export function CalendarDateRangePicker({
 
           {/* Action Footer - Only visible for custom range to allow applying the selection */}
           {/* Original code (always visible):
-          <div className="border-t border-slate-300/80 my-2 pt-2 flex justify-end px-2">
+          <div className="border-t border-slate-300/60/80 my-2 pt-2 flex justify-end px-2">
             <Button
               onClick={handleApply}
-              className="w-20 bg-brand-blue hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
+              className="w-20 bg-app-primary2 hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
             >
               Apply Filter
             </Button>
           </div>
           */}
           {presetValue === "custom" && (
-            <div className="border-t border-slate-300/80 my-2 pt-2 flex justify-end px-2">
+            <div className="border-t border-slate-300/60/80 my-2 pt-2 flex justify-end px-2">
               <Button
                 onClick={handleApply}
-                className="w-20 bg-brand-blue hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
+                className="w-20 bg-app-primary2 hover:bg-brand-hoverAqua text-white font-bold text-[11px] h-8 rounded-lg transition-all duration-300 shadow-sm"
               >
                 Apply Filter
               </Button>

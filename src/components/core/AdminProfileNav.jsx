@@ -20,7 +20,7 @@ export function AdminProfileNav() {
         <TooltipTrigger asChild>
           <div
             onClick={() => navigate("/admin/accounts")}
-            className="flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
+            className="flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full border border-slate-300/60 bg-white hover:bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
           >
             {/* Avatar with fallback logic */}
             <Avatar className="h-8 w-8 rounded-full border-2 border-white shadow-sm transition-transform group-hover:scale-105 overflow-hidden">
@@ -47,7 +47,7 @@ export function AdminProfileNav() {
         {/* Hover Card / Tooltip content */}
         <TooltipContent
           side="bottom"
-          className="flex flex-col gap-1 p-3 bg-white border-slate-200 shadow-xl"
+          className="flex flex-col gap-1 p-3 bg-white border-slate-300/60 shadow-xl"
         >
           <p className="font-bold text-brand-blue">Admin</p>
           <p className="text-xs text-slate-500">[EMAIL_ADDRESS]</p>

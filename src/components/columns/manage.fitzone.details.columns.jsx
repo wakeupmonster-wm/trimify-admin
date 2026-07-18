@@ -43,7 +43,7 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
       <div className="flex justify-center">
         <Button
           onClick={() => handleAction && handleAction(row.original.id)}
-          className="bg-brand-blue hover:bg-brand-hoverBlue text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-app-primary5 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
         >
           Manage
         </Button>

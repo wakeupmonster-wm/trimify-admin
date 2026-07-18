@@ -36,7 +36,7 @@ const SectionEditor = ({ data, onSave, onCancel }) => {
             <label className="text-xs font-bold uppercase">
               Paragraph Text
             </label>
-            <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
+            <div className="rounded-xl border border-slate-300/60 overflow-hidden bg-white">
               <ReactQuill
                 theme="snow"
                 value={formData.paragraph}

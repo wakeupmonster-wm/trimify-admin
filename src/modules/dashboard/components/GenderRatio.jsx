@@ -43,9 +43,9 @@ export function GenderRatio({ data }) {
   const femaleProgressWidth = femaleRatioText;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl pt-5 pb-0 shadow-sm hover:border-blue-200 transition-all duration-300">
+    <div className="bg-white border border-slate-300/60 rounded-2xl pt-5 pb-0 shadow-sm hover:border-blue-200 transition-all duration-300">
       {/* Header */}
-      <div className="flex items-start gap-3 px-6 pb-3.5 border-b border-slate-200">
+      <div className="flex items-start gap-3 px-6 pb-3.5 border-b border-slate-300/60">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-slate-100/50 flex items-center justify-center">
             <LuUsersRound className="text-xl text-slate-600" />

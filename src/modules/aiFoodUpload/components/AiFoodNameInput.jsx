@@ -14,9 +14,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     const trimmed = value.trim();
     if (!trimmed) return;
     if (names.length >= MAX_NAMES) return;
-    const exists = names.some(
-      (n) => n.toLowerCase() === trimmed.toLowerCase(),
-    );
+    const exists = names.some((n) => n.toLowerCase() === trimmed.toLowerCase());
     if (exists) {
       setDraft("");
       return;
@@ -50,22 +48,22 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
   const pendingCount = names.length + (draft.trim() ? 1 : 0);
 
   return (
-    <div className="bg-white rounded-md shadow-sm border border-slate-300 p-6 space-y-4">
+    <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-6 space-y-4">
       <div className="space-y-2">
         <label className="text-xs font-semibold text-slate-700">
           Food Names
         </label>
-        <div className="min-h-[44px] flex flex-wrap items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-blue">
+        <div className="min-h-[44px] flex flex-wrap items-center gap-2 rounded-md border border-slate-300/60 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-blue">
           {names.map((name, index) => (
             <span
               key={`${name}-${index}`}
-              className="inline-flex items-center gap-1.5 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-medium pl-3 pr-2 py-1"
+              className="inline-flex items-center gap-1.5 rounded-full bg-app-primary2/10 text-brand-blue text-xs font-medium pl-3 pr-2 py-1"
             >
               {name}
               <button
                 type="button"
                 onClick={() => removeName(index)}
-                className="rounded-full hover:bg-brand-blue/20 p-0.5"
+                className="rounded-full hover:bg-app-primary2/20 p-0.5"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -85,8 +83,8 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           />
         </div>
         <p className="text-[10px] text-slate-500">
-          Press Enter or comma to add a name. Up to {MAX_NAMES} at once
-          ({pendingCount}/{MAX_NAMES}).
+          Press Enter or comma to add a name. Up to {MAX_NAMES} at once (
+          {pendingCount}/{MAX_NAMES}).
         </p>
       </div>
 
@@ -95,7 +93,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           type="button"
           onClick={handleSubmit}
           disabled={loading || pendingCount === 0}
-          className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+          className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
         >
           {loading ? (
             <Spinner className="w-4 h-4" />

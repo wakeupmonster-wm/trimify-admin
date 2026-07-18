@@ -45,7 +45,10 @@ const SubscriptionManagementPage = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editData, setEditData] = useState(null);
-  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    rowData: null,
+  });
 
   useEffect(() => {
     dispatch(
@@ -96,13 +99,13 @@ const SubscriptionManagementPage = () => {
             <PageHeader
               heading="All Subscription"
               icon={<CreditCard className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage subscription plans and their details."
             />
 
             <div className="flex flex-wrap items-center gap-3">
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 font-semibold shadow-sm"
                 onClick={() => {
                   setEditData(null);
                   setDialogOpen(true);

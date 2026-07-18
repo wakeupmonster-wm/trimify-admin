@@ -21,16 +21,16 @@ const AccountSettingsPage = () => {
             <PageHeader
               heading="Account Settings"
               icon={<Settings className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage your personal account settings and preferences."
             />
           </div>
         </Header>
 
         {/* Content Card */}
-        <div className="bg-white rounded-md shadow-sm border border-slate-300 p-6 sm:p-8">
+        <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-6 sm:p-8">
           {/* TABS */}
-          <div className="flex flex-wrap items-center gap-6 border-b border-slate-200 mb-8">
+          <div className="flex flex-wrap items-center gap-6 border-b border-slate-300/60 mb-8">
             <button
               onClick={() => setActiveTab("password")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
@@ -65,7 +65,7 @@ const AccountSettingsPage = () => {
                     <Input
                       type={showOldPassword ? "text" : "password"}
                       placeholder="Enter old password"
-                      className="pr-10 h-10 text-sm font-normal border-slate-300"
+                      className="pr-10 h-10 text-sm font-normal border-slate-300/60"
                     />
                     <button
                       type="button"
@@ -89,7 +89,7 @@ const AccountSettingsPage = () => {
                     <Input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="Enter new password"
-                      className="pr-10 h-10 text-sm font-normal border-slate-300"
+                      className="pr-10 h-10 text-sm font-normal border-slate-300/60"
                     />
                     <button
                       type="button"
@@ -113,7 +113,7 @@ const AccountSettingsPage = () => {
                     <Input
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Enter confirm password"
-                      className="pr-10 h-10 text-sm font-normal border-slate-300"
+                      className="pr-10 h-10 text-sm font-normal border-slate-300/60"
                     />
                     <button
                       type="button"
@@ -132,10 +132,13 @@ const AccountSettingsPage = () => {
                 </div>
 
                 <div className="flex gap-4 pt-4">
-                  <Button variant="outline" className="px-8 font-bold text-xs h-10">
+                  <Button
+                    variant="outline"
+                    className="px-8 font-bold text-xs h-10"
+                  >
                     Clear
                   </Button>
-                  <Button className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
+                  <Button className="bg-app-primary2 hover:bg-app-primary5 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
                     Update Password
                   </Button>
                 </div>
@@ -151,15 +154,18 @@ const AccountSettingsPage = () => {
                   <Input
                     type="email"
                     placeholder="Enter new email address"
-                    className="h-10 text-sm font-normal border-slate-300"
+                    className="h-10 text-sm font-normal border-slate-300/60"
                   />
                 </div>
 
                 <div className="flex gap-4 pt-4">
-                  <Button variant="outline" className="px-8 font-bold text-xs h-10">
+                  <Button
+                    variant="outline"
+                    className="px-8 font-bold text-xs h-10"
+                  >
                     Clear
                   </Button>
-                  <Button className="bg-brand-blue hover:bg-brand-hoverBlue text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
+                  <Button className="bg-app-primary2 hover:bg-app-primary5 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
                     Update Email
                   </Button>
                 </div>

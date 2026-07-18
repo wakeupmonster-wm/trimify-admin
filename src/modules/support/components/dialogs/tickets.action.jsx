@@ -73,7 +73,7 @@ export const TicketAction = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
               <MessageSquare className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
@@ -98,7 +98,7 @@ export const TicketAction = ({
               User Inquiry Context
             </Label>
             <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 relative overflow-hidden group">
-              <div className="absolute top-0 left-0 w-1 h-full bg-brand-blue" />
+              <div className="absolute top-0 left-0 w-1 h-full bg-app-primary2" />
               <div className="flex gap-3">
                 <Info className="w-4 h-4 text-slate-300 mt-0.5 shrink-0" />
                 <p className="text-xs font-medium text-slate-600 leading-relaxed italic">
@@ -130,10 +130,10 @@ export const TicketAction = ({
                 onValueChange={setStatusUpdate}
                 disabled={localLoading || success}
               >
-                <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all">
+                <SelectTrigger className="h-11 bg-slate-50/50 border-slate-300/60 rounded-lg text-sm font-medium focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all">
                   <SelectValue placeholder="Update status..." />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-200">
+                <SelectContent className="rounded-xl border-slate-300/60">
                   <SelectItem
                     value="open"
                     className="text-xs font-bold py-2.5 focus:bg-slate-50"
@@ -170,7 +170,7 @@ export const TicketAction = ({
               <div className="relative group">
                 <Textarea
                   placeholder="Type your official response here..."
-                  className="min-h-[140px] text-sm font-medium border-slate-200 bg-slate-50/30 focus-visible:border-slate-500 resize-none p-4 rounded-xl transition-all"
+                  className="min-h-[140px] text-sm font-medium border-slate-300/60 bg-slate-50/30 focus-visible:border-slate-500 resize-none p-4 rounded-xl transition-all"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   disabled={localLoading || success}
@@ -199,7 +199,7 @@ export const TicketAction = ({
             variant="outline"
             onClick={() => setSelectedTicket(null)}
             disabled={localLoading || success}
-            className="h-10 px-4 font-semibold text-xs text-slate-600 border-slate-200 rounded-md hover:bg-slate-100 hover:text-slate-900 transition-all active:scale-95"
+            className="h-10 px-4 font-semibold text-xs text-slate-600 border-slate-300/60 rounded-md hover:bg-slate-100 hover:text-slate-900 transition-all active:scale-95"
           >
             Cancel
           </Button>
@@ -209,7 +209,7 @@ export const TicketAction = ({
               "h-10 px-4 text-white font-black text-xs rounded-md shadow-lg disabled:cursor-not-allowed transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 min-w-[140px]",
               success
                 ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
-                : "bg-brand-blue hover:bg-brand-hoverAqua shadow-brand-blue",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua shadow-brand-blue",
             )}
             disabled={
               localLoading || success || !statusUpdate || !reply?.trim()

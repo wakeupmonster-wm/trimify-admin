@@ -7,7 +7,7 @@ export const PhotoGallery = ({ photos, onImageClick }) => {
   const hasPhotos = photos && photos.length > 0;
 
   return (
-    <Card className="p-6 shadow-sm border-slate-200 bg-white overflow-hidden">
+    <Card className="p-6 shadow-sm border-slate-300/60 bg-white overflow-hidden">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-gray-900 flex items-center gap-2.5">
           <div className="p-2 bg-blue-50 rounded-lg">
@@ -48,7 +48,7 @@ export const PhotoGallery = ({ photos, onImageClick }) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
                 whileHover={{ y: -4 }}
-                className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 cursor-pointer shadow-sm group border border-slate-200/50"
+                className="relative aspect-square rounded-2xl overflow-hidden bg-slate-100 cursor-pointer shadow-sm group border border-slate-300/60/50"
                 onClick={() => onImageClick(ph.url || ph, idx)}
               >
                 {/* Image Component */}

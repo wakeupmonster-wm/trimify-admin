@@ -318,7 +318,7 @@ export default function ProductsPage() {
               icon={
                 <GrCatalog strokeWidth={2} className="w-9 h-9 text-white" />
               }
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage subscription plans & consumable packs."
             />
             <div className="flex items-center gap-2 w-full lg:w-auto">
@@ -327,7 +327,7 @@ export default function ProductsPage() {
                 size="sm"
                 onClick={() => dispatch(fetchProducts({ page: 1, limit: 100 }))}
                 disabled={productsLoading}
-                className="h-9 flex-1 lg:flex-none border border-slate-200 hover:bg-brand-hoverBlue text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-300/60 hover:bg-app-primary5 text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn(
@@ -340,7 +340,7 @@ export default function ProductsPage() {
               <Button
                 size="sm"
                 onClick={handleOpenCreate}
-                className="h-9 flex-1 lg:flex-none border border-slate-200 shadow-sm bg-slate-50 hover:bg-brand-hoverBlue text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-300/60 shadow-sm bg-slate-50 hover:bg-app-primary5 text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <Plus className="mr-1.5 h-4 w-4" />
                 Add Product
@@ -380,7 +380,7 @@ export default function ProductsPage() {
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
               <Input
                 placeholder="Search by name, key or product ID..."
-                className="pl-9 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+                className="pl-9 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -408,15 +408,15 @@ export default function ProductsPage() {
                     setPagination((p) => ({ ...p, pageIndex: 0 }));
                   }}
                 >
-                  <SelectTrigger className="h-10 w-full bg-white border-slate-200 text-xs font-black uppercase tracking-wider focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 rounded-lg shadow-sm">
+                  <SelectTrigger className="h-10 w-full bg-white border-slate-300/60 text-xs font-black uppercase tracking-wider focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 rounded-lg shadow-sm">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
-                  <SelectContent className="border-slate-200">
+                  <SelectContent className="border-slate-300/60">
                     {tabs.map((tab) => (
                       <SelectItem
                         key={tab.key}
                         value={tab.key}
-                        className="text-[10px] font-black uppercase tracking-widest focus:bg-brand-blue focus:text-brand-blue"
+                        className="text-[10px] font-black uppercase tracking-widest focus:bg-app-primary2 focus:text-brand-blue"
                       >
                         <div className="flex flex-1 items-center justify-between w-full gap-8">
                           <span>{tab.label}</span>
@@ -431,7 +431,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Desktop Tabs */}
-              <div className="hidden lg:flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-1 shadow-sm scrollbar-none">
+              <div className="hidden lg:flex items-center gap-2 bg-white border border-slate-300/60 rounded-lg p-1 shadow-sm scrollbar-none">
                 {tabs.map((tab) => (
                   <button
                     key={tab.key}
@@ -442,7 +442,7 @@ export default function ProductsPage() {
                     className={cn(
                       "px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-2 whitespace-nowrap",
                       activeTab === tab.key
-                        ? "bg-brand-blue text-white shadow-md shadow-brand-blue"
+                        ? "bg-app-primary2 text-white shadow-md shadow-brand-blue"
                         : "text-slate-400 hover:text-slate-600 hover:bg-slate-50",
                     )}
                   >

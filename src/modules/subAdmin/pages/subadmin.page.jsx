@@ -12,6 +12,7 @@ import {
 } from "@/components/shared/datatable";
 import { getSubAdminColumns } from "@/components/columns/sub.admin.columns";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import {
   fetchSubAdminList,
   toggleSubAdminStatus,
@@ -41,9 +42,10 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     else if (item.role) displayRole = item.role;
 
     const dateValue = item.created_at;
-    const createdAt = dateValue && !isNaN(new Date(dateValue).getTime())
-      ? new Date(dateValue).toLocaleDateString()
-      : "-";
+    const createdAt =
+      dateValue && !isNaN(new Date(dateValue).getTime())
+        ? new Date(dateValue).toLocaleDateString()
+        : "-";
 
     return [
       index + 1,
@@ -76,14 +78,26 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
 
 const SubAdminManagementPage = () => {
   const dispatch = useDispatch();
-  const { subAdmins, loading, pagination: serverPagination } = useSelector((state) => state.subAdmin);
+  const {
+    subAdmins,
+    loading,
+    pagination: serverPagination,
+  } = useSelector((state) => state.subAdmin);
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const navigate = useNavigate();
-  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    rowData: null,
+  });
+  const [toggleModal, setToggleModal] = useState({
+    open: false,
+    rowData: null,
+    targetStatus: false,
+  });
 
   useEffect(() => {
     dispatch(
@@ -94,14 +108,18 @@ const SubAdminManagementPage = () => {
         role: roleFilter,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm, roleFilter ]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+    roleFilter,
+  ]);
 
   const handleAction = async (row, action, checked) => {
     const rowId = row.id || row._id;
     if (action === "toggle-status") {
-      console.log("Toggle status for:", rowId, "to", checked);
-      const status = checked ? "Active" : "Inactive";
-      dispatch(toggleSubAdminStatus({ id: rowId, status }));
+      setToggleModal({ open: true, rowData: row, targetStatus: checked });
     } else if (action === "edit") {
       navigate("/admin/sub-admin-management/edit", {
         state: { editData: row },
@@ -111,18 +129,43 @@ const SubAdminManagementPage = () => {
     }
   };
 
-  const handleConfirmDelete = async () => {
-    if (!deleteModal.rowData) return;
-    const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
-    const result = await dispatch(deleteSubAdmin(rowId));
-    if (deleteSubAdmin.fulfilled.match(result)) {
+  const handleConfirmToggle = async () => {
+    if (!toggleModal.rowData) return;
+    const rowId = toggleModal.rowData.id || toggleModal.rowData._id;
+    const status = toggleModal.targetStatus ? "Active" : "Inactive";
+    const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+    if (toggleSubAdminStatus.fulfilled.match(result)) {
+      toast.success("Sub-admin status updated successfully.");
       dispatch(
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
+          role: roleFilter,
         }),
       );
+    } else {
+      toast.error("Failed to update status.");
+    }
+    setToggleModal({ open: false, rowData: null, targetStatus: false });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteModal.rowData) return;
+    const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
+    const result = await dispatch(deleteSubAdmin(rowId));
+    if (deleteSubAdmin.fulfilled.match(result)) {
+      toast.success("Sub-admin deleted successfully.");
+      dispatch(
+        fetchSubAdminList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          role: roleFilter,
+        }),
+      );
+    } else {
+      toast.error("Failed to delete sub-admin.");
     }
     setDeleteModal({ open: false, rowData: null });
   };
@@ -157,12 +200,7 @@ const SubAdminManagementPage = () => {
         { label: "WhiteListing User", value: "1" },
       ],
       placeholder: "All Roles",
-      getDisplayValue: (val) =>
-        val === "0"
-          ? "Sub-Admin User"
-          : val === "1"
-            ? "WhiteListing User"
-            : "All Roles",
+      getDisplayValue: (val) => val === "0" ? "Sub-Admin User" : val === "1" ? "WhiteListing User" : "All Roles",
     },
   ];
 
@@ -174,21 +212,21 @@ const SubAdminManagementPage = () => {
             <PageHeader
               heading="Sub Admin Management"
               icon={<UserCog className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage sub-administrators and their access roles."
             />
 
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 onClick={() => navigate("/admin/sub-admin-management/add")}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4" />
                 Add Sub Admin
               </Button>
               <Button
                 onClick={() => downloadCSV(subAdmins)}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <FileText className="w-4 h-4" />
                 Download CSV
@@ -207,7 +245,7 @@ const SubAdminManagementPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search sub admins..."
+          searchPlaceholder="Search by email & clinic name..."
           itemName="entries"
           isLoading={loading}
           manualPagination={isManual}
@@ -228,6 +266,16 @@ const SubAdminManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
+      />
+      
+      <ConfirmModal
+        isOpen={toggleModal.open}
+        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onConfirm={handleConfirmToggle}
+        title="Confirm Status Change"
+        message={`Are you sure you want to change the status of this sub-admin to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
+        type="brand"
+        confirmText="Update"
       />
     </Container>
   );

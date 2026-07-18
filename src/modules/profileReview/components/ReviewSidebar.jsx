@@ -177,7 +177,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
     <>
       <div className="space-y-4 w-full lg:h-full">
         {/* 1. User Identity Card */}
-        <Card className="w-full py-4 rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
+        <Card className="w-full py-4 rounded-xl border-slate-300/60 shadow-sm bg-white overflow-hidden">
           <CardContent className="px-5">
             <div className="flex flex-col items-center text-center">
               <div className="relative mb-2">
@@ -232,7 +232,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
               {/* Status Details (If Banned/Suspended) */}
               {(p?.banDetails?.isBanned ||
                 p?.suspensionDetails?.isSuspended) && (
-                <div className="w-full mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
+                <div className="w-full mb-6 p-3.5 bg-slate-50 border border-slate-300/60 rounded-xl space-y-2.5">
                   <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <ShieldAlert className="w-3 h-3" />
                     Restriction Details
@@ -268,7 +268,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                 </div>
               )}
 
-              <div className="border-t border-slate-200 w-full mb-3" />
+              <div className="border-t border-slate-300/60 w-full mb-3" />
 
               <div className="w-full space-y-3 text-left">
                 <div className="flex flex-col">
@@ -310,14 +310,14 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
 
         <div className="space-y-4 lg:sticky lg:top-4">
           {/* 2. Report Breakdown */}
-          <Card className="w-full rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
+          <Card className="w-full rounded-xl border-slate-300/60 shadow-sm bg-white overflow-hidden">
             <CardContent className="px-5">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h3 className="text-[11px] font-bold text-muted-foreground/80 uppercase tracking-widest">
                     REPORT BREAKDOWN
                   </h3>
-                  <div className="border-t border-slate-200" />
+                  <div className="border-t border-slate-300/60" />
                 </div>
 
                 <div className="space-y-4">
@@ -371,14 +371,14 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
           </Card>
 
           {/* 3. Quick Actions */}
-          <Card className="w-full rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden">
+          <Card className="w-full rounded-xl border-slate-300/60 shadow-sm bg-white overflow-hidden">
             <CardContent className="px-4">
               <div className="space-y-4">
                 <div className="space-y-2">
                   <h3 className="text-[11px] font-bold text-muted-foreground/80 uppercase tracking-widest">
                     QUICK ACTIONS
                   </h3>
-                  <div className="border-t border-slate-200" />
+                  <div className="border-t border-slate-300/60" />
                 </div>
 
                 <div className="space-y-2">
@@ -394,7 +394,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                         },
                       )
                     }
-                    className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-brand-blue hover:bg-brand-hoverBlue transition-all text-left group shadow-none"
+                    className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-300/60 bg-white hover:border-brand-blue hover:bg-app-primary5 transition-all text-left group shadow-none"
                   >
                     <div className="w-7 h-7 shrink-0 flex items-center justify-center bg-slate-50 rounded-full transition-colors">
                       <LuUserRound className="w-4 h-4 text-slate-400 group-hover:text-brand-blue" />
@@ -407,7 +407,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                   {isBanned ? (
                     <Button
                       onClick={() => setIsUnbanConfirmOpen(true)}
-                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-emerald-100 hover:bg-emerald-50/50 transition-all text-left group shadow-none"
+                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-300/60 bg-white hover:border-emerald-100 hover:bg-emerald-50/50 transition-all text-left group shadow-none"
                     >
                       <div className="w-7 h-7 shrink-0 flex items-center justify-center bg-slate-50 rounded-full transition-colors">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -420,7 +420,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                     <Button
                       onClick={() => setIsUnsuspendDialogOpen(true)}
                       disabled={isUnsuspending}
-                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-emerald-100 hover:bg-emerald-50/50 transition-all text-left group shadow-none"
+                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-300/60 bg-white hover:border-emerald-100 hover:bg-emerald-50/50 transition-all text-left group shadow-none"
                     >
                       <div className="w-7 h-7 shrink-0 flex items-center justify-center bg-slate-50 rounded-full transition-colors">
                         {isUnsuspending ? (
@@ -436,7 +436,7 @@ export const ReviewSidebar = ({ p, onStatusChange }) => {
                   ) : pendingCount > 0 ? (
                     <Button
                       onClick={() => setIsConfirmBanOpen(true)}
-                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-200 bg-white hover:border-red-100 hover:bg-red-50/50 transition-all text-left group shadow-none"
+                      className="w-full flex items-center gap-1 p-3 py-2 rounded-lg border border-slate-300/60 bg-white hover:border-red-100 hover:bg-red-50/50 transition-all text-left group shadow-none"
                     >
                       <div className="w-7 h-7 shrink-0 flex items-center justify-center bg-slate-50 rounded-full transition-colors">
                         <Ban className="w-4 h-4 text-red-500" />

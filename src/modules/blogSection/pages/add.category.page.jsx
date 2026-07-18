@@ -128,7 +128,7 @@ const AddCategoryPage = () => {
           <PageHeader
             heading={isEdit ? "Edit Category" : "Add Category"}
             icon={<Layers className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading={
               isEdit
                 ? "Update existing blog category."
@@ -138,7 +138,7 @@ const AddCategoryPage = () => {
         </Header>
 
         {/* Main Form Card */}
-        <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -153,7 +153,7 @@ const AddCategoryPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -169,7 +169,7 @@ const AddCategoryPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 maxLength={500}
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
                 required
               />
               <div className="text-xs text-slate-500 font-medium">
@@ -200,7 +200,7 @@ const AddCategoryPage = () => {
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
                     ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -234,7 +234,7 @@ const AddCategoryPage = () => {
                 onValueChange={handleStatusChange}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -249,7 +249,7 @@ const AddCategoryPage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -257,7 +257,7 @@ const AddCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>

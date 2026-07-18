@@ -65,7 +65,7 @@ export default function PlatformMixChart({ platformData, isPlatformMixEmpty }) {
               const combined = [...normalized, ...others];
               const total = combined.reduce(
                 (acc, curr) => acc + (curr.value || 0),
-                0
+                0,
               );
 
               return combined.map((platform, idx) => {
@@ -84,7 +84,7 @@ export default function PlatformMixChart({ platformData, isPlatformMixEmpty }) {
                 return (
                   <div
                     key={idx}
-                    className="p-[16px] rounded-[12px] border border-slate-200 bg-white transition-colors"
+                    className="p-[16px] rounded-[12px] border border-slate-300/60 bg-white transition-colors"
                   >
                     <div className="flex items-center justify-between mb-[12px]">
                       <div className="flex items-center gap-[12px]">
@@ -94,8 +94,8 @@ export default function PlatformMixChart({ platformData, isPlatformMixEmpty }) {
                             isAndroid
                               ? "bg-emerald-100/60 border-emerald-200 text-emerald-600"
                               : isIOS
-                                ? "bg-slate-100/60 border-slate-200 text-slate-800"
-                                : "bg-purple-100/60 border-purple-200 text-purple-800"
+                                ? "bg-slate-100/60 border-slate-300/60 text-slate-800"
+                                : "bg-purple-100/60 border-purple-200 text-purple-800",
                           )}
                         >
                           {isAndroid ? (
@@ -137,10 +137,13 @@ export default function PlatformMixChart({ platformData, isPlatformMixEmpty }) {
                         className={cn(
                           "h-full rounded-[6px]",
                           isAndroid
-                            ? "bg-emerald-500"
+                            // ? "bg-emerald-500"
+                            ? "bg-app-cardGreen"
                             : isIOS
-                              ? "bg-slate-800"
-                              : "bg-purple-500"
+                              // ? "bg-slate-800"
+                              ? "bg-app-darkGrey"
+                              // : "bg-purple-500",
+                              : "bg-app-primary2"
                         )}
                       />
                     </div>

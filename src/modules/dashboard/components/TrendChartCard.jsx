@@ -42,8 +42,8 @@ const TrendChartCard = ({
   const hasData = data.length > 0;
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="pt-5 pb-4 px-6 border-b border-slate-200">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title={title}
           subtitle={subtitle}
@@ -57,7 +57,10 @@ const TrendChartCard = ({
       <div className="flex-1 flex flex-col px-4 py-4">
         {hasData ? (
           <ChartContainer config={chartConfig} className={`w-full ${height}`}>
-            <ComposedChart data={data} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
+            <ComposedChart
+              data={data}
+              margin={{ top: 8, right: 12, left: -12, bottom: 0 }}
+            >
               <CartesianGrid vertical={false} stroke="hsl(215, 20%, 92%)" />
               <XAxis
                 dataKey={xKey}
@@ -71,11 +74,22 @@ const TrendChartCard = ({
                 tickLine={false}
                 width={36}
               />
-              <ChartTooltip content={<ChartTooltipContent className="bg-white" />} cursor={{ fill: "hsl(215, 20%, 96%)" }} />
-              {series.length > 1 && <ChartLegend content={<ChartLegendContent />} />}
+              <ChartTooltip
+                content={<ChartTooltipContent className="bg-white" />}
+                cursor={{ fill: "hsl(215, 20%, 96%)" }}
+              />
+              {series.length > 1 && (
+                <ChartLegend content={<ChartLegendContent />} />
+              )}
               {series.map((s) =>
                 s.type === "bar" ? (
-                  <Bar key={s.key} dataKey={s.key} fill={s.color} radius={[4, 4, 0, 0]} maxBarSize={36} />
+                  <Bar
+                    key={s.key}
+                    dataKey={s.key}
+                    fill={s.color}
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={36}
+                  />
                 ) : (
                   <Line
                     key={s.key}
@@ -91,7 +105,9 @@ const TrendChartCard = ({
             </ComposedChart>
           </ChartContainer>
         ) : (
-          <div className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium`}>
+          <div
+            className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium`}
+          >
             No data for this period.
           </div>
         )}

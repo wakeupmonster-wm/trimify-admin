@@ -53,7 +53,7 @@ export const RenderField = ({
                 <FormControl>
                   <SelectTrigger
                     className={cn(
-                      "border border-slate-300 text-gray-800 h-11 focus:ring-brand-blue rounded-md transition-all bg-white",
+                      "border border-slate-300/60 text-gray-800 h-11 focus:ring-brand-blue rounded-md transition-all bg-white",
                       Icon && "pl-11",
                     )}
                   >
@@ -62,7 +62,7 @@ export const RenderField = ({
                     />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent className="bg-white border-slate-300 text-slate-800">
+                <SelectContent className="bg-white border-slate-300/60 text-slate-800">
                   {options?.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
@@ -76,7 +76,7 @@ export const RenderField = ({
                   {...field}
                   placeholder={placeholder}
                   className={cn(
-                    "border border-slate-300 text-gray-800 min-h-[120px] focus-visible:ring-brand-blue rounded-md transition-all bg-white",
+                    "border border-slate-300/60 text-gray-800 min-h-[120px] focus-visible:ring-brand-blue rounded-md transition-all bg-white",
                     Icon && "pl-11",
                   )}
                 />
@@ -88,7 +88,7 @@ export const RenderField = ({
                   type={type}
                   placeholder={placeholder}
                   className={cn(
-                    "border border-slate-300 text-slate-800 h-10 focus-visible:ring-brand-blue rounded-md transition-all bg-[#f9fafb] shadow-none",
+                    "border border-slate-300/60 text-slate-800 h-10 focus-visible:ring-brand-blue rounded-md transition-all bg-[#f9fafb] shadow-none",
                     Icon && "pl-11",
                   )}
                 />

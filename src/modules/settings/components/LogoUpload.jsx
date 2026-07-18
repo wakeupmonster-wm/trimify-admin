@@ -53,7 +53,6 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
     }
   };
 
-
   // Step 1: Just open the modal
   const handleRemoveClick = (e) => {
     e.stopPropagation();
@@ -84,7 +83,7 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
         className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
           isDragging
             ? "border-brand-blue bg-blue-50"
-            : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+            : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

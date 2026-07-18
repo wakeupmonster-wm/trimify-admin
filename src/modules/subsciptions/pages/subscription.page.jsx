@@ -204,7 +204,7 @@ export default function SubscriptionPage() {
             heading="Subscription Analytics"
             subheading="Unified intelligence for products, revenue, and subscribers."
             icon={<CreditCard className="w-10 h-10 text-white" />}
-            color="bg-brand-blue shadow-indigo-100"
+            color="bg-app-primary2 shadow-indigo-100"
           />
           <Button
             variant="ghost"
@@ -260,7 +260,7 @@ export default function SubscriptionPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Trend */}
-          <Card className="lg:col-span-2 rounded-xl border-slate-200 transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden group">
+          <Card className="lg:col-span-2 rounded-xl border-slate-300/60 transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden group">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-1">
                 <CardTitle className="text-base font-black flex items-center gap-2">
@@ -274,7 +274,7 @@ export default function SubscriptionPage() {
 
               <div className="flex items-center">
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-hoverBlue border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-app-primary5 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -384,7 +384,7 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Platform Distribution */}
-          <Card className="rounded-xl border-slate-200 transition-all duration-500 shadow-sm bg-white overflow-hidden group">
+          <Card className="rounded-xl border-slate-300/60 transition-all duration-500 shadow-sm bg-white overflow-hidden group">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-1">
                 <CardTitle className="text-base font-black flex items-center gap-2">
@@ -431,7 +431,7 @@ export default function SubscriptionPage() {
                                 isAndroid
                                   ? "bg-emerald-100/60 border-emerald-200 text-emerald-600"
                                   : isIOS
-                                    ? "bg-slate-100/60 border-slate-200 text-slate-800"
+                                    ? "bg-slate-100/60 border-slate-300/60 text-slate-800"
                                     : isAdmin
                                       ? "bg-purple-100/60 border-purple-200 text-purple-800"
                                       : "bg-blue-100/60 border-blue-200 text-blue-800",
@@ -486,7 +486,7 @@ export default function SubscriptionPage() {
         {/* Section 4: Alerts & Milestone Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Expiring Soon Alert */}
-          <Card className="rounded-xl border-slate-200 transition-all duration-300 shadow-sm bg-white overflow-hidden">
+          <Card className="rounded-xl border-slate-300/60 transition-all duration-300 shadow-sm bg-white overflow-hidden">
             <CardHeader className="pb-4">
               <CardTitle className="text-base font-black flex items-center gap-2">
                 <AlertTriangle className="w-6 h-6 text-amber-500" />
@@ -520,7 +520,7 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Milestone Progress */}
-          <Card className="rounded-XL border-slate-200 transition-all duration-300 shadow-sm bg-slate-50 overflow-hidden">
+          <Card className="rounded-XL border-slate-300/60 transition-all duration-300 shadow-sm bg-slate-50 overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -538,7 +538,7 @@ export default function SubscriptionPage() {
                       "text-[10px] font-black uppercase tracking-widest border px-3 py-1 rounded-full",
                       milestone.isActive
                         ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                        : "bg-slate-50 text-slate-400 border-slate-200",
+                        : "bg-slate-50 text-slate-400 border-slate-300/60",
                     )}
                   >
                     {milestone.isActive ? "Active" : "Inactive"}
@@ -647,7 +647,7 @@ export default function SubscriptionPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.08 }}
                         className={cn(
-                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-brand-hoverBlue",
+                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-app-primary5",
                           idx % 2 === 0 ? "bg-slate-50/60" : "bg-transparent",
                         )}
                       >
@@ -679,14 +679,14 @@ export default function SubscriptionPage() {
                                 ease: "easeOut",
                                 delay: idx * 0.1,
                               }}
-                              className="h-full rounded-full bg-brand-blue"
+                              className="h-full rounded-full bg-app-primary2"
                             />
                           </div>
                         </div>
 
                         {/* Market Share */}
                         <div className="text-right">
-                          <Badge className="bg-brand-blue text-brand-blue border-brand-blue font-black text-[9px] px-2 py-0 h-5 rounded-md">
+                          <Badge className="bg-app-primary2 text-brand-blue border-brand-blue font-black text-[9px] px-2 py-0 h-5 rounded-md">
                             {marketShare.toFixed(1)}%
                           </Badge>
                         </div>

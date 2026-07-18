@@ -42,7 +42,7 @@ export default function SectionCards({ stats, loading, error }) {
         {[...Array(8)].map((_, i) => (
           <Card
             key={i}
-            className="animate-pulse min-h-[145px] rounded-2xl p-5 border-slate-200/60 bg-white"
+            className="animate-pulse min-h-[145px] rounded-2xl p-5 border-slate-300/60/60 bg-white"
           >
             <div className="flex justify-between items-start mb-4">
               <div className="h-4 w-24 rounded bg-slate-100"></div>
@@ -155,7 +155,7 @@ export default function SectionCards({ stats, loading, error }) {
           <motion.div key={i} variants={cardVariants} className="h-full">
             <Card
               className={cn(
-                "group relative overflow-hidden bg-slate-50 rounded-[12px] border border-slate-200 shadow-md hover:shadow-lg transition-all duration-200 p-4 flex flex-col cursor-pointer gap-2",
+                "group relative overflow-hidden bg-slate-50 rounded-[12px] border border-slate-300/60 shadow-md hover:shadow-lg transition-all duration-200 p-4 flex flex-col cursor-pointer gap-2",
                 card.pulse &&
                   "border-rose-300 shadow-rose-100 ring-1 ring-rose-500/20",
               )}

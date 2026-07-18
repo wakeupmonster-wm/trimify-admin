@@ -352,7 +352,7 @@ export default function TransactionsPage() {
                     className="w-9 h-9 text-white"
                   />
                 }
-                color="bg-brand-blue"
+                color="bg-app-primary2"
                 subheading="Revenue tracking, transaction history & export."
               />
             </div>
@@ -366,7 +366,7 @@ export default function TransactionsPage() {
                   fetchTransactions();
                 }}
                 disabled={loading}
-                className="h-9 flex-1 md:flex-none border-slate-200 bg-slate-50 hover:bg-brand-hoverBlue shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary5 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
@@ -379,7 +379,7 @@ export default function TransactionsPage() {
                 size="sm"
                 onClick={handleExport}
                 disabled={exportLoading}
-                className="h-9 flex-1 md:flex-none border-slate-200 bg-slate-50 hover:bg-brand-hoverBlue shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary5 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 {exportLoading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
@@ -423,7 +423,7 @@ export default function TransactionsPage() {
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   placeholder="Search by email."
-                  className="pl-10 pr-10 bg-slate-50/50 border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-none outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-blue focus-visible:border-brand-blue rounded-md w-full transition-all"
+                  className="pl-10 pr-10 bg-slate-50/50 border-slate-300/60/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-none outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-blue focus-visible:border-brand-blue rounded-md w-full transition-all"
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value);
@@ -453,7 +453,7 @@ export default function TransactionsPage() {
                       type="button"
                       variant="outline"
                       className={cn(
-                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
+                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
                         eventTypeFilter && "border-brand-blue text-brand-blue",
                       )}
                     >
@@ -504,7 +504,7 @@ export default function TransactionsPage() {
                       type="button"
                       variant="outline"
                       className={cn(
-                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
+                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
                         itemTypeFilter && "border-brand-blue text-brand-blue",
                       )}
                     >
@@ -553,7 +553,7 @@ export default function TransactionsPage() {
                       type="button"
                       variant="outline"
                       className={cn(
-                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
+                        "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
                         platformFilter && "border-brand-blue text-brand-blue",
                       )}
                     >
@@ -595,7 +595,7 @@ export default function TransactionsPage() {
                 </DropdownMenu>
 
                 {/* 3. COUNT INDICATOR */}
-                <div className="pl-2 pr-1 border-l border-slate-200 ml-1.5 flex items-center gap-1.5">
+                <div className="pl-2 pr-1 border-l border-slate-300/60 ml-1.5 flex items-center gap-1.5">
                   <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
                     {pagination.totalItems || 0}
                   </span>
@@ -619,7 +619,7 @@ export default function TransactionsPage() {
                     {eventTypeFilter && (
                       <Badge
                         variant="outline"
-                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
                       >
                         <span className="text-[10px] font-bold uppercase opacity-50">
                           Type:
@@ -640,7 +640,7 @@ export default function TransactionsPage() {
                     {itemTypeFilter && (
                       <Badge
                         variant="outline"
-                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
                       >
                         <span className="text-[10px] font-bold uppercase opacity-50">
                           Item Type:
@@ -660,7 +660,7 @@ export default function TransactionsPage() {
                     {platformFilter && (
                       <Badge
                         variant="outline"
-                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+                        className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
                       >
                         <span className="text-[10px] font-bold uppercase opacity-50">
                           Platform:
@@ -693,7 +693,7 @@ export default function TransactionsPage() {
         </div>
 
         {/* ─── DATA TABLE ─── */}
-        <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="relative rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
           <div
             className={cn(
               "overflow-x-auto relative",
@@ -715,7 +715,7 @@ export default function TransactionsPage() {
             {/* Table content is always rendered to show headers, but rows vary based on state */}
             <Table>
               <TableHeader className="bg-slate-50/50">
-                <TableRow className="hover:bg-transparent border-b border-slate-200">
+                <TableRow className="hover:bg-transparent border-b border-slate-300/60">
                   <TableHead className="text-foreground/80 uppercase px-4 font-bold h-10 bg-slate-100/50 text-[10px] text-center whitespace-nowrap">
                     Sr.No.
                   </TableHead>
@@ -774,7 +774,7 @@ export default function TransactionsPage() {
                   transactions.map((txn, index) => {
                     const eventConfig = EVENT_TYPE_MAP[txn.eventType] || {
                       label: txn.eventType,
-                      color: "bg-slate-100 text-slate-600 border-slate-200",
+                      color: "bg-slate-100 text-slate-600 border-slate-300/60",
                     };
                     const status =
                       txn.status ||
@@ -792,7 +792,7 @@ export default function TransactionsPage() {
                       <TableRow
                         key={txn._id}
                         className={cn(
-                          "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-200/80 group cursor-pointer",
+                          "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/80 group cursor-pointer",
                           loading && "opacity-50 pointer-events-none",
                         )}
                         onClick={() =>
@@ -890,12 +890,12 @@ export default function TransactionsPage() {
                             const platform = txn.platform?.toLowerCase();
                             let icon = <PiDevicesDuotone className="size-4" />;
                             let style =
-                              "text-slate-600 border-slate-200 bg-slate-50";
+                              "text-slate-600 border-slate-300/60 bg-slate-50";
 
                             if (platform === "ios") {
                               icon = <AiFillApple className="size-3.5" />;
                               style =
-                                "text-slate-900 border-slate-200 bg-slate-100";
+                                "text-slate-900 border-slate-300/60 bg-slate-100";
                             } else if (platform === "android") {
                               icon = <AiFillAndroid className="size-3.5" />;
                               style =
@@ -906,7 +906,7 @@ export default function TransactionsPage() {
                             ) {
                               icon = <FaUserTie className="size-3.5" />;
                               style =
-                                "text-brand-blue border-brand-blue bg-brand-blue";
+                                "text-brand-blue border-brand-blue bg-app-primary2";
                             }
 
                             return (
@@ -955,7 +955,7 @@ export default function TransactionsPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                               align="end"
-                              className="w-44 p-2 shadow-sm rounded-2xl border-slate-200"
+                              className="w-44 p-2 shadow-sm rounded-2xl border-slate-300/60"
                             >
                               <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase px-2 py-1.5 tracking-widest">
                                 Actions
@@ -970,7 +970,7 @@ export default function TransactionsPage() {
                                     },
                                   )
                                 }
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-brand-hoverBlue hover:text-brand-blue transition-colors"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-app-primary5 hover:text-brand-blue transition-colors"
                               >
                                 <Eye size={16} />
                                 <span>View Transaction</span>
@@ -998,7 +998,7 @@ export default function TransactionsPage() {
               </TableBody>
             </Table>
             {/* ─── PAGINATION ─── */}
-            <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-200 gap-6 sm:flex-row sm:gap-4">
+            <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
               {/* Left Side: Showing results count */}
               <div className="text-xs font-medium text-slate-400 order-1 text-center sm:text-left">
                 Showing{" "}
@@ -1023,11 +1023,11 @@ export default function TransactionsPage() {
                   >
                     <SelectTrigger
                       type="button"
-                      className="h-8 w-[65px] border-slate-200 rounded-md bg-white text-xs font-semibold focus:ring-0"
+                      className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0"
                     >
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                    <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                       {[10, 20, 50].map((size) => (
                         <SelectItem
                           key={size}
@@ -1047,7 +1047,7 @@ export default function TransactionsPage() {
                     type="button"
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                    className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={pagination.currentPage <= 1}
                   >
@@ -1108,8 +1108,8 @@ export default function TransactionsPage() {
                             className={cn(
                               "h-8 w-8 text-xs font-bold rounded-md transition-all",
                               isActive
-                                ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
-                                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
+                                ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                                : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                             )}
                           >
                             {p}
@@ -1124,7 +1124,7 @@ export default function TransactionsPage() {
                     type="button"
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                    className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
                     onClick={() => setPage((p) => p + 1)}
                     disabled={pagination.currentPage >= pagination.totalPages}
                   >
@@ -1153,11 +1153,11 @@ export default function TransactionsPage() {
                   }
                 `}
               </style>
-              <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] w-80 relative group">
+              <div className="bg-white border border-slate-300/60 p-6 rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] w-80 relative group">
                 {/* Close Button */}
                 <button
                   onClick={() => dispatch(setExportProgress(0))}
-                  className="absolute -top-2 -right-1 h-6 w-6 bg-white border border-slate-200 rounded-full flex items-center justify-center shadow-md hover:bg-slate-50 transition-all z-[101] text-slate-400 hover:text-slate-600 hover:scale-110 active:scale-95"
+                  className="absolute -top-2 -right-1 h-6 w-6 bg-white border border-slate-300/60 rounded-full flex items-center justify-center shadow-md hover:bg-slate-50 transition-all z-[101] text-slate-400 hover:text-slate-600 hover:scale-110 active:scale-95"
                 >
                   <X size={14} strokeWidth={2} />
                 </button>
@@ -1169,7 +1169,7 @@ export default function TransactionsPage() {
                         "h-11 w-11 rounded-2xl flex items-center justify-center border shadow-sm transition-all duration-500",
                         exportProgress === 100
                           ? "bg-emerald-50 border-emerald-100 shadow-emerald-100/50"
-                          : "bg-brand-blue border-brand-blue",
+                          : "bg-app-primary2 border-brand-blue",
                       )}
                     >
                       {exportProgress === 100 ? (
@@ -1202,7 +1202,7 @@ export default function TransactionsPage() {
                       "px-3 py-1.5 rounded-xl border transition-colors duration-500",
                       exportProgress === 100
                         ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                        : "bg-brand-blue border-brand-blue text-brand-blue",
+                        : "bg-app-primary2 border-brand-blue text-brand-blue",
                     )}
                   >
                     <span className="font-mono text-base font-bold tracking-tighter">
@@ -1212,7 +1212,7 @@ export default function TransactionsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/60 relative">
+                  <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-300/60/60 relative">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${exportProgress}%` }}
@@ -1225,7 +1225,7 @@ export default function TransactionsPage() {
                         "h-full relative rounded-full transition-colors duration-500",
                         exportProgress === 100
                           ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
-                          : "bg-brand-blue shadow-[0_0_10px_rgba(34,211,238,0.3)]",
+                          : "bg-app-primary2 shadow-[0_0_10px_rgba(34,211,238,0.3)]",
                       )}
                     >
                       {/* Active Shimmer Effect */}
@@ -1244,7 +1244,7 @@ export default function TransactionsPage() {
                   <div className="flex items-center justify-between text-[11px] px-1">
                     <div className="flex items-center gap-1.5">
                       {exportProgress < 100 && (
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand-blue animate-pulse" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-app-primary2 animate-pulse" />
                       )}
                       <span className="text-slate-600 font-semibold tracking-tight">
                         {exportProgress === 100

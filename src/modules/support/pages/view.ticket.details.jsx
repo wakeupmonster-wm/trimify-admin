@@ -65,7 +65,7 @@ const STATUS_CONFIG = {
     icon: CheckCircle2,
   },
   closed: {
-    color: "bg-slate-50 text-slate-700 border-slate-200",
+    color: "bg-slate-50 text-slate-700 border-slate-300/60",
     icon: AlertCircle,
   },
 };
@@ -91,7 +91,7 @@ const STATUS_BANNER_CONFIG = {
   },
   closed: {
     bg: "bg-slate-50",
-    border: "border-slate-200",
+    border: "border-slate-300/60",
     text: "text-slate-800",
     subText: "text-slate-700",
     icon: AlertCircle,
@@ -213,7 +213,7 @@ export default function ViewTicketDetails() {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/management/support"
-              className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
+              className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-300/60 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
             >
               <ChevronLeft className="w-5 h-5" />
             </Link>
@@ -260,10 +260,10 @@ export default function ViewTicketDetails() {
               )}
 
               {/* MERGED MAIN CONTENT CARD (Message + Reply) */}
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-300/60 overflow-hidden">
                 {/* User Message Section */}
                 <div className="py-5">
-                  <div className="flex items-center justify-between px-6 pb-4 mb-5 border-b border-slate-200">
+                  <div className="flex items-center justify-between px-6 pb-4 mb-5 border-b border-slate-300/60">
                     <div>
                       <h1 className="text-lg font-bold text-foreground tracking-normal">
                         {ticket.subject || "Fraudulent Behavior Reported"}
@@ -285,8 +285,8 @@ export default function ViewTicketDetails() {
                   </div>
 
                   <div className="px-6 mb-5">
-                    <div className="flex items-center gap-3 pb-5 border-b border-slate-200">
-                      <div className="w-12 h-12 rounded-full border border-slate-200 overflow-hidden shadow-sm">
+                    <div className="flex items-center gap-3 pb-5 border-b border-slate-300/60">
+                      <div className="w-12 h-12 rounded-full border border-slate-300/60 overflow-hidden shadow-sm">
                         <img
                           src={avatar}
                           alt={user.nickname}
@@ -322,7 +322,7 @@ export default function ViewTicketDetails() {
                       {ticket.attachments.map((file, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors"
+                          className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-300/60 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors"
                         >
                           <Tag className="w-3.5 h-3.5 text-slate-400" />
                           <span className="text-xs font-bold text-slate-600">
@@ -424,7 +424,7 @@ export default function ViewTicketDetails() {
                           onChange={setReply}
                           placeholder="Write your email response here..."
                           isExpanded={isExpanded}
-                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-200 shadow-sm focus-within:ring-1 focus-within:ring-brand-blue transition-all duration-300`}
+                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-300/60 shadow-sm focus-within:ring-1 focus-within:ring-brand-blue transition-all duration-300`}
                         />
 
                         {attachments.length > 0 && (
@@ -437,7 +437,7 @@ export default function ViewTicketDetails() {
                                   <button
                                     type="button"
                                     onClick={() => setZoomImage(preview.url)}
-                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-200 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
+                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-300/60 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
                                     title={file.name}
                                   >
                                     <img
@@ -466,7 +466,7 @@ export default function ViewTicketDetails() {
                                 /* Non-image file chip */
                                 <div
                                   key={idx}
-                                  className="flex items-center gap-2 px-2 py-1.5 bg-slate-100 border border-slate-200 rounded-md group"
+                                  className="flex items-center gap-2 px-2 py-1.5 bg-slate-100 border border-slate-300/60 rounded-md group"
                                 >
                                   <FileText className="w-3 h-3 text-slate-500 shrink-0" />
                                   <span className="text-[10px] font-bold text-slate-600 max-w-[100px] truncate">
@@ -537,10 +537,10 @@ export default function ViewTicketDetails() {
                             onValueChange={setStatus}
                             disabled={loading || !reply.trim()}
                           >
-                            <SelectTrigger className="h-10 w-[160px] text-xs font-bold bg-white rounded-lg border-slate-200 disabled:opacity-95 disabled:cursor-not-allowed shadow-sm">
+                            <SelectTrigger className="h-10 w-[160px] text-xs font-bold bg-white rounded-lg border-slate-300/60 disabled:opacity-95 disabled:cursor-not-allowed shadow-sm">
                               <SelectValue placeholder="Mark as..." />
                             </SelectTrigger>
-                            <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                            <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                               <SelectItem
                                 value="open"
                                 className="text-xs font-bold"
@@ -571,7 +571,7 @@ export default function ViewTicketDetails() {
                           <Button
                             type="submit"
                             disabled={loading || !reply.trim()}
-                            className="bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
+                            className="bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
                           >
                             {loading ? (
                               <Loader2 className="animate-spin w-4 h-4" />
@@ -583,8 +583,8 @@ export default function ViewTicketDetails() {
                       </div>
                     </form>
                   ) : (
-                    <div className="p-6 bg-slate-50/50 border-t border-slate-200">
-                      <div className="bg-white border border-slate-200 rounded-lg p-4 min-h-[140px] flex items-center justify-center text-center">
+                    <div className="p-6 bg-slate-50/50 border-t border-slate-300/60">
+                      <div className="bg-white border border-slate-300/60 rounded-lg p-4 min-h-[140px] flex items-center justify-center text-center">
                         <p className="text-sm font-medium text-slate-300">
                           Ticket is closed. Re-open ticket to send another
                           email...
@@ -600,10 +600,10 @@ export default function ViewTicketDetails() {
                             ticket.status === "closed"
                           }
                         >
-                          <SelectTrigger className="h-10 w-[180px] text-xs font-bold bg-white rounded-lg border-slate-300 shadow-none outline-none focus:ring-0">
+                          <SelectTrigger className="h-10 w-[180px] text-xs font-bold bg-white rounded-lg border-slate-300/60 shadow-none outline-none focus:ring-0">
                             <SelectValue placeholder="Re-open Ticket" />
                           </SelectTrigger>
-                          <SelectContent className="rounded-lg border-slate-200 shadow-xl">
+                          <SelectContent className="rounded-lg border-slate-300/60 shadow-xl">
                             <SelectItem
                               value="open"
                               className="text-xs font-bold"
@@ -647,10 +647,10 @@ export default function ViewTicketDetails() {
             {/* 3. SIDEBAR (RIGHT) */}
             <aside className="lg:col-span-3 space-y-4">
               {/* User Profile Card */}
-              <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 text-center overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-blue rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
+              <div className="bg-white rounded-xl border border-slate-300/60/80 shadow-sm p-6 text-center overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-app-primary2 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" />
 
-                <div className="border-b border-slate-200 pb-3.5 mb-5">
+                <div className="border-b border-slate-300/60 pb-3.5 mb-5">
                   <div className="w-20 h-20 mx-auto mb-2 rounded-full border-2 border-white shadow-sm overflow-hidden relative">
                     <img
                       src={avatar}
@@ -692,8 +692,8 @@ export default function ViewTicketDetails() {
               </div>
 
               {/* Ticket Details Card */}
-              <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest pb-3 mb-4 border-b border-slate-200 flex items-center gap-2">
+              <div className="bg-white rounded-xl border border-slate-300/60/80 shadow-sm p-6">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest pb-3 mb-4 border-b border-slate-300/60 flex items-center gap-2">
                   <Info className="w-3 h-3" />
                   Ticket Details
                 </h3>
@@ -726,8 +726,8 @@ export default function ViewTicketDetails() {
               </div>
 
               {/* Quick Actions Card */}
-              <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest pb-3 mb-4 border-b border-slate-200">
+              <div className="bg-white rounded-xl border border-slate-300/60/80 shadow-sm p-6">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest pb-3 mb-4 border-b border-slate-300/60">
                   Quick Actions
                 </h3>
                 <div className="space-y-2">
@@ -746,7 +746,7 @@ export default function ViewTicketDetails() {
                         },
                       )
                     }
-                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-brand-hoverBlue hover:text-brand-blue hover:border-brand-blue rounded-md transition-all group"
+                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-brand-blue hover:border-brand-blue rounded-md transition-all group"
                   >
                     <User className="w-4 h-4 text-slate-400 group-hover:text-brand-blue transition-colors" />
                     View User Profile
@@ -792,7 +792,7 @@ export default function ViewTicketDetails() {
             <button
               type="button"
               onClick={() => setZoomImage(null)}
-              className="absolute -top-3 -right-3 w-8 h-8 bg-white text-slate-700 hover:text-red-500 rounded-full flex items-center justify-center shadow-lg border border-slate-200 transition-colors"
+              className="absolute -top-3 -right-3 w-8 h-8 bg-white text-slate-700 hover:text-red-500 rounded-full flex items-center justify-center shadow-lg border border-slate-300/60 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

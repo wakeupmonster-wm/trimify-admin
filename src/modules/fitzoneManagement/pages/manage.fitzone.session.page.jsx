@@ -84,12 +84,12 @@ const ManageFitzoneSessionPage = () => {
           <PageHeader
             heading="Session Management"
             icon={<Video className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="Manage workout sessions and videos."
           />
           <Button
             onClick={openAddModal}
-            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
+            className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Session

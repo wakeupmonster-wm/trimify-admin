@@ -141,7 +141,7 @@ export function DataTable({
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-xl border-slate-200 bg-white"
+              className="h-8 w-8 rounded-xl border-slate-300/60 bg-white"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage() || loading}
             >
@@ -150,7 +150,7 @@ export function DataTable({
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 rounded-xl border-slate-200 bg-white"
+              className="h-8 w-8 rounded-xl border-slate-300/60 bg-white"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage() || loading}
             >

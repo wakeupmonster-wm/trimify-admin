@@ -9,7 +9,7 @@ export default function BestSellingProductsList({
 }) {
   return (
     <div className="bg-white border border-[#E5E7EB] rounded-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden h-[440px] flex flex-col">
-      <div className="px-5 py-4 border-b border-slate-200 flex items-center gap-[10px]">
+      <div className="px-5 py-4 border-b border-slate-300/60 flex items-center gap-[10px]">
         <DashboardHead
           title="Top Selling Products"
           subtitle="Highest performing packages"
@@ -29,26 +29,48 @@ export default function BestSellingProductsList({
         ) : (
           <div className="flex flex-col gap-[10px]">
             {(bestSellingProducts || []).map((product, idx) => {
+              // const styleMap = [
+              //   {
+              //     bg: "linear-gradient(135deg, #14B8A6, #0D9488)",
+              //     text: "white",
+              //     pctCol: "text-[#14B8A6]",
+              //   },
+              //   {
+              //     bg: "#EFF6FF",
+              //     text: "#3B82F6",
+              //     pctCol: "text-[#3B82F6]",
+              //   },
+              //   {
+              //     bg: "#FFF7ED",
+              //     text: "#F97316",
+              //     pctCol: "text-[#F97316]",
+              //   },
+              //   {
+              //     bg: "#F5F3FF",
+              //     text: "#8B5CF6",
+              //     pctCol: "text-[#8B5CF6]",
+              //   },
+              // ];
               const styleMap = [
                 {
-                  bg: "linear-gradient(135deg, #14B8A6, #0D9488)",
+                  bg: "linear-gradient(135deg, #007FC0, #04365F)",
                   text: "white",
-                  pctCol: "text-[#14B8A6]",
+                  pctCol: "text-[#007FC0]",
                 },
                 {
-                  bg: "#EFF6FF",
-                  text: "#3B82F6",
-                  pctCol: "text-[#3B82F6]",
+                  bg: "#E7F7F4",
+                  text: "#15B097",
+                  pctCol: "text-[#15B097]",
                 },
                 {
-                  bg: "#FFF7ED",
-                  text: "#F97316",
-                  pctCol: "text-[#F97316]",
+                  bg: "#FCEFE5",
+                  text: "#DC6B1B",
+                  pctCol: "text-[#DC6B1B]",
                 },
                 {
-                  bg: "#F5F3FF",
-                  text: "#8B5CF6",
-                  pctCol: "text-[#8B5CF6]",
+                  bg: "#FDF5EB",
+                  text: "#EDA145",
+                  pctCol: "text-[#EDA145]",
                 },
               ];
               const style = styleMap[idx % styleMap.length];
@@ -56,15 +78,16 @@ export default function BestSellingProductsList({
               const pct =
                 bestSellingProductsTotalRevenue > 0
                   ? (
-                    ((product.revenue || 0) / bestSellingProductsTotalRevenue) *
-                    100
-                  ).toFixed(1)
+                      ((product.revenue || 0) /
+                        bestSellingProductsTotalRevenue) *
+                      100
+                    ).toFixed(1)
                   : "0.0";
 
               return (
                 <div
                   key={idx}
-                  className="flex items-center gap-[14px] p-[14px] rounded-[12px] border border-slate-200 bg-white transition-all duration-200 hover:border-[#14B8A6]"
+                  className="flex items-center gap-[14px] p-[14px] rounded-[12px] border border-slate-300/60 bg-white transition-all duration-200 hover:border-[#14B8A6]"
                 >
                   <div
                     className="w-[32px] h-[32px] rounded-[10px] flex items-center justify-center text-[13px] font-extrabold shrink-0"
@@ -76,16 +99,14 @@ export default function BestSellingProductsList({
                     <p className="text-[13px] font-bold text-[#1F2937] truncate">
                       {product.displayName
                         ? String(product.displayName)
-                          .split(".")
-                          .pop()
-                          .replace(/_/g, " ")
+                            .split(".")
+                            .pop()
+                            .replace(/_/g, " ")
                         : "Unknown Product"}
                     </p>
                     <p className="text-[11px] font-medium text-[#9CA3AF] mt-[2px]">
                       {product.salesCount} sales{" "}
-                      {product.productType
-                        ? `${product.productType}`
-                        : ""}
+                      {product.productType ? `${product.productType}` : ""}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
@@ -96,9 +117,7 @@ export default function BestSellingProductsList({
                           : `$${product.revenue}`
                         : "—"}
                     </p>
-                    <p
-                      className={`text-[10px] font-semibold ${style.pctCol}`}
-                    >
+                    <p className={`text-[10px] font-semibold ${style.pctCol}`}>
                       {pct}%
                     </p>
                   </div>

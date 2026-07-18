@@ -62,10 +62,9 @@ const AddFitzonePage = () => {
   };
 
   const handleSubmit = async (e) => {
-  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const payload = new FormData();
     payload.append("title", formData.title);
     payload.append("description", formData.description);
@@ -74,10 +73,12 @@ const AddFitzonePage = () => {
     if (formData.bannerImage) {
       payload.append("image", formData.bannerImage);
     }
-    
+
     try {
       if (isEditMode) {
-        await dispatch(updateFitzone({ id: editData.id, data: payload })).unwrap();
+        await dispatch(
+          updateFitzone({ id: editData.id, data: payload }),
+        ).unwrap();
         toast.success("Fitzone updated successfully");
       } else {
         await dispatch(addFitzone(payload)).unwrap();
@@ -99,7 +100,7 @@ const AddFitzonePage = () => {
             <PageHeader
               heading={isEditMode ? "Edit Fitzone" : "Add Fitzone"}
               icon={<Activity className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-blue-200"
+              color="bg-app-primary2 shadow-blue-200"
               subheading={
                 isEditMode
                   ? "Update the details of the fitzone."
@@ -109,7 +110,7 @@ const AddFitzonePage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -126,7 +127,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
                     required
                   />
                 </div>
@@ -140,7 +141,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Workout Heading"
                     value={formData.workoutHeading}
                     onChange={handleChange}
-                    className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
                     required
                   />
                 </div>
@@ -156,7 +157,7 @@ const AddFitzonePage = () => {
                   placeholder="Enter Workout Description"
                   value={formData.workoutDescription}
                   onChange={handleChange}
-                  className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                  className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
                   required
                 />
               </div>
@@ -172,7 +173,7 @@ const AddFitzonePage = () => {
                   value={formData.description}
                   onChange={handleChange}
                   maxLength={500}
-                  className="w-full min-h-[120px] p-4 text-sm border border-slate-300 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium resize-none"
+                  className="w-full min-h-[120px] p-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium resize-none"
                   required
                 />
                 <div className="text-xs text-slate-500 font-medium text-right">
@@ -189,7 +190,7 @@ const AddFitzonePage = () => {
                   className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                     isDragging
                       ? "border-brand-blue bg-blue-50"
-                      : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                      : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
                   }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -222,7 +223,7 @@ const AddFitzonePage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300 hover:bg-slate-50"
+                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -230,7 +231,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 {isSubmitting ? (
                   <>

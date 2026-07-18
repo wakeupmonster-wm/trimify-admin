@@ -61,7 +61,7 @@ export function NavMain({ items }) {
                 className={cn(
                   "relative h-11 w-full transition-all duration-300 px-4 rounded-none border-none",
                   "hover:bg-slate-100/50 active:scale-[0.98]",
-                  isActive && "!bg-brand-blue !hover:bg-brand-hoverBlue",
+                  isActive && "!bg-app-primary2 !hover:bg-app-primary5",
                 )}
               >
                 <Link to={item.url} className="flex items-center gap-3 w-full">
@@ -69,7 +69,7 @@ export function NavMain({ items }) {
                   {isActive && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue"
+                      className="absolute left-0 top-0 bottom-0 w-[4px] bg-app-primary2"
                       transition={{
                         type: "spring",
                         stiffness: 300,
@@ -104,7 +104,7 @@ export function NavMain({ items }) {
                       className={cn(
                         "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm",
                         isActive
-                          ? "bg-brand-blue text-white"
+                          ? "bg-app-primary2 text-white"
                           : "bg-slate-100 text-slate-500",
                       )}
                     >

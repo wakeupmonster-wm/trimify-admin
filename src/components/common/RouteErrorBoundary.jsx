@@ -105,7 +105,7 @@ export default function RouteErrorBoundary() {
 
           <Button
             variant="outline"
-            className="border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800 h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
+            className="border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:text-slate-800 h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
             onClick={handleGoBack}
           >
             <ArrowLeft className="h-4 w-4" /> Go Back

@@ -17,7 +17,10 @@ import {
 } from "@/components/ui/select";
 import { getSubscriberColumns } from "./subscriber.columns";
 import UpgradeSubscriberDialog from "./UpgradeSubscriberDialog";
-import { fetchSubscribers, manageSubscriber } from "../../../store/subscription-dashboard.slice";
+import {
+  fetchSubscribers,
+  manageSubscriber,
+} from "../../../store/subscription-dashboard.slice";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
 
 const STATUS_OPTIONS = ["All", "Active", "Expired", "Revoked"];
@@ -60,7 +63,7 @@ export default function SubscribersView() {
       status: statusFilter === "All" ? "" : statusFilter,
       plan_id: planFilter === "all" ? "" : planFilter,
     }),
-    [pagination, debouncedSearch, statusFilter, planFilter]
+    [pagination, debouncedSearch, statusFilter, planFilter],
   );
 
   useEffect(() => {
@@ -89,13 +92,18 @@ export default function SubscribersView() {
 
   const handleConfirm = async () => {
     if (!confirmAction) return;
-    const ok = await runManage(confirmAction.subscriber.id, { action: confirmAction.action });
+    const ok = await runManage(confirmAction.subscriber.id, {
+      action: confirmAction.action,
+    });
     if (ok) setConfirmAction(null);
   };
 
   const handleUpgradeConfirm = async (body) => {
     if (!upgradeSubscriber) return;
-    const ok = await runManage(upgradeSubscriber.id, { action: "upgrade", ...body });
+    const ok = await runManage(upgradeSubscriber.id, {
+      action: "upgrade",
+      ...body,
+    });
     if (ok) setUpgradeSubscriber(null);
   };
 
@@ -130,7 +138,7 @@ export default function SubscribersView() {
         description: "Access removed",
       },
     ],
-    [subscribersCounts]
+    [subscribersCounts],
   );
 
   const columns = useMemo(() => getSubscriberColumns(handleAction), []);
@@ -150,7 +158,9 @@ export default function SubscribersView() {
     <div className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {isFirstLoad ? (
-          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[110px] rounded-xl" />)
+          Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-[110px] rounded-xl" />
+          ))
         ) : (
           <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
         )}
@@ -171,8 +181,14 @@ export default function SubscribersView() {
         manualFiltering
         toolbarChildren={
           <>
-            <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPagination((p) => ({ ...p, pageIndex: 0 })); }}>
-              <SelectTrigger className="h-9 3xl:h-10 w-[130px] bg-white border-slate-200 text-xs font-medium">
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setStatusFilter(v);
+                setPagination((p) => ({ ...p, pageIndex: 0 }));
+              }}
+            >
+              <SelectTrigger className="h-9 3xl:h-10 w-[130px] bg-white border-slate-300/60 text-xs font-medium">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -183,14 +199,26 @@ export default function SubscribersView() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={planFilter} onValueChange={(v) => { setPlanFilter(v); setPagination((p) => ({ ...p, pageIndex: 0 })); }}>
-              <SelectTrigger className="h-9 3xl:h-10 w-[150px] bg-white border-slate-200 text-xs font-medium">
+            <Select
+              value={planFilter}
+              onValueChange={(v) => {
+                setPlanFilter(v);
+                setPagination((p) => ({ ...p, pageIndex: 0 }));
+              }}
+            >
+              <SelectTrigger className="h-9 3xl:h-10 w-[150px] bg-white border-slate-300/60 text-xs font-medium">
                 <SelectValue placeholder="All Plans" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all" className="text-xs">All Plans</SelectItem>
+                <SelectItem value="all" className="text-xs">
+                  All Plans
+                </SelectItem>
                 {plans?.map((plan) => (
-                  <SelectItem key={plan.id} value={String(plan.id)} className="text-xs">
+                  <SelectItem
+                    key={plan.id}
+                    value={String(plan.id)}
+                    className="text-xs"
+                  >
                     {plan.title}
                   </SelectItem>
                 ))}
@@ -206,13 +234,19 @@ export default function SubscribersView() {
         onConfirm={handleConfirm}
         loading={manageLoading}
         type={confirmAction?.action === "revoke" ? "danger" : "warning"}
-        title={confirmAction?.action === "revoke" ? "Revoke Access" : "Mark as Expired"}
+        title={
+          confirmAction?.action === "revoke"
+            ? "Revoke Access"
+            : "Mark as Expired"
+        }
         message={
           confirmAction?.action === "revoke"
             ? `Revoke ${confirmAction?.subscriber?.name}'s subscription access immediately?`
             : `Mark ${confirmAction?.subscriber?.name}'s subscription as expired?`
         }
-        confirmText={confirmAction?.action === "revoke" ? "Revoke" : "Mark Expired"}
+        confirmText={
+          confirmAction?.action === "revoke" ? "Revoke" : "Mark Expired"
+        }
       />
 
       <UpgradeSubscriberDialog

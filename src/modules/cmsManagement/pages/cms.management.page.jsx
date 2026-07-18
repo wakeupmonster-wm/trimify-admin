@@ -14,7 +14,7 @@ import { useDebounce } from "../../../hooks/useDebounce";
 const CMSManagementPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -22,10 +22,12 @@ const CMSManagementPage = () => {
   const { data, loading, error } = useSelector((state) => state.cmsManagement);
 
   useEffect(() => {
-    dispatch(fetchCmsPages({ 
-      page: pagination.pageIndex + 1, 
-      search: debouncedSearchTerm 
-    }));
+    dispatch(
+      fetchCmsPages({
+        page: pagination.pageIndex + 1,
+        search: debouncedSearchTerm,
+      }),
+    );
   }, [dispatch, pagination.pageIndex, debouncedSearchTerm]);
 
   useEffect(() => {
@@ -36,10 +38,12 @@ const CMSManagementPage = () => {
 
   // Map API fields (page_name) to table accessor (pageName)
   const displayData = useMemo(() => {
-    return data?.map(item => ({
-      ...item,
-      pageName: item.page_name,
-    })) || [];
+    return (
+      data?.map((item) => ({
+        ...item,
+        pageName: item.page_name,
+      })) || []
+    );
   }, [data]);
 
   const handleAction = (row, action) => {
@@ -68,7 +72,7 @@ const CMSManagementPage = () => {
             <PageHeader
               heading="CMS"
               icon={<FileEdit className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-md"
+              color="bg-app-primary2 shadow-md"
               subheading="Manage Content Management System pages like Privacy Policy and Terms & Conditions."
             />
           </div>

@@ -37,7 +37,7 @@ export const EmailUpdateCard = ({ currentEmail }) => {
   };
 
   return (
-    <Card className="border-slate-200 shadow-sm overflow-hidden">
+    <Card className="border-slate-300/60 shadow-sm overflow-hidden">
       <CardHeader className="bg-slate-50/50 border-b border-slate-100">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
@@ -63,7 +63,7 @@ export const EmailUpdateCard = ({ currentEmail }) => {
                 type="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                className="rounded-xl border-slate-200 focus-visible:ring-indigo-500"
+                className="rounded-xl border-slate-300/60 focus-visible:ring-indigo-500"
               />
               <Button
                 type="submit"

@@ -4,7 +4,14 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 import ChartCard from "./ChartCard";
 
 // Fixed categorical order — never cycled/regenerated per-render.
-const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
+// const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
+const COLORS = [
+  "#007FC0", // primary2
+  "#15B097", // cardGreen
+  "#DC6B1B", // cardOrange
+  "#EDA145", // cardYellow
+  "#5AA0C1", // primary3
+];
 
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;

@@ -100,7 +100,7 @@ const FAQSPage = () => {
 
   // const CATEGORY_COLORS = {
   //   general: "bg-alerts-success/30 text-slate-600 border-alerts-success/80",
-  //   account: "bg-brand-blue text-slate-600 border-brand-blue",
+  //   account: "bg-app-primary2 text-slate-600 border-brand-blue",
   //   dating: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
   //   subscriptions: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
   //   troubleshooting:
@@ -187,13 +187,13 @@ const FAQSPage = () => {
         <PageHeader
           heading="FAQ Manager"
           icon={<HelpCircle className="w-9 h-9 text-white" />}
-          color="bg-brand-blue shadow-brand-blue"
+          color="bg-app-primary2 shadow-brand-blue"
           subheading="Create, edit and organize frequently asked questions."
         />
 
         <Button
           onClick={() => setFormModal({ isOpen: true, data: null })}
-          className="bg-slate-50 hover:bg-brand-hoverBlue border border-slate-300 font-medium hover:font-semibold text-slate-500 hover:text-white gap-2 h-10 px-4 shadow-sm"
+          className="bg-slate-50 hover:bg-app-primary5 border border-slate-300/60 font-medium hover:font-semibold text-slate-500 hover:text-white gap-2 h-10 px-4 shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add FAQ
         </Button>
@@ -233,7 +233,7 @@ const FAQSPage = () => {
             placeholder="Search questions or answers…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 pr-10 bg-slate-50 border-slate-200 h-11 lg:h-10 shadow-sm focus-visible:border-brand-blue focus-visible:ring-0 rounded-lg"
+            className="pl-9 pr-10 bg-slate-50 border-slate-300/60 h-11 lg:h-10 shadow-sm focus-visible:border-brand-blue focus-visible:ring-0 rounded-lg"
           />
           {search && (
             <button
@@ -250,7 +250,7 @@ const FAQSPage = () => {
           onValueChange={setFilterCategory}
           className={""}
         >
-          <SelectTrigger className="w-full max-w-44 bg-gray-50 hover:bg-brand-hoverBlue font-medium hover:font-semibold text-xs text-slate-500 hover:text-white hover:border-none transition-all duration-300 capitalize">
+          <SelectTrigger className="w-full max-w-44 bg-gray-50 hover:bg-app-primary5 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white hover:border-none transition-all duration-300 capitalize">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -274,7 +274,7 @@ const FAQSPage = () => {
               <AccordionItem
                 key={faq.id}
                 value={faq.id}
-                className="px-6 py-1 border border-slate-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-slate-50 data-[state=open]:bg-secondary/30"
+                className="px-6 py-1 border border-slate-300/60 shadow-sm hover:shadow-md transition-all rounded-xl bg-slate-50 data-[state=open]:bg-secondary/30"
               >
                 <div className="relative group">
                   <AccordionTrigger className="flex-1 text-left text-[15px] font-semibold text-foreground hover:no-underline py-5">
@@ -290,7 +290,7 @@ const FAQSPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-brand-hoverBlue border-slate-200 bg-slate-50"
+                      className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 border-slate-300/60 bg-slate-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFormModal({ isOpen: true, data: faq });
@@ -302,7 +302,7 @@ const FAQSPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 border-slate-200 bg-slate-50"
+                      className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 border-slate-300/60 bg-slate-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         setDeleteModal({
@@ -324,7 +324,7 @@ const FAQSPage = () => {
           </Accordion>
         </div>
       ) : (
-        <Card className="border-dashed border-2 bg-slate-50 border-slate-200 shadow-none">
+        <Card className="border-dashed border-2 bg-slate-50 border-slate-300/60 shadow-none">
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <HelpCircle className="h-10 w-10 text-slate-300 mb-3" />
             <p className="text-slate-600 font-semibold mb-1">No FAQs found</p>

@@ -99,7 +99,7 @@ export default function GeneralPage() {
 
   return (
     <div className="w-full">
-      <header className="px-2 mb-4 border-b border-slate-200 pb-4">
+      <header className="px-2 mb-4 border-b border-slate-300/60 pb-4">
         <h1 className="text-lg font-bold text-foreground/90">
           General Settings
         </h1>
@@ -129,7 +129,7 @@ export default function GeneralPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="mt-4 h-9 px-4 border-slate-200 text-slate-600 font-medium text-xs rounded-md hover:bg-slate-50"
+                className="mt-4 h-9 px-4 border-slate-300/60 text-slate-600 font-medium text-xs rounded-md hover:bg-slate-50"
                 onClick={() =>
                   document.getElementById("logo-upload-input")?.click()
                 }
@@ -191,7 +191,7 @@ export default function GeneralPage() {
             <Button
               type="button"
               variant="outline"
-              className="h-10 px-6 border-slate-200 text-muted-foreground/70 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-50"
+              className="h-10 px-6 border-slate-300/60 text-muted-foreground/70 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-50"
               onClick={() => form.reset()}
             >
               Discard Changes
@@ -199,7 +199,7 @@ export default function GeneralPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="h-10 px-6 bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
+              className="h-10 px-6 bg-app-primary2 hover:bg-brand-hoverAqua text-white font-semibold text-[13px] capitalize rounded-md shadow-sm"
             >
               {loading ? (
                 <>

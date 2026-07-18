@@ -28,7 +28,7 @@ export const NameUpdateCard = ({ currentName }) => {
   };
 
   return (
-    <Card className="border-slate-200 shadow-sm">
+    <Card className="border-slate-300/60 shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg">Full Name</CardTitle>
         <Button variant="ghost" onClick={() => setIsEditing(!isEditing)}>

@@ -8,17 +8,17 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
 
   // Flatten options from checkbox-group
   const activeChips = [];
-  
-  filterConfig.forEach(filter => {
+
+  filterConfig.forEach((filter) => {
     if (filter.type === "select" && filter.value) {
       activeChips.push({
         id: filter.id,
         label: filter.label,
-        displayValue: filter.getDisplayValue 
-          ? filter.getDisplayValue(filter.value) 
+        displayValue: filter.getDisplayValue
+          ? filter.getDisplayValue(filter.value)
           : (() => {
               const matched = filter.options?.find(
-                (o) => (typeof o === "object" ? o.value : o) === filter.value
+                (o) => (typeof o === "object" ? o.value : o) === filter.value,
               );
               const lbl = matched
                 ? typeof matched === "object"
@@ -27,19 +27,24 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
                 : filter.value;
               return lbl.toString().replace("_", " ").replace("-", " ");
             })(),
-        onClear: () => filter.onChange("")
+        onClear: () => filter.onChange(""),
       });
     }
-    
+
     if (filter.type === "checkbox-group") {
-      filter.groups.forEach(group => {
-        group.options.forEach(opt => {
-          if (opt.value === true || (typeof opt.value === "string" && opt.value !== "")) {
+      filter.groups.forEach((group) => {
+        group.options.forEach((opt) => {
+          if (
+            opt.value === true ||
+            (typeof opt.value === "string" && opt.value !== "")
+          ) {
             activeChips.push({
               id: opt.id,
               label: group.label || filter.label,
-              displayValue: opt.getDisplayValue ? opt.getDisplayValue(opt.value) : opt.label,
-              onClear: () => opt.onChange(undefined)
+              displayValue: opt.getDisplayValue
+                ? opt.getDisplayValue(opt.value)
+                : opt.label,
+              onClear: () => opt.onChange(undefined),
             });
           }
         });
@@ -55,7 +60,7 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
         <Badge
           key={chip.id || idx}
           variant="outline"
-          className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md"
+          className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md"
         >
           <span className="text-[10px] font-bold uppercase opacity-50">
             {chip.label}:

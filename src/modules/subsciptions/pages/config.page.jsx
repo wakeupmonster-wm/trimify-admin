@@ -418,13 +418,13 @@ export default function ConfigPage() {
               heading="Subscription Config"
               subheading="Control quotas, feature toggles, and milestone programs"
               icon={<Settings className="w-10 h-10 text-white" />}
-              color="bg-brand-blue"
+              color="bg-app-primary2"
             />
             <div className="flex items-center gap-3 w-full lg:w-auto">
               {hasChanges && (
                 <Button
                   variant="outline"
-                  className="rounded-lg h-9 flex-1 lg:flex-none px-4 font-semibold border gap-2 bg-white hover:bg-brand-hoverAqua border-slate-200 text-muted-foreground hover:text-white shadow-sm"
+                  className="rounded-lg h-9 flex-1 lg:flex-none px-4 font-semibold border gap-2 bg-white hover:bg-brand-hoverAqua border-slate-300/60 text-muted-foreground hover:text-white shadow-sm"
                   onClick={handleReset}
                 >
                   <RefreshCcw className="w-4 h-4" /> Revert
@@ -435,8 +435,8 @@ export default function ConfigPage() {
                 className={cn(
                   "rounded-md h-9 flex-1 lg:flex-none px-4 font-semibold border gap-2 transition-all duration-300",
                   hasChanges
-                    ? "bg-brand-blue text-white hover:bg-brand-hoverAqua"
-                    : "bg-white hover:bg-white/50 text-slate-400 hover:text-slate-600 border-slate-300 hover:border-slate-400 cursor-not-allowed shadow-none scale-95",
+                    ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua"
+                    : "bg-white hover:bg-white/50 text-slate-400 hover:text-slate-600 border-slate-300/60 hover:border-slate-400 cursor-not-allowed shadow-none scale-95",
                 )}
                 onClick={handleSave}
                 disabled={!hasChanges || actionLoading}
@@ -656,7 +656,7 @@ export default function ConfigPage() {
 
         <div className="pb-10 mx-6">
           <div className="bg-slate-800 rounded-xl p-6 flex items-start gap-4 shadow-xl">
-            <div className="p-2 bg-brand-blue rounded-xl mt-0.5">
+            <div className="p-2 bg-app-primary2 rounded-xl mt-0.5">
               <Info className="w-5 h-5 text-brand-blue" />
             </div>
             <div className="space-y-1 flex-1">
@@ -713,8 +713,8 @@ export default function ConfigPage() {
 
 const ConfigCard = ({ Icon, title, subtitle, children }) => {
   return (
-    <Card className="rounded-xl border-slate-200 gap-2 shadow-sm overflow-hidden bg-white py-5 transition-all duration-300">
-      <CardHeader className="px-5 border-b border-slate-200">
+    <Card className="rounded-xl border-slate-300/60 gap-2 shadow-sm overflow-hidden bg-white py-5 transition-all duration-300">
+      <CardHeader className="px-5 border-b border-slate-300/60">
         <div className="flex items-center justify-between pb-2">
           <DashboardHead
             title={title}
@@ -777,7 +777,7 @@ const QuotaField = ({
             "h-10 rounded-lg border font-bold text-xs transition-all focus:ring-0 focus-visible:ring-0 focus:border-slate-500 focus-visible:border-slate-500 outline-none",
             isUnlimited
               ? "bg-amber-50 text-amber-700 border-amber-200"
-              : "bg-slate-50 text-slate-800 border-slate-200",
+              : "bg-slate-50 text-slate-800 border-slate-300/60",
           )}
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -793,7 +793,7 @@ const QuotaField = ({
               "rounded-lg h-10 px-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all",
               isUnlimited
                 ? "bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200"
-                : "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100",
+                : "bg-slate-50 text-slate-400 border-slate-300/60 hover:bg-slate-100",
             )}
             onClick={() => onChange(isUnlimited ? "0" : "-1")}
           >
@@ -818,7 +818,7 @@ const FeatureToggle = ({
         className={cn(
           "p-2 rounded-xl transition-all duration-300",
           checked
-            ? "bg-brand-blue text-brand-blue"
+            ? "bg-app-primary2 text-brand-blue"
             : "bg-slate-200/60 text-slate-400",
         )}
       >
@@ -845,7 +845,7 @@ const FeatureToggle = ({
       <Switch
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className={"bg-brand-blue"}
+        className={"bg-app-primary2"}
       />
     </div>
   </div>
@@ -860,7 +860,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
         className={cn(
           "p-2 rounded-lg flex items-center justify-center",
           feature.isActive
-            ? "bg-brand-blue text-brand-blue"
+            ? "bg-app-primary2 text-brand-blue"
             : "bg-slate-100 text-slate-400",
         )}
       >
@@ -920,7 +920,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
       <Switch
         checked={feature.isActive}
         onCheckedChange={(val) => onToggle(feature.key, val)}
-        className="scale-75 data-[state=checked]:bg-brand-blue"
+        className="scale-75 data-[state=checked]:bg-app-primary2"
       />
     </div>
   </div>

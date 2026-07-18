@@ -18,7 +18,7 @@ export function DataTableToolbar({
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
           <Input
             placeholder={searchPlaceholder}
-            className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter?.(e.target.value)}
           />
@@ -36,8 +36,8 @@ export function DataTableToolbar({
         <div className="flex flex-wrap items-center justify-between md:justify-end gap-2.5 shrink-0 w-full md:w-auto">
           {children}
 
-          <div className="pl-2 pr-1 md:border-l border-slate-200 ml-1.5 flex items-center gap-1.5 shrink-0">
-            <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
+          <div className="pl-2 pr-1 md:border-l border-slate-300/60 ml-1.5 flex items-center gap-1.5 shrink-0">
+            <span className="text-xs 3xl:text-sm font-bold text-app-primary2">
               {rowCount ?? 0}
             </span>
             <span className="text-xs 3xl:text-sm text-slate-400 font-medium">

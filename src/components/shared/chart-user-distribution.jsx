@@ -24,12 +24,14 @@ export function ChartUserDistribution({ data: userDistribution }) {
     {
       name: "Active Users",
       value: getPercent(activeCount),
-      color: "hsl(182, 59%, 54%)",
+      // color: "hsl(182, 59%, 54%)",
+      color: "#15B097", // cardGreen
     },
     {
       name: "Inactive Users",
       value: getPercent(inactiveCount),
-      color: "hsl(215, 20%, 65%)",
+      // color: "hsl(215, 20%, 65%)",
+      color: "#2B2829", // darkGrey
     },
   ];
 
@@ -39,9 +41,9 @@ export function ChartUserDistribution({ data: userDistribution }) {
     data[0] || { name: "Active Users", value: 0 };
 
   return (
-    <Card className="rounded-xl shadow-sm bg-white gap-0 border border-slate-200 hover:border-blue-200 transition-all duration-300 w-full h-full flex flex-col py-5">
+    <Card className="rounded-xl shadow-sm bg-white gap-0 border border-slate-300/60 hover:border-blue-200 transition-all duration-300 w-full h-full flex flex-col py-5">
       <CardHeader className="px-0 pb-0">
-        <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-200">
+        <div className="w-full flex items-center justify-between gap-2 pb-4 px-5 border-b border-slate-300/60">
           <DashboardHead
             title="User Distribution"
             subtitle="Account status distribution of users"

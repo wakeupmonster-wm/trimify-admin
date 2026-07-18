@@ -90,11 +90,11 @@ export default function DataTable({
       )}
 
       {/* TABLE DATA AREA */}
-      <div className="relative rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="relative rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
         <div
           className={cn(
             "overflow-x-auto relative",
-            isLoading && data.length > 0 && "min-h-[180px]"
+            isLoading && data.length > 0 && "min-h-[180px]",
           )}
         >
           <AnimatePresence>
@@ -109,7 +109,7 @@ export default function DataTable({
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           <Table className="min-w-[900px]">
             <TableHeader className="bg-slate-300/50">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -117,24 +117,29 @@ export default function DataTable({
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}
+                      style={{
+                        width:
+                          header.getSize() !== 150
+                            ? header.getSize()
+                            : undefined,
+                      }}
                       className="text-foreground/80 px-3 sm:px-5 font-bold uppercase h-10 bg-slate-100/50 text-[10px] text-left whitespace-nowrap"
                     >
                       {flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                     </TableHead>
                   ))}
                 </TableRow>
               ))}
             </TableHeader>
-            
+
             <TableBody
               className={cn(
                 isLoading &&
                   data.length > 0 &&
-                  "opacity-50 pointer-events-none transition-opacity"
+                  "opacity-50 pointer-events-none transition-opacity",
               )}
             >
               <AnimatePresence mode="popLayout">
@@ -147,10 +152,12 @@ export default function DataTable({
                       exit={{ opacity: 0 }}
                       transition={{ delay: index * 0.03, duration: 0.2 }}
                       className={cn(
-                        "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-200/50 group",
+                        "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group",
                         onRowClick ? "cursor-pointer" : "",
                         isLoading && "opacity-50 pointer-events-none",
-                        typeof rowClassName === "function" ? rowClassName(row) : rowClassName
+                        typeof rowClassName === "function"
+                          ? rowClassName(row)
+                          : rowClassName,
                       )}
                       onClick={(e) => {
                         if (
@@ -167,12 +174,17 @@ export default function DataTable({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          style={{ width: cell.column.getSize() !== 150 ? cell.column.getSize() : undefined }}
+                          style={{
+                            width:
+                              cell.column.getSize() !== 150
+                                ? cell.column.getSize()
+                                : undefined,
+                          }}
                           className="py-3 px-3 sm:px-5 text-left"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}
@@ -189,8 +201,8 @@ export default function DataTable({
                       ) : (
                         <DataNotFound
                           message={
-                            globalFilter 
-                              ? "No results found for your search" 
+                            globalFilter
+                              ? "No results found for your search"
                               : `No ${itemName} found`
                           }
                         />
@@ -204,7 +216,11 @@ export default function DataTable({
         </div>
 
         {/* PAGINATION */}
-        <DataTablePagination table={table} rowCount={rowCount} itemName={itemName} />
+        <DataTablePagination
+          table={table}
+          rowCount={rowCount}
+          itemName={itemName}
+        />
       </div>
     </div>
   );

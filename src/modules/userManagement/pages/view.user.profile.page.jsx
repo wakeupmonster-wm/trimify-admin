@@ -25,28 +25,7 @@ const ViewUserProfilePage = () => {
 
   console.log("userData: ", location.state?.userData);
 
-  const userData = location.state?.userData || {
-    name: "Load Test User 8",
-    email: "loadtest_8@trimify.com.au",
-    mobileNo: "0400000008",
-    status: "Active",
-    height: "170.00",
-    weight: "70.00",
-    gender: "Male",
-    dob: "1995-01-01",
-    user_id: "9zgdT",
-    body_shape: "Average",
-    body_shape_goal: "Average",
-    fitness_level: "Beginner",
-    vegetarian: false,
-    fluid_restrictions: false,
-    weight_goal: "65",
-    main_goal: "Weight Loss",
-    ideal_weight_period: "3 months",
-    created_at: "2026-07-08T11:27:00Z",
-    updated_at: "2026-07-14T15:22:00Z",
-    email_verified_at: "2026-07-08T11:27:00Z",
-  };
+  const userData = location.state?.userData || {};
 
   const formatDate = (dateStr, fmt = "MMM dd, yyyy") => {
     if (!dateStr) return "-";
@@ -79,14 +58,14 @@ const ViewUserProfilePage = () => {
             <PageHeader
               heading="User Profile"
               icon={<User className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-app-primary2"
               subheading="Detailed information and activity overview of the user."
             />
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 variant="outline"
                 onClick={() => navigate("/admin/users")}
-                className="w-full xs:w-auto border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full xs:w-auto border-slate-300/60 text-slate-600 hover:bg-slate-50 rounded-xl px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Users
@@ -111,15 +90,15 @@ const ViewUserProfilePage = () => {
             getYesNo={getYesNo}
           />
           <GoalsNutritionCard userData={userData} />
-          <EngagementCard />
-          <RecentActivityTimelineCard />
+          <EngagementCard userData={userData} />
+          <RecentActivityTimelineCard userData={userData} />
         </div>
 
         <div className="xl:col-span-4 flex flex-col gap-6">
           <ContactCard userData={userData} />
           <SubscriptionCard userData={userData} formatDate={formatDate} />
           <SecurityCard userData={userData} />
-          <RecentLoginsCard />
+          <RecentLoginsCard userData={userData} />
         </div>
       </div>
     </Container>

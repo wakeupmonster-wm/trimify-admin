@@ -5,10 +5,13 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Save, UploadCloud } from "lucide-react";
+import { Save, UploadCloud, Layers } from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
 import { BASE_URL } from "@/services/api-endpoints/base.url";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const AddFoodCategoryPage = () => {
   const navigate = useNavigate();
@@ -24,9 +27,7 @@ const AddFoodCategoryPage = () => {
   const [categoryName, setCategoryName] = useState(
     editData?.name || editData?.title || "",
   );
-  const [description, setDescription] = useState(
-    editData?.description || "",
-  );
+  const [description, setDescription] = useState(editData?.description || "");
   const [iconFile, setIconFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(
     editData?.image
@@ -34,6 +35,7 @@ const AddFoodCategoryPage = () => {
       : null,
   );
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -70,10 +72,17 @@ const AddFoodCategoryPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!categoryName.trim()) {
-      toast.error("Please enter a category name.");
+    const newErrors = {};
+    if (!categoryName.trim()) newErrors.categoryName = "Category Name is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+    // Add more validation if necessary
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+    
+    setErrors({});
 
     // Create FormData for file upload
     const formData = new FormData();
@@ -112,7 +121,7 @@ const AddFoodCategoryPage = () => {
             <PageHeader
               heading="Manage Food Category"
               icon={<Layers className="w-9 h-10 text-white" />}
-              color="bg-brand-blue shadow-blue-200"
+              color="bg-app-primary2 shadow-blue-200"
               subheading={
                 isEditMode
                   ? "Edit and configure food category."
@@ -122,31 +131,38 @@ const AddFoodCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden">
           <div className="space-y-6">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Name
-              </label>
-              <input
-                type="text"
+              </Label>
+              <Input
                 placeholder="Enter Category Name"
-                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.categoryName ? 'border-red-500' : 'border-slate-300/60'}`}
                 value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
+                onChange={(e) => {
+                  setCategoryName(e.target.value);
+                  if (errors.categoryName) setErrors({ ...errors, categoryName: null });
+                }}
               />
+              {errors.categoryName && <p className="text-red-500 text-[10px] mt-1">{errors.categoryName}</p>}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Description
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 placeholder="Enter Category Description"
-                className="w-full px-4 py-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
+                className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] ${errors.description ? 'border-red-500' : 'border-slate-300/60'}`}
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  if (errors.description) setErrors({ ...errors, description: null });
+                }}
               />
+              {errors.description && <p className="text-red-500 text-[10px] mt-1">{errors.description}</p>}
             </div>
 
             {isEditMode && editData?.image && (
@@ -171,8 +187,8 @@ const AddFoodCategoryPage = () => {
               <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
-                    ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    ? "border-app-primary2 bg-blue-50"
+                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
@@ -199,7 +215,7 @@ const AddFoodCategoryPage = () => {
                   </div>
                 ) : (
                   <>
-                    <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                     <p className="text-sm font-semibold text-slate-700 text-center">
                       Click or drag and drop to upload
                     </p>
@@ -221,7 +237,7 @@ const AddFoodCategoryPage = () => {
               Cancel
             </Button>
             <Button
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-sm"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >

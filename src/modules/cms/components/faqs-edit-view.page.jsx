@@ -83,7 +83,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
               <HelpCircle className="h-6 w-6 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
@@ -109,7 +109,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
               value={formData.category}
               onValueChange={(v) => setFormData({ ...formData, category: v })}
             >
-              <SelectTrigger className="h-10 rounded-md border-slate-200 bg-white text-left font-semibold text-xs shadow-sm focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all capitalize">
+              <SelectTrigger className="h-10 rounded-md border-slate-300/60 bg-white text-left font-semibold text-xs shadow-sm focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all capitalize">
                 <div className="flex items-center gap-3">
                   <Layers className="h-4 w-4 text-slate-400 shrink-0" />
                   <SelectValue placeholder="Select Category" />
@@ -159,7 +159,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
                 }}
                 placeholder="e.g. How do I reset my password?"
                 className={cn(
-                  "h-10 pl-10 text-xs font-semibold rounded-md border-slate-200 bg-white shadow-sm focus-visible:border-slate-500 transition-all placeholder:font-medium placeholder:text-slate-400",
+                  "h-10 pl-10 text-xs font-semibold rounded-md border-slate-300/60 bg-white shadow-sm focus-visible:border-slate-500 transition-all placeholder:font-medium placeholder:text-slate-400",
                   errors.question &&
                     "border-red-400 focus-visible:border-red-400",
                 )}
@@ -185,7 +185,7 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
               }}
               placeholder="Write a clear, helpful answer…"
               className={cn(
-                "bg-white border border-slate-200 text-xs font-semibold rounded-md shadow-sm focus-visible:border-slate-500 transition-all min-h-[120px] placeholder:font-medium placeholder:text-slate-400",
+                "bg-white border border-slate-300/60 text-xs font-semibold rounded-md shadow-sm focus-visible:border-slate-500 transition-all min-h-[120px] placeholder:font-medium placeholder:text-slate-400",
                 errors.answer && "border-red-400 focus-visible:border-red-400",
               )}
             />
@@ -202,14 +202,14 @@ const FAQDialog = ({ isOpen, onClose, initialData }) => {
             variant="outline"
             onClick={onClose}
             disabled={loading}
-            className="font-semibold text-[13px] text-slate-600 border-slate-300 h-10 px-6 rounded-md hover:bg-slate-100"
+            className="font-semibold text-[13px] text-slate-600 border-slate-300/60 h-10 px-6 rounded-md hover:bg-slate-100"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={loading}
-            className="bg-brand-blue hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
+            className="bg-app-primary2 hover:bg-brand-hoverAqua text-white text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2"
           >
             {loading ? (
               <>

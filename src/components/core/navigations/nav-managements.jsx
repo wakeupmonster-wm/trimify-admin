@@ -17,6 +17,17 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+const getBadgeStyles = (count, active) => {
+  if (active) return "bg-app-primary2 text-white";
+  const num = parseInt(count);
+  if (isNaN(num)) return "bg-slate-100/50 text-slate-600";
+  if (num > 10)
+    return "bg-alerts-error/10 text-alerts-error border border-alerts-error/20";
+  if (num > 5)
+    return "bg-alerts-warning/10 text-alerts-warning border border-alerts-warning/20";
+  return "bg-slate-100 text-slate-500";
+};
+
 export function NavManagements({ items }) {
   const location = useLocation();
 
@@ -90,6 +101,8 @@ export function NavManagements({ items }) {
       location.state?.source === "support"
     )
       return true;
+
+    return false;
   };
 
   if (!items || items.length === 0) {
@@ -101,7 +114,7 @@ export function NavManagements({ items }) {
       {/* <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
         Management
       </SidebarGroupLabel> */}
-      <SidebarMenu className="group-data-[collapsible=icon]:!items-start gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:gap-1.5 group-data-[collapsible=icon]:!items-start gap-0.5">
         {items.map((item) => {
           const isActive =
             isPathActive(location.pathname, item.url) ||
@@ -115,56 +128,45 @@ export function NavManagements({ items }) {
             item.items?.some((subItem) =>
               isPathActive(location.pathname, subItem.url, true),
             );
-          const getBadgeStyles = (count, active) => {
-            if (active) return "bg-brand-blue text-white";
-            const num = parseInt(count);
-            if (isNaN(num)) return "bg-slate-100/50 text-slate-600";
-            if (num > 10)
-              return "bg-alerts-error/10 text-alerts-error border border-alerts-error/20";
-            if (num > 5)
-              return "bg-alerts-warning/10 text-alerts-warning border border-alerts-warning/20";
-            return "bg-slate-100 text-slate-500";
-          };
 
           const content = (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem key={item.url || item.title}>
               {hasChildren ? (
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                      "group relative h-10 w-full transition-all duration-300 px-5 rounded-none border-none",
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
-                      (isActive || hasActiveChild) &&
-                        "bg-blue-100/50 hover:bg-brand-hoverBlue",
+                      isActive && "bg-app-primary2/10 hover:bg-app-primary2/20",
                     )}
                   >
                     <Link
                       to={item.url}
                       className="flex items-center gap-3 w-full"
                     >
-                      {(isActive || hasActiveChild) && (
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
+                      {isActive && (
+                        <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
                       )}
 
                       <div
                         className={cn(
-                          "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
-                          isActive || hasActiveChild
-                            ? "text-brand-blue"
+                          "flex size-[18px] 3xl:size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
+                          isActive
+                            ? "text-app-primary2"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
-                        <Icon className="size-5" />
+                        <Icon className="size-[18px] 3xl:size-5" />
                       </div>
 
                       <span
                         className={cn(
                           "flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
-                          isActive || hasActiveChild
-                            ? "text-brand-blue font-bold"
+                          isActive
+                            ? "text-app-primary2 font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
                         )}
                       >
@@ -175,10 +177,7 @@ export function NavManagements({ items }) {
                         <div
                           className={cn(
                             "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm",
-                            getBadgeStyles(
-                              item.badge,
-                              isActive || hasActiveChild,
-                            ),
+                            getBadgeStyles(item.badge, isActive),
                           )}
                         >
                           {item.badge}
@@ -188,7 +187,7 @@ export function NavManagements({ items }) {
                       <ChevronRight
                         className={cn(
                           "size-4 transition-transform duration-200 text-slate-400",
-                          "group-data-[state=open]/collapsible:rotate-90",
+                          "group-data-[state=open]:rotate-90",
                         )}
                       />
                     </Link>
@@ -200,10 +199,10 @@ export function NavManagements({ items }) {
                   isActive={isActive}
                   tooltip={item.title}
                   className={cn(
-                    "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                    "relative h-10 w-full transition-all duration-300 px-5 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
-                    isActive && "!bg-blue-100/50 !hover:bg-brand-hoverBlue",
+                    isActive && "!bg-blue-100/50 !hover:bg-blue-200/50",
                   )}
                 >
                   <Link
@@ -211,25 +210,25 @@ export function NavManagements({ items }) {
                     className="flex items-center gap-3 w-full"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-brand-blue" />
+                      <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
                     )}
 
                     <div
                       className={cn(
-                        "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
+                        "flex size-[18px] 3xl:size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                         isActive
-                          ? "text-brand-blue"
+                          ? "text-app-primary2"
                           : "text-slate-400 hover:text-foreground/80",
                       )}
                     >
-                      <Icon className="size-5" />
+                      <Icon className="size-[18px] 3xl:size-5" />
                     </div>
 
                     <span
                       className={cn(
                         "group-data-[collapsible=icon]:hidden flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
                         isActive
-                          ? "text-brand-blue font-bold"
+                          ? "text-app-primary2 font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
                       )}
                     >
@@ -252,7 +251,7 @@ export function NavManagements({ items }) {
 
               {hasChildren && (
                 <CollapsibleContent>
-                  <SidebarMenuSub className="ml-8 flex flex-col gap-0 border-l border-slate-200/60 pl-0">
+                  <SidebarMenuSub className="ml-8 flex flex-col gap-0 border-l border-slate-300/60/60 pl-0">
                     {item.items?.map((subItem) => {
                       const isSubActive = isPathActive(
                         location.pathname,
@@ -260,14 +259,14 @@ export function NavManagements({ items }) {
                         true,
                       );
                       return (
-                        <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubItem key={subItem.url || subItem.title}>
                           <SidebarMenuSubButton
                             asChild
                             isActive={isSubActive}
                             className={cn(
                               "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
                               isSubActive
-                                ? "!text-brand-blue font-semibold !bg-blue-100/50"
+                                ? "!text-app-primary2 font-semibold !bg-blue-100/50"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >
@@ -277,7 +276,7 @@ export function NavManagements({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-brand-blue" />
+                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
                               )}
                               <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}
@@ -295,7 +294,7 @@ export function NavManagements({ items }) {
 
           return hasChildren ? (
             <Collapsible
-              key={item.title}
+              key={item.url || item.title}
               asChild
               defaultOpen={hasActiveChild}
               className="group/collapsible"

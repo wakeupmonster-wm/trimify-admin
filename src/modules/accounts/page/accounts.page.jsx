@@ -94,7 +94,7 @@ export default function AccountsPage() {
               <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-end -mt-16 md:-mt-[75px] relative z-10 w-full">
                 {/* Avatar */}
                 <div className="relative group shrink-0">
-                  <div className="absolute inset-0 bg-brand-blue blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-app-primary2 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Avatar className="relative h-40 w-40 md:h-44 md:w-44 ring-4 ring-white bg-white shadow-lg rounded-full overflow-hidden">
                     <AvatarImage
                       src={account?.avatar?.url}
@@ -130,7 +130,7 @@ export default function AccountsPage() {
                 {/* Action */}
                 <div className="mb-2 shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <AdminEditDialog currentData={account}>
-                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300 bg-white hover:bg-brand-hoverBlue hover:border-brand-blue font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
+                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary5 hover:border-brand-blue font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
                       <Edit3 className="w-3.5 h-3.5" strokeWidth={2} />
                       Configure Profile
                     </Button>
@@ -147,7 +147,7 @@ export default function AccountsPage() {
               {/* Contact Details Card */}
               <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
-                  <div className="pb-2 px-5 border-b border-slate-300/50">
+                  <div className="pb-2 px-5 border-b border-slate-300/60/50">
                     <DashboardHead
                       title="Contact Details"
                       // subtitle="Keep your admin account safe with a strong password."
@@ -189,7 +189,7 @@ export default function AccountsPage() {
               {/* Meta Data Card */}
               <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
-                  <div className="pb-2 px-5 border-b border-slate-300/50">
+                  <div className="pb-2 px-5 border-b border-slate-300/60/50">
                     <DashboardHead
                       title="Account Metadata"
                       Icon={Globe}
@@ -253,7 +253,7 @@ export default function AccountsPage() {
               {/* Logout button */}
               <Button
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="h-12 w-full rounded-lg shadow-sm border border-slate-200 bg-white hover:bg-alerts-error hover:border-alerts-error font-medium hover:font-bold gap-2 text-slate-500 hover:text-white transition-all duration-300"
+                className="h-12 w-full rounded-lg shadow-sm border border-slate-300/60 bg-white hover:bg-alerts-error hover:border-alerts-error font-medium hover:font-bold gap-2 text-slate-500 hover:text-white transition-all duration-300"
               >
                 <LogOut className="w-4 h-4" strokeWidth={2} />
                 Logout

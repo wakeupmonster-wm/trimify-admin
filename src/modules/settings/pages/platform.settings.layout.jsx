@@ -27,7 +27,7 @@ export default function PlatformSettingsLayout() {
         </header>
 
         {/* --- CHILD CONTENT AREA --- */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-300/60 shadow-sm overflow-hidden">
           <div className="p-4 lg:p-6">
             <Outlet />
           </div>

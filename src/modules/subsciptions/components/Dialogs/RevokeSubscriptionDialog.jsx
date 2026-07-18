@@ -10,11 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldAlert, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const RevokeSubscriptionDialog = ({
-  open,
-  onOpenChange,
-  onRevoke,
-}) => {
+export const RevokeSubscriptionDialog = ({ open, onOpenChange, onRevoke }) => {
   const [localLoading, setLocalLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -84,7 +80,7 @@ export const RevokeSubscriptionDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={localLoading || success}
-            className="font-semibold text-[13px] text-slate-600 border-slate-300 h-10 px-6 rounded-md hover:bg-slate-100"
+            className="font-semibold text-[13px] text-slate-600 border-slate-300/60 h-10 px-6 rounded-md hover:bg-slate-100"
           >
             Cancel
           </Button>
@@ -95,7 +91,7 @@ export const RevokeSubscriptionDialog = ({
               "text-[13px] font-bold h-10 px-6 rounded-md shadow-sm gap-2 transition-all duration-300 flex items-center justify-center min-w-[140px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-rose-500 hover:bg-rose-600 text-white"
+                : "bg-rose-500 hover:bg-rose-600 text-white",
             )}
           >
             {localLoading ? (

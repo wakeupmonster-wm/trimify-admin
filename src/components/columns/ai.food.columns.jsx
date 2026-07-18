@@ -16,19 +16,33 @@ const formatIngredients = (val) => {
 };
 
 const STATUS_META = {
-  draft: { label: "Queued", className: "bg-slate-100 text-slate-600 border-slate-200" },
-  processing: { label: "Generating…", className: "bg-blue-50 text-blue-600 border-blue-200" },
-  pending_review: { label: "Ready for review", className: "bg-emerald-50 text-emerald-600 border-emerald-200" },
-  failed: { label: "Failed", className: "bg-red-50 text-red-600 border-red-200" },
-  duplicate_skipped: { label: "Already exists", className: "bg-amber-50 text-amber-600 border-amber-200" },
-  approved: { label: "Saved", className: "bg-emerald-100 text-emerald-700 border-emerald-300" },
+  draft: {
+    label: "Queued",
+    className: "bg-slate-100 text-slate-600 border-slate-300/60",
+  },
+  processing: {
+    label: "Generating…",
+    className: "bg-blue-50 text-blue-600 border-blue-200",
+  },
+  pending_review: {
+    label: "Ready for review",
+    className: "bg-emerald-50 text-emerald-600 border-emerald-200",
+  },
+  failed: {
+    label: "Failed",
+    className: "bg-red-50 text-red-600 border-red-200",
+  },
+  duplicate_skipped: {
+    label: "Already exists",
+    className: "bg-amber-50 text-amber-600 border-amber-200",
+  },
+  approved: {
+    label: "Saved",
+    className: "bg-emerald-100 text-emerald-700 border-emerald-300",
+  },
 };
 
-export const getAiFoodColumns = ({
-  selectedIds,
-  onToggleSelect,
-  onView,
-}) => [
+export const getAiFoodColumns = ({ selectedIds, onToggleSelect, onView }) => [
   {
     id: "select",
     header: () => (
@@ -130,11 +144,17 @@ export const getAiFoodColumns = ({
     cell: ({ row }) => {
       const item = row.original;
       const meta = STATUS_META[item.status] || STATUS_META.draft;
-      const isInFlight = item.status === "draft" || item.status === "processing";
+      const isInFlight =
+        item.status === "draft" || item.status === "processing";
       return (
-        <Badge variant="outline" className={`${meta.className} whitespace-nowrap`}>
+        <Badge
+          variant="outline"
+          className={`${meta.className} whitespace-nowrap`}
+        >
           {isInFlight && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
-          {item.status === "pending_review" && <CheckCircle2 className="w-3 h-3 mr-1" />}
+          {item.status === "pending_review" && (
+            <CheckCircle2 className="w-3 h-3 mr-1" />
+          )}
           {meta.label}
         </Badge>
       );
@@ -166,7 +186,9 @@ export const getAiFoodColumns = ({
     minSize: 60,
     cell: ({ row }) => (
       <div className="w-[60px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Calories_In_gm ? `${row.original.Meal_Calories_In_gm} kcal` : "-"}
+        {row.original.Meal_Calories_In_gm
+          ? `${row.original.Meal_Calories_In_gm} kcal`
+          : "-"}
       </div>
     ),
   },
@@ -181,7 +203,9 @@ export const getAiFoodColumns = ({
     minSize: 50,
     cell: ({ row }) => (
       <div className="w-[50px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Protien_In_gm ? `${row.original.Meal_Protien_In_gm} gm` : "-"}
+        {row.original.Meal_Protien_In_gm
+          ? `${row.original.Meal_Protien_In_gm} gm`
+          : "-"}
       </div>
     ),
   },
@@ -216,7 +240,7 @@ export const getAiFoodColumns = ({
           variant="ghost"
           size="icon"
           onClick={() => onView(row.original.id)}
-          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-brand-hoverBlue rounded-full transition-colors"
+          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 rounded-full transition-colors"
           title="View"
         >
           <Eye className="h-4 w-4" />

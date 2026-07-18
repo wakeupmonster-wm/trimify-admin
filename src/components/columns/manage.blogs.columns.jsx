@@ -87,11 +87,17 @@ export const getManageBlogsColumns = (onAction) => [
     cell: ({ row }) => {
       let plainText = "-";
       if (row.original.description) {
-        const doc = new DOMParser().parseFromString(row.original.description, "text/html");
+        const doc = new DOMParser().parseFromString(
+          row.original.description,
+          "text/html",
+        );
         plainText = doc.body.textContent || "";
       }
       return (
-        <span className="text-slate-700 font-medium text-[11px] tracking-tight line-clamp-1" title={plainText}>
+        <span
+          className="text-slate-700 font-medium text-[11px] tracking-tight line-clamp-1"
+          title={plainText}
+        >
           {plainText}
         </span>
       );
@@ -109,7 +115,8 @@ export const getManageBlogsColumns = (onAction) => [
     cell: ({ row }) => {
       // Defaulting to "Public" if visibility_status is "Public" or true, else "Private"
       const statusValue =
-        row.original.visibility_status === "Public" || row.original.visibility_status === true
+        row.original.visibility_status === "Public" ||
+        row.original.visibility_status === true
           ? "Public"
           : "Private";
       return (
@@ -120,7 +127,7 @@ export const getManageBlogsColumns = (onAction) => [
               onAction && onAction(row.original, "change-status", val)
             }
           >
-            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-200">
+            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -158,13 +165,13 @@ export const getManageBlogsColumns = (onAction) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-40 p-2 rounded-xl border-slate-200 shadow-sm"
+            className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-brand-blue focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

@@ -87,7 +87,7 @@ export const FeatureDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-6 pt-6 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-blue border border-brand-blue">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
               <Sparkles className="h-5 w-5 text-brand-blue" />
             </div>
             <div className="flex flex-col gap-0.5">
@@ -117,9 +117,9 @@ export const FeatureDialog = ({
                   disabled={editing}
                   placeholder="e.g. ad_free_experience"
                   className={cn(
-                    "h-10 pl-9 text-[13px] font-medium rounded-lg border-slate-300 shadow-none focus-visible:border-slate-500 transition-all",
+                    "h-10 pl-9 text-[13px] font-medium rounded-lg border-slate-300/60 shadow-none focus-visible:border-slate-500 transition-all",
                     editing &&
-                      "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed",
+                      "bg-slate-50 border-slate-300/60 text-slate-400 cursor-not-allowed",
                   )}
                   value={formData.key}
                   onChange={(e) =>
@@ -141,7 +141,7 @@ export const FeatureDialog = ({
                 <Pencil className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
                 <Input
                   placeholder="e.g. Ad-Free Experience"
-                  className="h-10 pl-9 text-[13px] font-medium rounded-lg border-slate-300 shadow-none focus-visible:border-slate-500 transition-all"
+                  className="h-10 pl-9 text-[13px] font-medium rounded-lg border-slate-300/60 shadow-none focus-visible:border-slate-500 transition-all"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -160,7 +160,7 @@ export const FeatureDialog = ({
               <FileText className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-400" />
               <Textarea
                 placeholder="What does this feature provide?"
-                className="min-h-[80px] pl-9 text-[13px] font-medium rounded-lg border-slate-300 shadow-none focus-visible:border-slate-500 transition-all resize-none"
+                className="min-h-[80px] pl-9 text-[13px] font-medium rounded-lg border-slate-300/60 shadow-none focus-visible:border-slate-500 transition-all resize-none"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
@@ -172,13 +172,14 @@ export const FeatureDialog = ({
           {/* Icon Upload */}
           <div className="space-y-1.5">
             <Label className="text-xs font-bold text-slate-800">
-              Upload Icon (SVG/PNG) <span className="text-red-400 font-normal">*</span>
+              Upload Icon (SVG/PNG){" "}
+              <span className="text-red-400 font-normal">*</span>
             </Label>
             <div
               className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                 isDragging
                   ? "border-brand-blue bg-blue-50"
-                  : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                  : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -194,11 +195,11 @@ export const FeatureDialog = ({
               />
               <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
               <p className="text-sm font-semibold text-slate-700 text-center">
-                {isUploading 
-                  ? "Uploading..." 
-                  : (formData.icon 
-                      ? "Icon selected. Click or drag to replace." 
-                      : "Click or drag and drop to upload")}
+                {isUploading
+                  ? "Uploading..."
+                  : formData.icon
+                    ? "Icon selected. Click or drag to replace."
+                    : "Click or drag and drop to upload"}
               </p>
               <p className="text-xs text-slate-500 mt-1">
                 SVG, PNG, JPG (max. 800x400px)
@@ -222,7 +223,7 @@ export const FeatureDialog = ({
                 onCheckedChange={(val) =>
                   setFormData({ ...formData, isActive: val })
                 }
-                className="data-[state=checked]:bg-brand-blue"
+                className="data-[state=checked]:bg-app-primary2"
               />
             </div>
             {/* <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-100 flex items-center justify-between hover:bg-slate-100/50 transition-colors">
@@ -260,7 +261,7 @@ export const FeatureDialog = ({
               "rounded-lg px-5 font-bold text-[11px] h-9 gap-2 transition-all active:scale-95 flex items-center justify-center min-w-[130px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-brand-blue hover:bg-brand-hoverAqua text-white shadow-md shadow-brand-blue",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-md shadow-brand-blue",
             )}
             onClick={handleSubmit}
             disabled={localLoading || success}

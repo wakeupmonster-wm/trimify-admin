@@ -36,14 +36,20 @@ Tooltip.positioners.outerEdge = function (elements) {
   };
 };
 
-// ✅ Official HTML Mockup Colors
+// const COLORS = [
+//   "#3b82f6", // Blue
+//   "#f472b6", // Pink
+//   "#f59e0b", // Amber
+//   "#10b981", // Emerald
+//   "#8b5cf6", // Violet
+//   "#ec4899", // Pink-500
+// ];
 const COLORS = [
-  "#3b82f6", // Blue
-  "#f472b6", // Pink
-  "#f59e0b", // Amber
-  "#10b981", // Emerald
-  "#8b5cf6", // Violet
-  "#ec4899", // Pink-500
+  "#007FC0", // primary2
+  "#15B097", // cardGreen
+  "#DC6B1B", // cardOrange
+  "#EDA145", // cardYellow
+  "#5AA0C1", // primary3
 ];
 
 const PlanDistributionChart = ({ planData = [] }) => {
@@ -131,7 +137,7 @@ const PlanDistributionChart = ({ planData = [] }) => {
 
   return (
     <div className="bg-white border border-[#E5E7EB] rounded-[14px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden h-full flex flex-col">
-      <div className="px-5 py-4 border-b border-slate-200 flex items-center gap-[10px]">
+      <div className="px-5 py-4 border-b border-slate-300/60 flex items-center gap-[10px]">
         <DashboardHead
           title="Plan Distribution"
           subtitle="Active Subscription Tiers"
@@ -169,7 +175,6 @@ const PlanDistributionChart = ({ planData = [] }) => {
             names.map((name, i) => {
               const pct = ((values[i] / total) * 100).toFixed(0);
               return (
-
                 <div
                   key={i}
                   className="flex items-center justify-between text-[12px]"

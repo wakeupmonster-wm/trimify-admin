@@ -12,7 +12,8 @@ import {
 } from "recharts";
 import ChartCard from "./ChartCard";
 
-const AQUA = "#46C7CD";
+// const AQUA = "#46C7CD";
+const AQUA = "#007FC0"; // primary2
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;

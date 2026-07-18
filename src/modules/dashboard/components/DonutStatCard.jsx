@@ -8,7 +8,10 @@ const CustomTooltip = ({ active, payload }) => {
   const item = payload[0].payload;
   return (
     <div className="bg-white px-3 py-2 rounded-lg shadow-xl border border-slate-100 flex items-center gap-2 z-50">
-      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.fill }} />
+      <div
+        className="w-2.5 h-2.5 rounded-full"
+        style={{ backgroundColor: item.fill }}
+      />
       <div className="flex items-center gap-3">
         <span className="text-slate-500 text-xs font-medium">{item.name}</span>
         <span className="text-slate-900 text-xs font-bold">
@@ -41,7 +44,10 @@ const DonutStatCard = ({
   const total = data.reduce((sum, d) => sum + (d.value || 0), 0);
 
   const chartConfig = Object.fromEntries(
-    data.map((d) => [d.label.toLowerCase().replace(/\s+/g, "_"), { label: d.label, color: d.color }]),
+    data.map((d) => [
+      d.label.toLowerCase().replace(/\s+/g, "_"),
+      { label: d.label, color: d.color },
+    ]),
   );
 
   const chartData = hasData
@@ -49,8 +55,8 @@ const DonutStatCard = ({
     : [{ name: "No Data", value: 1, fill: "#f1f5f9" }];
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="pt-5 pb-4 px-6 border-b border-slate-200">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title={title}
           subtitle={subtitle}
@@ -83,8 +89,17 @@ const DonutStatCard = ({
                   content={({ viewBox }) => {
                     if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                       return (
-                        <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                          <tspan x={viewBox.cx} y={viewBox.cy - 4} className="fill-slate-900 text-xl font-black">
+                        <text
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy - 4}
+                            className="fill-slate-900 text-xl font-black"
+                          >
                             {hasData ? total.toLocaleString() : "0"}
                           </tspan>
                           <tspan
@@ -104,15 +119,22 @@ const DonutStatCard = ({
           </ChartContainer>
         </div>
 
-        <div className={`flex-1 w-full space-y-3 mt-4 ${scrollableLegend ? "max-h-[168px] overflow-y-auto pr-1" : ""}`}>
+        <div
+          className={`flex-1 w-full space-y-3 mt-4 ${scrollableLegend ? "max-h-[168px] overflow-y-auto pr-1" : ""}`}
+        >
           {data.map((item, idx) => {
             const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
             return (
               <div key={idx} className="flex flex-col gap-1">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                    <span className="text-xs font-bold text-slate-800 tracking-tight truncate">{item.label}</span>
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-xs font-bold text-slate-800 tracking-tight truncate">
+                      {item.label}
+                    </span>
                   </div>
                   <span className="text-xs font-bold text-slate-500 shrink-0">
                     {item.value.toLocaleString()} · {pct}%
@@ -130,7 +152,9 @@ const DonutStatCard = ({
         </div>
 
         {footnote && (
-          <p className="mt-4 text-[10px] text-slate-400 leading-relaxed">{footnote}</p>
+          <p className="mt-4 text-[10px] text-slate-400 leading-relaxed">
+            {footnote}
+          </p>
         )}
       </div>
     </div>

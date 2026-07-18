@@ -51,7 +51,7 @@ export function ImagePreviewModal({ config, onClose }) {
 
   return (
     <Dialog open={config.open} onOpenChange={onClose} className="">
-      <DialogContent className="max-w-6xl w-[95vw] h-[90vh] flex flex-col gap-2 p-0 overflow-hidden bg-slate-50 border-slate-200">
+      <DialogContent className="max-w-6xl w-[95vw] h-[90vh] flex flex-col gap-2 p-0 overflow-hidden bg-slate-50 border-slate-300/60">
         <DialogHeader className="p-4 bg-white border-b flex flex-row items-center justify-between space-y-0">
           <DialogTitle className="text-slate-900 flex items-center gap-2">
             <Maximize2 className="w-4 h-4 text-brand-blue" />
@@ -80,7 +80,7 @@ export function ImagePreviewModal({ config, onClose }) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDownload(img.src, img.label)}
-                  className="h-7 text-[10px] gap-1 hover:bg-brand-hoverBlue hover:text-brand-blue"
+                  className="h-7 text-[10px] gap-1 hover:bg-app-primary5 hover:text-brand-blue"
                 >
                   <Download className="w-3 h-3" /> Download
                 </Button>

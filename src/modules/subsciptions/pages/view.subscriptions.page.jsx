@@ -479,7 +479,7 @@ export default function ViewSubscriptionsPage() {
                     />
                     Webhook Lifecycle
                   </CardTitle>
-                  <Badge className="bg-brand-blue text-brand-blue border-brand-blue">
+                  <Badge className="bg-app-primary2 text-brand-blue border-brand-blue">
                     System Active
                   </Badge>
                 </div>

@@ -160,7 +160,7 @@ export default function CampaignHistory({
   return (
     <div className="space-y-4">
       {/* Overview Card */}
-      <Card className="bg-white gap-5 border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <Card className="bg-white gap-5 border border-slate-300/60 rounded-xl shadow-sm overflow-hidden">
         {/* Section Header */}
         <div className="px-6 space-y-1">
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">
@@ -172,7 +172,7 @@ export default function CampaignHistory({
           </p>
         </div>
 
-        {/* <div className="border-b border-slate-300/50 mx-5" /> */}
+        {/* <div className="border-b border-slate-300/60/50 mx-5" /> */}
 
         <div className="px-6">
           {/* History KPIs */}
@@ -207,7 +207,7 @@ export default function CampaignHistory({
             placeholder="Search campaigns..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-10 bg-white border-slate-200 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
           />
           {searchTerm && (
             <button
@@ -222,7 +222,7 @@ export default function CampaignHistory({
         {/* Right Side: Filters & Count */}
         <div className="flex items-center gap-2.5 shrink-0">
           <Select value={channelFilter} onValueChange={setChannelFilter}>
-            <SelectTrigger className="h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all text-xs w-full sm:w-auto">
+            <SelectTrigger className="h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all text-xs w-full sm:w-auto">
               <SelectValue placeholder="All Channels" />
               {/* <IconChevronDown className="h-4 w-4 opacity-50 ml-auto" /> */}
             </SelectTrigger>
@@ -240,7 +240,7 @@ export default function CampaignHistory({
           </Select>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-200 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all text-xs w-full sm:w-auto">
+            <SelectTrigger className="h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all text-xs w-full sm:w-auto">
               <SelectValue placeholder="All Status" />
               {/* <IconChevronDown className="h-4 w-4 opacity-50 ml-auto" /> */}
             </SelectTrigger>
@@ -258,7 +258,7 @@ export default function CampaignHistory({
           </Select>
 
           {/* Result Count Badge */}
-          <div className="pl-2 border-l border-slate-200 flex items-center shrink-0">
+          <div className="pl-2 border-l border-slate-300/60 flex items-center shrink-0">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                 Results
@@ -278,7 +278,7 @@ export default function CampaignHistory({
             {channelFilter !== "all" && (
               <Badge
                 variant="outline"
-                className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md flex items-center"
+                className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md flex items-center"
               >
                 <span className="text-[10px] font-bold uppercase opacity-50">
                   Channel:
@@ -297,7 +297,7 @@ export default function CampaignHistory({
             {statusFilter !== "all" && (
               <Badge
                 variant="outline"
-                className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-200 text-slate-600 rounded-md flex items-center"
+                className="h-7 px-2.5 gap-1.5 bg-slate-100 border-slate-300/60 text-slate-600 rounded-md flex items-center"
               >
                 <span className="text-[10px] font-bold uppercase opacity-50">
                   Status:
@@ -329,7 +329,7 @@ export default function CampaignHistory({
       </div>
 
       {/* History Table (High-Density Bento Grid) */}
-      <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="block rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto relative min-h-[400px]">
           {loading && history && history.length > 0 && (
             <TableLoader text="Updating history..." />
@@ -386,7 +386,7 @@ export default function CampaignHistory({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ delay: idx * 0.03, duration: 0.2 }}
-                      className="transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-200/50 group cursor-pointer"
+                      className="transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group cursor-pointer"
                     >
                       <TableCell className="px-3 sm:px-6 py-3 text-center whitespace-nowrap text-xs font-medium text-slate-500">
                         {idx + 1}
@@ -404,7 +404,7 @@ export default function CampaignHistory({
                             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
                             item.channel === "email"
                               ? "bg-indigo-50 text-indigo-600"
-                              : "bg-brand-blue text-brand-blue",
+                              : "bg-app-primary2 text-brand-blue",
                           )}
                         >
                           {item.channel || "Push"}
@@ -458,7 +458,7 @@ export default function CampaignHistory({
                             className={cn(
                               "w-2 h-2 rounded-full",
                               item.status === "completed"
-                                ? "bg-brand-blue shadow-[0_0_8px_rgba(20,184,166,0.4)]"
+                                ? "bg-app-primary2 shadow-[0_0_8px_rgba(20,184,166,0.4)]"
                                 : "bg-amber-400",
                             )}
                           />
@@ -479,7 +479,7 @@ export default function CampaignHistory({
                           variant="outline"
                           size="sm"
                           disabled={item.channel !== "email"}
-                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-200 hover:bg-brand-hoverBlue hover:text-white hover:border-brand-blue transition-all"
+                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-300/60 hover:bg-app-primary5 hover:text-white hover:border-brand-blue transition-all"
                           onClick={() => handleViewLogs(item)}
                         >
                           Logs
@@ -503,7 +503,7 @@ export default function CampaignHistory({
         </div>
 
         {/* --- PAGINATION SECTION (MERGED) --- */}
-        <div className="flex flex-col items-start md:items-center justify-between p-4 sm:p-6 border-t border-slate-200 gap-6 sm:flex-row sm:gap-4">
+        <div className="flex flex-col items-start md:items-center justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
           {/* Left Side: Showing results count */}
           <div className="text-xs font-medium text-slate-400 order-1 text-start">
             Showing{" "}
@@ -534,10 +534,10 @@ export default function CampaignHistory({
                   }))
                 }
               >
-                <SelectTrigger className="h-8 w-[65px] border-slate-200 rounded-md bg-white text-xs font-semibold focus:ring-0">
+                <SelectTrigger className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
                   {[10, 20, 50].map((size) => (
                     <SelectItem
                       key={size}
@@ -556,7 +556,7 @@ export default function CampaignHistory({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
                 onClick={() =>
                   onPaginationChange((prev) => ({
                     ...prev,
@@ -622,8 +622,8 @@ export default function CampaignHistory({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-brand-blue text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
-                            : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 shadow-none",
+                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
+                            : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                         )}
                       >
                         {page}
@@ -636,7 +636,7 @@ export default function CampaignHistory({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 border-slate-200 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
                 onClick={() =>
                   onPaginationChange((prev) => ({
                     ...prev,
@@ -655,7 +655,7 @@ export default function CampaignHistory({
       {/* DELIVERY LOGS MODAL */}
       <Dialog open={isLogsModalOpen} onOpenChange={setIsLogsModalOpen}>
         <DialogContent className="max-w-4xl max-h-[85vh] gap-0 overflow-hidden flex flex-col bg-white rounded-2xl border-none shadow-2xl p-0">
-          <DialogHeader className="px-6 py-4 border-b border-slate-200 flex flex-row items-center justify-between">
+          <DialogHeader className="px-6 py-4 border-b border-slate-300/60 flex flex-row items-center justify-between">
             <div className="space-y-0.5">
               <DialogTitle className="text-xl font-bold text-slate-900 tracking-tight">
                 Campaign Delivery Logs
@@ -671,7 +671,7 @@ export default function CampaignHistory({
             {logsLoading ? (
               <TableLoader text="Fetching granular logs..." />
             ) : campaignLogs && campaignLogs.length > 0 ? (
-              <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-auto max-h-[460px] relative">
+              <div className="rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-auto max-h-[460px] relative">
                 <Table className="border-separate border-spacing-0 table-fixed min-w-[600px] w-full relative">
                   <TableHeader className="z-20 shadow-sm">
                     <TableRow className="w-full">
@@ -753,7 +753,7 @@ export default function CampaignHistory({
               variant="outline"
               size="sm"
               onClick={closeLogsModal}
-              className="border-slate-200 bg-white text-slate-400 hover:text-white hover:bg-brand-hoverBlue text-xs font-medium px-6 h-9 rounded-lg"
+              className="border-slate-300/60 bg-white text-slate-400 hover:text-white hover:bg-app-primary5 text-xs font-medium px-6 h-9 rounded-lg"
             >
               Close
             </Button>

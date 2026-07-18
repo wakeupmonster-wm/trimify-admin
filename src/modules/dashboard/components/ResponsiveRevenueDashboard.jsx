@@ -43,7 +43,7 @@ export default function ResponsiveRevenueDashboard({
             <SelectTrigger className="h-12 w-full rounded-xl bg-slate-200/50 border-none backdrop-blur-md px-4 font-bold text-slate-700 focus:ring-brand-blue">
               <SelectValue placeholder="Select Section" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+            <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
               <SelectItem value="overview" className="py-3">
                 <div className="flex items-center gap-2">
                   <LayoutDashboard size={18} className="text-brand-blue" />
@@ -158,7 +158,7 @@ export default function ResponsiveRevenueDashboard({
                     By Plan Type
                   </CardTitle>
                 </div>
-                <div className="h-2 w-2 rounded-full bg-brand-blue animate-pulse" />
+                <div className="h-2 w-2 rounded-full bg-app-primary2 animate-pulse" />
               </CardHeader>
               <CardContent className="w-full h-[180px] pt-4">
                 <PlanBarChart data={byPlan} />

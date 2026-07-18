@@ -47,7 +47,9 @@ const UsersManagementPage = () => {
 
   const handleAction = (row, action) => {
     if (action === "view") {
-      navigate(`/admin/users/view-user/${row.id}`, { state: { userData: row } });
+      navigate(`/admin/users/view-user/${row.id}`, {
+        state: { userData: row },
+      });
     } else {
       console.log("Action:", action, "Row:", row);
     }
@@ -102,7 +104,7 @@ const UsersManagementPage = () => {
             <PageHeader
               heading="User Management"
               icon={<Users className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage application users, view their active plans, and modify their statuses."
             />
           </div>
@@ -116,7 +118,7 @@ const UsersManagementPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search users..."
+          searchPlaceholder="Search user name & email ID..."
           itemName="entries"
           isLoading={loading}
           manualPagination={isManual}

@@ -34,7 +34,8 @@ export default function RecentTransactionsCard({ transactions = [] }) {
                 className={cn(
                   "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2 py-0",
                   txn.status === "success"
-                    ? "bg-emerald-50 text-emerald-600"
+                    // ? "bg-emerald-50 text-emerald-600"
+                    ? "bg-[#15B097]/10 text-[#15B097]"
                     : "bg-slate-100 text-slate-500"
                 )}
               >

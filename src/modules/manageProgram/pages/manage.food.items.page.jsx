@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Utensils } from "lucide-react";
+import { Send, Utensils, X } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -24,6 +24,7 @@ import {
   toggleFoodStatus,
   deleteFood,
   getFoodCategoriesDrop,
+  searchFoodItems,
 } from "../store/food.slice";
 import { getManageFoodItemsColumns } from "@/components/columns/manage.food.items.columns";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -33,7 +34,7 @@ const ManageFoodItemsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { foods, dropdownCategories, loading } = useSelector(
+  const { foods, dropdownCategories, foodSearchResults, loading } = useSelector(
     (state) => state.manageFood,
   );
 
@@ -47,11 +48,20 @@ const ManageFoodItemsPage = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
+    food_id: "",
     type: "Non Approved",
     category_id: categoryId || "",
     quantity: "",
     unit: "",
   });
+
+  console.log("formData: ", formData)
+  console.log("foodSearchResults: ", foodSearchResults)
+
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isFoodSelected, setIsFoodSelected] = useState(false);
+  const searchTimeout = useRef(null);
 
   const standardUnits = [
     "g",
@@ -86,18 +96,44 @@ const ManageFoodItemsPage = () => {
     setEditingFoodId(null);
     setFormData({
       title: "",
+      food_id: "",
       type: "Non Approved",
       category_id: categoryId || "",
       quantity: "",
       unit: "",
     });
+    setShowSuggestions(false);
+    setIsFoodSelected(false);
   };
 
-  console.log("formData: ", formData);
+  const handleSearchFood = (val) => {
+    setFormData({ ...formData, title: val });
+
+    if (isEditing) return;
+
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+
+    if (val.trim()) {
+      setShowSuggestions(true);
+      searchTimeout.current = setTimeout(async () => {
+        setIsSearching(true);
+        await dispatch(searchFoodItems({ query: val }));
+        setIsSearching(false);
+      }, 300);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  // console.log("formData: ", formData);
 
   const handleAddOrUpdateFood = async () => {
     if (!formData.title.trim()) {
       toast.error("Please enter a food name.");
+      return;
+    }
+    if (!formData.food_id) {
+      toast.error("Please select a food from the suggestions.");
       return;
     }
     if (!formData.category_id) {
@@ -107,14 +143,14 @@ const ManageFoodItemsPage = () => {
 
     if (isEditing) {
       const payload = {
-        foodName: formData.title,
+        foodName: formData.food_id,
         approvalStatus: formData.type,
         category: formData.category_id,
         quantity: formData.quantity,
         unit: formData.unit,
       };
 
-      console.log("payload: ", payload);
+      // console.log("payload: ", payload);
       const resultAction = await dispatch(
         updateFood({ id: editingFoodId, data: payload }),
       );
@@ -129,7 +165,7 @@ const ManageFoodItemsPage = () => {
       const payload = {
         program_id: programId,
         category: formData.category_id,
-        foodName: formData.title,
+        foodName: formData.food_id,
         approvalStatus: formData.type,
         quantity: formData.quantity,
         unit: formData.unit,
@@ -167,11 +203,13 @@ const ManageFoodItemsPage = () => {
         row.is_approved;
       setFormData({
         title: row.name || row.title || row.meal?.Meal_title || "",
+        food_id: row.food_id || row.meal_id || row.meal?.id || row.id || "",
         type: isApproved ? "Approved" : "Non Approved",
         category_id: row.category_id || row.foodcategory_id || categoryId || "",
         quantity: row.quantity || row.meal?.quantity || row.meal_quantity || "",
         unit: row.unit || row.meal?.unit || row.meal_unit || "",
       });
+      setIsFoodSelected(true); // Treat as selected so the pill shows if needed (or just keep normal input depending on logic)
       // Scroll to top where the form is
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (action === "delete") {
@@ -204,7 +242,7 @@ const ManageFoodItemsPage = () => {
             <PageHeader
               heading={isEditing ? "Edit Food Item" : "Add Food Item"}
               icon={<Utensils className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-blue-200"
+              color="bg-app-primary2 shadow-blue-200"
               subheading={
                 isEditing
                   ? "Modify the selected food item's details."
@@ -214,7 +252,7 @@ const ManageFoodItemsPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
             {/* Approval Status */}
             <div className="space-y-1.5">
@@ -231,7 +269,7 @@ const ManageFoodItemsPage = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value })
                     }
-                    className="w-4 h-4 text-brand-blue border-slate-300 focus:ring-brand-blue"
+                    className="w-4 h-4 text-app-primary2 border-slate-300/60 focus:ring-app-primary2"
                   />
                   Approved
                 </label>
@@ -244,7 +282,7 @@ const ManageFoodItemsPage = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value })
                     }
-                    className="w-4 h-4 text-brand-blue border-slate-300 focus:ring-brand-blue"
+                    className="w-4 h-4 text-app-primary2 border-slate-300/60 focus:ring-app-primary2"
                   />
                   Non Approved
                 </label>
@@ -252,20 +290,101 @@ const ManageFoodItemsPage = () => {
             </div>
 
             {/* Search / Food Name */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
-                {isEditing ? "Food Name" : "Search Food Name"}
-              </Label>
-              <Input
-                type="text"
-                placeholder="Enter Food Name..."
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-              />
-            </div>
+            {isFoodSelected && !isEditing ? (
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold text-slate-800">
+                  Selected Food
+                </Label>
+                <div className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md flex items-center justify-between bg-white font-medium">
+                  <span className="truncate">{formData.title}</span>
+                  <button
+                    onClick={() => {
+                      setIsFoodSelected(false);
+                      setFormData({ ...formData, title: "", food_id: "" });
+                    }}
+                    className="text-slate-400 hover:text-red-500 shrink-0 ml-2"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1.5 relative">
+                <Label className="text-xs font-bold text-slate-800">
+                  {isEditing ? "Food Name" : "Search Food Name"}
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Enter Food Name..."
+                  className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
+                  value={formData.title}
+                  onChange={(e) => handleSearchFood(e.target.value)}
+                  onFocus={() => {
+                    if (
+                      !isEditing &&
+                      formData.title.trim().length >= 2 &&
+                      searchSuggestions.length > 0
+                    ) {
+                      setShowSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setShowSuggestions(false), 200);
+                  }}
+                />
+                {/* Autocomplete Suggestions */}
+                {showSuggestions && !isEditing && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300/60 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {isSearching || loading ? (
+                      <div className="p-3 text-sm text-slate-500 text-center">
+                        Searching...
+                      </div>
+                    ) : foodSearchResults && foodSearchResults.length > 0 ? (
+                      <ul className="py-1">
+                        {foodSearchResults.map((item, index) => (
+                          <li
+                            key={index}
+                            className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm flex items-center justify-between"
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                title:
+                                  item.title ||
+                                  item.name ||
+                                  item.Meal_title ||
+                                  item.food_name ||
+                                  item.meal?.Meal_title ||
+                                  formData.title,
+                                  food_id: item.id,
+                                  category_id:
+                                  item.category_id || formData.category_id,
+                                quantity: item.quantity || formData.quantity,
+                                unit: item.unit || formData.unit,
+                                type: item.type || formData.type,
+                              });
+                              setShowSuggestions(false);
+                              setIsFoodSelected(true);
+                            }}
+                          >
+                            <span>
+                              {item.title ||
+                                item.name ||
+                                item.Meal_title ||
+                                item.food_name ||
+                                item.meal?.Meal_title}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="p-3 text-sm text-slate-500 text-center">
+                        No results found.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
@@ -278,7 +397,7 @@ const ManageFoodItemsPage = () => {
                 }
                 disabled={isEditing}
               >
-                <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium disabled:bg-slate-50 disabled:opacity-70 disabled:cursor-not-allowed">
+                <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium disabled:bg-slate-50 disabled:opacity-70 disabled:cursor-not-allowed">
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -304,7 +423,7 @@ const ManageFoodItemsPage = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, quantity: e.target.value })
                     }
-                    className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                    className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                     placeholder="Enter Food Quantity"
                   />
                 </div>
@@ -318,7 +437,7 @@ const ManageFoodItemsPage = () => {
                       setFormData({ ...formData, unit: val })
                     }
                   >
-                    <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                    <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
                       <SelectValue placeholder="Select Unit" />
                     </SelectTrigger>
                     <SelectContent>
@@ -345,7 +464,7 @@ const ManageFoodItemsPage = () => {
                 </Button>
               )}
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >

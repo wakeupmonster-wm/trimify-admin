@@ -102,12 +102,12 @@ const ManageBlogsPage = () => {
             <PageHeader
               heading="Manage Blogs"
               icon={<FileText className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-hoverBlue"
+              color="bg-app-primary2 shadow-brand-hoverBlue"
               subheading="Manage blog posts for the platform."
             />
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
                 onClick={() => navigate("/admin/blog-section/add-post")}
               >
                 <Plus className="w-4 h-4" />

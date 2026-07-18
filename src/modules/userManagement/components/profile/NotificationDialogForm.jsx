@@ -22,14 +22,18 @@ const NotificationDialogForm = ({ type, onClose }) => {
   };
 
   return (
-    <div className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
+    <div className="border border-slate-300/60 shadow-sm rounded-xl overflow-hidden bg-white">
       <DialogTitle className="sr-only">
         {isEmail ? "Send Email" : "Send Push Notification"}
       </DialogTitle>
-      <div className="p-4 sm:p-6 border-b border-slate-200 flex items-center bg-slate-50/30 rounded-t-2xl pr-12">
+      <div className="p-4 sm:p-6 border-b border-slate-300/60 flex items-center bg-slate-50/30 rounded-t-2xl pr-12">
         <div className="flex items-center gap-2.5">
           <div className="p-2 bg-slate-100/60 rounded-3xl text-slate-500 flex items-center justify-center">
-            {isEmail ? <Mail className="w-5 h-5" /> : <Bell className="w-5 h-5" />}
+            {isEmail ? (
+              <Mail className="w-5 h-5" />
+            ) : (
+              <Bell className="w-5 h-5" />
+            )}
           </div>
           <div>
             <h3 className="font-bold text-slate-900 text-sm capitalize">
@@ -53,7 +57,7 @@ const NotificationDialogForm = ({ type, onClose }) => {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter Subject Here..."
-              className="w-full h-11 bg-[#F8FAFC]/50 border border-slate-200 rounded-lg px-4 text-[13px] font-medium outline-none focus:border-brand-blue"
+              className="w-full h-11 bg-[#F8FAFC]/50 border border-slate-300/60 rounded-lg px-4 text-[13px] font-medium outline-none focus:border-brand-blue"
             />
           </div>
         )}
@@ -65,31 +69,35 @@ const NotificationDialogForm = ({ type, onClose }) => {
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder={isEmail ? "Enter Email Body Here (HTML supported)..." : "Enter Push Message Here..."}
-            className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-200 resize-none font-medium text-[13px] p-4 rounded-lg"
+            placeholder={
+              isEmail
+                ? "Enter Email Body Here (HTML supported)..."
+                : "Enter Push Message Here..."
+            }
+            className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 rounded-lg"
           />
         </div>
 
         <div className="flex items-center gap-3 pt-2">
-          <Button 
+          <Button
             variant="outline"
             onClick={() => onClose && onClose()}
             disabled={isLoading}
-            className="flex-1 h-11 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-all"
+            className="flex-1 h-11 border-slate-300/60 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-all"
           >
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleSend}
             disabled={isLoading}
-            className="flex-1 h-11 bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+            className="flex-1 h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <Send size={18} />
             )}
-            {isLoading ? "Sending..." : (isEmail ? "Send Email" : "Send Push")}
+            {isLoading ? "Sending..." : isEmail ? "Send Email" : "Send Push"}
           </Button>
         </div>
       </div>

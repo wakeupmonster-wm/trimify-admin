@@ -10,6 +10,7 @@ import {
   updateFoodAPI,
   toggleFoodStatusAPI,
   deleteFoodAPI,
+  searchFoodItemsAPI,
 } from "../services/food.services";
 
 // ──────────────── Food Categories ────────────────
@@ -23,10 +24,10 @@ export const getFoodCategories = createAsyncThunk(
         return {
           foodcategories: response.foodcategories || [],
           pagination: {
-            page: response.pagination?.current_page || 1,
-            limit: response.pagination?.per_page || 10,
+            page: response.pagination?.current_page || response.pagination?.page || 1,
+            limit: response.pagination?.per_page || 10, 
             total: response.pagination?.total || 0,
-            totalPages: response.pagination?.last_page || 1,
+            totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
         };
       }
@@ -158,11 +159,38 @@ export const deleteFood = createAsyncThunk(
   }
 );
 
+export const searchFoodItems = createAsyncThunk(
+  "manageFood/searchFoodItems",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await searchFoodItemsAPI();
+       if (response && response.status !== "error" && response.status !== false) {
+          let foods = response.searchfood || response.data || [];
+                
+        // Local filtering since backend doesn't support query params for search sometimes
+        // Local filtering since backend doesn't support query params for search
+        if (params.query) {
+            const lowerQuery = params.query.toLowerCase();
+            foods = foods.filter((f) => {
+              const foodName = f.title || f.name || f.Meal_title || "";
+                return foodName.toLowerCase().includes(lowerQuery);
+              });
+            }
+        return foods;
+      }
+      return rejectWithValue(response.message || "Failed to search food items");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to search food items");
+    }
+  }
+);
+
 const manageFoodSlice = createSlice({
   name: "manageFood",
   initialState: {
     categories: [],
     dropdownCategories: [],
+    foodSearchResults: [],
     foods: [],
     pagination: {
       page: 1,
@@ -208,7 +236,11 @@ const manageFoodSlice = createSlice({
       .addCase(getFoodList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // search food
+      .addCase(searchFoodItems.fulfilled, (state, action) => {
+        state.foodSearchResults = action.payload || [];
+      })
       // ... Add/Update/Delete cases just set loading true/false/error in typical patterns
       // but to save boilerplate we rely on refetching lists after successful mutations.
   },

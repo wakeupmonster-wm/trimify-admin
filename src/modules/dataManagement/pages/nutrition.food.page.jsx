@@ -24,7 +24,10 @@ const NutritionFoodPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    rowData: null,
+  });
 
   useEffect(() => {
     dispatch(
@@ -68,21 +71,23 @@ const NutritionFoodPage = () => {
             <PageHeader
               heading="Nutrition Food"
               icon={<Apple className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Manage all nutrition food items and recipes."
             />
 
             <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
               <Button
                 onClick={() => navigate("/admin/data-management/add-nutrition")}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 Add Food
               </Button>
               <Button
-                onClick={() => navigate("/admin/data-management/ai-food-upload")}
-                className="w-full xs:w-auto bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                onClick={() =>
+                  navigate("/admin/data-management/ai-food-upload")
+                }
+                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
               >
                 <UploadCloud className="w-4 h-4" />
                 Upload Food

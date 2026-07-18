@@ -57,7 +57,7 @@ const NotificationManagePage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  
+
   const [activeTab, setActiveTab] = useState("push");
   const [messageText, setMessageText] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
@@ -91,7 +91,7 @@ const NotificationManagePage = () => {
             <PageHeader
               heading="Manage Notification"
               icon={<Bell className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading="Create and manage notifications sent to users."
             />
           </div>
@@ -99,7 +99,7 @@ const NotificationManagePage = () => {
 
         <div className="mx-auto">
           {/* TABS */}
-          <div className="flex flex-wrap items-center gap-6 border-b border-slate-200 mb-6">
+          <div className="flex flex-wrap items-center gap-6 border-b border-slate-300/60 mb-6">
             <button
               onClick={() => setActiveTab("push")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
@@ -132,17 +132,20 @@ const NotificationManagePage = () => {
             </button>
           </div>
 
-          {(activeTab === "push" || activeTab === "email") ? (
+          {activeTab === "push" || activeTab === "email" ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* LEFT: MESSAGE DETAILS */}
               <div className="lg:col-span-7">
-                <div className="border border-slate-200 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <div className="px-4 sm:px-6 py-2 md:py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="border border-slate-300/60 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
+                  <div className="px-4 sm:px-6 py-2 md:py-4 border-b border-slate-300/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                      {activeTab === "email" ? "Email Details" : "Push Notification Details"}
+                      {activeTab === "email"
+                        ? "Email Details"
+                        : "Push Notification Details"}
                     </h2>
                     <span className="text-[10px] sm:text-xs font-medium text-slate-400">
-                      Configure and dispatch {activeTab === "email" ? "emails" : "push notifications"}
+                      Configure and dispatch{" "}
+                      {activeTab === "email" ? "emails" : "push notifications"}
                     </span>
                   </div>
 
@@ -157,7 +160,7 @@ const NotificationManagePage = () => {
                           placeholder="Enter Subject Here..."
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
-                          className="w-full h-11 bg-[#F8FAFC]/50 border border-slate-200 rounded-lg px-4 text-[13px] font-medium outline-none focus:border-brand-blue"
+                          className="w-full h-11 bg-[#F8FAFC]/50 border border-slate-300/60 rounded-lg px-4 text-[13px] font-medium outline-none focus:border-brand-blue"
                         />
                       </div>
                     )}
@@ -167,16 +170,22 @@ const NotificationManagePage = () => {
                         Message Content
                       </Label>
                       <Textarea
-                        placeholder={activeTab === "email" ? "Enter Email Body Here (HTML supported)..." : "Enter Push Message Here..."}
+                        placeholder={
+                          activeTab === "email"
+                            ? "Enter Email Body Here (HTML supported)..."
+                            : "Enter Push Message Here..."
+                        }
                         value={messageText}
                         onChange={(e) => setMessageText(e.target.value)}
-                        className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-200 resize-none font-medium text-[13px] p-4 rounded-lg"
+                        className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 rounded-lg"
                       />
                     </div>
 
-                    <Button className="w-full h-11 bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]">
+                    <Button className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]">
                       <Send size={18} />
-                      {activeTab === "email" ? "Send Email" : "Send Push Notification"}
+                      {activeTab === "email"
+                        ? "Send Email"
+                        : "Send Push Notification"}
                     </Button>
                   </div>
                 </div>
@@ -184,16 +193,16 @@ const NotificationManagePage = () => {
 
               {/* RIGHT: LIVE PREVIEW */}
               <div className="lg:col-span-5 flex flex-col gap-6 sticky top-8">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[500px]">
+                <div className="bg-white border border-slate-300/60 rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[500px]">
                   {/* Header */}
-                  <div className="flex items-center justify-between py-[22px] px-5 border-b border-slate-200 bg-white">
+                  <div className="flex items-center justify-between py-[22px] px-5 border-b border-slate-300/60 bg-white">
                     <div className="flex items-center gap-2 text-slate-900">
                       <Bell size={18} strokeWidth={2.5} />
                       <span className="text-[15px] font-bold">
                         Live Preview
                       </span>
                     </div>
-                    <div className="px-3 py-1 rounded-full text-[11px] font-bold bg-brand-blue text-white">
+                    <div className="px-3 py-1 rounded-full text-[11px] font-bold bg-app-primary2 text-white">
                       {activeTab === "email" ? "Email" : "Mobile Push"}
                     </div>
                   </div>
@@ -219,7 +228,7 @@ const NotificationManagePage = () => {
                             <div className="absolute top-10 left-3 right-3 z-30 transition-all duration-300">
                               <div className="bg-white/95 backdrop-blur-md shadow-lg rounded-[16px] p-3 border border-white/20">
                                 <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-500">
-                                  <div className="w-[18px] h-[18px] bg-brand-blue rounded flex items-center justify-center">
+                                  <div className="w-[18px] h-[18px] bg-app-primary2 rounded flex items-center justify-center">
                                     <Bell
                                       className="text-white w-2.5 h-2.5"
                                       strokeWidth={3}
@@ -243,9 +252,9 @@ const NotificationManagePage = () => {
                     ) : (
                       <div className="w-full flex justify-center items-start px-2 h-full">
                         {/* Email Mockup */}
-                        <div className="w-full max-w-[400px] bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden h-max">
+                        <div className="w-full max-w-[400px] bg-white border border-slate-300/60 rounded-xl shadow-lg overflow-hidden h-max">
                           {/* Window Topbar */}
-                          <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex items-center gap-1.5">
+                          <div className="bg-slate-100 px-4 py-3 border-b border-slate-300/60 flex items-center gap-1.5">
                             <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
                             <div className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
                             <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />

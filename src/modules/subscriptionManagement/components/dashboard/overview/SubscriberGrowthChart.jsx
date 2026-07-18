@@ -12,7 +12,8 @@ import {
 } from "recharts";
 import ChartCard from "./ChartCard";
 
-const AQUA = "#46C7CD";
+// const AQUA = "#46C7CD";
+const AQUA = "#007FC0"; // primary2
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -63,7 +64,8 @@ export default function SubscriberGrowthChart({ data = [] }) {
             allowDecimals={false}
             width={30}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "#46C7CD", fillOpacity: 0.08 }} />
+          {/* <Tooltip content={<CustomTooltip />} cursor={{ fill: "#46C7CD", fillOpacity: 0.08 }} /> */}
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: "#007FC0", fillOpacity: 0.08 }} />
           <Bar dataKey="new_subscribers" fill={AQUA} radius={[4, 4, 0, 0]} maxBarSize={36} />
         </BarChart>
       </ResponsiveContainer>

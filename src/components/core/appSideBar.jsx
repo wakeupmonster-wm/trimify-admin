@@ -92,11 +92,11 @@ export function AppSidebar({ ...props }) {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-slate-200 bg-slate-50 pt-1"
+      className="border-r border-slate-300/60 bg-slate-50 pt-1"
       {...props}
     >
       {/* --- HEADER: Logo & Branding --- */}
-      <SidebarHeader className="sticky top-0 z-20 h-[3.75rem] items-center justify-center border-b border-slate-200 bg-slate-50 p-0">
+      <SidebarHeader className="sticky top-0 z-20 h-[3.75rem] items-center justify-center border-b border-slate-300/60 bg-slate-50 p-0">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center justify-around px-4">
             {/* 2. Agar sidebar open hai tabhi logo dikhega */}
@@ -159,7 +159,7 @@ export function AppSidebar({ ...props }) {
       </SidebarContent>
 
       {/* --- FOOTER: User Profile --- */}
-      <SidebarFooter className="border-t border-slate-200 px-3 py-4">
+      <SidebarFooter className="border-t border-slate-300/60 px-3 py-4">
         <NavUser user={navUser} />
       </SidebarFooter>
     </Sidebar>

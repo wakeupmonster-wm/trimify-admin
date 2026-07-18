@@ -13,12 +13,13 @@ const STATUS_STYLES = {
   churned: "bg-red-50 text-red-600 border-red-200",
   pending: "bg-amber-50 text-amber-600 border-amber-200",
   "expiring soon": "bg-amber-50 text-amber-600 border-amber-200",
-  revoked: "bg-slate-100 text-slate-500 border-slate-200",
+  revoked: "bg-slate-100 text-slate-500 border-slate-300/60",
 };
 
 const StatusPill = ({ status }) => {
   const key = String(status || "").toLowerCase();
-  const className = STATUS_STYLES[key] || "bg-slate-100 text-slate-500 border-slate-200";
+  const className =
+    STATUS_STYLES[key] || "bg-slate-100 text-slate-500 border-slate-300/60";
   return (
     <span
       className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${className}`}

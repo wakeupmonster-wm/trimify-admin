@@ -131,7 +131,7 @@ const AddNutritionPage = () => {
             <PageHeader
               heading={isEdit ? "Edit Food" : "Add Food"}
               icon={<Apple className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue"
+              color="bg-app-primary2 shadow-brand-blue"
               subheading={
                 isEdit
                   ? "Update existing nutrition food details."
@@ -141,7 +141,7 @@ const AddNutritionPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -160,7 +160,7 @@ const AddNutritionPage = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Enter Food Title"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -178,7 +178,7 @@ const AddNutritionPage = () => {
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="Enter Image URL"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                 />
                 <p className="text-[10px] text-slate-500 font-medium">
                   Note: Please provide the jpg image URL here
@@ -201,7 +201,7 @@ const AddNutritionPage = () => {
                   value={formData.protein}
                   onChange={handleChange}
                   placeholder="Enter Proteins"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -222,7 +222,7 @@ const AddNutritionPage = () => {
                   value={formData.carbs}
                   onChange={handleChange}
                   placeholder="Enter Carbs"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -243,7 +243,7 @@ const AddNutritionPage = () => {
                   value={formData.calories}
                   onChange={handleChange}
                   placeholder="Enter Calories"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -264,7 +264,7 @@ const AddNutritionPage = () => {
                   value={formData.fats}
                   onChange={handleChange}
                   placeholder="Enter Fats"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -283,7 +283,7 @@ const AddNutritionPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Enter Description"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.description?.length || 0}
@@ -302,7 +302,7 @@ const AddNutritionPage = () => {
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
                   <SelectValue placeholder="Select Meal Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -325,7 +325,7 @@ const AddNutritionPage = () => {
                 value={formData.meal_description}
                 onChange={handleChange}
                 placeholder="Enter Meal Instructions"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.meal_description?.length || 0}. Note:
@@ -346,7 +346,7 @@ const AddNutritionPage = () => {
                 value={formData.meal_ingredients}
                 onChange={handleChange}
                 placeholder="Enter ingredients"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.meal_ingredients?.length || 0}. Note:
@@ -369,7 +369,7 @@ const AddNutritionPage = () => {
                 value={formData.Meal_Serving}
                 onChange={handleChange}
                 placeholder="Enter Meal Serving"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -388,7 +388,7 @@ const AddNutritionPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>

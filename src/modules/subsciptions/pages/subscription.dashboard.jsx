@@ -1,80 +1,37 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable no-unused-vars */
-import React, {
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-  useRef,
-} from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  TrendingUp,
-  AlertTriangle,
-  Package,
-  RefreshCcw,
-  TrendingDown,
-  DollarSign,
-  Percent,
-  Crown,
-  Box,
-  Trophy,
-} from "lucide-react";
+import { TrendingUp, AlertTriangle, RefreshCcw, TrendingDown, DollarSign, Percent, Crown, Trophy } from "lucide-react";
 import { LuUserRoundCheck } from "react-icons/lu";
 import { colorMap } from "@/constants/colors";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import {
-  fetchSubscriptionKPIs,
-  setSubscriptionDateRange,
-} from "../store/subscription.slice";
-import Loader from "@/components/common/Loader";
+import { fetchSubscriptionKPIs, setSubscriptionDateRange } from "../store/subscription.slice";
 import { format } from "date-fns";
 import { SubscriptionDashboardSkeleton } from "../components/SubscriptionDashboardSkeleton";
 import { PageHeader } from "@/components/common/headSubhead";
 import Last24HoursPieChart from "./Last24HoursPieChart";
 import PlanDistributionChart from "./PlanDistributionChart";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
-import { AiFillAndroid, AiFillApple } from "react-icons/ai";
-import { LiaUserTieSolid } from "react-icons/lia";
-import {
-  IconChartBarOff,
-  IconTrendingUp as TablerTrendingUp,
-  IconTrendingDown as TablerTrendingDown,
-} from "@tabler/icons-react";
+import { IconTrendingUp as TablerTrendingUp, IconTrendingDown as TablerTrendingDown, } from "@tabler/icons-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { TableLoader } from "@/app/loader/table.loader";
-import {
-  Tooltip as ShadTooltip,
-  TooltipTrigger as ShadTooltipTrigger,
-  TooltipContent as ShadTooltipContent,
-  TooltipProvider as ShadTooltipProvider,
-} from "@/components/ui/tooltip";
-
+import { Tooltip as ShadTooltip, TooltipTrigger as ShadTooltipTrigger, TooltipContent as ShadTooltipContent, TooltipProvider as ShadTooltipProvider,} from "@/components/ui/tooltip";
 import RevenueTrendChart from "./RevenueTrendChart";
 import PlatformMixChart from "./PlatformMixChart";
 import SubscriberGrowthChart from "./SubscriberGrowthChart";
 import BestSellingProductsList from "./BestSellingProductsList";
 
-const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
+// const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
+const COLORS = [
+  "#007FC0", // primary2
+  "#15B097", // cardGreen
+  "#DC6B1B", // cardOrange
+  "#EDA145", // cardYellow
+  "#5AA0C1", // primary3
+];
 
 const getSubTrendExplanation = (stat) => {
   if (!stat.tooltipData) return stat.sublabel || "";
@@ -83,10 +40,7 @@ const getSubTrendExplanation = (stat) => {
     return `${stat.tooltipData.subscribers?.toLocaleString()} active subscribers out of ${stat.tooltipData.totalUsers?.toLocaleString()} total users.`;
   }
 
-  if (
-    "cancellations" in stat.tooltipData &&
-    "activeAtStart" in stat.tooltipData
-  ) {
+  if ("cancellations" in stat.tooltipData && "activeAtStart" in stat.tooltipData) {
     return `${stat.tooltipData.cancellations?.toLocaleString()} cancellations from ${stat.tooltipData.activeAtStart?.toLocaleString()} active subscribers at the start of the period.`;
   }
 
@@ -812,12 +766,14 @@ export default function SubscriptionDashboard() {
       {
         name: "1 Month Premium",
         subscribers: oneMonthCount,
-        fill: "hsl(var(--brand-blue))",
+        // fill: "hsl(var(--brand-blue))",
+        fill: "#007FC0", // primary2
       },
       {
         name: "3 Months Premium",
         subscribers: threeMonthCount,
-        fill: "hsl(var(--aqua-gradient-start))",
+        // fill: "hsl(var(--aqua-gradient-start))",
+        fill: "#5AA0C1", // primary3
       },
     ];
   }, [charts]);
@@ -950,7 +906,7 @@ export default function SubscriptionDashboard() {
         >
           <Button
             onClick={handleRefresh}
-            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-brand-hoverBlue text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-brand-blue transition-all duration-300 active:scale-95 overflow-hidden"
+            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-app-primary5 text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-brand-blue transition-all duration-300 active:scale-95 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-3">
               <RefreshCcw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
@@ -1001,7 +957,7 @@ export default function SubscriptionDashboard() {
             className={cn(
               "sticky top-0 z-[50] px-3 md:px-6 py-3 transition-all duration-300 ease-in-out",
               scrolled
-                ? "backdrop-blur-md bg-white/95 border-b border-slate-200 shadow-sm shadow-slate-300/50"
+                ? "backdrop-blur-md bg-white/95 border-b border-slate-300/60 shadow-sm shadow-slate-300/50"
                 : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
@@ -1011,7 +967,7 @@ export default function SubscriptionDashboard() {
                 icon={
                   <TrendingUp strokeWidth={2} className="w-8 h-8 text-white" />
                 }
-                color="bg-brand-blue shadow-brand-blue"
+                color="bg-app-primary2 shadow-brand-blue"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
@@ -1074,7 +1030,7 @@ export default function SubscriptionDashboard() {
                                   className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 cursor-help transition-transform ${
                                     isNegative
                                       ? "text-rose-600 bg-rose-50 border-rose-200"
-                                      : "text-brand-blue bg-brand-blue border-brand-blue"
+                                      : "text-brand-blue bg-app-primary2 border-brand-blue"
                                   }`}
                                 >
                                   {isTrendingUp && hasTrend ? (
@@ -1204,8 +1160,8 @@ export default function SubscriptionDashboard() {
 
           {/* Milestone Program */}
           {kpis?.milestone && (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm mb-6 mx-6 overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+            <div className="bg-white border border-slate-300/60 rounded-xl shadow-sm mb-6 mx-6 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-300/60 flex items-center justify-between">
                 <DashboardHead
                   title="Milestone Program"
                   subtitle="Free Premium Grant Progress"
@@ -1231,7 +1187,7 @@ export default function SubscriptionDashboard() {
                 </div>
                 <div className="h-3 rounded-full bg-[#E2E8F0] m-0 w-full overflow-hidden">
                   <div
-                    className="h-full bg-brand-blue rounded-full transition-all duration-500"
+                    className="h-full bg-app-primary2 rounded-full transition-all duration-500"
                     style={{ width: `${milestoneProgress}%` }}
                   ></div>
                 </div>

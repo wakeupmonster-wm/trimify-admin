@@ -148,7 +148,7 @@ const MatchLiquidityCard = ({ metric }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex items-start gap-3 px-5 pb-4 border-b border-slate-200">
+      <div className="flex items-start gap-3 px-5 pb-4 border-b border-slate-300/60">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-200/50">
           <TbSwipe className="h-5 w-5 text-slate-600" />
         </div>
@@ -271,7 +271,7 @@ export function KeyMetricsHealth({ data }) {
               return (
                 <div
                   key={idx}
-                  className="bg-white border border-slate-200 rounded-xl py-5 shadow-sm hover:border-brand-blue transition-all duration-300"
+                  className="bg-white border border-slate-300/60 rounded-xl py-5 shadow-sm hover:border-brand-blue transition-all duration-300"
                 >
                   <MatchLiquidityCard metric={metric} />
                 </div>
@@ -281,9 +281,9 @@ export function KeyMetricsHealth({ data }) {
             return (
               <div
                 key={idx}
-                className="bg-white border border-slate-200 rounded-xl py-5 hover:border-brand-blue transition-all duration-300 shadow-sm"
+                className="bg-white border border-slate-300/60 rounded-xl py-5 hover:border-brand-blue transition-all duration-300 shadow-sm"
               >
-                <div className="flex items-start gap-2 pb-4 px-5 border-b border-slate-200">
+                <div className="flex items-start gap-2 pb-4 px-5 border-b border-slate-300/60">
                   <DashboardHead
                     title={metric.label}
                     subtitle={metric.subtitle}

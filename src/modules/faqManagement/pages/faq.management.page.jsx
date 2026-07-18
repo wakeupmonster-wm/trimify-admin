@@ -37,7 +37,15 @@ const FaqManagementPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentFaqId, setCurrentFaqId] = useState(null);
-  const [deleteModal, setDeleteModal] = useState({ open: false, rowData: null });
+  const [deleteModal, setDeleteModal] = useState({
+    open: false,
+    rowData: null,
+  });
+  const [toggleModal, setToggleModal] = useState({
+    open: false,
+    rowData: null,
+    targetStatus: false,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -66,11 +74,15 @@ const FaqManagementPage = () => {
     try {
       let res;
       if (editMode) {
-        res = await dispatch(updateFaq({ id: currentFaqId, data: formData })).unwrap();
+        res = await dispatch(
+          updateFaq({ id: currentFaqId, data: formData }),
+        ).unwrap();
       } else {
         res = await dispatch(addFaq(formData)).unwrap();
       }
-      toast.success(res?.message || `FAQ ${editMode ? "updated" : "added"} successfully`);
+      toast.success(
+        res?.message || `FAQ ${editMode ? "updated" : "added"} successfully`,
+      );
       setIsDialogOpen(false);
       setFormData({ question: "", answer: "" }); // Reset form
       setEditMode(false);
@@ -84,9 +96,7 @@ const FaqManagementPage = () => {
 
   const handleAction = async (row, action, value) => {
     if (action === "toggle-status") {
-      const newStatus = value ? "Active" : "Inactive";
-      await dispatch(toggleFaqStatus({ id: row.id, status: newStatus }));
-      toast.success(`FAQ marked as ${newStatus}`);
+      setToggleModal({ open: true, rowData: row, targetStatus: value });
     } else if (action === "edit") {
       setFormData({ question: row.question, answer: row.answer });
       setCurrentFaqId(row.id);
@@ -95,6 +105,23 @@ const FaqManagementPage = () => {
     } else if (action === "delete") {
       setDeleteModal({ open: true, rowData: row });
     }
+  };
+
+  const handleConfirmToggle = async () => {
+    if (!toggleModal.rowData) return;
+    const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
+    try {
+      // Assuming unwrap() is available or handle success properly
+      const res = await dispatch(toggleFaqStatus({ id: toggleModal.rowData.id, status: newStatus }));
+      if (toggleFaqStatus.fulfilled.match(res)) {
+         toast.success(`FAQ marked as ${newStatus}`);
+      } else {
+         toast.error("Failed to update FAQ status");
+      }
+    } catch (error) {
+      toast.error(error?.message || error || "Failed to update FAQ status");
+    }
+    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
@@ -118,7 +145,7 @@ const FaqManagementPage = () => {
             <PageHeader
               heading="FAQ"
               icon={<HelpCircle className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-md"
+              color="bg-app-primary2 shadow-md"
               subheading="Manage Frequently Asked Questions for the platform."
             />
           </div>
@@ -131,7 +158,7 @@ const FaqManagementPage = () => {
               setCurrentFaqId(null);
               setIsDialogOpen(true);
             }}
-            className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-4 h-10 text-xs font-semibold gap-2"
+            className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 text-xs font-semibold gap-2"
           >
             <Plus className="w-4 h-4" /> Add FAQ
           </Button>
@@ -140,7 +167,7 @@ const FaqManagementPage = () => {
         {/* FAQ Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300 bg-slate-50/50">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300/60 bg-slate-50/50">
               <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-brand-blue" />
                 {editMode ? "Edit FAQ" : "Add New FAQ"}
@@ -163,7 +190,7 @@ const FaqManagementPage = () => {
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300 bg-slate-50 hover:bg-white transition-colors"
+                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
@@ -176,22 +203,22 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
-              <div className="pt-4 flex justify-end gap-3 border-t border-slate-200 mt-2">
+              <div className="pt-4 flex justify-end gap-3 border-t border-slate-300/60 mt-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="rounded-lg px-5 h-10 text-xs font-semibold border-slate-300 text-slate-600 hover:bg-slate-50"
+                  className="rounded-lg px-5 h-10 text-xs font-semibold border-slate-300/60 text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+                  className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -236,6 +263,15 @@ const FaqManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this FAQ? This action cannot be undone."
+      />
+      <ConfirmModal
+        isOpen={toggleModal.open}
+        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onConfirm={handleConfirmToggle}
+        title="Confirm Status Change"
+        message={`Are you sure you want to change the status of this FAQ to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
+        type="brand"
+        confirmText="Update"
       />
     </Container>
   );

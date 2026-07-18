@@ -8,7 +8,7 @@ export const DataNotFound = ({ icon, message }) => {
         {icon ? (
           icon
         ) : (
-          <IconInbox size={10} className="w-8 h-8 text-brand-blue" />
+          <IconInbox size={10} className="w-8 h-8 text-app-primary2" />
         )}
       </div>
       <p className="text-sm font-medium">

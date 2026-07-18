@@ -33,21 +33,23 @@ export function UserGrowthChart({ data, selectedDate }) {
 
     // The backend now provides pre-formatted chronological strings in the `date` field.
     // e.g. '14 Jul', 'Week 1', 'Apr'. We just need to merge the two arrays while preserving order.
-    const uniqueDates = Array.from(new Set([...signups.map(s => s.date), ...active.map(a => a.date)]));
+    const uniqueDates = Array.from(
+      new Set([...signups.map((s) => s.date), ...active.map((a) => a.date)]),
+    );
 
-    const formattedData = uniqueDates.map(dateLabel => {
-       const signupPoint = signups.find(s => s.date === dateLabel);
-       const activePoint = active.find(a => a.date === dateLabel);
-       return {
-         day: dateLabel, // X-Axis label
-         signups: signupPoint ? signupPoint.total : 0,
-         activeUsers: activePoint ? activePoint.active_users : 0
-       };
+    const formattedData = uniqueDates.map((dateLabel) => {
+      const signupPoint = signups.find((s) => s.date === dateLabel);
+      const activePoint = active.find((a) => a.date === dateLabel);
+      return {
+        day: dateLabel, // X-Axis label
+        signups: signupPoint ? signupPoint.total : 0,
+        activeUsers: activePoint ? activePoint.active_users : 0,
+      };
     });
 
     return {
       data: formattedData,
-      subtitle: "Signups and active users over time"
+      subtitle: "Signups and active users over time",
     };
   }, [data]);
 
@@ -58,8 +60,8 @@ export function UserGrowthChart({ data, selectedDate }) {
     displayData.data.some((d) => (d.male || 0) > 0 || (d.female || 0) > 0);
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col gap-5 py-5 h-full">
-      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-200">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col gap-5 py-5 h-full">
+      <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title="User Growth by Gender"
           subtitle={displayData.subtitle || "Daily signups for the last 7 days"}
@@ -70,12 +72,12 @@ export function UserGrowthChart({ data, selectedDate }) {
         />
         {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-brand-hoverBlue border-slate-200 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
+            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-app-primary5 border-slate-300/60 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
             aria-label="Select time range"
           >
             <SelectValue placeholder="7 Days" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl border-slate-200">
+          <SelectContent className="rounded-xl border-slate-300/60">
             <SelectItem value="today" className="text-xs">
               Today
             </SelectItem>

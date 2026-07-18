@@ -1,7 +1,5 @@
 import {
   IconLayoutDashboard,
-  IconUsersGroup,
-  IconUsers,
   IconClipboardCheck,
   IconYoga,
   IconDatabaseCog,
@@ -11,8 +9,10 @@ import {
   IconDeviceDesktop,
   IconBell,
   IconInfoCircle,
-  IconUserCog,
+  IconSettings,
 } from "@tabler/icons-react";
+import { LuUsersRound } from "react-icons/lu";
+import { PiUsersThree } from "react-icons/pi";
 
 const navigationData = {
   user: {
@@ -31,17 +31,17 @@ const navigationData = {
     {
       title: "Sub Admin Management",
       url: "/admin/sub-admin-management",
-      icon: IconUsersGroup,
+      icon: PiUsersThree,
       badge: null,
     },
     {
-      title: "Users",
+      title: "User Management",
       url: "/admin/users",
-      icon: IconUsers,
+      icon: LuUsersRound,
       badge: null,
     },
     {
-      title: "Manage Program",
+      title: "Program Management",
       url: "/admin/manage-program",
       icon: IconClipboardCheck,
       badge: null,
@@ -69,7 +69,7 @@ const navigationData = {
       ],
     },
     {
-      title: "Blog Section",
+      title: "Blog Management",
       url: "/admin/blog-section",
       icon: IconNews,
       badge: null,
@@ -103,13 +103,13 @@ const navigationData = {
       badge: null,
     },
     {
-      title: "CMS Management",
+      title: "Content Management",
       url: "/admin/cms-management",
       icon: IconDeviceDesktop,
       badge: null,
     },
     {
-      title: "Notification Manage",
+      title: "Notification Management",
       url: "/admin/notification-manage",
       icon: IconBell,
       badge: null,
@@ -123,7 +123,7 @@ const navigationData = {
     {
       title: "Account Settings",
       url: "/admin/account-settings",
-      icon: IconUserCog,
+      icon: IconSettings,
       badge: null,
     },
   ],

@@ -25,13 +25,17 @@ export function ContentPerformance({ data }) {
   const renderList = (items, valueKey, label) => {
     if (items.length === 0) {
       return (
-        <div className={`flex items-center justify-center ${LIST_HEIGHT} text-slate-400 text-xs font-medium border-2 border-dashed border-slate-100 rounded-xl`}>
+        <div
+          className={`flex items-center justify-center ${LIST_HEIGHT} text-slate-400 text-xs font-medium border-2 border-dashed border-slate-100 rounded-xl`}
+        >
           No data available
         </div>
       );
     }
 
-    const sorted = [...items].sort((a, b) => (b[valueKey] || 0) - (a[valueKey] || 0));
+    const sorted = [...items].sort(
+      (a, b) => (b[valueKey] || 0) - (a[valueKey] || 0),
+    );
     const maxVal = sorted[0]?.[valueKey] || 1;
     const top = sorted[0];
 
@@ -43,16 +47,26 @@ export function ContentPerformance({ data }) {
             <Crown className="h-5 w-5 text-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold text-white/75 uppercase tracking-wider">Top Performer</p>
-            <p className="text-sm font-black text-white truncate">{top.title}</p>
+            <p className="text-[10px] font-bold text-white/75 uppercase tracking-wider">
+              Top Performer
+            </p>
+            <p className="text-sm font-black text-white truncate">
+              {top.title}
+            </p>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-base font-black text-white leading-none">{formatCompactNumber(top[valueKey] || 0)}</p>
-            <p className="text-[10px] font-semibold text-white/75 mt-0.5">{label}</p>
+            <p className="text-base font-black text-white leading-none">
+              {formatCompactNumber(top[valueKey] || 0)}
+            </p>
+            <p className="text-[10px] font-semibold text-white/75 mt-0.5">
+              {label}
+            </p>
           </div>
         </div>
 
-        <div className={`grid grid-cols-1 xl:grid-cols-2 gap-x-6 gap-y-2.5 content-start ${LIST_HEIGHT} overflow-y-auto pr-2 -mr-2`}>
+        <div
+          className={`grid grid-cols-1 xl:grid-cols-2 gap-x-6 gap-y-2.5 content-start ${LIST_HEIGHT} overflow-y-auto pr-2 -mr-2`}
+        >
           {sorted.map((item, idx) => {
             const val = item[valueKey] || 0;
             const percentage = Math.max((val / maxVal) * 100, 4);
@@ -65,22 +79,29 @@ export function ContentPerformance({ data }) {
                 <span
                   className={cn(
                     "h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-[11px] font-black",
-                    style.badge
+                    style.badge,
                   )}
                 >
                   {idx + 1}
                 </span>
                 <div className="min-w-0 flex-1 flex flex-col gap-1.5">
                   <div className="flex justify-between items-baseline gap-2">
-                    <span className="text-xs font-semibold text-slate-700 truncate">{item.title}</span>
+                    <span className="text-xs font-semibold text-slate-700 truncate">
+                      {item.title}
+                    </span>
                     <span className="text-xs font-bold text-slate-900 shrink-0 whitespace-nowrap">
                       {formatCompactNumber(val)}{" "}
-                      <span className="font-medium text-slate-400 text-[10px]">{label}</span>
+                      <span className="font-medium text-slate-400 text-[10px]">
+                        {label}
+                      </span>
                     </span>
                   </div>
                   <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className={cn("h-full rounded-full transition-all duration-500", style.bar)}
+                      className={cn(
+                        "h-full rounded-full transition-all duration-500",
+                        style.bar,
+                      )}
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
@@ -94,9 +115,9 @@ export function ContentPerformance({ data }) {
   };
 
   return (
-    <Card className="rounded-xl border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 shadow-sm hover:shadow-md py-4 sm:py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
+    <Card className="rounded-xl border border-slate-300/60 hover:border-brand-aqua/50 transition-all duration-300 shadow-sm hover:shadow-md py-4 sm:py-5 bg-white overflow-hidden flex flex-col h-full gap-0">
       <CardHeader className="flex flex-col px-0 tracking-tight shrink-0">
-        <div className="w-full flex items-center justify-between gap-2 pb-4 px-4 sm:px-5 border-b border-slate-200">
+        <div className="w-full flex items-center justify-between gap-2 pb-4 px-4 sm:px-5 border-b border-slate-300/60">
           <DashboardHead
             title="Content Performance"
             subtitle="Top performing fitness programs and zones"

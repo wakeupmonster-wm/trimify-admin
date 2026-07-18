@@ -1,25 +1,30 @@
 import React from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const data = [
   { name: "Active", label: "Active Users", value: 67, color: "#60a5fa" },
   { name: "Banned", label: "Banned Users", value: 6, color: "#f87171" },
   { name: "Suspended", label: "Suspended Users", value: 9, color: "#fb923c" },
-  { name: "Deactivated", label: "Deactivated Users", value: 15, color: "#34d399" },
+  {
+    name: "Deactivated",
+    label: "Deactivated Users",
+    value: 15,
+    color: "#34d399",
+  },
   { name: "Deletion", label: "Deletion", value: 3, color: "#94a3b8" },
 ];
 
 // Custom label with line pointing outward
 const RADIAN = Math.PI / 180;
 const renderCustomLabel = ({
-  cx, cy, midAngle, innerRadius, outerRadius, name, value,
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  name,
+  value,
 }) => {
   const radius = outerRadius + 38;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -59,7 +64,7 @@ const CustomLegend = () => (
 
 export function ChartUserStatusDistribution() {
   return (
-    <Card className="rounded-[20px] shadow-md bg-slate-50 border border-slate-200 w-full h-full flex flex-col pt-5">
+    <Card className="rounded-[20px] shadow-md bg-slate-50 border border-slate-300/60 w-full h-full flex flex-col pt-5">
       <CardHeader className="pb-0 pt-0 px-6">
         <CardTitle className="text-[17px] font-semibold text-slate-900 tracking-tight text-center">
           User Distribution

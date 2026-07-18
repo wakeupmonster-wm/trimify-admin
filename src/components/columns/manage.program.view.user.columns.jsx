@@ -14,7 +14,7 @@ export const getViewUserProgramColumns = () => [
       const { pageIndex = 0, pageSize = 10 } = table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-10 text-left font-bold text-[11px] text-foreground/90">
+        <div className="w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );

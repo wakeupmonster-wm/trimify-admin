@@ -33,7 +33,7 @@ export function KYCInspectorModal({
         )}
       >
         {/* --- MODAL HEADER --- */}
-        <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 bg-white border-b border-slate-300/60 flex items-center justify-between shrink-0">
           <DashboardHead
             title="Visual Identity Inspector"
             titleSizeClass="text-[18px]"
@@ -51,7 +51,7 @@ export function KYCInspectorModal({
             }
             Icon={IconShieldCheck}
             iconColor="text-brand-blue"
-            iconBg="bg-brand-blue"
+            iconBg="bg-app-primary2"
           />
           {/* <button
             onClick={onClose}
@@ -86,7 +86,7 @@ export function KYCInspectorModal({
 
         {/* --- MODAL FOOTER --- */}
         {!isApproved && (
-          <div className="px-8 py-6 bg-white border-t border-slate-300 flex gap-4 shrink-0">
+          <div className="px-8 py-6 bg-white border-t border-slate-300/60 flex gap-4 shrink-0">
             {!isRejected && (
               <Button
                 className="flex-1 h-12 3xl:h-14 bg-alerts-error hover:bg-alerts-error_dark text-white hover:text-white font-bold uppercase tracking-[0.1em] text-[13px] rounded-lg shadow-sm transition-all flex items-center justify-center gap-3 disabled:opacity-80 disabled:cursor-not-allowed"

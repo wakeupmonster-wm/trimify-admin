@@ -13,12 +13,12 @@ const AboutUsPage = () => {
             <PageHeader
               heading="About Us"
               icon={<Info className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-md"
+              color="bg-app-primary2 shadow-md"
               subheading="Edit the About Us page content here."
             />
           </div>
         </Header>
-        
+
         <div className="bg-white p-6 rounded-md shadow-sm border text-center text-slate-500">
           Content Editor Coming Soon
         </div>

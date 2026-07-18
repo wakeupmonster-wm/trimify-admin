@@ -60,7 +60,7 @@ const ViewUserProgramPage = () => {
           <PageHeader
             heading="View Users"
             icon={<Users className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading="View the list of users assigned to this program."
           />
         </Header>
@@ -71,6 +71,7 @@ const ViewUserProgramPage = () => {
           rowCount={
             isManual ? serverPagination.total : displayData?.length || 0
           }
+          searchPlaceholder="Search by user name..."
           pagination={pagination}
           setPagination={setPagination}
           globalFilter={globalFilter}

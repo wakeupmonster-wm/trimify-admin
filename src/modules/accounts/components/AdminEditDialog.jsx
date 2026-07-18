@@ -120,7 +120,7 @@ export default function AdminEditDialog({ children, currentData }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto gap-0 p-0 border-none shadow-2xl rounded-2xl font-jakarta">
         {/* ── Header ── */}
-        <DialogHeader className="px-6 pt-5 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-300">
+        <DialogHeader className="px-6 pt-5 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-300/60">
           <div className="flex items-center gap-4">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100/50 text-slate-400">
               <UserCircle size={28} strokeWidth={1.5} />
@@ -164,7 +164,7 @@ export default function AdminEditDialog({ children, currentData }) {
 
               {/* Edit Badge floating */}
               <div className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md border border-slate-100 group-hover:scale-110 transition-transform">
-                <div className="bg-brand-blue p-2 rounded-full text-brand-blue">
+                <div className="bg-app-primary2 p-2 rounded-full text-brand-blue">
                   <Camera className="w-4 h-4" strokeWidth={2.5} />
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function AdminEditDialog({ children, currentData }) {
                     setFormData({ ...formData, nickname: e.target.value })
                   }
                   placeholder="e.g. John Doe"
-                  className="h-11 pl-10 text-sm font-medium rounded-lg border-slate-200 bg-white shadow-none focus-visible:border-slate-500 transition-all"
+                  className="h-11 pl-10 text-sm font-medium rounded-lg border-slate-300/60 bg-white shadow-none focus-visible:border-slate-500 transition-all"
                 />
               </div>
             </div>
@@ -230,7 +230,7 @@ export default function AdminEditDialog({ children, currentData }) {
                     "h-11 pl-10 text-sm font-medium rounded-lg bg-white shadow-none transition-all",
                     phoneError
                       ? "border-rose-500 focus-visible:border-rose-500"
-                      : "border-slate-200 focus-visible:border-slate-500",
+                      : "border-slate-300/60 focus-visible:border-slate-500",
                   )}
                 />
               </div>
@@ -255,7 +255,7 @@ export default function AdminEditDialog({ children, currentData }) {
                     }
                     rows={4}
                     placeholder="Tell us about yourself..."
-                    className="pl-10 py-3 text-sm font-medium rounded-lg border-slate-200 bg-white shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue transition-all resize-none min-h-[100px]"
+                    className="pl-10 py-3 text-sm font-medium rounded-lg border-slate-300/60 bg-white shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue transition-all resize-none min-h-[100px]"
                   />
                 </div>
               </div> */}
@@ -269,7 +269,7 @@ export default function AdminEditDialog({ children, currentData }) {
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={loading || success}
-            className="h-10 px-6 border-slate-200 text-slate-600 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-100"
+            className="h-10 px-6 border-slate-300/60 text-slate-600 font-semibold text-[13px] capitalize rounded-md hover:bg-slate-100"
           >
             Cancel
           </Button>
@@ -280,7 +280,7 @@ export default function AdminEditDialog({ children, currentData }) {
               "h-10 px-6 font-semibold text-[13px] capitalize rounded-md shadow-sm gap-2 transition-all duration-300 flex items-center justify-center min-w-[140px]",
               success
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-brand-blue hover:bg-brand-hoverAqua text-white",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua text-white",
             )}
           >
             {loading ? (

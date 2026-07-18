@@ -51,13 +51,42 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { stats, loading, dashboardData, dashboardExtras, dashboardMeta, dateRange, lastUpdated } =
-    useSelector((state) => state.dashboard);
+  const {
+    stats,
+    loading,
+    dashboardData,
+    dashboardExtras,
+    dashboardMeta,
+    dateRange,
+    lastUpdated,
+  } = useSelector((state) => state.dashboard);
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
   const [liveEvents, setLiveEvents] = useState([]);
+
+  // --- Flutter App Palette ---
+  const appColors = [
+    "#007FC0", // primary2
+    "#15B097", // cardGreen
+    "#DC6B1B", // cardOrange
+    "#EDA145", // cardYellow
+    "#5AA0C1", // primary3
+    "#FF5252", // caloriesRed
+    "#4A90E2", // proteinBlue
+    "#FFC107", // fatsYellow
+    "#8BC34A", // carbsGreen
+    "#04365F", // primary5
+  ];
+
+  const mapChartColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item, i) => ({
+      ...item,
+      color: appColors[i % appColors.length],
+    }));
+  };
 
   // ─── Socket: Real-time Live Activity Feed ──────────────────────────────────
   // Connects to WebSocket to receive live user activity events.
@@ -171,12 +200,18 @@ export default function Dashboard() {
       const preset = selectedDate?.preset || "today";
       const apiParams = {
         preset,
-        from: selectedDate?.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null,
-        to: selectedDate?.to ? format(new Date(selectedDate.to), "yyyy-MM-dd") : null,
+        from: selectedDate?.from
+          ? format(new Date(selectedDate.from), "yyyy-MM-dd")
+          : null,
+        to: selectedDate?.to
+          ? format(new Date(selectedDate.to), "yyyy-MM-dd")
+          : null,
       };
       const serializableDate = {
         ...selectedDate,
-        from: selectedDate?.from ? new Date(selectedDate.from).toISOString() : null,
+        from: selectedDate?.from
+          ? new Date(selectedDate.from).toISOString()
+          : null,
         to: selectedDate?.to ? new Date(selectedDate.to).toISOString() : null,
       };
       await Promise.all([
@@ -253,7 +288,7 @@ export default function Dashboard() {
             className={cn(
               "sticky top-0 z-[50] px-3 md:px-6 py-3 transition-all duration-300 ease-in-out",
               scrolled
-                ? "backdrop-blur-md bg-white/95 border-b border-slate-200 shadow-sm shadow-slate-300/50"
+                ? "backdrop-blur-md bg-white/95 border-b border-slate-300/60 shadow-sm shadow-slate-300/50"
                 : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
@@ -266,7 +301,7 @@ export default function Dashboard() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-brand-blue shadow-brand-blue"
+                color="bg-app-primary2 shadow-brand-blue"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
@@ -324,7 +359,9 @@ export default function Dashboard() {
                     />
                     <LiveActivity
                       data={
-                        dashboardData ? dashboardData.recentActivityData : undefined
+                        dashboardData
+                          ? dashboardData.recentActivityData
+                          : undefined
                       }
                     />
                   </div>
@@ -343,20 +380,25 @@ export default function Dashboard() {
                   {/* Right Column: Stats & Heatmap */}
                   <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
                     <div className="flex-1">
-                      <ActivityHeatmap data={dashboardData?.engagementChartsData} />
+                      <ActivityHeatmap
+                        data={dashboardData?.engagementChartsData}
+                      />
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                   <div className="flex-[1.2] min-w-0 flex flex-col h-full w-full">
-                    <RevenueTrendChart data={dashboardData?.revenueChartsData} />
+                    <RevenueTrendChart
+                      data={dashboardData?.revenueChartsData}
+                    />
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col h-full w-full">
                     <ChartUserDistribution
                       data={{
                         active: dashboardData?.summaryData?.activeUsers || 0,
-                        inactive: dashboardData?.summaryData?.inactiveUsers || 0,
+                        inactive:
+                          dashboardData?.summaryData?.inactiveUsers || 0,
                       }}
                     />
                   </div>
@@ -364,12 +406,17 @@ export default function Dashboard() {
               </>
             )}
 
-            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} selectedDate={selectedDate} />
+            <SecondaryKpiRow
+              data={dashboardExtras?.secondaryKpis}
+              selectedDate={selectedDate}
+            />
 
             {/* Composition — pie/donut breakdowns */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
               <div className="flex flex-col items-start gap-1">
-                <h2 className="text-base font-bold text-slate-900">Composition</h2>
+                <h2 className="text-base font-bold text-slate-900">
+                  Composition
+                </h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
                   How the current user & revenue base breaks down
                 </p>
@@ -381,7 +428,10 @@ export default function Dashboard() {
                   Icon={PieChartIcon}
                   iconColor="text-brand-blue"
                   iconBg="bg-blue-50"
-                  data={dashboardExtras?.pieCharts?.planType || []}
+                  // data={dashboardExtras?.pieCharts?.planType || []}
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.planType || [],
+                  )}
                   footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
                 />
                 <DonutStatCard
@@ -390,7 +440,10 @@ export default function Dashboard() {
                   Icon={Receipt}
                   iconColor="text-emerald-600"
                   iconBg="bg-emerald-50"
-                  data={dashboardExtras?.pieCharts?.txStatus || []}
+                  // data={dashboardExtras?.pieCharts?.txStatus || []}
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.txStatus || [],
+                  )}
                 />
                 <DonutStatCard
                   title="User Goal Distribution"
@@ -398,7 +451,10 @@ export default function Dashboard() {
                   Icon={Target}
                   iconColor="text-violet-600"
                   iconBg="bg-violet-50"
-                  data={dashboardExtras?.pieCharts?.userGoals || []}
+                  // data={dashboardExtras?.pieCharts?.userGoals || []}
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.userGoals || [],
+                  )}
                   scrollableLegend
                 />
                 <DonutStatCard
@@ -406,14 +462,20 @@ export default function Dashboard() {
                   Icon={Users2}
                   iconColor="text-cyan-600"
                   iconBg="bg-cyan-50"
-                  data={dashboardExtras?.pieCharts?.gender || []}
+                  // data={dashboardExtras?.pieCharts?.gender || []}
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.gender || [],
+                  )}
                 />
                 <DonutStatCard
                   title="Vegetarian vs Non-veg"
                   Icon={Salad}
                   iconColor="text-amber-600"
                   iconBg="bg-amber-50"
-                  data={dashboardExtras?.pieCharts?.dietPreference || []}
+                  // data={dashboardExtras?.pieCharts?.dietPreference || []}
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.dietPreference || [],
+                  )}
                   footnote="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
                 />
                 <ConversionFunnel data={dashboardExtras?.funnel} />
@@ -439,8 +501,20 @@ export default function Dashboard() {
                   data={dashboardExtras?.trends?.activeVsChurned || []}
                   xKey="month"
                   series={[
-                    { key: "activeUsers", label: "Active", color: "hsl(160, 84%, 39%)", type: "line" },
-                    { key: "churnedUsers", label: "Churned", color: "hsl(0, 84%, 60%)", type: "line" },
+                    {
+                      key: "activeUsers",
+                      label: "Active",
+                      // color: "hsl(160, 84%, 39%)",
+                      color: "#15B097", // cardGreen
+                      type: "line",
+                    },
+                    {
+                      key: "churnedUsers",
+                      label: "Churned",
+                      // color: "hsl(0, 84%, 60%)",
+                      color: "#FF5252", // caloriesRed
+                      type: "line",
+                    },
                   ]}
                   note="Churn numbers are approximate — a user who churned and later renewed no longer shows up as churned that month."
                 />
@@ -452,7 +526,15 @@ export default function Dashboard() {
                   iconBg="bg-cyan-50"
                   data={dashboardExtras?.trends?.engagementDAU || []}
                   xKey="date"
-                  series={[{ key: "active_users", label: "Daily Active Users", color: "hsl(182, 59%, 54%)", type: "line" }]}
+                  series={[
+                    {
+                      key: "active_users",
+                      label: "Daily Active Users",
+                      // color: "hsl(182, 59%, 54%)",
+                      color: "#007FC0", // primary2
+                      type: "line",
+                    },
+                  ]}
                 />
                 <TrendChartCard
                   title="Plan-wise Revenue"
@@ -462,7 +544,15 @@ export default function Dashboard() {
                   iconBg="bg-emerald-50"
                   data={dashboardExtras?.trends?.planRevenue || []}
                   xKey="title"
-                  series={[{ key: "revenue", label: "Revenue", color: "hsl(212, 100%, 45%)", type: "bar" }]}
+                  series={[
+                    {
+                      key: "revenue",
+                      label: "Revenue",
+                      // color: "hsl(212, 100%, 45%)",
+                      color: "#5AA0C1", // primary3
+                      type: "bar",
+                    },
+                  ]}
                 />
                 <TrendChartCard
                   title="Fitzone Session Completion"
@@ -472,10 +562,19 @@ export default function Dashboard() {
                   iconBg="bg-rose-50"
                   data={dashboardExtras?.trends?.fitzoneCompletion || []}
                   xKey="date"
-                  series={(dashboardExtras?.trends?.fitzoneStatuses || ["Active"]).map((status, i) => ({
+                  series={(
+                    dashboardExtras?.trends?.fitzoneStatuses || ["Active"]
+                  ).map((status, i) => ({
                     key: status,
                     label: status,
-                    color: ["hsl(340, 82%, 60%)", "hsl(160, 84%, 39%)", "hsl(38, 92%, 50%)"][i % 3],
+                    color: [
+                      // "hsl(340, 82%, 60%)",
+                      // "hsl(160, 84%, 39%)",
+                      // "hsl(38, 92%, 50%)",
+                      "#C03744", // logOutRed
+                      "#15B097", // cardGreen
+                      "#EDA145", // cardYellow
+                    ][i % 3],
                     type: "bar",
                   }))}
                   note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
@@ -488,7 +587,9 @@ export default function Dashboard() {
                 {/* Content Performance */}
                 <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                   <div className="w-full flex flex-col h-full min-w-0">
-                    <ContentPerformance data={dashboardData?.contentChartsData} />
+                    <ContentPerformance
+                      data={dashboardData?.contentChartsData}
+                    />
                   </div>
                 </div>
 
@@ -506,9 +607,12 @@ export default function Dashboard() {
             {/* Drill-down lists */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
               <div className="flex flex-col items-start gap-1">
-                <h2 className="text-base font-bold text-slate-900">Follow-ups & Roster</h2>
+                <h2 className="text-base font-bold text-slate-900">
+                  Follow-ups & Roster
+                </h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
-                  Renewals, abandoned checkouts and platform admin/notification activity
+                  Renewals, abandoned checkouts and platform admin/notification
+                  activity
                 </p>
               </div>
 
@@ -522,11 +626,37 @@ export default function Dashboard() {
                   rows={dashboardExtras?.tables?.recentTransactions || []}
                   emptyMessage="No transactions yet."
                   columns={[
-                    { key: "user_name", label: "User" },
-                    { key: "plan_title", label: "Plan" },
-                    { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
-                    { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[10%]",
+                      render: (_, idx) => (
+                        <span className="font-bold px-2 text-foreground/90">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "user_name", label: "User", width: "w-[20%]" },
+                    { key: "plan_title", label: "Plan", width: "w-[15%]" },
+                    {
+                      key: "amount",
+                      label: "Amount",
+                      width: "w-[15%]",
+                      render: (r) => `$${Number(r.amount).toLocaleString()}`,
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      width: "w-[15%]",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
+                    {
+                      key: "created_at",
+                      label: "Date",
+                      width: "w-[15%]",
+                      render: (r) =>
+                        format(new Date(r.created_at), "MMM dd, HH:mm"),
+                    },
                   ]}
                 />
 
@@ -539,16 +669,39 @@ export default function Dashboard() {
                   rows={dashboardExtras?.tables?.expiringSoon || []}
                   emptyMessage="No plans expiring soon."
                   actionLabel="Renew"
-                  onAction={(row) => navigate(`/admin/subscription-management/subscribers`, { state: { user: row.name } })}
+                  onAction={(row) =>
+                    navigate(`/admin/subscription-management/subscribers`, {
+                      state: { user: row.name },
+                    })
+                  }
                   columns={[
-                    { key: "name", label: "User" },
-                    { key: "plan_title", label: "Plan" },
-                    { key: "expires_at", label: "Expiry", render: (r) => format(new Date(r.expires_at), "MMM dd, yyyy") },
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[10%]",
+                      render: (_, idx) => (
+                        <span className="font-bold text-foreground/90 px-2">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "name", label: "User", width: "w-[30%]" },
+                    { key: "plan_title", label: "Plan", width: "w-[25%]" },
+                    {
+                      key: "expires_at",
+                      label: "Expiry",
+                      width: "w-[20%]",
+                      render: (r) =>
+                        format(new Date(r.expires_at), "MMM dd, yyyy"),
+                    },
                     {
                       key: "days_left",
                       label: "Days Left",
+                      width: "w-[15%]",
                       render: (r) => (
-                        <span className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}>
+                        <span
+                          className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}
+                        >
                           {r.days_left}d
                         </span>
                       ),
@@ -565,11 +718,34 @@ export default function Dashboard() {
                   rows={dashboardExtras?.tables?.abandonedCheckouts || []}
                   emptyMessage="No abandoned checkouts right now."
                   actionLabel="Follow Up"
-                  onAction={(row) => navigate(`/admin/users`, { state: { user: row.name } })}
+                  onAction={(row) =>
+                    navigate(`/admin/users`, { state: { user: row.name } })
+                  }
                   columns={[
-                    { key: "name", label: "User" },
-                    { key: "signed_up_at", label: "Signed Up", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm") },
-                    { key: "hours_since_signup", label: "Hours Since", render: (r) => `${r.hours_since_signup}h` },
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[10%]",
+                      render: (_, idx) => (
+                        <span className="font-bold px-2 text-foreground/90">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "name", label: "User", width: "w-[30%]" },
+                    {
+                      key: "signed_up_at",
+                      label: "Signed Up",
+                      width: "w-[30%]",
+                      render: (r) =>
+                        format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                    },
+                    {
+                      key: "hours_since_signup",
+                      label: "Hours Since",
+                      width: "w-[25%]",
+                      render: (r) => `${r.hours_since_signup}h`,
+                    },
                   ]}
                 />
 
@@ -582,10 +758,42 @@ export default function Dashboard() {
                   rows={dashboardExtras?.tables?.subAdminRoster || []}
                   emptyMessage="No sub-admins yet."
                   columns={[
-                    { key: "name", label: "Name" },
-                    { key: "role", label: "Role", render: (r) => <span className="capitalize">{r.role}</span> },
-                    { key: "managed_users", label: "Users Managed", align: "right" },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[15%]",
+                      render: (_, idx) => (
+                        <span className="font-bold px-2 text-foreground/90">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "name", label: "Name", width: "w-[30%]" },
+                    {
+                      key: "role",
+                      label: "Role",
+                      width: "w-[25%]",
+                      render: (r) => (
+                        <span className="capitalize">{r.role}</span>
+                      ),
+                    },
+                    {
+                      key: "managed_users",
+                      label: "Users Managed",
+                      width: "w-[25%]",
+                      align: "center",
+                      render: (r) => (
+                        <span className="font-medium text-foreground/90 px-1">
+                          {r.managed_users}
+                        </span>
+                      ),
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      width: "w-[10%]",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
                   ]}
                 />
 
@@ -598,9 +806,34 @@ export default function Dashboard() {
                   rows={dashboardExtras?.tables?.recentNotifications || []}
                   emptyMessage="No notifications sent yet."
                   columns={[
-                    { key: "title", label: "Title" },
-                    { key: "target_audience", label: "Audience", render: (r) => <span className="capitalize">{r.target_audience}</span> },
-                    { key: "created_at", label: "Sent", render: (r) => formatDistanceToNow(new Date(r.created_at), { addSuffix: true }) },
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[15%]",
+                      render: (_, idx) => (
+                        <span className="font-bold text-foreground/90">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "title", label: "Title", width: "w-[40%]" },
+                    {
+                      key: "target_audience",
+                      label: "Audience",
+                      width: "w-[25%]",
+                      render: (r) => (
+                        <span className="capitalize">{r.target_audience}</span>
+                      ),
+                    },
+                    {
+                      key: "created_at",
+                      label: "Sent",
+                      width: "w-[20%]",
+                      render: (r) =>
+                        formatDistanceToNow(new Date(r.created_at), {
+                          addSuffix: true,
+                        }),
+                    },
                   ]}
                 />
               </div>

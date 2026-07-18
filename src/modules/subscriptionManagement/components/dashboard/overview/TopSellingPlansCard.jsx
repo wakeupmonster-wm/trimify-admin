@@ -18,7 +18,8 @@ export default function TopSellingPlansCard({ plans = [] }) {
             className="flex items-center justify-between gap-3 p-2.5 rounded-lg hover:bg-slate-100/70 transition-colors"
           >
             <div className="flex items-center gap-3 min-w-0">
-              <span className="h-7 w-7 shrink-0 rounded-full bg-brand-aqua/10 text-[#2A9DA3] text-[11px] font-black flex items-center justify-center">
+              {/* <span className="h-7 w-7 shrink-0 rounded-full bg-brand-aqua/10 text-[#2A9DA3] text-[11px] font-black flex items-center justify-center"> */}
+              <span className="h-7 w-7 shrink-0 rounded-full bg-[#007FC0]/10 text-[#007FC0] text-[11px] font-black flex items-center justify-center">
                 #{idx + 1}
               </span>
               <div className="min-w-0">

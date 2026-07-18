@@ -297,7 +297,7 @@ export default function SupportTicketsPage() {
             <PageHeader
               heading="Support Management"
               icon={<Inbox className="w-9 h-9 text-white" />}
-              color="bg-brand-blue shadow-brand-blue-500/20"
+              color="bg-app-primary2 shadow-brand-blue-500/20"
               subheading="Track and manage customer queries."
             />
           </div>

@@ -107,14 +107,16 @@ export default function SubscriberGrowthChart({
               {/* Bars First (Behind) */}
               <Bar
                 dataKey="new"
-                fill="#4F46E5"
+                // fill="#4F46E5"
+                fill="#007FC0" // primary2
                 radius={[4, 4, 0, 0]}
                 name="New"
                 barSize={20}
               />
               <Bar
                 dataKey="cancelled"
-                fill="#EF4444"
+                // fill="#EF4444"
+                fill="#FF5252" // caloriesRed
                 radius={[4, 4, 0, 0]}
                 name="Cancelled"
                 barSize={20}
@@ -125,17 +127,20 @@ export default function SubscriberGrowthChart({
                 type="monotone"
                 dataKey="net"
                 name="Net Growth"
-                stroke="#10B981"
+                // stroke="#10B981"
+                stroke="#15B097" // cardGreen
                 strokeWidth={3}
                 fill="transparent"
                 fillOpacity={0}
                 dot={{
                   fill: "#fff",
-                  stroke: "#10B981",
+                  // stroke: "#10B981",
+                  stroke: "#15B097",
                   strokeWidth: 2,
                   r: 4,
                 }}
-                activeDot={{ r: 6, stroke: "#10B981", strokeWidth: 2 }}
+                // activeDot={{ r: 6, stroke: "#10B981", strokeWidth: 2 }}
+                activeDot={{ r: 6, stroke: "#15B097", strokeWidth: 2 }}
               />
 
               <Legend

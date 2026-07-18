@@ -44,3 +44,7 @@ export const toggleFoodStatusAPI = async (id, data) => {
 export const deleteFoodAPI = async (id) => {
   return apiConnector("DELETE", FOOD.FOOD_DELETE(id));
 };
+
+export const searchFoodItemsAPI = async () => {
+  return apiConnector("GET", FOOD.FOOD_GET_SEARCH);
+};

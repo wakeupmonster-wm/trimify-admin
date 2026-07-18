@@ -88,14 +88,14 @@ const AboutUsPage = () => {
             <PageHeader
               heading="About Us"
               icon={<Info className="w-6 h-6 text-white" />}
-              color="bg-brand-blue"
+              color="bg-app-primary2"
               subheading="Edit the About Us page content here."
             />
 
             <div className="flex items-center gap-3">
               <Button
                 onClick={handleViewPreview}
-                className="h-9 group shadow-sm bg-white text-slate-500 border border-slate-200 transition-all duration-300 font-semibold text-[11px] uppercase tracking-wider rounded-lg gap-2 px-3.5 hover:bg-white hover:text-slate-500"
+                className="h-9 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-[11px] uppercase tracking-wider rounded-lg gap-2 px-3.5 hover:bg-white hover:text-slate-500"
               >
                 <Eye className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300" />
                 Preview
@@ -104,7 +104,7 @@ const AboutUsPage = () => {
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
               >
                 {isSaving ? (
                   <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />

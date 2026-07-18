@@ -12,7 +12,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@/components/ui/dialog";
 
-export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData, loading }) {
+export function SubscriptionEditDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+  editData,
+  loading,
+}) {
   const [formData, setFormData] = useState({ price: "", features: "" });
 
   useEffect(() => {
@@ -32,7 +38,11 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSubmit && editData) {
-      onSubmit({ id: editData.id, price: formData.price, features: formData.features });
+      onSubmit({
+        id: editData.id,
+        price: formData.price,
+        features: formData.features,
+      });
     }
   };
 
@@ -40,9 +50,9 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-slate-200 rounded-xl shadow-2xl">
-        <DialogHeader className="px-6 py-5 border-b border-slate-300 flex flex-row items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-slate-300/60 rounded-xl shadow-2xl">
+        <DialogHeader className="px-6 py-5 border-b border-slate-300/60 flex flex-row items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-app-primary2/10 flex items-center justify-center shrink-0">
             <CreditCard className="w-5 h-5 text-brand-blue" />
           </div>
           <div>
@@ -65,7 +75,7 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
               <Input
                 value={editData.title || ""}
                 disabled
-                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
+                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500"
               />
             </div>
 
@@ -77,7 +87,7 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
               <Input
                 value={editData.subtitle || ""}
                 disabled
-                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
+                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500"
               />
             </div>
 
@@ -91,7 +101,7 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
                 placeholder="e.g. 34.99"
                 value={formData.price}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -104,7 +114,7 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
               <Input
                 value={editData.duration || ""}
                 disabled
-                className="h-10 text-sm font-medium border-slate-200 bg-slate-50 text-slate-500"
+                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500"
               />
             </div>
 
@@ -118,21 +128,22 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
                 placeholder="e.g. Unlimited Projects, Priority Support, Advanced Analytics"
                 value={formData.features}
                 onChange={handleChange}
-                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300 resize-none p-3"
+                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
                 required
               />
             </div>
           </div>
 
           <p className="mt-4 text-[11px] text-slate-400 font-medium">
-            Only price and features can be updated — title, sub title and duration are managed elsewhere.
+            Only price and features can be updated — title, sub title and
+            duration are managed elsewhere.
           </p>
 
           <div className="mt-8 flex justify-end gap-3">
             <Button
               type="button"
               variant="outline"
-              className="rounded-md px-6 py-2 h-auto text-xs font-semibold border-slate-300"
+              className="rounded-md px-6 py-2 h-auto text-xs font-semibold border-slate-300/60"
               onClick={() => onOpenChange(false)}
             >
               Cancel
@@ -140,7 +151,7 @@ export function SubscriptionEditDialog({ open, onOpenChange, onSubmit, editData,
             <Button
               type="submit"
               disabled={loading}
-              className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-6 py-2 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
             >
               {loading ? (
                 <>

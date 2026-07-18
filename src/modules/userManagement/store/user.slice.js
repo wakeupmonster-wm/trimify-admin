@@ -12,10 +12,10 @@ export const fetchUsersList = createAsyncThunk(
         return {
           users: response.users || [],
           pagination: {
-            page: response.pagination?.current_page || 1,
-            limit: 10, // default limit if not specified
+            page: response.pagination?.current_page || response.pagination?.page || 1,
+            limit: response.pagination?.per_page || 10, 
             total: response.pagination?.total || 0,
-            totalPages: response.pagination?.last_page || 1,
+            totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
         };
       }

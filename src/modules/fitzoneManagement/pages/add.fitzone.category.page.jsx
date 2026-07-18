@@ -121,7 +121,7 @@ const AddFitzoneCategoryPage = () => {
           <PageHeader
             heading={isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"}
             icon={<Layers className="w-9 h-9 text-white" />}
-            color="bg-brand-blue shadow-blue-200"
+            color="bg-app-primary2 shadow-blue-200"
             subheading={
               isEdit
                 ? "Edit existing workout session category."
@@ -130,7 +130,7 @@ const AddFitzoneCategoryPage = () => {
           />
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-300 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-800">
@@ -141,7 +141,7 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 placeholder="Enter Title Here"
-                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
@@ -154,7 +154,7 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryDetails}
                 onChange={(e) => setCategoryDetails(e.target.value)}
                 placeholder="e.g. 20 min , 182 kcal"
-                className="w-full h-10 px-4 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
               />
             </div>
 
@@ -182,7 +182,7 @@ const AddFitzoneCategoryPage = () => {
                 className={`w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
                   isDragging
                     ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -216,7 +216,7 @@ const AddFitzoneCategoryPage = () => {
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
                 placeholder="Enter Description"
-                className="w-full px-4 py-3 text-sm border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
+                className="w-full px-4 py-3 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
               />
               <div className="text-[11px] text-slate-500 font-medium">
                 Character Count: {htmlContent.length}
@@ -235,7 +235,7 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-brand-blue hover:bg-brand-hoverBlue text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>

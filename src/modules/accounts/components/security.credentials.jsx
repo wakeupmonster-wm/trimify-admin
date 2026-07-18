@@ -105,7 +105,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
     <Card className="mx-auto border-none gap-4 shadow-none bg-transparent overflow-hidden font-jakarta w-full">
       <CardHeader className="p-0">
         {/* <div className="flex items-center gap-5">
-          <div className="p-4 bg-brand-blue rounded-2xl text-brand-blue ring-4 ring-brand-blue">
+          <div className="p-4 bg-app-primary2 rounded-2xl text-brand-blue ring-4 ring-brand-blue">
             <IconLock size={32} stroke={2.5} />
           </div>
           <div className="space-y-1">
@@ -116,7 +116,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
           </div>
         </div> */}
 
-        <div className="pb-4 px-5 border-b border-slate-200">
+        <div className="pb-4 px-5 border-b border-slate-300/60">
           <DashboardHead
             title="Security Credentials"
             subtitle="Keep your admin account safe with a strong password."
@@ -137,7 +137,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
             <div className="relative">
               <Input
                 type={showPasswords.current ? "text" : "password"}
-                className="h-12 border-slate-200 placeholder:text-slate-400 bg-slate-50/30 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
+                className="h-12 border-slate-300/60 placeholder:text-slate-400 bg-slate-50/30 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
                 value={form.currentPassword}
                 onChange={(e) =>
                   setForm({ ...form, currentPassword: e.target.value })
@@ -160,7 +160,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               <div className="relative">
                 <Input
                   type={showPasswords.new ? "text" : "password"}
-                  className="h-12 border-slate-200 placeholder:text-slate-400 bg-slate-50 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
+                  className="h-12 border-slate-300/60 placeholder:text-slate-400 bg-slate-50 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
                   value={form.newPassword}
                   onChange={(e) =>
                     setForm({ ...form, newPassword: e.target.value })
@@ -182,12 +182,12 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                 <Input
                   type={showPasswords.confirm ? "text" : "password"}
                   className={cn(
-                    "h-12 rounded-lg pr-12 text-base transition-all border-slate-200 bg-slate-50 duration-300 focus-visible:outline-none",
+                    "h-12 rounded-lg pr-12 text-base transition-all border-slate-300/60 bg-slate-50 duration-300 focus-visible:outline-none",
                     passwordsMatch && form.confirmPassword
                       ? "border-slate-500 focus-visible:border-slate-500"
                       : passwordsMismatch
                         ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/10"
-                        : "border-slate-200 focus-visible:border-slate-500",
+                        : "border-slate-300/60 focus-visible:border-slate-500",
                   )}
                   value={form.confirmPassword}
                   onChange={(e) =>
@@ -270,7 +270,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               form.newPassword !== form.confirmPassword ||
               !form.newPassword
             }
-            className="h-11 w-full bg-brand-blue hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-brand-hoverBlue text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-brand-blue transition-all duration-300"
+            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary5 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-brand-blue transition-all duration-300"
           >
             {loading ? (
               <div className="flex items-center gap-2">

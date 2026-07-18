@@ -259,7 +259,7 @@ export default function NotificationManagementPages() {
             <PageHeader
               heading="Campaign Manager"
               icon={<Bell strokeWidth={2} className="w-9 h-9 text-white" />}
-              color="bg-brand-blue"
+              color="bg-app-primary2"
               subheading="Design and deploy multi-channel engagement."
             />
           </div>
@@ -267,7 +267,7 @@ export default function NotificationManagementPages() {
 
         <div className="mx-auto">
           {/* TABS */}
-          <div className="flex items-center gap-6 border-b border-slate-200 mb-6">
+          <div className="flex items-center gap-6 border-b border-slate-300/60 mb-6">
             <button
               onClick={() => setActiveTab("new")}
               className={cn(
@@ -281,7 +281,7 @@ export default function NotificationManagementPages() {
               {activeTab === "new" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0  right-0 h-[2px] bg-brand-blue"
+                  className="absolute bottom-0 left-0  right-0 h-[2px] bg-app-primary2"
                 />
               )}
             </button>
@@ -298,7 +298,7 @@ export default function NotificationManagementPages() {
               {activeTab === "history" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-brand-blue"
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-app-primary2"
                 />
               )}
             </button>
@@ -308,8 +308,8 @@ export default function NotificationManagementPages() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* LEFT: CAMPAIGN DETAILS */}
               <div className="lg:col-span-7">
-                <Card className="border border-slate-200 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <div className="px-4 sm:px-6 py-2 md:py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <Card className="border border-slate-300/60 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
+                  <div className="px-4 sm:px-6 py-2 md:py-4 border-b border-slate-300/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <h2 className="text-base sm:text-lg font-bold text-slate-900">
                       Campaign Details
                     </h2>
@@ -342,15 +342,15 @@ export default function NotificationManagementPages() {
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "email"
-                              ? "border-brand-blue bg-brand-blue"
-                              : "border-slate-100 bg-white hover:border-slate-200",
+                              ? "border-brand-blue bg-app-primary2"
+                              : "border-slate-100 bg-white hover:border-slate-300/60",
                           )}
                         >
                           <div
                             className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                               form.channel === "email"
-                                ? "bg-brand-blue text-white"
+                                ? "bg-app-primary2 text-white"
                                 : "bg-slate-50 text-slate-400",
                             )}
                           >
@@ -381,15 +381,15 @@ export default function NotificationManagementPages() {
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "push"
-                              ? "border-brand-blue bg-brand-blue"
-                              : "border-slate-100 bg-white hover:border-slate-200",
+                              ? "border-brand-blue bg-app-primary2"
+                              : "border-slate-100 bg-white hover:border-slate-300/60",
                           )}
                         >
                           <div
                             className={cn(
                               "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
                               form.channel === "push"
-                                ? "bg-brand-blue text-white"
+                                ? "bg-app-primary2 text-white"
                                 : "bg-slate-50 text-slate-400",
                             )}
                           >
@@ -430,7 +430,7 @@ export default function NotificationManagementPages() {
                           }));
                         }}
                       >
-                        <SelectTrigger className="h-12 border-slate-200 rounded-lg text-[13px] font-medium bg-white">
+                        <SelectTrigger className="h-12 border-slate-300/60 rounded-lg text-[13px] font-medium bg-white">
                           <SelectValue placeholder="Select target audience" />
                         </SelectTrigger>
                         <SelectContent>
@@ -467,12 +467,12 @@ export default function NotificationManagementPages() {
                               className={cn(
                                 "flex items-center gap-2 cursor-pointer border px-4 py-2.5 rounded-lg transition-all",
                                 dripDays.includes(day)
-                                  ? "bg-brand-blue border-brand-blue"
-                                  : "bg-white border-slate-200 hover:border-slate-300",
+                                  ? "bg-app-primary2 border-brand-blue"
+                                  : "bg-white border-slate-300/60 hover:border-slate-300/60",
                               )}
                             >
                               <Checkbox
-                                className="w-4 h-4 border-slate-300 data-[state=checked]:bg-brand-blue data-[state=checked]:border-brand-blue data-[state=checked]:text-white rounded-[4px]"
+                                className="w-4 h-4 border-slate-300/60 data-[state=checked]:bg-app-primary2 data-[state=checked]:border-brand-blue data-[state=checked]:text-white rounded-[4px]"
                                 checked={dripDays.includes(day)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
@@ -516,7 +516,7 @@ export default function NotificationManagementPages() {
                       </div>
                       <Input
                         placeholder="Internal Campaign Name (e.g., Valentines_2026)"
-                        className="h-12 border-slate-200 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50"
+                        className="h-12 border-slate-300/60 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50"
                         value={form.campaignName}
                         onChange={(e) =>
                           handleChange("campaignName", e.target.value)
@@ -541,7 +541,7 @@ export default function NotificationManagementPages() {
                               ? "Email Subject Line"
                               : "Notification Title"
                           }
-                          className="h-12 border-slate-200 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50"
+                          className="h-12 border-slate-300/60 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50"
                           value={form.subject}
                           onChange={(e) =>
                             handleChange("subject", e.target.value)
@@ -553,7 +553,7 @@ export default function NotificationManagementPages() {
                               ? "Write your email body (HTML supported)..."
                               : "Write your notification body..."
                           }
-                          className="min-h-[120px] border-slate-200 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50 p-4 resize-none"
+                          className="min-h-[120px] border-slate-300/60 rounded-lg text-[13px] font-medium bg-[#F8FAFC]/50 p-4 resize-none"
                           value={form.message}
                           onChange={(e) =>
                             handleChange("message", e.target.value)
@@ -576,7 +576,7 @@ export default function NotificationManagementPages() {
                             value={form.ctaAction}
                             onValueChange={(v) => handleChange("ctaAction", v)}
                           >
-                            <SelectTrigger className="h-12 border-slate-200 rounded-lg text-[13px] font-medium bg-white">
+                            <SelectTrigger className="h-12 border-slate-300/60 rounded-lg text-[13px] font-medium bg-white">
                               <SelectValue placeholder="Select landing page" />
                             </SelectTrigger>
                             <SelectContent>
@@ -602,7 +602,7 @@ export default function NotificationManagementPages() {
                       type="button"
                       onClick={handleLaunchClick}
                       disabled={isLoading}
-                      className="w-full h-10 bg-brand-blue hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-10 bg-app-primary2 hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {isLoading ? "Launching..." : "Launch Campaign"}
@@ -613,9 +613,9 @@ export default function NotificationManagementPages() {
 
               {/* RIGHT: LIVE PREVIEW (Sticky) */}
               <div className="lg:col-span-5 flex flex-col gap-6 sticky top-8">
-                <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[600px]">
+                <div className="bg-white border border-slate-300/60 rounded-xl shadow-sm overflow-hidden flex flex-col min-h-[600px]">
                   {/* Header */}
-                  <div className="flex items-center justify-between py-[22px] px-5 border-b border-slate-200 bg-white">
+                  <div className="flex items-center justify-between py-[22px] px-5 border-b border-slate-300/60 bg-white">
                     <div className="flex items-center gap-2 text-slate-900">
                       <Eye size={18} strokeWidth={2.5} />
                       <span className="text-[15px] font-bold">
@@ -628,7 +628,7 @@ export default function NotificationManagementPages() {
                         "px-3 py-1 rounded-full text-[11px] font-bold",
                         previewType === "email"
                           ? "bg-[#E0E7FF] text-[#4338CA]"
-                          : "bg-brand-blue text-brand-blue",
+                          : "bg-app-primary2 text-brand-blue",
                       )}
                     >
                       {previewType === "email" ? "Email" : "Mobile Push"}
@@ -668,7 +668,7 @@ export default function NotificationManagementPages() {
                                   className="bg-white/95 backdrop-blur-md shadow-lg rounded-[16px] p-3 border border-white/20"
                                 >
                                   <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-500">
-                                    <div className="w-[18px] h-[18px] bg-brand-blue rounded flex items-center justify-center">
+                                    <div className="w-[18px] h-[18px] bg-app-primary2 rounded flex items-center justify-center">
                                       <Bell
                                         className="text-white w-2.5 h-2.5"
                                         strokeWidth={3}
@@ -701,9 +701,9 @@ export default function NotificationManagementPages() {
                           className="w-full flex justify-center items-start"
                         >
                           {/* Email Mockup */}
-                          <div className="w-full max-w-[450px] bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                          <div className="w-full max-w-[450px] bg-white border border-slate-300/60 rounded-xl shadow-sm overflow-hidden">
                             {/* Window Topbar */}
-                            <div className="bg-slate-100 px-4 py-3 border-b border-slate-200 flex items-center gap-1.5">
+                            <div className="bg-slate-100 px-4 py-3 border-b border-slate-300/60 flex items-center gap-1.5">
                               <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
                               <div className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
                               <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />

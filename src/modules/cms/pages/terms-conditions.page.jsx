@@ -192,7 +192,7 @@ export default function TermAndConditionsPage() {
           <PageHeader
             heading="Terms & Conditions"
             icon={<ReceiptText className="w-6 h-6 text-white" />}
-            color="bg-brand-blue"
+            color="bg-app-primary2"
             subheading="Manage legal policies and user agreements."
           />
 
@@ -200,7 +200,7 @@ export default function TermAndConditionsPage() {
             {/* Mode Toggle */}
             <Button
               onClick={handleViewPreview}
-              className="h-9 group shadow-sm bg-white text-slate-500 border border-slate-200 transition-all duration-300 font-semibold text-[11px] uppercase tracking-wider rounded-lg gap-2 px-3.5 hover:bg-white hover:text-slate-500"
+              className="h-9 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-[11px] uppercase tracking-wider rounded-lg gap-2 px-3.5 hover:bg-white hover:text-slate-500"
             >
               <Eye className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300" />
               View
@@ -216,7 +216,7 @@ export default function TermAndConditionsPage() {
             <Button
               onClick={handleSaveAll}
               disabled={isSaving || loading}
-              className="bg-brand-blue hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
+              className="bg-app-primary2 hover:bg-brand-hoverAqua text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
             >
               {isSaving ? (
                 <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
@@ -259,7 +259,7 @@ export default function TermAndConditionsPage() {
               value={pageTitle}
               onChange={(e) => setPageTitle(e.target.value)}
               placeholder="e.g. Terms & Conditions"
-              className="h-10 border-slate-200 focus-visible:ring-brand-blue focus-visible:border-slate-400 shadow-sm rounded-lg px-4 text-slate-700 font-medium"
+              className="h-10 border-slate-300/60 focus-visible:ring-brand-blue focus-visible:border-slate-400 shadow-sm rounded-lg px-4 text-slate-700 font-medium"
             />
           </div>
         )}
