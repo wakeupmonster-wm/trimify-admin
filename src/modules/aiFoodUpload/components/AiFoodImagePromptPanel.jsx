@@ -155,7 +155,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
   return (
     <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <Wand2 className="w-4 h-4 text-brand-blue" />
+        <Wand2 className="w-4 h-4 text-app-primary2" />
         <h3 className="text-sm font-bold text-slate-800">
           Guided Image Generation
         </h3>
@@ -200,7 +200,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
             <div className="flex flex-col items-center justify-center gap-3 py-6 border border-dashed border-slate-300 rounded-md">
               {isConverting ? (
                 <>
-                  <Spinner className="w-6 h-6 text-brand-blue" />
+                  <Spinner className="w-6 h-6 text-app-primary2" />
                   <p className="text-xs font-medium text-slate-500">Processing recording…</p>
                 </>
               ) : (
@@ -211,7 +211,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
                     className={`w-14 h-14 rounded-full flex items-center justify-center shadow transition-colors ${
                       isRecording
                         ? "bg-red-600 hover:bg-red-700 animate-pulse"
-                        : "bg-brand-blue hover:bg-brand-hoverBlue"
+                        : "bg-app-primary2 hover:bg-app-primary5"
                     }`}
                   >
                     {isRecording ? (
@@ -254,7 +254,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
             <div className="space-y-3">
               <div className="flex items-center gap-3 bg-slate-50 border border-slate-300/60 rounded-md p-3">
                 <div className="w-9 h-9 rounded-full bg-app-primary2/10 flex items-center justify-center shrink-0">
-                  <Play className="w-4 h-4 text-brand-blue" />
+                  <Play className="w-4 h-4 text-app-primary2" />
                 </div>
                 <audio controls src={audioUrl} className="flex-1 h-9" />
               </div>
@@ -329,7 +329,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
                     type="button"
                     onClick={handleAudioSubmit}
                     disabled={busy}
-                    className="bg-brand-blue hover:bg-brand-hoverBlue text-white flex items-center gap-2"
+                    className="bg-app-primary2 hover:bg-app-primary5 text-white flex items-center gap-2"
                   >
                     {busy ? <Spinner className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                     {busy ? "Generating…" : "Generate Image from Audio"}

@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Pencil,
   Eye,
+  ClipboardList,
 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -486,10 +487,13 @@ const AiFoodViewPage = () => {
         )}
 
         {showReviewForm && (
-          <>
           <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
-            <div className="bg-white rounded-md shadow-sm border border-slate-300 p-4 space-y-3">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Photo</h3>
+            <div className="flex flex-col gap-6">
+            <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-3.5 h-3.5 text-app-primary2" />
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Photo</h3>
+              </div>
               <div className="aspect-square w-full rounded-md overflow-hidden bg-slate-100 border border-slate-200 relative group">
                 {item.Meal_Image_url ? (
                   <button
@@ -514,7 +518,7 @@ const AiFoodViewPage = () => {
                 )}
                 {imageRegenerating && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70">
-                    <Loader2 className="w-6 h-6 text-brand-blue animate-spin" />
+                    <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
                     <p className="text-[11px] font-semibold text-slate-600">Regenerating…</p>
                     <button
                       type="button"
@@ -567,10 +571,21 @@ const AiFoodViewPage = () => {
                 </Button>
               </div>
 
-              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-6 space-y-6">
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider -mb-2">
-                  Nutrition &amp; Details
-                </h3>
+              <AiFoodImagePromptPanel
+                onGenerateFromPrompt={handleGenerateFromPrompt}
+                onGenerateFromAudio={handleGenerateFromAudio}
+                onCancel={handleCancelRegenerate}
+                busy={isBusy || imageRegenerating}
+              />
+            </div>
+
+              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6">
+                <div className="flex items-center gap-2 -mb-2">
+                  <ClipboardList className="w-3.5 h-3.5 text-app-primary2" />
+                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Nutrition &amp; Details
+                  </h3>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <NumberField
                     label="Protein (gm)"
@@ -678,14 +693,6 @@ const AiFoodViewPage = () => {
                 />
               </div>
             </div>
-
-          <AiFoodImagePromptPanel
-            onGenerateFromPrompt={handleGenerateFromPrompt}
-            onGenerateFromAudio={handleGenerateFromAudio}
-            onCancel={handleCancelRegenerate}
-            busy={isBusy || imageRegenerating}
-          />
-          </>
         )}
       </div>
 

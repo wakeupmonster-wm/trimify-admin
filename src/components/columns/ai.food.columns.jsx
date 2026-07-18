@@ -107,11 +107,11 @@ export const getAiFoodColumns = ({ selectedIds, onToggleSelect, onView }) => [
           <img
             src={row.original.Meal_Image_url}
             alt="Food"
-            className="w-8 h-8 rounded-md object-cover border"
+            className="w-9 h-9 rounded-lg object-cover border border-slate-200 shadow-sm"
           />
         ) : (
-          <div className="w-8 h-8 rounded-md bg-slate-200 flex items-center justify-center text-slate-400">
-            <ImageIcon className="w-3.5 h-3.5" />
+          <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300">
+            <ImageIcon className="w-4 h-4" />
           </div>
         )}
       </div>
