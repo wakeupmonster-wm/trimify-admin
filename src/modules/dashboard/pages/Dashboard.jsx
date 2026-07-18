@@ -4,12 +4,7 @@ import { RecentUsersTable } from "@/components/shared/recent-users-table";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  fetchDashboardKPIs,
-  fetchDashboardData,
-  fetchDashboardExtras,
-  setDashboardDateRange,
-} from "../store/dashboard.slice";
+import { fetchDashboardExtras, setDashboardDateRange } from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
 import {
   LayoutDashboard,
@@ -51,7 +46,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { stats, loading, dashboardData, dashboardExtras, dashboardMeta, dateRange, lastUpdated } =
+  const { dashboardData, dashboardExtras, dashboardMeta, dateRange, lastUpdated } =
     useSelector((state) => state.dashboard);
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
@@ -109,8 +104,18 @@ export default function Dashboard() {
     };
   }, [socket]);
 
+  // Backend requires from/to as plain YYYY-MM-DD (per the dashboard API
+  // contract) — never send a full ISO datetime here, the backend can't
+  // parse it and silently falls back to its default range, which makes
+  // every date-filter preset look like it's doing nothing.
+  const buildDateRangeParams = (dateObj) => ({
+    preset: dateObj?.preset || "today",
+    from: dateObj?.from ? format(new Date(dateObj.from), "yyyy-MM-dd") : null,
+    to: dateObj?.to ? format(new Date(dateObj.to), "yyyy-MM-dd") : null,
+  });
+
   // ─── Dashboard API Fetch Lifecycle ──────────────────────────────────────────
-  // Fetches both KPI stats and dashboard data whenever the selected date range changes.
+  // Fetches dashboard extras whenever the selected date range changes.
   // On initial load: DashboardSkeleton handles the loading state (no overlay).
   // On subsequent date changes: a "refreshing" overlay is shown over the existing dashboard.
   useEffect(() => {
@@ -119,29 +124,10 @@ export default function Dashboard() {
     const refreshData = async (dateObj) => {
       // Show the refreshing overlay ONLY on subsequent loads (data already exists).
       // The initial load is handled by the DashboardSkeleton early return below.
-      const isSubsequentLoad = !!dashboardData;
+      const isSubsequentLoad = !!dashboardExtras;
       if (isSubsequentLoad) setRefreshing(true);
       try {
-        const preset = dateObj?.preset || "today";
-        const apiParams = {
-          preset,
-          from: dateObj?.from
-            ? format(new Date(dateObj.from), "yyyy-MM-dd")
-            : null,
-          to: dateObj?.to ? format(new Date(dateObj.to), "yyyy-MM-dd") : null,
-        };
-
-        const serializableDate = {
-          ...dateObj,
-          from: dateObj?.from ? new Date(dateObj.from).toISOString() : null,
-          to: dateObj?.to ? new Date(dateObj.to).toISOString() : null,
-        };
-
-        await Promise.all([
-          dispatch(fetchDashboardData(serializableDate)),
-          dispatch(fetchDashboardKPIs(apiParams)),
-          dispatch(fetchDashboardExtras(serializableDate)),
-        ]);
+        await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
       } finally {
@@ -163,40 +149,34 @@ export default function Dashboard() {
     );
   }, [selectedDate, dispatch]);
 
-  // Manual refresh — re-pulls the same three thunks for the currently
-  // selected range, used by the "as of HH:MM" indicator's refresh button.
+  // Manual refresh — re-pulls dashboard extras for the currently selected
+  // range, used by the "as of HH:MM" indicator's refresh button.
   const handleManualRefresh = async () => {
     setRefreshing(true);
     try {
-      const preset = selectedDate?.preset || "today";
-      const apiParams = {
-        preset,
-        from: selectedDate?.from ? format(new Date(selectedDate.from), "yyyy-MM-dd") : null,
-        to: selectedDate?.to ? format(new Date(selectedDate.to), "yyyy-MM-dd") : null,
-      };
-      const serializableDate = {
-        ...selectedDate,
-        from: selectedDate?.from ? new Date(selectedDate.from).toISOString() : null,
-        to: selectedDate?.to ? new Date(selectedDate.to).toISOString() : null,
-      };
-      await Promise.all([
-        dispatch(fetchDashboardData(serializableDate)),
-        dispatch(fetchDashboardKPIs(apiParams)),
-        dispatch(fetchDashboardExtras(serializableDate)),
-      ]);
+      await dispatch(fetchDashboardExtras(buildDateRangeParams(selectedDate)));
     } finally {
       setRefreshing(false);
     }
   };
 
-  // Derive the human-readable period label (e.g. "May 01 – May 27, 2026")
-  // For custom date ranges: format from the selected dates
-  // For presets (today, 7d, 30d): use the label returned by the backend
+  // Derive the human-readable period label (e.g. "May 01 – May 27, 2026" for
+  // a custom range, or the preset's own label otherwise).
+  const PRESET_LABELS = {
+    today: "Today",
+    yesterday: "Yesterday",
+    last7: "Last 7 Days",
+    last30: "Last 30 Days",
+    last90: "Last 90 Days",
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+  };
   const dynamicPeriodLabel =
-    selectedDate?.from &&
-    (!selectedDate.preset || selectedDate.preset === "custom")
-      ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
-      : dashboardMeta?.periodLabel;
+    selectedDate?.preset && PRESET_LABELS[selectedDate.preset]
+      ? PRESET_LABELS[selectedDate.preset]
+      : selectedDate?.from
+        ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
+        : dashboardMeta?.periodLabel;
 
   const [scrolled, setScrolled] = useState(false);
 
