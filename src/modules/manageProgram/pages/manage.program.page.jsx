@@ -162,51 +162,57 @@ const ManageProgramPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="Manage Program"
-              icon={<LayoutDashboard className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-blue-200"
-              subheading="Create, configure, and monitor health and wellness programs."
-            />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="Manage Program"
+                icon={
+                <LayoutDashboard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
+                color="bg-app-primary2 shadow-blue-200"
+                subheading="Create, configure, and monitor health and wellness programs."
+              />
+            </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
               <Button
-                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
                 onClick={() => navigate("add-program")}
               >
-                <Plus className="w-4 h-4" />
-                Create Program
+                <Plus className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Create Program</span>
               </Button>
             </div>
           </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={displayData}
-          rowCount={
-            isManual ? serverPagination.total : displayData?.length || 0
-          }
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search program name..."
-          itemName="entries"
-          isLoading={loading}
-          manualPagination={isManual}
-          manualFiltering={isManual}
-          toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
-          activeFiltersChildren={
-            <DataTableActiveChips
-              filterConfig={filterConfig}
-              onClearAll={() => setDurationFilter("")}
-            />
-          }
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={displayData}
+            rowCount={
+              isManual ? serverPagination.total : displayData?.length || 0
+            }
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search program name..."
+            itemName="entries"
+            isLoading={loading}
+            manualPagination={isManual}
+            manualFiltering={isManual}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setDurationFilter("")}
+              />
+            }
+          />
+        </div>
       </div>
 
       <ConfirmModal

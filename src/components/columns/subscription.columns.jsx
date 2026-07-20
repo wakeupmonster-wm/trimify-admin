@@ -46,7 +46,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.title || "-"}
@@ -61,7 +61,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="capitalize font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.duration ? `${row.original.duration} Months` : "-"}
@@ -76,7 +76,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.price ? `$${row.original.price}` : "-"}
@@ -91,7 +91,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 150,
-    minSize: 150,
+    minSize: 100,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
         {row.original.subtitle || "-"}
@@ -106,7 +106,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 200,
-    minSize: 200,
+    minSize: 150,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight truncate max-w-[250px]">
         {row.original.features || "-"}
@@ -121,7 +121,7 @@ export const getSubscriptionColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>

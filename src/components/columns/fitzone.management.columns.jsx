@@ -17,8 +17,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         SR.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 80,
+    minSize: 60,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
@@ -40,8 +40,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         Fitzone Name
       </div>
     ),
-    size: 350,
-    minSize: 350,
+    size: 300,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
         {row.original.title || "-"}
@@ -55,8 +55,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         Manage
       </div>
     ),
-    size: 300,
-    minSize: 300,
+    size: 250,
+    minSize: 120,
     cell: ({ row }) => (
       <div className="flex">
         <Button
@@ -75,8 +75,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         Status
       </div>
     ),
-    size: 300,
-    minSize: 300,
+    size: 150,
+    minSize: 100,
     cell: ({ row }) => {
       const isActive =
         row.original.status === "Active" || row.original.status === true;
@@ -100,8 +100,8 @@ export const getFitzoneManagementColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 200,
-    minSize: 200,
+    size: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>

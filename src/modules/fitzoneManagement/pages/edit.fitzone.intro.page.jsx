@@ -76,20 +76,24 @@ const EditFitzoneIntroPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         {/* Top Header */}
         <Header>
-          <PageHeader
-            heading="Introduction"
-            icon={<FileText className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading="Edit the introduction content for this fitzone."
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="Introduction"
+                icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading="Edit the introduction content for this fitzone."
+              />
+            </div>
+          </div>
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
-          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden w-full min-w-0">
+          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Heading
@@ -131,10 +135,10 @@ const EditFitzoneIntroPage = () => {
               height={400}
             />
 
-            <div className="mt-8 flex justify-end gap-4">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4 border-t border-slate-100 w-full">
               <Button
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-xl px-5 sm:px-6 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -142,9 +146,9 @@ const EditFitzoneIntroPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
-                <Save size={16} />
+                <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                 {loading ? "Updating..." : "Update"}
               </Button>
             </div>

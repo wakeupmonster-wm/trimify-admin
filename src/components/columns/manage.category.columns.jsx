@@ -41,7 +41,7 @@ export const getManageCategoryColumns = (onAction) => [
       </div>
     ),
     size: 200,
-    minSize: 150,
+    minSize: 100,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
         {row.original.title || "-"}
@@ -56,7 +56,7 @@ export const getManageCategoryColumns = (onAction) => [
       </div>
     ),
     size: 350,
-    minSize: 250,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="text-slate-700 font-medium text-[11px] tracking-tight line-clamp-1">
         {row.original.description || "-"}

@@ -123,18 +123,20 @@ const AddCategoryPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading={isEdit ? "Edit Category" : "Add Category"}
-            icon={<Layers className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading={
-              isEdit
-                ? "Update existing blog category."
-                : "Create a new blog category."
-            }
-          />
+          <div className="flex-1 min-w-0 w-full">
+            <PageHeader
+              heading={isEdit ? "Edit Category" : "Add Category"}
+              icon={<Layers className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              color="bg-app-primary2 shadow-blue-200"
+              subheading={
+                isEdit
+                  ? "Update existing blog category."
+                  : "Create a new blog category."
+              }
+            />
+          </div>
         </Header>
 
         {/* Main Form Card */}
@@ -245,11 +247,11 @@ const AddCategoryPage = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="mt-8 flex justify-end gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-xl px-6 py-2.5 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -257,17 +259,17 @@ const AddCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-6 py-2.5 h-11 sm:h-10 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin shrink-0" />
                     {isEdit ? "Updating..." : "Saving..."}
                   </>
                 ) : (
                   <>
                     {isEdit ? "Update Category" : "Save Category"}
-                    <Save size={16} />
+                    <Save size={16} className="shrink-0" />
                   </>
                 )}
               </Button>

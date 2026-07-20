@@ -8,8 +8,8 @@ export const getManageProgramDetailsColumns = (handleAction) => [
         SR.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -23,8 +23,8 @@ export const getManageProgramDetailsColumns = (handleAction) => [
         Manage
       </div>
     ),
-    size: 350,
-    minSize: 350,
+    size: 250,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.title}
@@ -38,7 +38,8 @@ export const getManageProgramDetailsColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 250,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button

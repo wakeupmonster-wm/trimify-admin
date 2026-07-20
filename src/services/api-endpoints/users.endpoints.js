@@ -11,4 +11,6 @@ const ADMIN = `${BASE_URL}/admin`;
 export const USER = {
   /** GET — Retrieve paginated list of all app users (with plan & subAdmin relations) */
   USER_LIST: `${ADMIN}/users`,
+  /** GET — Retrieve a single user's profile details */
+  VIEW_USER_PROFILE: (id) => `${ADMIN}/view-user-profile/${id}`,
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSelector } from "react-redux";
-import dummyImg from "@/assets/web/dummyImg.webp";
+import dummyImg from "@/assets/web/avatar.png";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
@@ -12,7 +12,12 @@ import {
 
 export function AdminProfileNav() {
   const navigate = useNavigate();
-  // const { account } = useSelector((state) => state.account);
+  // Get the authenticated user data from the auth slice
+  const { user } = useSelector((state) => state.auth);
+
+  const displayName = user?.nickname || user?.name || "Admin";
+  const displayEmail = user?.email || "admin@example.com";
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -20,25 +25,25 @@ export function AdminProfileNav() {
         <TooltipTrigger asChild>
           <div
             onClick={() => navigate("/admin/accounts")}
-            className="flex items-center gap-2.5 pl-1 pr-4 py-1 rounded-full border border-slate-300/60 bg-white hover:bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
+            className="flex items-center gap-2.5 pl-2 pr-5 py-1 rounded-full border border-slate-300/60 bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
           >
             {/* Avatar with fallback logic */}
-            <Avatar className="h-8 w-8 rounded-full border-2 border-white shadow-sm transition-transform group-hover:scale-105 overflow-hidden">
+            <Avatar className="h-10 w-10 rounded-full border border-white shadow-sm transition-transform group-hover:scale-105 overflow-hidden">
               <AvatarImage
                 src={dummyImg}
-                alt="Admin"
+                alt={displayName}
                 className="object-cover"
               />
-              <AvatarFallback className="bg-[#00A99D] text-white font-bold text-[13px]">
-                A
+              <AvatarFallback className="bg-app-primary2 text-white font-bold text-[13px]">
+                {initial}
               </AvatarFallback>
             </Avatar>
-            <div className="flex items-center gap-1 leading-none">
-              <span className="text-[13px] font-bold text-slate-900">
-                Admin
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-xs font-bold text-slate-900 truncate max-w-[120px]">
+                {displayName}
               </span>
-              <span className="text-[13px] font-bold text-[#00A99D]">
-                Admin
+              <span className="text-[11px] pb-1 font-medium text-slate-500 truncate max-w-[120px]">
+                {displayEmail}
               </span>
             </div>
           </div>
@@ -47,10 +52,10 @@ export function AdminProfileNav() {
         {/* Hover Card / Tooltip content */}
         <TooltipContent
           side="bottom"
-          className="flex flex-col gap-1 p-3 bg-white border-slate-300/60 shadow-xl"
+          className="flex flex-col gap-1 p-3 bg-slate-50 border-slate-300/60 shadow-md"
         >
-          <p className="font-bold text-brand-blue">Admin</p>
-          <p className="text-xs text-slate-500">[EMAIL_ADDRESS]</p>
+          <p className="font-bold text-brand-blue">{displayName}</p>
+          <p className="text-xs text-slate-500">{displayEmail}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

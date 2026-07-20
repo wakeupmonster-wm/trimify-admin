@@ -79,32 +79,40 @@ const ManageFitzoneSessionPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading="Session Management"
-            icon={<Video className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading="Manage workout sessions and videos."
-          />
-          <Button
-            onClick={openAddModal}
-            className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add Session
-          </Button>
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="Session Management"
+                icon={<Video className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading="Manage workout sessions and videos."
+              />
+            </div>
+            <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+              <Button
+                onClick={openAddModal}
+                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+              >
+                <Plus className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Add Session</span>
+              </Button>
+            </div>
+          </div>
         </Header>
 
-        <DataTable
-          data={sessions || []}
-          columns={columns}
-          searchable={true}
-          searchPlaceholder="Search..."
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          loading={loading}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            data={sessions || []}
+            columns={columns}
+            searchable={true}
+            searchPlaceholder="Search..."
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            loading={loading}
+          />
+        </div>
       </div>
 
       <ConfirmModal

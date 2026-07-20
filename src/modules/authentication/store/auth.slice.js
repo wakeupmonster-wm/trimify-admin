@@ -17,12 +17,14 @@ export const loginThunk = createAsyncThunk(
         return rejectWithValue(message || "Invalid credentials");
       }
 
+      const adminData = response.admin || data;
+
       const user = {
-        id: data.id,
-        nickname: data.nickname || data.name,
-        email: data.email,
-        role: data.role || "ADMIN",
-        avatar: data.avatar,
+        id: adminData.id,
+        nickname: adminData.nickname || adminData.name,
+        email: adminData.email,
+        role: adminData.role || "ADMIN",
+        avatar: adminData.avatar,
         screen: response.screen,
         message,
       };

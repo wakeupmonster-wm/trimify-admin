@@ -17,7 +17,7 @@ import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
 import { Link, useLocation } from "react-router-dom";
-import dummyImg from "@/assets/web/dummyImg.webp";
+import dummyImg from "@/assets/web/avatar.png";
 import { useDispatch, useSelector } from "react-redux";
 // import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
@@ -52,22 +52,15 @@ export function AppSidebar({ ...props }) {
     // dispatch(fetchMyTickets({ limit: 1 }));
   }, [dispatch]);
 
-  // const navUser = useMemo(
-  //   () => ({
-  //     name: account?.nickname || "Admin",
-  //     email: account?.email || "info@trimify.com.au",
-  //     avatar: account?.avatar?.url || dummyImg,
-  //   }),
-  //   [account],
-  // );
+  const { user } = useSelector((state) => state.auth);
 
   const navUser = useMemo(
     () => ({
-      name: "Admin",
-      email: "info@trimify.com.au",
+      name: user?.nickname || user?.name || "Admin",
+      email: user?.email || "admin@example.com",
       avatar: dummyImg,
     }),
-    [],
+    [user],
   );
 
   // --- Optimized Navigation Data with Dynamic Badges ---

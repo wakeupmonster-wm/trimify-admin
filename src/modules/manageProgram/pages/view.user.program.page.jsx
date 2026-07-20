@@ -49,41 +49,52 @@ const ViewUserProgramPage = () => {
     debouncedSearchTerm,
   ]);
 
-  const columns = useMemo(() => getViewUserProgramColumns(), []);
+  const handleAction = (row, action) => {
+    if (action === "view") {
+      navigate(`/admin/users/view-user/${row.user_id || row.id}`);
+    }
+  };
+
+  const columns = useMemo(() => getViewUserProgramColumns(handleAction), []);
 
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading="View Users"
-            icon={<Users className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading="View the list of users assigned to this program."
-          />
+          <div className="flex-1 min-w-0 w-full">
+            <PageHeader
+              heading="View Users"
+              icon={<Users className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              color="bg-app-primary2 shadow-blue-200"
+              subheading="View the list of users assigned to this program."
+            />
+          </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={displayData}
-          rowCount={
-            isManual ? serverPagination.total : displayData?.length || 0
-          }
-          searchPlaceholder="Search by user name..."
-          pagination={pagination}
-          setPagination={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          loading={loading}
-          manualPagination={isManual}
-          pageCount={
-            isManual
-              ? serverPagination.totalPages
-              : Math.ceil((displayData?.length || 0) / pagination.pageSize)
-          }
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={displayData}
+            rowCount={
+              isManual ? serverPagination.total : displayData?.length || 0
+            }
+            searchPlaceholder="Search by user name..."
+            pagination={pagination}
+            setPagination={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            loading={loading}
+            manualPagination={isManual}
+            onRowClick={(row) => handleAction(row.original, "view")}
+            pageCount={
+              isManual
+                ? serverPagination.totalPages
+                : Math.ceil((displayData?.length || 0) / pagination.pageSize)
+            }
+          />
+        </div>
       </div>
     </Container>
   );

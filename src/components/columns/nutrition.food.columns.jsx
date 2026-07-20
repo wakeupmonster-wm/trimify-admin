@@ -12,19 +12,19 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-[30px] text-center text-[10px] font-bold uppercase tracking-wider">
+      <div className="text-center text-[10px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-[30px] text-center font-bold text-[11px] text-foreground/90">
+        <div className="text-center font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -35,14 +35,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_title",
     header: () => (
-      <div className="w-[100px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Food Name
       </div>
     ),
     size: 100,
-    minSize: 100,
+    minSize: 80,
     cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate">
+      <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate">
         {row.original.Meal_title || "-"}
       </div>
     ),
@@ -50,14 +50,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Protien_In_gm",
     header: () => (
-      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Protein
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row }) => (
-      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.Meal_Protien_In_gm || "-"} gm
       </div>
     ),
@@ -65,14 +65,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Carbs_In_gm",
     header: () => (
-      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Carbs
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row }) => (
-      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.Meal_Carbs_In_gm || "-"} gm
       </div>
     ),
@@ -80,14 +80,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Calories_In_gm",
     header: () => (
-      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Calories
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row }) => (
-      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.Meal_Calories_In_gm || "-"} kcal
       </div>
     ),
@@ -95,14 +95,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Fats_In_gm",
     header: () => (
-      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Fats
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row }) => (
-      <div className="w-[40px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.Meal_Fats_In_gm || "-"} gm
       </div>
     ),
@@ -110,14 +110,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Image_url",
     header: () => (
-      <div className="w-[40px] text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Image
       </div>
     ),
     size: 40,
-    minSize: 40,
+    minSize: 30,
     cell: ({ row }) => (
-      <div className="w-[40px] flex justify-center">
+      <div className="flex justify-center">
         {row.original.Meal_Image_url ? (
           <img
             src={row.original.Meal_Image_url}
@@ -135,14 +135,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Type",
     header: () => (
-      <div className="w-[50px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Meal Type
       </div>
     ),
     size: 50,
-    minSize: 50,
+    minSize: 40,
     cell: ({ row }) => (
-      <div className="w-[50px] text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.Meal_Type || "-"}
       </div>
     ),
@@ -150,14 +150,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_ingredients",
     header: () => (
-      <div className="w-[80px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Ingredients
       </div>
     ),
     size: 80,
-    minSize: 80,
+    minSize: 60,
     cell: ({ row }) => (
-      <div className="w-[80px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+      <div className="w-[80px] md:w-[120px] max-w-[150px] text-[11px] font-medium text-slate-600 tracking-tight truncate inline-block align-bottom">
         {row.original.Meal_ingredients || "Not Available"}
       </div>
     ),
@@ -165,14 +165,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_instructions",
     header: () => (
-      <div className="w-[120px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Instructions
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
-      <div className="w-[120px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+      <div className="w-[80px] md:w-[120px] max-w-[150px] text-[11px] font-medium text-slate-600 tracking-tight truncate inline-block align-bottom">
         {row.original.Meal_instructions || "Not Available"}
       </div>
     ),
@@ -180,14 +180,14 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     accessorKey: "Meal_Description",
     header: () => (
-      <div className="w-[120px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Description
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
-      <div className="w-[120px] text-[11px] font-medium text-slate-600 tracking-tight truncate block">
+      <div className="w-[80px] md:w-[120px] max-w-[150px] text-[11px] font-medium text-slate-600 tracking-tight truncate inline-block align-bottom">
         {row.original.Meal_Description || "Not Available"}
       </div>
     ),
@@ -195,15 +195,15 @@ export const getNutritionFoodColumns = (onAction) => [
   {
     id: "actions",
     header: () => (
-      <div className="w-[50px] text-center text-[10px] font-bold uppercase tracking-wider">
+      <div className="text-center text-[10px] font-bold uppercase tracking-wider">
         Action
       </div>
     ),
     size: 50,
-    minSize: 50,
+    minSize: 40,
     cell: ({ row }) => {
       return (
-        <div className="w-[50px] flex justify-center">
+        <div className="flex justify-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

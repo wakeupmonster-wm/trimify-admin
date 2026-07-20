@@ -14,7 +14,7 @@ export const getUserManagementColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[10px] font-bold uppercase tracking-wider">
+      <div className="w-8 sm:w-10 text-left text-[10px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
@@ -26,7 +26,7 @@ export const getUserManagementColumns = (onAction) => [
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
+        <div className="w-8 sm:w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -42,11 +42,11 @@ export const getUserManagementColumns = (onAction) => [
       </div>
     ),
     size: 100,
-    minSize: 100,
+    minSize: 80,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-700 tracking-tight">
+      <div className="text-[11px] font-medium text-slate-700 tracking-tight break-all truncate min-w-0">
         {row.original.user_id || "-"}
-      </span>
+      </div>
     ),
   },
   {
@@ -56,12 +56,12 @@ export const getUserManagementColumns = (onAction) => [
         User Name
       </div>
     ),
-    size: 180,
-    minSize: 180,
+    size: 160,
+    minSize: 120,
     cell: ({ row }) => (
-      <span className="capitalize font-bold text-slate-700 text-[11px] tracking-tight">
+      <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight break-words line-clamp-2">
         {row.original.name || "-"}
-      </span>
+      </div>
     ),
   },
   {
@@ -71,11 +71,12 @@ export const getUserManagementColumns = (onAction) => [
         Email Id
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 180,
+    minSize: 120,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-[100px]"
-      title={row.original.email}
+      <div
+        className="text-[11px] font-medium text-slate-600 tracking-tight truncate min-w-0"
+        title={row.original.email}
       >
         {row.original.email || "-"}
       </div>
@@ -88,12 +89,12 @@ export const getUserManagementColumns = (onAction) => [
         Contact No.
       </div>
     ),
-    size: 60,
-    minSize: 60,
+    size: 100,
+    minSize: 90,
     cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-600 tracking-tight">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
         {row.original.mobileNo || "-"}
-      </span>
+      </div>
     ),
   },
   {
@@ -103,26 +104,26 @@ export const getUserManagementColumns = (onAction) => [
         Active Plan
       </div>
     ),
-    size: 180,
-    minSize: 180,
+    size: 160,
+    minSize: 130,
     cell: ({ row }) => {
       const plan = row.original?.plan?.title;
       if (!plan || plan === "No-Active Plan") {
         return (
           <Badge
             variant="outline"
-            className="bg-slate-100 text-slate-500 border-none font-semibold text-[10px]"
+            className="bg-slate-100 text-slate-500 border-none font-semibold text-[10px] truncate max-w-full"
           >
-            No-Active Plan
+            <span className="truncate">No-Active Plan</span>
           </Badge>
         );
       }
       return (
         <Badge
           variant="outline"
-          className="bg-green-100 text-green-700 border-none font-semibold text-[10px]"
+          className="bg-green-100 text-green-700 border-none font-semibold text-[10px] truncate max-w-full"
         >
-          {plan}
+          <span className="truncate">{plan}</span>
         </Badge>
       );
     },
@@ -134,8 +135,8 @@ export const getUserManagementColumns = (onAction) => [
         Plan Buy
       </div>
     ),
-    size: 60,
-    minSize: 60,
+    size: 90,
+    minSize: 85,
     cell: ({ row }) => {
       const dateValue = row.original.planBuy;
       if (
@@ -159,8 +160,8 @@ export const getUserManagementColumns = (onAction) => [
         Plan Expiry
       </div>
     ),
-    size: 60,
-    minSize: 60,
+    size: 90,
+    minSize: 85,
     cell: ({ row }) => {
       const dateValue = row.original.plan_expiry;
       if (
@@ -184,16 +185,16 @@ export const getUserManagementColumns = (onAction) => [
         Added by
       </div>
     ),
-    size: 180,
-    minSize: 180,
+    size: 140,
+    minSize: 120,
     cell: ({ row }) => {
       const addedBy = row.original.sub_admin
         ? row.original.sub_admin.name || row.original.sub_admin
         : "-";
       return (
-        <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight">
+        <div className="capitalize text-[11px] font-medium text-slate-600 tracking-tight line-clamp-2 break-words">
           {addedBy}
-        </span>
+        </div>
       );
     },
   },
@@ -205,7 +206,7 @@ export const getUserManagementColumns = (onAction) => [
       </div>
     ),
     size: 80,
-    minSize: 80,
+    minSize: 75,
     cell: ({ row }) => {
       const status = row.original.status || "Active";
       return (
@@ -251,13 +252,6 @@ export const getUserManagementColumns = (onAction) => [
               <Eye className="w-3.5 h-3.5" />
               View
             </DropdownMenuItem>
-            {/* <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
-              onClick={() => onAction && onAction(row.original, "delete")}
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              Delete
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

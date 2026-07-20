@@ -8,6 +8,7 @@ const RecentActivityTimelineCard = ({ userData }) => {
   const activities = userData?.activities || [];
 
   const visibleActivities = isExpanded ? activities : activities.slice(0, 3);
+  console.log("activities: ", activities)
 
   return (
     <SectionCard
