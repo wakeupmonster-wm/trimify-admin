@@ -9,9 +9,9 @@ import {
 
 export const getFitzoneSessions = createAsyncThunk(
   "fitzoneSession/getFitzoneSessions",
-  async (id, { rejectWithValue }) => {
+  async ({ id, page, limit, search }, { rejectWithValue }) => {
     try {
-      const response = await getFitzoneSessionsAPI(id);
+      const response = await getFitzoneSessionsAPI(id, { page, limit, search });
       if (response && response.status === "success") {
          return {
           fitzone: response.fitzone || [],

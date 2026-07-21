@@ -249,7 +249,7 @@ const FaqManagementPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search faqs..."
+          searchPlaceholder="Search by question or answer..."
           itemName="entries"
           isLoading={loading}
           manualPagination={!!serverPagination}

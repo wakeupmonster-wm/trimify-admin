@@ -42,7 +42,10 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => (
-      <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate">
+      <div
+        title={row.original.Meal_title}
+        className="capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate max-w-[100px]"
+      >
         {row.original.Meal_title || "-"}
       </div>
     ),

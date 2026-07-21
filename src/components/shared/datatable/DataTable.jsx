@@ -123,7 +123,7 @@ export default function DataTable({
                             ? header.getSize()
                             : undefined,
                       }}
-                      className="text-foreground/80 px-3 sm:px-5 font-bold uppercase h-10 bg-slate-100/50 text-[10px] text-left whitespace-nowrap"
+                      className="text-foreground/80 px-3 font-bold uppercase h-10 bg-slate-100/50 text-[10px] text-left whitespace-nowrap"
                     >
                       {flexRender(
                         header.column.columnDef.header,
@@ -180,7 +180,7 @@ export default function DataTable({
                                 ? cell.column.getSize()
                                 : undefined,
                           }}
-                          className="py-3 px-3 sm:px-5 text-left"
+                          className="py-3 px-4 text-left"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,

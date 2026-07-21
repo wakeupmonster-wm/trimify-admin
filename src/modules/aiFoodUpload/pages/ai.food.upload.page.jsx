@@ -176,7 +176,7 @@ const AiFoodUploadPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search generated food…"
+            searchPlaceholder="Search by food name..."
             itemName="items"
             onRowClick={(row) => handleView(row.original.id)}
             manualPagination={true}

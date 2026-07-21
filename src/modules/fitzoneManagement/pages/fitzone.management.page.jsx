@@ -146,7 +146,7 @@ const FitzoneManagementPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search fitzones..."
+            searchPlaceholder="Search by fitzone name..."
             itemName="entries"
             isLoading={loading}
             manualPagination={isManual}

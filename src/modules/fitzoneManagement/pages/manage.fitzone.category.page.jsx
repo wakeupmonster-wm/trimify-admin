@@ -14,22 +14,30 @@ import {
 } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ManageFitzoneCategoryPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { categories, loading } = useSelector((state) => state.fitzoneCategory);
+  const { categories, loading, pagination: serverPagination } = useSelector((state) => state.fitzoneCategory);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     if (id) {
-      dispatch(getFitzoneCategories(id));
+      dispatch(getFitzoneCategories({
+        id,
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        search: debouncedSearch
+      }));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, pagination.pageIndex, pagination.pageSize, debouncedSearch]);
 
   const handleAction = (row, action) => {
     if (action === "edit") {
@@ -98,10 +106,16 @@ const ManageFitzoneCategoryPage = () => {
             data={categories || []}
             columns={columns}
             searchable={true}
-            searchPlaceholder="Search..."
+            searchPlaceholder="Search by category name..."
+            itemName="categories"
             pagination={pagination}
             onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
             loading={loading}
+            manualPagination={true}
+            manualFiltering={true}
+            pageCount={serverPagination?.totalPages || 1}
           />
         </div>
       </div>

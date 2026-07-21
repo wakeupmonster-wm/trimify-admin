@@ -1,11 +1,14 @@
 import { apiConnector } from "@/services/axios/axios.connector";
 import { FITZONE_SESSION } from "@/services/api-endpoints/fitzone.endpoints";
 
-export const getFitzoneSessionsAPI = async (id) => {
+export const getFitzoneSessionsAPI = async (id, params = {}) => {
   try {
     const response = await apiConnector(
       "GET",
       FITZONE_SESSION.FITZONE_SESSION_LIST(id),
+      null,
+      null,
+      params
     );
     return response;
   } catch (error) {

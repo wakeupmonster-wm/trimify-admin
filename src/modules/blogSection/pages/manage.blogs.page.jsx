@@ -15,6 +15,7 @@ import {
 } from "../store/blog.slice";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ManageBlogsPage = () => {
   const navigate = useNavigate();
@@ -22,8 +23,8 @@ const ManageBlogsPage = () => {
   const { posts, postsLoading, postsPagination } = useSelector(
     (state) => state.blogSection,
   );
-
   const [postFilter, setPostFilter] = useState("");
+  const debouncedPostFilter = useDebounce(postFilter, 500);
   const [postPage, setPostPageState] = useState({
     pageIndex: Math.max(0, postsPagination.page - 1),
     pageSize: postsPagination.limit || 10,
@@ -38,10 +39,10 @@ const ManageBlogsPage = () => {
       fetchBlogPosts({
         page: postPage.pageIndex + 1,
         limit: postPage.pageSize,
-        search: postFilter,
+        search: debouncedPostFilter,
       }),
     );
-  }, [dispatch, postPage.pageIndex, postPage.pageSize, postFilter]);
+  }, [dispatch, postPage.pageIndex, postPage.pageSize, debouncedPostFilter]);
 
   const handlePostAction = async (row, action, value) => {
     if (action === "change-status") {
@@ -102,7 +103,9 @@ const ManageBlogsPage = () => {
             <div className="flex-1 min-w-0 w-full md:w-auto">
               <PageHeader
                 heading="Manage Blogs"
-                icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={
+                  <FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
                 color="bg-app-primary2 shadow-brand-hoverBlue"
                 subheading="Manage blog posts for the platform."
               />
@@ -130,7 +133,7 @@ const ManageBlogsPage = () => {
             onPaginationChange={setPostPageState}
             globalFilter={postFilter}
             setGlobalFilter={setPostFilter}
-            searchPlaceholder="Search blog posts..."
+            searchPlaceholder="Search by title or description..."
             itemName="posts"
             isLoading={postsLoading}
             manualPagination={isPostManual}

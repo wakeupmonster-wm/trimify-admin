@@ -8,9 +8,9 @@ import {
 
 export const getFitzoneCategories = createAsyncThunk(
   "fitzoneCategory/getFitzoneCategories",
-  async (id, { rejectWithValue }) => {
+  async ({ id, page, limit, search }, { rejectWithValue }) => {
     try {
-      const response = await getFitzoneCategoriesAPI(id);
+      const response = await getFitzoneCategoriesAPI(id, { page, limit, search });
       if (response && response.status === "success") {
          return {
           category: response.category || [],

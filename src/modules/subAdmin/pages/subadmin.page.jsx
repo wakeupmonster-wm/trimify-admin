@@ -256,7 +256,7 @@ const SubAdminManagementPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search by email & clinic name..."
+            searchPlaceholder="Search by user name, email, designation..."
             itemName="entries"
             isLoading={loading}
             manualPagination={isManual}

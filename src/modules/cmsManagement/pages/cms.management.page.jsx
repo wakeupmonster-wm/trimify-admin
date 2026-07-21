@@ -88,7 +88,7 @@ const CMSManagementPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search pages..."
+          searchPlaceholder="Search by page title..."
           itemName="entries"
           isLoading={loading}
         />

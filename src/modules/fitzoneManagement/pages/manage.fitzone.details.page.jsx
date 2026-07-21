@@ -51,6 +51,16 @@ const ManageFitzoneDetailsPage = () => {
     },
   ];
 
+  const filteredData = useMemo(() => {
+    if (!globalFilter) return staticData;
+    const searchStr = globalFilter.toLowerCase();
+    return staticData.filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchStr) ||
+        item.description.toLowerCase().includes(searchStr),
+    );
+  }, [globalFilter]);
+
   return (
     <Container>
       <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
@@ -59,7 +69,9 @@ const ManageFitzoneDetailsPage = () => {
             <div className="flex-1 min-w-0 w-full md:w-auto">
               <PageHeader
                 heading="Manage Fitzone Modules"
-                icon={<Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={
+                  <Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."
               />
@@ -70,15 +82,18 @@ const ManageFitzoneDetailsPage = () => {
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={staticData}
-            rowCount={staticData.length}
+            data={filteredData}
+            rowCount={filteredData.length}
             loading={false}
             manualPagination={false}
             pagination={pagination}
             setPagination={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            pageCount={Math.ceil(staticData.length / pagination.pageSize)}
+            searchable={true}
+            searchPlaceholder="Search by manage or description..."
+            itemName="modules"
+            pageCount={Math.ceil(filteredData.length / pagination.pageSize)}
           />
         </div>
       </div>

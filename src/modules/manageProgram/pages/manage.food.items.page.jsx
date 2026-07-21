@@ -55,9 +55,6 @@ const ManageFoodItemsPage = () => {
     unit: "",
   });
 
-  console.log("formData: ", formData)
-  console.log("foodSearchResults: ", foodSearchResults)
-
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isFoodSelected, setIsFoodSelected] = useState(false);
@@ -124,8 +121,6 @@ const ManageFoodItemsPage = () => {
       setShowSuggestions(false);
     }
   };
-
-  // console.log("formData: ", formData);
 
   const handleAddOrUpdateFood = async () => {
     if (!formData.title.trim()) {

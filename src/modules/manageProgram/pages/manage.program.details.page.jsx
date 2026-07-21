@@ -64,6 +64,16 @@ const ManageProgramDetailsPage = () => {
     },
   ];
 
+  const filteredData = useMemo(() => {
+    if (!globalFilter) return staticData;
+    const searchStr = globalFilter.toLowerCase();
+    return staticData.filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchStr) ||
+        item.description.toLowerCase().includes(searchStr)
+    );
+  }, [globalFilter]);
+
   return (
     <Container>
       <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
@@ -81,15 +91,18 @@ const ManageProgramDetailsPage = () => {
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={staticData}
-            rowCount={staticData.length}
+            data={filteredData}
+            rowCount={filteredData.length}
             loading={false}
             manualPagination={false}
             pagination={pagination}
             setPagination={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            pageCount={Math.ceil(staticData.length / pagination.pageSize)}
+            searchable={true}
+            searchPlaceholder="Search by manage title..."
+            itemName="modules"
+            pageCount={Math.ceil(filteredData.length / pagination.pageSize)}
           />
         </div>
       </div>

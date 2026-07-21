@@ -39,6 +39,33 @@ const navigationData = {
       url: "/admin/users",
       icon: LuUsersRound,
       badge: null,
+      items: [
+        {
+          title: "Users List",
+          url: "/admin/users",
+        },
+        {
+          title: "Sample Profile",
+          url: "/admin/users/sample-profile-layout",
+        },
+        {
+          title: "Sample Profile V2",
+          url: "/admin/users/sample-profile-layout-v2",
+        },
+        {
+          title: "Sample Profile V3",
+          url: "/admin/users/sample-profile-layout-v3",
+        },
+        {
+          title: "Sample Program",
+          url: "/admin/users/sample-program-layout",
+        },
+        {
+          title: "Sample Fitzone",
+          url: "/admin/users/sample-fitzone-layout",
+        },
+        // add here also
+      ],
     },
     {
       title: "Program Management",

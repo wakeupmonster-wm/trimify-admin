@@ -199,7 +199,7 @@ const ManageProgramPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search program name..."
+            searchPlaceholder="Search by program name..."
             itemName="entries"
             isLoading={loading}
             manualPagination={isManual}

@@ -133,7 +133,7 @@ const SubscriptionManagementPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search subscriptions..."
+            searchPlaceholder="Search by plan name or user name..."
             itemName="entries"
             isLoading={loading}
             manualPagination={!!serverPagination}

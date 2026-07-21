@@ -15,21 +15,41 @@ import {
 } from "../store/fitzone.session.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ManageFitzoneSessionPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { sessions, loading } = useSelector((state) => state.fitzoneSession);
+  const {
+    sessions,
+    loading,
+    pagination: serverPagination,
+  } = useSelector((state) => state.fitzoneSession);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearch = useDebounce(globalFilter, 500);
 
   useEffect(() => {
     if (id) {
-      dispatch(getFitzoneSessions(id));
+      dispatch(
+        getFitzoneSessions({
+          id,
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearch,
+        }),
+      );
     }
-  }, [dispatch, id]);
+  }, [
+    dispatch,
+    id,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearch,
+  ]);
 
   const handleAction = async (row, action, value) => {
     if (action === "edit") {
@@ -85,7 +105,9 @@ const ManageFitzoneSessionPage = () => {
             <div className="flex-1 min-w-0 w-full md:w-auto">
               <PageHeader
                 heading="Session Management"
-                icon={<Video className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={
+                  <Video className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Manage workout sessions and videos."
               />
@@ -107,10 +129,16 @@ const ManageFitzoneSessionPage = () => {
             data={sessions || []}
             columns={columns}
             searchable={true}
-            searchPlaceholder="Search..."
+            searchPlaceholder="Search by session title or category..."
             pagination={pagination}
             onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
             loading={loading}
+            manualPagination={true}
+            manualFiltering={true}
+            pageCount={serverPagination?.totalPages || 1}
+            itemName="sessions"
           />
         </div>
       </div>

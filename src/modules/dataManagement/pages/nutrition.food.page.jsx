@@ -107,7 +107,7 @@ const NutritionFoodPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search food..."
+            searchPlaceholder="Search by food name..."
             itemName="entries"
             isLoading={loading}
             manualPagination={true}

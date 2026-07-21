@@ -50,8 +50,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Category Name
       </div>
     ),
-    size: 150,
-    minSize: 120,
+    size: 180,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.title || "-"}

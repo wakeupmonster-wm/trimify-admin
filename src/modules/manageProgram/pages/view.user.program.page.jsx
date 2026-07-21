@@ -80,7 +80,7 @@ const ViewUserProgramPage = () => {
             rowCount={
               isManual ? serverPagination.total : displayData?.length || 0
             }
-            searchPlaceholder="Search by user name..."
+            searchPlaceholder="Search by username..."
             pagination={pagination}
             setPagination={setPagination}
             globalFilter={globalFilter}

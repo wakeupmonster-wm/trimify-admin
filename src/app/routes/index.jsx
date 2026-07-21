@@ -17,6 +17,11 @@ const AddSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/add.subadmin
 const EditSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/edit.subadmin.page"));
 const UsersManagementPage = lazy(() => import("@/modules/userManagement/pages/users.management.page"));
 const ViewUserProfilePage = lazy(() => import("@/modules/userManagement/pages/view.user.profile.page"));
+const SampleProfileLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout.page"));
+const SampleProfileLayoutV2Page = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout-v2.page"));
+const SampleProfileLayoutV3Page = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout-v3.page"));
+const SampleProgramLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-program-layout.page"));
+const SampleFitzoneLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-fitzone-layout.page"));
 const AccountSettingsPage = lazy(() => import("@/modules/accountSettings/pages/account.settings.page"));
 const FaqManagementPage = lazy(() => import("@/modules/faqManagement/pages/faq.management.page"));
 const NotificationManagePage = lazy(() => import("@/modules/notificationManage/pages/notification.manage.page"));
@@ -186,6 +191,47 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <ViewUserProfilePage />
+              </Suspense>
+            ),
+          },
+          // Sample View profile HTML page.
+          {
+            path: "sample-profile-layout",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleProfileLayoutPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sample-profile-layout-v2",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleProfileLayoutV2Page />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sample-profile-layout-v3",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleProfileLayoutV3Page />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sample-program-layout",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleProgramLayoutPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sample-fitzone-layout",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleFitzoneLayoutPage />
               </Suspense>
             ),
           },

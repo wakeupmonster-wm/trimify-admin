@@ -1,11 +1,14 @@
 import { apiConnector } from "@/services/axios/axios.connector";
 import { FITZONE_WORKOUT_CATEGORY } from "@/services/api-endpoints/fitzone.endpoints";
 
-export const getFitzoneCategoriesAPI = async (id) => {
+export const getFitzoneCategoriesAPI = async (id, params = {}) => {
   try {
     const response = await apiConnector(
       "GET",
       FITZONE_WORKOUT_CATEGORY.FITZONE_WORKOUT_CATEGORY_LIST(id),
+      null,
+      null,
+      params
     );
     return response;
   } catch (error) {

@@ -92,7 +92,7 @@ const UsersManagementPage = () => {
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -121,7 +121,7 @@ const UsersManagementPage = () => {
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search user name & email ID..."
+            searchPlaceholder="Search by name or email..."
             itemName="entries"
             isLoading={loading}
             manualPagination={isManual}

@@ -145,7 +145,7 @@ const ManageCategoryPage = () => {
             onPaginationChange={setCategoryPageState}
             globalFilter={categoryFilter}
             setGlobalFilter={setCategoryFilter}
-            searchPlaceholder="Search categories..."
+            searchPlaceholder="Search by title or description..."
             itemName="categories"
             isLoading={categoriesLoading}
             manualPagination={isCategoryManual}

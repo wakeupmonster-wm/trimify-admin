@@ -174,7 +174,7 @@ export default function SubscribersView() {
         onPaginationChange={setPagination}
         globalFilter={search}
         setGlobalFilter={setSearch}
-        searchPlaceholder="Search by name, email or mobile..."
+        searchPlaceholder="Search by subscriber name or email..."
         itemName="subscribers"
         isLoading={subscribersLoading}
         manualPagination

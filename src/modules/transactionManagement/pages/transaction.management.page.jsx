@@ -72,7 +72,7 @@ const TransactionManagementPage = () => {
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search transactions..."
+          searchPlaceholder="Search by email..."
           itemName="entries"
           isLoading={loading}
           manualPagination={!!serverPagination}

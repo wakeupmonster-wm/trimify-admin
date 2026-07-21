@@ -315,7 +315,7 @@ const NotificationManagePage = () => {
                 onPaginationChange={setPagination}
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
-                searchPlaceholder="Search notifications..."
+                searchPlaceholder="Search by message..."
                 itemName="entries"
                 isLoading={loading}
                 manualPagination={!!serverPagination}

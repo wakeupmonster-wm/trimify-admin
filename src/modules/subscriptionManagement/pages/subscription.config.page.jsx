@@ -19,6 +19,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const SubscriptionConfigPage = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const SubscriptionConfigPage = () => {
   } = useSelector((state) => state.subscriptionManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -40,10 +42,10 @@ const SubscriptionConfigPage = () => {
       fetchSubscriptionPlans({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: globalFilter,
+        search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm]);
 
   const handleAction = (row, action) => {
     if (action === "edit") {
@@ -79,7 +81,9 @@ const SubscriptionConfigPage = () => {
               <div className="flex-1 min-w-0 w-full md:w-auto">
                 <PageHeader
                   heading="All Subscription"
-                  icon={<CreditCard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                  icon={
+                    <CreditCard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                  }
                   color="bg-app-primary2 shadow-blue-200"
                   subheading="Manage subscription plans and their details."
                 />
@@ -94,7 +98,9 @@ const SubscriptionConfigPage = () => {
                         className="w-full sm:w-auto bg-app-primary2/50 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm cursor-not-allowed"
                       >
                         <Plus className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
-                        <span className="whitespace-nowrap">Add Subscription</span>
+                        <span className="whitespace-nowrap">
+                          Add Subscription
+                        </span>
                       </Button>
                     </span>
                   </TooltipTrigger>
@@ -120,7 +126,7 @@ const SubscriptionConfigPage = () => {
               onPaginationChange={setPagination}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
-              searchPlaceholder="Search subscriptions..."
+              searchPlaceholder="Search by plan title or sub-title..."
               itemName="entries"
               isLoading={loading}
               manualPagination={!!serverPagination}
