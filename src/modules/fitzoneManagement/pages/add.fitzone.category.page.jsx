@@ -116,22 +116,26 @@ const AddFitzoneCategoryPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading={isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"}
-            icon={<Layers className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading={
-              isEdit
-                ? "Edit existing workout session category."
-                : "Create a new workout session category."
-            }
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading={isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"}
+                icon={<Layers className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading={
+                  isEdit
+                    ? "Edit existing workout session category."
+                    : "Create a new workout session category."
+                }
+              />
+            </div>
+          </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden w-full min-w-0">
+          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 w-full min-w-0">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-800">
                 Category Title
@@ -223,11 +227,11 @@ const AddFitzoneCategoryPage = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-end gap-4">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 variant="outline"
                 type="button"
-                className="rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
+                className="w-full sm:w-auto rounded-xl px-5 sm:px-6 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -235,7 +239,7 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {loading ? (
                   <>
@@ -245,7 +249,7 @@ const AddFitzoneCategoryPage = () => {
                 ) : (
                   <>
                     {isEdit ? "Update" : "Save"}
-                    <Send size={16} />
+                    <Send className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                   </>
                 )}
               </Button>

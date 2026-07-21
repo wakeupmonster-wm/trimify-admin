@@ -79,6 +79,7 @@ const ProfileHeader = ({ userData, isActive, formatDate }) => {
           <DialogContent className="sm:max-w-[600px] p-0 border-none bg-transparent shadow-none">
             <NotificationDialogForm
               type="email"
+              userId={userData?.id}
               onClose={() => setEmailOpen(false)}
             />
           </DialogContent>
@@ -93,6 +94,7 @@ const ProfileHeader = ({ userData, isActive, formatDate }) => {
           <DialogContent className="sm:max-w-[600px] p-0 border-none bg-transparent shadow-none">
             <NotificationDialogForm
               type="push"
+              userId={userData?.id}
               onClose={() => setPushOpen(false)}
             />
           </DialogContent>

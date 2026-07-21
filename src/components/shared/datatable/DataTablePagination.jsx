@@ -21,15 +21,15 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
   return (
     <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
       {/* Left Side: Showing results count */}
-      <div className="text-xs font-medium text-slate-400 order-1 text-center sm:text-left">
+      <div className="text-xs font-medium text-slate-400 text-center xl:text-left w-full xl:w-auto">
         Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount || 0}{" "}
         {itemName}
       </div>
 
       {/* Right Side: Pagination Controls */}
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-10 order-2 w-full sm:w-auto">
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-10 w-full xl:w-auto">
         {/* Row Select Bar */}
-        <div className="flex items-center justify-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center justify-center gap-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
             Rows
           </span>
@@ -54,12 +54,12 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           </Select>
         </div>
 
-        <div className="flex items-center justify-center gap-1.5 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
           {/* Previous Button */}
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+            className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -67,7 +67,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           </Button>
 
           {/* Page Numbers */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
             {(() => {
               const pages = [];
 
@@ -115,7 +115,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
                     key={page}
                     onClick={() => table.setPageIndex(page - 1)}
                     className={cn(
-                      "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
+                      "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
                       isActive
                         ? "bg-app-primary2 text-white hover:bg-app-primary5 shadow-md shadow-blue-100 border-none"
                         : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
@@ -132,7 +132,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+            className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >

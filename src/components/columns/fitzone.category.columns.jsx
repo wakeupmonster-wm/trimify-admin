@@ -19,6 +19,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
       </div>
     ),
     size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="text-left px-1 font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -32,6 +33,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Created At
       </div>
     ),
+    size: 120,
+    minSize: 100,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700">
         {row.original.created_at
@@ -47,6 +50,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Category Name
       </div>
     ),
+    size: 150,
+    minSize: 120,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.title || "-"}
@@ -60,6 +65,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Description
       </div>
     ),
+    size: 250,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px] tracking-tight">
         {row.original.description || "N/A"}
@@ -73,6 +80,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Icon
       </div>
     ),
+    size: 80,
+    minSize: 60,
     cell: ({ row }) => {
       const iconUrl = row.original.icon || row.original.icon_url;
       return (
@@ -105,6 +114,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
       </div>
     ),
     size: 80,
+    minSize: 60,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center">

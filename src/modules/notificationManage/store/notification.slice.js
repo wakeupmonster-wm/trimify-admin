@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getNotificationListAPI } from "../services/notification.services";
+import { getNotificationListAPI, sendNotificationAPI } from "../services/notification.services";
 
 export const fetchNotificationList = createAsyncThunk(
   "notification/fetchNotificationList",
@@ -26,10 +26,28 @@ export const fetchNotificationList = createAsyncThunk(
   }
 );
 
+export const sendNotification = createAsyncThunk(
+  "notification/sendNotification",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await sendNotificationAPI(data);
+      if (response && response.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response.message || "Failed to send notification");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to send notification"
+      );
+    }
+  }
+);
+
 const initialState = {
   notifications: [],
   pagination: null,
   loading: false,
+  isSending: false,
   error: null,
 };
 
@@ -57,6 +75,17 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchNotificationList.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(sendNotification.pending, (state) => {
+        state.isSending = true;
+        state.error = null;
+      })
+      .addCase(sendNotification.fulfilled, (state) => {
+        state.isSending = false;
+      })
+      .addCase(sendNotification.rejected, (state, action) => {
+        state.isSending = false;
         state.error = action.payload;
       });
   },

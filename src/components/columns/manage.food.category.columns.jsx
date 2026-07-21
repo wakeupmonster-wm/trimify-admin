@@ -17,8 +17,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         SR.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -32,8 +32,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Category Name
       </div>
     ),
-    size: 250,
-    minSize: 250,
+    size: 200,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
         {row.original.name}
@@ -47,8 +47,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Category Icon
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center items-center">
         {row.original.image ? (
@@ -70,8 +70,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Created At
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 120,
+    minSize: 90,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700 text-left">
         {row.original.created_at
@@ -91,8 +91,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Updated At
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 120,
+    minSize: 90,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700 text-left">
         {row.original.updated_at
@@ -112,8 +112,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Manage
       </div>
     ),
-    size: 150,
-    minSize: 150,
+    size: 120,
+    minSize: 100,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button
@@ -134,8 +134,8 @@ export const getManageFoodCategoryColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 80,
+    minSize: 60,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center">

@@ -236,24 +236,26 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading={isEditing ? "Edit Food Item" : "Add Food Item"}
-              icon={<Utensils className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-blue-200"
-              subheading={
-                isEditing
-                  ? "Modify the selected food item's details."
-                  : "Add a new specific food item."
-              }
-            />
+            <div className="flex-1 min-w-0 w-full">
+              <PageHeader
+                heading={isEditing ? "Edit Food Item" : "Add Food Item"}
+                icon={<Utensils className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading={
+                  isEditing
+                    ? "Modify the selected food item's details."
+                    : "Add a new specific food item."
+                }
+              />
+            </div>
           </div>
         </Header>
 
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
-          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
+          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             {/* Approval Status */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
@@ -452,11 +454,11 @@ const ManageFoodItemsPage = () => {
               </>
             )}
 
-            <div className="mt-8 flex justify-end gap-4">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               {isEditing && (
                 <Button
                   variant="outline"
-                  className="rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
+                  className="w-full sm:w-auto rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
                   onClick={resetForm}
                   disabled={loading}
                 >
@@ -464,7 +466,7 @@ const ManageFoodItemsPage = () => {
                 </Button>
               )}
               <Button
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >
@@ -482,16 +484,18 @@ const ManageFoodItemsPage = () => {
         </div>
 
         {/* Data Table */}
-        <DataTable
-          columns={columns}
-          data={foods}
-          rowCount={foods.length}
-          pagination={pagination}
-          setPagination={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          loading={loading}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={foods}
+            rowCount={foods.length}
+            pagination={pagination}
+            setPagination={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            loading={loading}
+          />
+        </div>
       </div>
 
       <ConfirmModal

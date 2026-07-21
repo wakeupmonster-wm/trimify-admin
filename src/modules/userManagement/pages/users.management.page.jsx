@@ -1,6 +1,5 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Users } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import {
@@ -13,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { LuUsersRound } from "react-icons/lu";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
@@ -98,39 +98,44 @@ const UsersManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0">
-            <PageHeader
-              heading="User Management"
-              icon={<Users className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
-              subheading="Manage application users, view their active plans, and modify their statuses."
-            />
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full">
+              <PageHeader
+                heading="User Management"
+                icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading="Manage application users, view their active plans, and modify their statuses."
+              />
+            </div>
           </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={filteredUsers}
-          rowCount={isManual ? serverPagination.total : filteredUsers.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search user name & email ID..."
-          itemName="entries"
-          isLoading={loading}
-          manualPagination={isManual}
-          manualFiltering={isManual}
-          toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
-          activeFiltersChildren={
-            <DataTableActiveChips
-              filterConfig={filterConfig}
-              onClearAll={() => setStatusFilter("")}
-            />
-          }
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={filteredUsers}
+            rowCount={isManual ? serverPagination.total : filteredUsers.length}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search user name & email ID..."
+            itemName="entries"
+            isLoading={loading}
+            manualPagination={isManual}
+            manualFiltering={isManual}
+            onRowClick={(row) => handleAction(row.original, "view")}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setStatusFilter("")}
+              />
+            }
+          />
+        </div>
       </div>
     </Container>
   );

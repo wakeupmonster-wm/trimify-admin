@@ -19,7 +19,7 @@ export const getManageFitzoneSessionColumns = (onAction) => [
       </div>
     ),
     size: 80,
-    minSize: 80,
+    minSize: 60,
     cell: ({ row }) => (
       <div className="text-left px-1 font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -34,7 +34,7 @@ export const getManageFitzoneSessionColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 100,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700">
         {row.original.created_at

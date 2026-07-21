@@ -17,8 +17,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         SR.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -32,8 +32,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Last Edit
       </div>
     ),
-    size: 130,
-    minSize: 130,
+    size: 120,
+    minSize: 100,
     cell: ({ row }) => {
       const date = row.original.updated_at
         ? new Date(row.original.updated_at)
@@ -56,7 +56,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Food Name
       </div>
     ),
-    size: 250,
+    size: 300,
     minSize: 250,
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
@@ -71,8 +71,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Food Category
       </div>
     ),
-    size: 200,
-    minSize: 200,
+    size: 150,
+    minSize: 120,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
         {row.original.category?.name ||
@@ -89,8 +89,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Approved / Non approved
       </div>
     ),
-    size: 180,
-    minSize: 180,
+    size: 150,
+    minSize: 120,
     cell: ({ row }) => {
       const isApproved =
         row.original.approval_status === "Approved" ||
@@ -116,8 +116,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Status
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 80,
+    minSize: 60,
     cell: ({ row }) => {
       const isApproved =
         row.original.approval_status === "Approved" ||
@@ -143,8 +143,8 @@ export const getManageFoodItemsColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 80,
+    minSize: 60,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center">

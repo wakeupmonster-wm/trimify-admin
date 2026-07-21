@@ -79,7 +79,7 @@ export default function SubscriptionDashboardPage() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw]">
+      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen w-full min-w-0 overflow-x-hidden">
         <DashboardHeader
           scrolled={scrolled}
           dateRange={dateRange}

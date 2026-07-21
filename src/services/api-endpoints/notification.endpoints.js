@@ -10,7 +10,7 @@ const ADMIN = `${BASE_URL}/admin`;
 
 export const NOTIFICATION = {
   /** POST — Send a push notification to all users */
-  NOTIFICATION_SEND: `${ADMIN}/send-notification`,
+  NOTIFICATION_SEND: `${ADMIN}/add-notification`,
   
   /** GET — Retrieve list of sent notifications (paginated) */
   NOTIFICATION_LIST: `${ADMIN}/get-notification`,

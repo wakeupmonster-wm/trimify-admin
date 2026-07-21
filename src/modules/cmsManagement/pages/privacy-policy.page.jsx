@@ -79,35 +79,37 @@ export default function PrivacyAndPolicyPage() {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="Privacy & Policy"
-              icon={<ShieldCheck className="w-6 h-6 text-white" />}
-              color="bg-app-primary2"
-              subheading="Update user data protection guidelines."
-            />
-            <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="Privacy & Policy"
+                icon={<ShieldCheck className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2"
+                subheading="Update user data protection guidelines."
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
               <Button
                 onClick={handleViewPreview}
-                className="h-9 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-[11px] uppercase tracking-wider rounded-lg gap-2 px-3.5 hover:bg-white hover:text-slate-500"
+                className="w-full sm:w-auto flex-1 sm:flex-none h-11 sm:h-10 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-xs uppercase tracking-wider rounded-xl sm:rounded-lg px-4 hover:bg-white hover:text-slate-500 flex items-center justify-center gap-2"
               >
-                <Eye className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300" />
-                Preview
+                <Eye className="h-4 w-4 text-slate-400 transition-colors duration-300 shrink-0" />
+                <span className="whitespace-nowrap">Preview</span>
               </Button>
 
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-xs gap-2 h-9 px-4 shadow-sm rounded-md transition-all border-none"
+                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-sm sm:text-xs gap-2 h-11 sm:h-10 px-6 shadow-sm rounded-xl sm:rounded-md transition-all border-none flex items-center justify-center"
               >
                 {isSaving ? (
-                  <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin shrink-0" />
                 ) : (
-                  <Save className="w-3.5 h-3.5 mr-1" />
+                  <Save className="w-4 h-4 mr-1 shrink-0" />
                 )}
-                {isSaving ? "Saving…" : "Save Changes"}
+                <span className="whitespace-nowrap">{isSaving ? "Saving…" : "Save Changes"}</span>
               </Button>
             </div>
           </div>

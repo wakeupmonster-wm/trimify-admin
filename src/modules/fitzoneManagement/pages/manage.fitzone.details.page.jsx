@@ -53,28 +53,34 @@ const ManageFitzoneDetailsPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading="Manage Fitzone Modules"
-            icon={<Settings className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."
-          />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="Manage Fitzone Modules"
+                icon={<Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."
+              />
+            </div>
+          </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={staticData}
-          rowCount={staticData.length}
-          loading={false}
-          manualPagination={false}
-          pagination={pagination}
-          setPagination={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          pageCount={Math.ceil(staticData.length / pagination.pageSize)}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={staticData}
+            rowCount={staticData.length}
+            loading={false}
+            manualPagination={false}
+            pagination={pagination}
+            setPagination={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            pageCount={Math.ceil(staticData.length / pagination.pageSize)}
+          />
+        </div>
       </div>
     </Container>
   );

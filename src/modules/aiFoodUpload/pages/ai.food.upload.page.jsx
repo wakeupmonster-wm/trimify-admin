@@ -110,44 +110,44 @@ const AiFoodUploadPage = () => {
     [selectedIds],
   );
 
-  const pendingReviewCount = visibleItems.filter(
-    (item) => item.status === "pending_review",
-  ).length;
+  const pendingReviewCount = visibleItems.filter((item) => item.status === "pending_review").length;
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="AI Food Upload"
-              icon={<Sparkles className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
-              subheading="Generate nutrition data & images with AI, review, then save to the catalog."
-            />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading="AI Food Upload"
+                icon={<Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading="Generate nutrition data & images with AI, review, then save to the catalog."
+              />
+            </div>
 
-            <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <div className="flex flex-col lg:flex-row flex-wrap items-stretch lg:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
               <Button
                 variant="outline"
                 onClick={() =>
                   navigate("/admin/data-management/nutrition-food")
                 }
-                className="w-full xs:w-auto flex items-center justify-center gap-2"
+                className="w-full sm:w-auto flex-1 md:flex-none rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back to List
+                <ArrowLeft className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back to List</span>
               </Button>
               <Button
                 onClick={() => setConfirmOpen(true)}
                 disabled={selectedIds.length === 0 || saveLoading}
-                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {saveLoading ? (
-                  <Spinner className="w-4 h-4" />
+                  <Spinner className="w-4 h-4 shrink-0" />
                 ) : (
-                  <Save className="w-4 h-4" />
+                  <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                 )}
-                Save Selected ({selectedIds.length})
+                <span className="whitespace-nowrap">Save Selected ({selectedIds.length})</span>
               </Button>
             </div>
           </div>
@@ -167,20 +167,22 @@ const AiFoodUploadPage = () => {
           </p>
         )}
 
-        <DataTable
-          columns={columns}
-          data={pagedItems}
-          rowCount={filteredItems.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search generated food…"
-          itemName="items"
-          onRowClick={(row) => handleView(row.original.id)}
-          manualPagination={true}
-          manualFiltering={true}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={pagedItems}
+            rowCount={filteredItems.length}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search generated food…"
+            itemName="items"
+            onRowClick={(row) => handleView(row.original.id)}
+            manualPagination={true}
+            manualFiltering={true}
+          />
+        </div>
       </div>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

@@ -1,7 +1,7 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { UserCog, Plus, FileText } from "lucide-react";
+import { Plus, FileText } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,7 @@ import {
 } from "../store/sub.admin.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { LuUserRoundCog } from "react-icons/lu";
 
 // Simple utility to convert an array of objects to CSV
 const downloadCSV = (data, filename = "sub_admins.csv") => {
@@ -200,64 +201,75 @@ const SubAdminManagementPage = () => {
         { label: "WhiteListing User", value: "1" },
       ],
       placeholder: "All Roles",
-      getDisplayValue: (val) => val === "0" ? "Sub-Admin User" : val === "1" ? "WhiteListing User" : "All Roles",
+      getDisplayValue: (val) =>
+        val === "0"
+          ? "Sub-Admin User"
+          : val === "1"
+            ? "WhiteListing User"
+            : "All Roles",
     },
   ];
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="Sub Admin Management"
-              icon={<UserCog className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
-              subheading="Manage sub-administrators and their access roles."
-            />
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
+              <PageHeader
+                heading="Sub Admin Management"
+                icon={
+                  <LuUserRoundCog className="w-6 h-6 text-white shrink-0" />
+                }
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading="Manage sub-administrators and their access roles."
+              />
+            </div>
 
-            <div className="flex flex-col xs:flex-row flex-wrap items-stretch xs:items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/sub-admin-management/add")}
-                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
-                <Plus className="w-4 h-4" />
-                Add Sub Admin
+                <Plus className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Add Sub Admin</span>
               </Button>
               <Button
                 onClick={() => downloadCSV(subAdmins)}
-                className="w-full xs:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
-                <FileText className="w-4 h-4" />
-                Download CSV
+                <FileText className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Download CSV</span>
               </Button>
             </div>
           </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={filteredSubAdmins}
-          rowCount={
-            isManual ? serverPagination.total : filteredSubAdmins.length
-          }
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search by email & clinic name..."
-          itemName="entries"
-          isLoading={loading}
-          manualPagination={isManual}
-          manualFiltering={isManual}
-          toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
-          activeFiltersChildren={
-            <DataTableActiveChips
-              filterConfig={filterConfig}
-              onClearAll={() => setRoleFilter("")}
-            />
-          }
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={filteredSubAdmins}
+            rowCount={
+              isManual ? serverPagination.total : filteredSubAdmins.length
+            }
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search by email & clinic name..."
+            itemName="entries"
+            isLoading={loading}
+            manualPagination={isManual}
+            manualFiltering={isManual}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setRoleFilter("")}
+              />
+            }
+          />
+        </div>
       </div>
 
       <ConfirmModal
@@ -267,10 +279,12 @@ const SubAdminManagementPage = () => {
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
       />
-      
+
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of this sub-admin to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}

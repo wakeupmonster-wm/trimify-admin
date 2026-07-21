@@ -73,26 +73,28 @@ const SubscriptionConfigPage = () => {
   return (
     <TooltipProvider>
       <Container>
-        <div className="space-y-8">
+        <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
           <Header>
-            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <PageHeader
-                heading="All Subscription"
-                icon={<CreditCard className="w-9 h-9 text-white" />}
-                color="bg-app-primary2 shadow-blue-200"
-                subheading="Manage subscription plans and their details."
-              />
+            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+              <div className="flex-1 min-w-0 w-full md:w-auto">
+                <PageHeader
+                  heading="All Subscription"
+                  icon={<CreditCard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                  color="bg-app-primary2 shadow-blue-200"
+                  subheading="Manage subscription plans and their details."
+                />
+              </div>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span>
+                    <span className="w-full sm:w-auto flex-1 md:flex-none">
                       <Button
                         disabled
-                        className="bg-app-primary2/50 text-white rounded-md px-4 h-10 flex items-center gap-2 text-xs font-semibold shadow-sm cursor-not-allowed"
+                        className="w-full sm:w-auto bg-app-primary2/50 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm cursor-not-allowed"
                       >
-                        <Plus className="w-4 h-4" />
-                        Add Subscription
+                        <Plus className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
+                        <span className="whitespace-nowrap">Add Subscription</span>
                       </Button>
                     </span>
                   </TooltipTrigger>
@@ -107,22 +109,24 @@ const SubscriptionConfigPage = () => {
             </div>
           </Header>
 
-          <DataTable
-            columns={columns}
-            data={plans || []}
-            rowCount={
-              serverPagination ? serverPagination.total : plans?.length || 0
-            }
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            searchPlaceholder="Search subscriptions..."
-            itemName="entries"
-            isLoading={loading}
-            manualPagination={!!serverPagination}
-            manualFiltering={!!serverPagination}
-          />
+          <div className="w-full min-w-0 flex-1">
+            <DataTable
+              columns={columns}
+              data={plans || []}
+              rowCount={
+                serverPagination ? serverPagination.total : plans?.length || 0
+              }
+              pagination={pagination}
+              onPaginationChange={setPagination}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+              searchPlaceholder="Search subscriptions..."
+              itemName="entries"
+              isLoading={loading}
+              manualPagination={!!serverPagination}
+              manualFiltering={!!serverPagination}
+            />
+          </div>
         </div>
 
         <SubscriptionEditDialog

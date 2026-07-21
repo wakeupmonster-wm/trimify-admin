@@ -5,8 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { DataTable } from "@/components/shared/datatable";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { getProgramFoodVisibility } from "../store/program.slice";
 import { getManageProgramDetailsColumns } from "@/components/columns/manage.program.details.columns";
 
@@ -67,28 +66,32 @@ const ManageProgramDetailsPage = () => {
 
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <PageHeader
-            heading="Manage Program Modules"
-            icon={<Settings className="w-9 h-9 text-white" />}
-            color="bg-app-primary2 shadow-blue-200"
-            subheading="Manage program details like Introduction,   Foods, and Diet Plan."
-          />
+          <div className="flex-1 min-w-0 w-full">
+            <PageHeader
+              heading="Manage Program Modules"
+              icon={<Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              color="bg-app-primary2 shadow-blue-200"
+              subheading="Manage program details like Introduction,   Foods, and Diet Plan."
+            />
+          </div>
         </Header>
 
-        <DataTable
-          columns={columns}
-          data={staticData}
-          rowCount={staticData.length}
-          loading={false}
-          manualPagination={false}
-          pagination={pagination}
-          setPagination={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          pageCount={Math.ceil(staticData.length / pagination.pageSize)}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={staticData}
+            rowCount={staticData.length}
+            loading={false}
+            manualPagination={false}
+            pagination={pagination}
+            setPagination={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            pageCount={Math.ceil(staticData.length / pagination.pageSize)}
+          />
+        </div>
       </div>
     </Container>
   );

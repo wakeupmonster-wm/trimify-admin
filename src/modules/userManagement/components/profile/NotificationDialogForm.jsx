@@ -1,24 +1,52 @@
 import React, { useState } from "react";
 import { Mail, Bell, Send, Loader2 } from "lucide-react";
+import { sendNotificationAPI } from "@/modules/notificationManage/services/notification.services";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
-const NotificationDialogForm = ({ type, onClose }) => {
+const NotificationDialogForm = ({ type, userId, onClose }) => {
   const isEmail = type === "email";
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    if (!message.trim()) {
+      toast.error("Please enter a message content.");
+      return;
+    }
+
+    if (isEmail) {
+      if (!subject.trim()) {
+        toast.error("Please enter an email subject.");
+        return;
+      }
+      toast.info("Email messaging API is not available yet.");
+      return;
+    }
+
     setIsLoading(true);
-    // Mock send action with a delay
-    setTimeout(() => {
-      console.log(`Sending ${type}:`, { subject, message });
+    try {
+      const payload = {
+        message,
+        user_id: userId,
+      };
+      
+      const response = await sendNotificationAPI(payload);
+      if (response && response.status === "success") {
+        toast.success(response.message || "Notification sent successfully!");
+        if (onClose) onClose();
+      } else {
+        toast.error(response?.message || "Failed to send notification.");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to send notification.");
+    } finally {
       setIsLoading(false);
-      if (onClose) onClose();
-    }, 1500);
+    }
   };
 
   return (

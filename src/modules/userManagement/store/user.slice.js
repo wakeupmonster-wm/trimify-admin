@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserManagementAPI } from "../services/user.services";
+import { getUserManagementAPI, getSingleUserProfileAPI } from "../services/user.services";
 
 // Async Thunk for getting the users list
 export const fetchUsersList = createAsyncThunk(
@@ -28,6 +28,23 @@ export const fetchUsersList = createAsyncThunk(
   }
 );
 
+export const fetchSingleUserProfile = createAsyncThunk(
+  "userManagement/fetchSingleUserProfile",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await getSingleUserProfileAPI(id);
+      if (response && (response.status === "success" || response.id)) {
+        return response.user || response.data || response;
+      }
+      return rejectWithValue(response.message || "Failed to fetch user profile");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user profile"
+      );
+    }
+  }
+);
+
 const userManagementSlice = createSlice({
   name: "userManagement",
   initialState: {
@@ -40,6 +57,9 @@ const userManagementSlice = createSlice({
       total: 0,
       totalPages: 0,
     },
+    currentUser: null,
+    currentUserLoading: false,
+    currentUserError: null,
   },
   reducers: {
     setPage: (state, action) => {
@@ -48,6 +68,11 @@ const userManagementSlice = createSlice({
     clearUserState: (state) => {
       state.users = [];
       state.error = null;
+    },
+    clearCurrentUser: (state) => {
+      state.currentUser = null;
+      state.currentUserError = null;
+      state.currentUserLoading = false;
     }
   },
   extraReducers: (builder) => {
@@ -64,9 +89,21 @@ const userManagementSlice = createSlice({
       .addCase(fetchUsersList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchSingleUserProfile.pending, (state) => {
+        state.currentUserLoading = true;
+        state.currentUserError = null;
+      })
+      .addCase(fetchSingleUserProfile.fulfilled, (state, action) => {
+        state.currentUserLoading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(fetchSingleUserProfile.rejected, (state, action) => {
+        state.currentUserLoading = false;
+        state.currentUserError = action.payload;
       });
   },
 });
 
-export const { setPage, clearUserState } = userManagementSlice.actions;
+export const { setPage, clearUserState, clearCurrentUser } = userManagementSlice.actions;
 export default userManagementSlice.reducer;

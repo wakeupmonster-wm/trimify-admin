@@ -9,48 +9,17 @@ import { getNotificationColumns } from "@/components/columns/notification.column
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotificationList } from "../store/notification.slice";
+import { fetchNotificationList, sendNotification } from "../store/notification.slice";
 import { useEffect } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
-
-const mockData = [
-  {
-    id: 1,
-    createDate: "2026-04-12T00:00:00Z",
-    message: "Your daily workout is waiting for you...",
-  },
-  { id: 2, createDate: "2026-04-12T00:00:00Z", message: "Happy Sunday..." },
-  { id: 3, createDate: "2026-04-12T00:00:00Z", message: "Fitness Check..." },
-  { id: 4, createDate: "2026-04-12T00:00:00Z", message: "Stay active..." },
-  {
-    id: 5,
-    createDate: "2026-04-12T00:00:00Z",
-    message: "Stay active today—your body will thank you!...",
-  },
-  {
-    id: 6,
-    createDate: "2026-04-12T00:00:00Z",
-    message: "Stay active today—your body will thank you!...",
-  },
-  {
-    id: 7,
-    createDate: "2026-04-11T00:00:00Z",
-    message:
-      "Your daily workout is waiting for you! 🏋️‍♀️ Don't miss out on your progress—hit the Fitzone and le...",
-  },
-  {
-    id: 8,
-    createDate: "2026-04-11T00:00:00Z",
-    message:
-      "Your daily workout is waiting for you! 🏋️‍♀️ Don't miss out on your progress—hit the Fitzone and le...",
-  },
-];
+import { toast } from "sonner";
 
 const NotificationManagePage = () => {
   const dispatch = useDispatch();
   const {
     notifications,
     loading,
+    isSending,
     pagination: serverPagination,
   } = useSelector((state) => state.notificationManage);
 
@@ -79,6 +48,35 @@ const NotificationManagePage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
   ]);
+
+  const handleSendNotification = async () => {
+    if (!messageText.trim()) {
+      toast.error("Please enter a message content.");
+      return;
+    }
+    
+    if (activeTab === "email") {
+      if (!emailSubject.trim()) {
+        toast.error("Please enter an email subject.");
+        return;
+      }
+      toast.info("Email messaging API is not available yet.");
+      return;
+    }
+
+    // Push notification
+    const payload = {
+      message: messageText,
+    };
+
+    const resultAction = await dispatch(sendNotification(payload));
+    if (sendNotification.fulfilled.match(resultAction)) {
+      toast.success(resultAction.payload?.message || "Notification sent successfully!");
+      setMessageText("");
+    } else {
+      toast.error(resultAction.payload || "Failed to send notification.");
+    }
+  };
 
   const columns = useMemo(() => getNotificationColumns(), []);
 
@@ -181,11 +179,15 @@ const NotificationManagePage = () => {
                       />
                     </div>
 
-                    <Button className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]">
+                    <Button 
+                      onClick={handleSendNotification}
+                      disabled={isSending}
+                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                    >
                       <Send size={18} />
                       {activeTab === "email"
                         ? "Send Email"
-                        : "Send Push Notification"}
+                        : (isSending ? "Sending..." : "Send Push Notification")}
                     </Button>
                   </div>
                 </div>

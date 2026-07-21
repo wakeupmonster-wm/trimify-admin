@@ -111,12 +111,8 @@ const AiFoodViewPage = () => {
   useAiFoodPolling();
 
   const itemId = Number(id);
-  const item = useSelector((state) =>
-    state.aiFood.items.find((i) => i.id === itemId),
-  );
-  const isBusy = useSelector((state) =>
-    state.aiFood.itemActionIds.includes(itemId),
-  );
+  const item = useSelector((state) => state.aiFood.items.find((i) => i.id === itemId));
+  const isBusy = useSelector((state) => state.aiFood.itemActionIds.includes(itemId));
 
   const [fields, setFields] = useState(() => (item ? buildFields(item) : {}));
   const [syncedStatus, setSyncedStatus] = useState(item?.status);
@@ -313,36 +309,38 @@ const AiFoodViewPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading={item.food_name}
-              icon={<Sparkles className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
-              subheading={
-                <Badge
-                  variant="outline"
-                  className={`${statusMeta.className} mt-0.5`}
-                >
-                  {isInFlight && (
-                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                  )}
-                  {item.status === "pending_review" && (
-                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                  )}
-                  {statusMeta.label}
-                </Badge>
-              }
-            />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading={item.food_name}
+                icon={<Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading={
+                  <Badge
+                    variant="outline"
+                    className={`${statusMeta.className} mt-0.5`}
+                  >
+                    {isInFlight && (
+                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                    )}
+                    {item.status === "pending_review" && (
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                    )}
+                    {statusMeta.label}
+                  </Badge>
+                }
+              />
+            </div>
 
             <Button
               variant="outline"
               onClick={() => navigate(BACK_TO_LIST)}
-              className="w-full md:w-auto flex items-center gap-2"
+              className="w-full sm:w-auto flex-1 md:flex-none rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50 mt-2 sm:mt-4 md:mt-0 shrink-0"
             >
-              <ArrowLeft size={16} />
-              Back to List
+              <ArrowLeft className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
+              <span className="whitespace-nowrap">Back to List</span>
             </Button>
           </div>
         </Header>

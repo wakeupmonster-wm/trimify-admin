@@ -16,8 +16,8 @@ export const getCmsManagementColumns = (onAction) => [
         SR.No
       </div>
     ),
-    size: 100,
-    minSize: 100,
+    size: 60,
+    minSize: 50,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
@@ -37,7 +37,7 @@ export const getCmsManagementColumns = (onAction) => [
       </div>
     ),
     size: 250,
-    minSize: 250,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="text-[10px] 3xl:text-xs font-medium text-slate-700">
         {row.getValue("pageName") || "-"}
@@ -52,7 +52,7 @@ export const getCmsManagementColumns = (onAction) => [
       </div>
     ),
     size: 250,
-    minSize: 250,
+    minSize: 150,
     cell: ({ row }) => {
       const description = row.getValue("description") || "-";
       return (
@@ -71,7 +71,7 @@ export const getCmsManagementColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>

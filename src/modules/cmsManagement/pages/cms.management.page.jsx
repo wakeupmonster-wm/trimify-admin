@@ -66,17 +66,19 @@ const CMSManagementPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="CMS"
-              icon={<FileEdit className="w-9 h-9 text-white" />}
+              icon={<FileEdit className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
               color="bg-app-primary2 shadow-md"
               subheading="Manage Content Management System pages like Privacy Policy and Terms & Conditions."
             />
           </div>
         </Header>
+
+        <div className="w-full min-w-0 flex-1">
 
         <DataTable
           columns={columns}
@@ -90,6 +92,7 @@ const CMSManagementPage = () => {
           itemName="entries"
           isLoading={loading}
         />
+        </div>
       </div>
     </Container>
   );

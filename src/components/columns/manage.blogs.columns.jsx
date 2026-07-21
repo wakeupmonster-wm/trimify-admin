@@ -47,7 +47,7 @@ export const getManageBlogsColumns = (onAction) => [
       </div>
     ),
     size: 250,
-    minSize: 250,
+    minSize: 150,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
         {row.original.title || "-"}
@@ -62,7 +62,7 @@ export const getManageBlogsColumns = (onAction) => [
       </div>
     ),
     size: 100,
-    minSize: 100,
+    minSize: 80,
     cell: ({ row }) => {
       const categoryLabel =
         typeof row.original.category === "object"
@@ -83,7 +83,7 @@ export const getManageBlogsColumns = (onAction) => [
       </div>
     ),
     size: 250,
-    minSize: 250,
+    minSize: 150,
     cell: ({ row }) => {
       let plainText = "-";
       if (row.original.description) {
@@ -111,7 +111,7 @@ export const getManageBlogsColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 100,
     cell: ({ row }) => {
       // Defaulting to "Public" if visibility_status is "Public" or true, else "Private"
       const statusValue =

@@ -68,21 +68,23 @@ const EditIntroProgramPage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="Introduction"
-              icon={<FileText className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-blue-200"
-              subheading="Edit the introduction content for this program."
-            />
+            <div className="flex-1 min-w-0 w-full">
+              <PageHeader
+                heading="Introduction"
+                icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading="Edit the introduction content for this program."
+              />
+            </div>
           </div>
         </Header>
 
         {/* Editor Card */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
-          <div className="px-6 md:px-8 pt-5 pb-6 space-y-6">
+          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Introduction Content
@@ -97,10 +99,10 @@ const EditIntroProgramPage = () => {
               onChange={setContent}
               height={400}
             />
-            <div className="mt-8 flex justify-end gap-4">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               <Button
                 variant="outline"
-                className="rounded-md px-8 py-2.5 h-auto text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-8 py-2.5 h-auto text-sm font-semibold"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -108,7 +110,7 @@ const EditIntroProgramPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 <Save size={16} />
                 {loading ? "Updating..." : "Update"}

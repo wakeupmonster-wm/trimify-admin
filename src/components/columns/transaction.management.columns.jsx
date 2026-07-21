@@ -30,7 +30,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 200,
-    minSize: 200,
+    minSize: 120,
     cell: ({ row }) => (
       <div
         className="max-w-[200px] truncate text-[11px] font-medium text-slate-700 tracking-tight"
@@ -48,7 +48,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 130,
-    minSize: 130,
+    minSize: 100,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
         {row.getValue("amount") ? `$${row.getValue("amount")}` : "-"}
@@ -63,7 +63,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 160,
-    minSize: 160,
+    minSize: 120,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
         {row.original.plan?.title || "-"}
@@ -78,7 +78,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 150,
-    minSize: 150,
+    minSize: 100,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700">
         {row.original.user?.name || "-"}
@@ -93,7 +93,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 120,
-    minSize: 120,
+    minSize: 100,
     cell: ({ row }) => {
       // Optional: Format date here using date-fns if desired
       const rawDate = row.getValue("created_at");
@@ -119,7 +119,7 @@ export const getTransactionManagementColumns = (onAction) => [
       </div>
     ),
     size: 100,
-    minSize: 100,
+    minSize: 80,
     cell: ({ row }) => {
       const status = row.getValue("status") || "Success";
       const isSuccess = status.toLowerCase() === "success";

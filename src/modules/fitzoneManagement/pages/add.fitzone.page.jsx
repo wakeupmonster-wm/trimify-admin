@@ -94,30 +94,32 @@ const AddFitzonePage = () => {
 
   return (
     <Container>
-      <div className="space-y-6">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading={isEditMode ? "Edit Fitzone" : "Add Fitzone"}
-              icon={<Activity className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-blue-200"
-              subheading={
-                isEditMode
-                  ? "Update the details of the fitzone."
-                  : "Create a new fitzone."
-              }
-            />
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full md:w-auto">
+              <PageHeader
+                heading={isEditMode ? "Edit Fitzone" : "Add Fitzone"}
+                icon={<Activity className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
+                subheading={
+                  isEditMode
+                    ? "Update the details of the fitzone."
+                    : "Create a new fitzone."
+                }
+              />
+            </div>
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 w-full min-w-0">
           <form
             onSubmit={handleSubmit}
-            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+            className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
           >
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6">
+            <div className="grid grid-cols-1 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-6">
               {/* Row 1: Title and Workout Heading */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-6">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-800">
                     Fitzone Title
@@ -219,11 +221,11 @@ const AddFitzonePage = () => {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-end gap-4 border-t border-slate-100 pt-6">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-md px-6 py-2.5 h-auto text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
+                className="w-full sm:w-auto rounded-xl px-5 sm:px-6 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -231,7 +233,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2.5 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {isSubmitting ? (
                   <>
@@ -241,7 +243,7 @@ const AddFitzonePage = () => {
                 ) : (
                   <>
                     {isEditMode ? "Update Fitzone" : "Add Fitzone"}
-                    <Save size={16} />
+                    <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                   </>
                 )}
               </Button>
