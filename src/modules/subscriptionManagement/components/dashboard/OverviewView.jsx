@@ -85,7 +85,7 @@ export default function OverviewView({
 
       <div className="space-y-3 pt-3">
         <div className="flex items-center gap-2">
-          <SectionLabel>Trends</SectionLabel>
+          {/* <SectionLabel>Trends</SectionLabel> */}
           <Badge variant="outline" className="text-[10px] font-bold text-brand-aqua border-brand-aqua/30 bg-brand-aqua/5 rounded-full px-2 py-0">
             {rangeLabel}
           </Badge>
@@ -132,7 +132,7 @@ export default function OverviewView({
           deliberately kept out of the "Trends" section above to avoid implying it
           responds to the date picker. */}
       <div className="space-y-3 pt-3">
-        <SectionLabel live>Today</SectionLabel>
+        {/* <SectionLabel live>Today</SectionLabel> */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <TopSellingPlansCard plans={dailyPerformance?.topSellingPlans || []} />
           <RecentTransactionsCard transactions={dailyPerformance?.recentTransactions || []} />

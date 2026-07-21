@@ -487,8 +487,8 @@ const AiFoodViewPage = () => {
         )}
 
         {showReviewForm && (
+          <>
           <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
-            <div className="flex flex-col gap-6">
             <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-3.5 h-3.5 text-app-primary2" />
@@ -570,14 +570,6 @@ const AiFoodViewPage = () => {
                   Remove Item
                 </Button>
               </div>
-
-              <AiFoodImagePromptPanel
-                onGenerateFromPrompt={handleGenerateFromPrompt}
-                onGenerateFromAudio={handleGenerateFromAudio}
-                onCancel={handleCancelRegenerate}
-                busy={isBusy || imageRegenerating}
-              />
-            </div>
 
               <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6">
                 <div className="flex items-center gap-2 -mb-2">
@@ -693,6 +685,14 @@ const AiFoodViewPage = () => {
                 />
               </div>
             </div>
+
+          <AiFoodImagePromptPanel
+            onGenerateFromPrompt={handleGenerateFromPrompt}
+            onGenerateFromAudio={handleGenerateFromAudio}
+            onCancel={handleCancelRegenerate}
+            busy={isBusy || imageRegenerating}
+          />
+          </>
         )}
       </div>
 
