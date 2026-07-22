@@ -73,15 +73,16 @@ const AddFoodCategoryPage = () => {
 
   const handleSubmit = async () => {
     const newErrors = {};
-    if (!categoryName.trim()) newErrors.categoryName = "Category Name is required";
+    if (!categoryName.trim())
+      newErrors.categoryName = "Category Name is required";
     if (!description.trim()) newErrors.description = "Description is required";
     // Add more validation if necessary
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setErrors({});
 
     // Create FormData for file upload
@@ -115,13 +116,13 @@ const AddFoodCategoryPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 min-w-0 w-full">
               <PageHeader
                 heading="Manage Food Category"
-                icon={<Layers className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<Layers className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading={
                   isEditMode
@@ -133,7 +134,7 @@ const AddFoodCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-slate-50 rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="space-y-6">
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
@@ -141,14 +142,19 @@ const AddFoodCategoryPage = () => {
               </Label>
               <Input
                 placeholder="Enter Category Name"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.categoryName ? 'border-red-500' : 'border-slate-300/60'}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
                 value={categoryName}
                 onChange={(e) => {
                   setCategoryName(e.target.value);
-                  if (errors.categoryName) setErrors({ ...errors, categoryName: null });
+                  if (errors.categoryName)
+                    setErrors({ ...errors, categoryName: null });
                 }}
               />
-              {errors.categoryName && <p className="text-red-500 text-[10px] mt-1">{errors.categoryName}</p>}
+              {errors.categoryName && (
+                <p className="text-red-500 text-[10px] mt-1">
+                  {errors.categoryName}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -157,14 +163,19 @@ const AddFoodCategoryPage = () => {
               </Label>
               <Textarea
                 placeholder="Enter Category Description"
-                className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] ${errors.description ? 'border-red-500' : 'border-slate-300/60'}`}
+                className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
                 value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
-                  if (errors.description) setErrors({ ...errors, description: null });
+                  if (errors.description)
+                    setErrors({ ...errors, description: null });
                 }}
               />
-              {errors.description && <p className="text-red-500 text-[10px] mt-1">{errors.description}</p>}
+              {errors.description && (
+                <p className="text-red-500 text-[10px] mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             {isEditMode && editData?.image && (
@@ -233,13 +244,13 @@ const AddFoodCategoryPage = () => {
           <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-md px-8 py-2.5 h-auto text-sm font-semibold"
+              className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
               onClick={() => navigate(-1)}
             >
               Cancel
             </Button>
             <Button
-              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >

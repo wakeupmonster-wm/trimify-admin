@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Save, Eye, EyeOff, UserCog, Loader2 } from "lucide-react";
+import { Save, Eye, EyeOff } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
+import { LuUserRoundMinus, LuUserRoundPen } from "react-icons/lu";
 
 const EditSubAdminPage = () => {
   const dispatch = useDispatch();
@@ -54,9 +55,13 @@ const EditSubAdminPage = () => {
       designation: editData.designation || "",
       password: "", // Leave blank unless they want to update it
       role:
-        editData.role === 1 || editData.role === "1" || editData.role === "WhiteListing User"
+        editData.role === 1 ||
+        editData.role === "1" ||
+        editData.role === "WhiteListing User"
           ? "WhiteListing User"
-          : editData.role === 0 || editData.role === "0" || editData.role === "Sub-Admin User"
+          : editData.role === 0 ||
+              editData.role === "0" ||
+              editData.role === "Sub-Admin User"
             ? "Sub-Admin User"
             : String(editData.role || ""),
     });
@@ -87,11 +92,13 @@ const EditSubAdminPage = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Invalid email address";
     }
-    if (!formData.hospital.trim()) newErrors.hospital = "Hospital/Clinic Name is required";
+    if (!formData.hospital.trim())
+      newErrors.hospital = "Hospital/Clinic Name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
-    if (!formData.designation.trim()) newErrors.designation = "Designation is required";
+    if (!formData.designation.trim())
+      newErrors.designation = "Designation is required";
     if (!formData.role) newErrors.role = "Role is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -99,7 +106,7 @@ const EditSubAdminPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
 
     try {
@@ -127,13 +134,15 @@ const EditSubAdminPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full">
               <PageHeader
                 heading="Edit Sub Admin"
-                icon={<UserCog className="w-6 h-6 sm:w-7 sm:h-7 lg:w-9 lg:h-9 text-white shrink-0" />}
+                icon={
+                  <LuUserRoundPen className="w-6 h-6 text-white shrink-0" />
+                }
                 color="bg-app-primary2 shadow-brand-blue"
                 subheading="Update sub-administrator details."
               />
@@ -141,20 +150,29 @@ const EditSubAdminPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden w-full min-w-0">
-          <form onSubmit={handleSubmit} className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-5 pb-5 sm:pb-6">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+          <form
+            onSubmit={handleSubmit}
+            className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-5 pb-5 sm:pb-6"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-6">
               {/* Name */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">Name</Label>
+                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                  Name
+                </Label>
                 <Input
                   name="name"
                   placeholder="Enter Name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.name ? 'border-red-500' : 'border-slate-300/60'}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.name && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               {/* Email address */}
@@ -168,9 +186,13 @@ const EditSubAdminPage = () => {
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.email ? 'border-red-500' : 'border-slate-300/60'}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.email && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               {/* Hospital/Clinic Name */}
@@ -183,9 +205,13 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Hospital/Clinic name"
                   value={formData.hospital}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.hospital ? 'border-red-500' : 'border-slate-300/60'}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.hospital && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.hospital}</p>}
+                {errors.hospital && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.hospital}
+                  </p>
+                )}
               </div>
 
               {/* Country */}
@@ -212,9 +238,13 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.phone ? 'border-red-500' : 'border-slate-300/60'}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.phone && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.phone}</p>}
+                {errors.phone && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.phone}
+                  </p>
+                )}
               </div>
 
               {/* Designation */}
@@ -227,9 +257,13 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.designation ? 'border-red-500' : 'border-slate-300/60'}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.designation && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.designation}</p>}
+                {errors.designation && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.designation}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -251,18 +285,26 @@ const EditSubAdminPage = () => {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 p-1"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4 sm:w-4.5 sm:h-4.5" /> : <Eye className="w-4 h-4 sm:w-4.5 sm:h-4.5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                    ) : (
+                      <Eye className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">Role</Label>
+                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                  Role
+                </Label>
                 <Select
                   value={formData.role || undefined}
                   onValueChange={handleRoleChange}
                 >
-                  <SelectTrigger className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.role ? 'border-red-500' : 'border-slate-300/60'}`}>
+                  <SelectTrigger
+                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
+                  >
                     <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                   <SelectContent>
@@ -274,23 +316,27 @@ const EditSubAdminPage = () => {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                {errors.role && <p className="text-red-500 text-[10px] sm:text-xs mt-1">{errors.role}</p>}
+                {errors.role && (
+                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                    {errors.role}
+                  </p>
+                )}
               </div>
             </div>
 
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/admin/sub-admin-management")}
-                className="w-full sm:w-auto rounded-md px-8 h-11 sm:h-10 text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 h-11 sm:h-10 text-sm font-semibold flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

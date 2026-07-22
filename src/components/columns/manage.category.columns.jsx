@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/switch";
-import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -105,12 +105,12 @@ export const getManageCategoryColumns = (onAction) => [
               variant="ghost"
               className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
             >
-              <MoreVertical className="h-4 w-4 text-foreground/90" />
+              <Ellipsis className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
+            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions

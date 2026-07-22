@@ -12,7 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { LuUsersRound } from "react-icons/lu";
+import { LuUsersRound, LuCreditCard, LuGift, LuActivity } from "react-icons/lu";
+import { KpiStatCard } from "@/components/shared/KpiStatCard";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
@@ -61,6 +62,22 @@ const UsersManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
+  // KPI Calculations
+  const kpiStats = useMemo(() => {
+    const list = users || [];
+    return {
+      total: serverPagination?.total || list.length,
+      paid: list.filter((u) => u.paid === 1 || String(u.paid) === "true")
+        .length,
+      free: list.filter(
+        (u) => u.paid === 0 || String(u.paid) === "false" || u.paid === null,
+      ).length,
+      active: list.filter(
+        (u) => String(u.status || "Active").toLowerCase() === "active",
+      ).length,
+    };
+  }, [users, serverPagination]);
+
   // Local fallback filtering in case the backend ignores the `status` parameter
   const filteredUsers = useMemo(() => {
     if (!statusFilter) return users || [];
@@ -98,10 +115,10 @@ const UsersManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="User Management"
                 icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
@@ -111,6 +128,42 @@ const UsersManagementPage = () => {
             </div>
           </div>
         </Header>
+
+        {/* KPIs Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <KpiStatCard
+            title="Total Users"
+            value={kpiStats.total}
+            icon={LuUsersRound}
+            colorClass="text-brand-blue"
+            bgClass="bg-blue-50"
+            description="Total registered users"
+          />
+          <KpiStatCard
+            title="Paid Users"
+            value={kpiStats.paid}
+            icon={LuCreditCard}
+            colorClass="text-emerald-600"
+            bgClass="bg-emerald-50"
+            description="Premium plan members"
+          />
+          <KpiStatCard
+            title="Free Users"
+            value={kpiStats.free}
+            icon={LuGift}
+            colorClass="text-amber-600"
+            bgClass="bg-amber-50"
+            description="Free tier members"
+          />
+          <KpiStatCard
+            title="Active Users"
+            value={kpiStats.active}
+            icon={LuActivity}
+            colorClass="text-indigo-600"
+            bgClass="bg-indigo-50"
+            description="Active accounts"
+          />
+        </div>
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

@@ -1,0 +1,854 @@
+import { RevenueTrendChart } from "../components-cpy/RevenueTrendChart";
+import { RecentUsersTable } from "../components-cpy/recent-users-table";
+import { CalendarDateRangePicker } from "../components-cpy/date-range-picker";
+import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  fetchDashboardExtras,
+  setDashboardDateRange,
+} from "../store/dashboard.slice";
+import { PageHeader } from "../components-cpy/headSubhead";
+import {
+  LayoutDashboard,
+  Receipt,
+  Target,
+  Users2,
+  Salad,
+  TrendingUp,
+  Activity as ActivityIcon,
+  Dumbbell,
+  Wallet,
+  ShieldCheck,
+  Bell,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { TodayAtAGlance } from "../components-cpy/TodayAtAGlance";
+import { UserGrowthChart } from "../components-cpy/UserGrowthChart";
+import { RevenueBreakdown } from "../components-cpy/RevenueBreakdown";
+import { LiveActivity } from "../components-cpy/LiveActivity";
+import { ActivityHeatmap } from "../components-cpy/ActivityHeatmap";
+import { ContentPerformance } from "../components-cpy/ContentPerformance";
+import { DashboardSkeleton } from "../components-cpy/DashboardSkeleton";
+import { ConversionFunnel } from "../components-cpy/ConversionFunnel";
+import SecondaryKpiRow from "../components-cpy/SecondaryKpiRow";
+import LastUpdatedIndicator from "../components-cpy/LastUpdatedIndicator";
+import TrendChartCard from "../components-cpy/TrendChartCard";
+import DashboardTableCard from "../components-cpy/DashboardTableCard";
+import StatusPill from "../components-cpy/StatusPill";
+import { format, formatDistanceToNow } from "date-fns";
+import { useSocket } from "@/app/context/SocketContext";
+import { cn } from "@/lib/utils";
+import { TableLoader } from "@/app/loader/table.loader";
+import ChartUserDistribution from "../components-cpy/chart-user-distribution";
+import ChartUserDistribution2 from "../components-cpy/chart.user.distribution2";
+import { LuUserRound } from "react-icons/lu";
+
+export default function SampleDashboardPage() {
+  const socket = useSocket();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    dashboardData,
+    dashboardExtras,
+    dashboardMeta,
+    dateRange,
+    lastUpdated,
+  } = useSelector((state) => state.dashboard);
+  const [selectedDate, setSelectedDate] = useState(
+    dateRange || { preset: "today" },
+  );
+  const [refreshing, setRefreshing] = useState(false);
+  const [liveEvents, setLiveEvents] = useState([]);
+
+  // --- Flutter App Palette ---
+  const appColors = [
+    "#007FC0", // primary2
+    "#15B097", // cardGreen
+    "#DC6B1B", // cardOrange
+    "#EDA145", // cardYellow
+    "#5AA0C1", // primary3
+    "#FF5252", // caloriesRed
+    "#4A90E2", // proteinBlue
+    "#FFC107", // fatsYellow
+    "#8BC34A", // carbsGreen
+    "#04365F", // primary5
+  ];
+
+  const mapChartColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item, i) => ({
+      ...item,
+      color: appColors[i % appColors.length],
+    }));
+  };
+
+  const mapDietColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item) => {
+      let color = "#94A3B8"; // Default slate for unspecified
+      let bg = "bg-slate-50/50";
+      let border = "border-slate-100";
+
+      const name = (item.label || item.name || "").toLowerCase();
+      if (name.includes("non-veg") || name.includes("non vegetarian")) {
+        color = "#FF5252"; // Red for Non-veg
+        bg = "bg-red-50/50";
+        border = "border-red-100";
+      } else if (name.includes("veg")) {
+        color = "#15B097"; // Green for Veg
+        bg = "bg-emerald-50/50";
+        border = "border-emerald-100";
+      }
+      return { ...item, color, bg, border };
+    });
+  };
+
+  // ─── Socket: Real-time Live Activity Feed ──────────────────────────────────
+  // Connects to WebSocket to receive live user activity events.
+  // On mount: joins the admin dashboard room and listens for activity history + new events.
+  // On unmount: leaves the room and removes all socket listeners to prevent memory leaks.
+  useEffect(() => {
+    if (!socket) return;
+
+    // 1. Load existing activity history when first joining the room
+    const handleHistory = (history) => {
+      console.log("📜 Activity History Received:");
+      if (Array.isArray(history)) {
+        setLiveEvents(history);
+      } else {
+        console.warn("⚠️ Received history is not an array:");
+      }
+    };
+
+    // 2. Append new live events as they arrive (capped at 50 most recent)
+    const handleNewActivity = (data) => {
+      console.log("🔥 Live Activity Received:", data);
+      setLiveEvents((prev) => [data, ...prev].slice(0, 50));
+    };
+
+    socket.on("activity_history", handleHistory);
+    socket.on("new_live_activity", handleNewActivity);
+
+    // 3. Join the admin dashboard room (handles both already-connected and reconnect scenarios)
+    console.log("📤 Emitting join_admin_dashboard...");
+
+    if (socket.connected) {
+      console.log("⚡ Socket already connected, joining now.");
+      socket.emit("join_admin_dashboard");
+    }
+
+    const onConnect = () => {
+      console.log("⚡ Socket connected event, joining now.");
+      socket.emit("join_admin_dashboard");
+    };
+    socket.on("connect", onConnect);
+
+    // Cleanup: leave room and detach all listeners
+    return () => {
+      console.log("📤 Emitting leave_admin_dashboard...");
+      socket.emit("leave_admin_dashboard");
+      socket.off("activity_history", handleHistory);
+      socket.off("new_live_activity", handleNewActivity);
+      socket.off("connect", onConnect);
+    };
+  }, [socket]);
+
+  // Backend requires from/to as plain YYYY-MM-DD (per the dashboard API
+  // contract) — never send a full ISO datetime here, the backend can't
+  // parse it and silently falls back to its default range, which makes
+  // every date-filter preset look like it's doing nothing.
+  const buildDateRangeParams = (dateObj) => ({
+    preset: dateObj?.preset || "today",
+    from: dateObj?.from ? format(new Date(dateObj.from), "yyyy-MM-dd") : null,
+    to: dateObj?.to ? format(new Date(dateObj.to), "yyyy-MM-dd") : null,
+  });
+
+  // ─── Dashboard API Fetch Lifecycle ──────────────────────────────────────────
+  // Fetches dashboard extras whenever the selected date range changes.
+  // On initial load: DashboardSkeleton handles the loading state (no overlay).
+  // On subsequent date changes: a "refreshing" overlay is shown over the existing dashboard.
+  useEffect(() => {
+    if (!selectedDate) return;
+
+    const refreshData = async (dateObj) => {
+      // Show the refreshing overlay ONLY on subsequent loads (data already exists).
+      // The initial load is handled by the DashboardSkeleton early return below.
+      const isSubsequentLoad = !!dashboardExtras;
+      if (isSubsequentLoad) setRefreshing(true);
+      try {
+        await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
+      } catch (err) {
+        console.error("Dashboard manual refresh failed:", err);
+      } finally {
+        setRefreshing(false);
+      }
+    };
+
+    refreshData(selectedDate);
+
+    // Persist selected date range to Redux so it survives component re-mounts
+    dispatch(
+      setDashboardDateRange({
+        ...selectedDate,
+        from: selectedDate?.from
+          ? new Date(selectedDate.from).toISOString()
+          : null,
+        to: selectedDate?.to ? new Date(selectedDate.to).toISOString() : null,
+      }),
+    );
+  }, [selectedDate, dispatch]);
+
+  // Manual refresh — re-pulls dashboard extras for the currently selected
+  // range, used by the "as of HH:MM" indicator's refresh button.
+  const handleManualRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await dispatch(fetchDashboardExtras(buildDateRangeParams(selectedDate)));
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  // Derive the human-readable period label (e.g. "May 01 – May 27, 2026" for
+  // a custom range, or the preset's own label otherwise).
+  const PRESET_LABELS = {
+    today: "Today",
+    yesterday: "Yesterday",
+    last7: "Last 7 Days",
+    last30: "Last 30 Days",
+    last90: "Last 90 Days",
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+  };
+
+  const dynamicPeriodLabel =
+    selectedDate?.preset && PRESET_LABELS[selectedDate.preset]
+      ? PRESET_LABELS[selectedDate.preset]
+      : selectedDate?.from
+        ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
+        : dashboardMeta?.periodLabel;
+
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = (e) => {
+      const target =
+        e.target === document
+          ? document.documentElement || document.body
+          : e.target;
+      const currentScrollY =
+        window.scrollY || (target && target.scrollTop) || 0;
+      // Update scrolled state for shadow
+      setScrolled(currentScrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+      capture: true,
+    });
+    return () =>
+      window.removeEventListener("scroll", handleScroll, { capture: true });
+  }, []);
+
+  // ─── Initial Load Guard ─────────────────────────────────────────────────────
+  // Show full-page skeleton until the first API response populates dashboardData.
+  // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
+  if (!dashboardExtras) {
+    return (
+      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
+        <DashboardSkeleton />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] relative">
+        <AnimatePresence>
+          {refreshing && dashboardExtras && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-[60]"
+            >
+              <TableLoader text="Updating Results..." />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="@container/main flex flex-1 flex-col w-full">
+          {/* Top Dashboard Header - Sticky with Blur */}
+          <div
+            className={cn(
+              "sticky top-0 z-[50] px-3 md:px-6 py-3 transition-all duration-300 ease-in-out",
+              scrolled
+                ? "backdrop-blur-md bg-white/95 border-b border-slate-300/60 shadow-sm shadow-slate-300/50"
+                : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
+            )}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+              <PageHeader
+                heading="Dashboard Overview"
+                icon={
+                  <LayoutDashboard
+                    strokeWidth={2}
+                    className="w-8 h-8 text-white"
+                  />
+                }
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading={
+                  <div className="flex items-center gap-1">
+                    <span>Showing data for:</span>
+                    <span className="text-brand-blue font-semibold">
+                      {dynamicPeriodLabel}
+                    </span>
+                  </div>
+                }
+              />
+              <div className="flex items-center gap-2.5 w-full sm:w-max shrink-0">
+                <LastUpdatedIndicator
+                  lastUpdated={lastUpdated}
+                  onRefresh={handleManualRefresh}
+                  refreshing={refreshing}
+                />
+                <CalendarDateRangePicker
+                  value={selectedDate}
+                  onDateChange={setSelectedDate}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
+            {/* ─────────────────────────────────────────────────────────────
+                Previous dashboard widgets — temporarily disabled while the
+                new dashboard (extras-driven) is being built out. Nothing
+                deleted, just switched off; flip back to `true` to restore.
+               ───────────────────────────────────────────────────────────── */}
+            {false && (
+              <>
+                <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
+                  <TodayAtAGlance
+                    data={dashboardData?.zoneA}
+                    summaryData={dashboardData?.summaryData}
+                    periodLabel={dynamicPeriodLabel}
+                    selectedDate={selectedDate}
+                  />
+                </div>
+
+                <div className="flex flex-col items-start justify-between gap-4 3xl:gap-6">
+                  <div className="flex flex-col items-start gap-1">
+                    <h2 className="text-base font-bold text-slate-900 group">
+                      Key Metrics
+                    </h2>
+                    <p className="text-[11px] font-medium text-slate-500 leading-none">
+                      Quick overview of platform health
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                    <UserGrowthChart
+                      data={dashboardData?.engagementChartsData}
+                      selectedDate={selectedDate}
+                    />
+                    <LiveActivity
+                      data={
+                        dashboardData
+                          ? dashboardData.recentActivityData
+                          : undefined
+                      }
+                    />
+                  </div>
+                </div>
+
+                {/* Analytical Row 3: Bento Grid (Revenue, Match, Gender, Heatmap) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  {/* Left Column: Revenue Breakdown */}
+                  <div className="lg:col-span-4 h-full">
+                    <RevenueBreakdown
+                      data={dashboardData?.revenueBreakdown}
+                      revenueChartsData={dashboardData?.revenueChartsData}
+                    />
+                  </div>
+
+                  {/* Right Column: Stats & Heatmap */}
+                  <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
+                    <div className="flex-1">
+                      <ActivityHeatmap
+                        data={dashboardData?.engagementChartsData}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col xl:flex-row gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="flex-[1.2] min-w-0 flex flex-col h-full w-full">
+                    <RevenueTrendChart
+                      data={dashboardData?.revenueChartsData}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 flex flex-col h-full w-full">
+                    <ChartUserDistribution
+                      data={{
+                        active: dashboardData?.summaryData?.activeUsers || 0,
+                        inactive:
+                          dashboardData?.summaryData?.inactiveUsers || 0,
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
+
+            {/* Composition — pie/donut breakdowns */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start gap-1">
+                <h2 className="text-base font-bold text-slate-900">
+                  Composition
+                </h2>
+                <p className="text-[11px] font-medium text-slate-500 leading-none">
+                  How the current user & revenue base breaks down
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                <ChartUserDistribution
+                  title="User Goal Distribution"
+                  subtitle="Overview of user goals based on primary goal selection"
+                  Icon={LuUserRound}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.userGoals || [],
+                  )}
+                />
+
+                <ChartUserDistribution
+                  title="Gender Distribution"
+                  subtitle="Breakdown of users by gender"
+                  Icon={Users2}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={mapChartColors(
+                    dashboardExtras?.pieCharts?.gender || [],
+                  )}
+                />
+                <ChartUserDistribution2
+                  title="Vegetarian vs Non-veg"
+                  subtitle="Dietary preferences of users"
+                  Icon={Salad}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={mapDietColors(
+                    dashboardExtras?.pieCharts?.dietPreference || [],
+                  )}
+                  footnote="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
+                />
+                <ConversionFunnel data={dashboardExtras?.funnel} />
+              </div>
+            </div>
+
+            {/* Trends — everything not already covered by Signups/Revenue/Heatmap above */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start gap-1">
+                <h2 className="text-base font-bold text-slate-900">Trends</h2>
+                <p className="text-[11px] font-medium text-slate-500 leading-none">
+                  Change over time, grouped to match the selected date range
+                </p>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                <TrendChartCard
+                  title="Active vs Churned Users"
+                  subtitle="Month-wise comparison"
+                  Icon={TrendingUp}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  tooltipText="Churned figures are approximate."
+                  data={dashboardExtras?.trends?.activeVsChurned || []}
+                  xKey="month"
+                  series={[
+                    {
+                      key: "activeUsers",
+                      label: "Active",
+                      // color: "hsl(160, 84%, 39%)",
+                      color: "#15B097", // cardGreen
+                      type: "line",
+                    },
+                    {
+                      key: "churnedUsers",
+                      label: "Churned",
+                      // color: "hsl(0, 84%, 60%)",
+                      color: "#FF5252", // caloriesRed
+                      type: "line",
+                    },
+                  ]}
+                  note="Churn numbers are approximate — a user who churned and later renewed no longer shows up as churned that month."
+                />
+                <TrendChartCard
+                  title="Engagement Trend (DAU)"
+                  subtitle="Users logging food / water / steps / weight"
+                  Icon={ActivityIcon}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={dashboardExtras?.trends?.engagementDAU || []}
+                  xKey="date"
+                  series={[
+                    {
+                      key: "active_users",
+                      label: "Daily Active Users",
+                      // color: "hsl(182, 59%, 54%)",
+                      color: "#007FC0", // primary2
+                      type: "line",
+                    },
+                  ]}
+                />
+                <TrendChartCard
+                  title="Plan-wise Revenue"
+                  subtitle="Revenue contribution per plan"
+                  Icon={Wallet}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={dashboardExtras?.trends?.planRevenue || []}
+                  xKey="title"
+                  series={[
+                    {
+                      key: "revenue",
+                      label: "Revenue",
+                      // color: "hsl(212, 100%, 45%)",
+                      color: "#5AA0C1", // primary3
+                      type: "bar",
+                    },
+                  ]}
+                />
+                <TrendChartCard
+                  title="Fitzone Session Completion"
+                  subtitle="Assignment volume per period"
+                  Icon={Dumbbell}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  data={dashboardExtras?.trends?.fitzoneCompletion || []}
+                  xKey="date"
+                  series={(
+                    dashboardExtras?.trends?.fitzoneStatuses || ["Active"]
+                  ).map((status, i) => ({
+                    key: status,
+                    label: status,
+                    color: [
+                      // "hsl(340, 82%, 60%)",
+                      // "hsl(160, 84%, 39%)",
+                      // "hsl(38, 92%, 50%)",
+                      "#C03744", // logOutRed
+                      "#15B097", // cardGreen
+                      "#EDA145", // cardYellow
+                    ][i % 3],
+                    type: "bar",
+                  }))}
+                  note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
+                />
+              </div>
+            </div>
+
+            {false && (
+              <>
+                {/* Content Performance */}
+                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="w-full flex flex-col h-full min-w-0">
+                    <ContentPerformance
+                      data={dashboardData?.contentChartsData}
+                    />
+                  </div>
+                </div>
+
+                {/* Recent Joined Users */}
+                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                  <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
+                    <RecentUsersTable
+                      recentActivityData={dashboardData?.recentActivityData}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Drill-down lists */}
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start gap-1">
+                <h2 className="text-base font-bold text-slate-900">
+                  Follow-ups & Roster
+                </h2>
+                <p className="text-[11px] font-medium text-slate-500 leading-none">
+                  Renewals, abandoned checkouts and platform admin/notification
+                  activity
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                <DashboardTableCard
+                  title="Recent Transactions"
+                  subtitle="Latest 10"
+                  Icon={Receipt}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  rows={(
+                    dashboardExtras?.tables?.recentTransactions || []
+                  ).slice(0, 5)}
+                  emptyMessage="No transactions yet."
+                  columns={[
+                    {
+                      key: "sr_no",
+                      label: "Sr.No",
+                      render: (_, idx) => (
+                        <span className="text-foreground px-1">{idx + 1}</span>
+                      ),
+                    },
+                    { key: "user_name", label: "User" },
+                    { key: "plan_title", label: "Plan" },
+                    {
+                      key: "amount",
+                      label: "Amount",
+                      render: (r) => `$${Number(r.amount).toLocaleString()}`,
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
+                    {
+                      key: "created_at",
+                      label: "Date",
+                      render: (r) =>
+                        format(new Date(r.created_at), "MMM dd, HH:mm"),
+                    },
+                  ]}
+                />
+
+                <DashboardTableCard
+                  title="Sub-Admin Roster"
+                  subtitle="Managers & how many users they cover"
+                  Icon={ShieldCheck}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  rows={(dashboardExtras?.tables?.subAdminRoster || []).slice(
+                    0,
+                    5,
+                  )}
+                  emptyMessage="No sub-admins yet."
+                  columns={[
+                    {
+                      key: "sr_no",
+                      label: "Sr.No",
+                      render: (_, idx) => (
+                        <span className="text-foreground px-1">{idx + 1}</span>
+                      ),
+                    },
+                    { key: "name", label: "Name" },
+                    {
+                      key: "role",
+                      label: "Role",
+                      render: (r) => (
+                        <span className="capitalize">{r.role}</span>
+                      ),
+                    },
+                    {
+                      key: "managed_users",
+                      label: "Users Managed",
+                      align: "left",
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
+                  ]}
+                  footerStat={
+                    dashboardExtras?.tables?.unassignedUsers != null
+                      ? {
+                          label: "Unassigned Users",
+                          value:
+                            dashboardExtras.tables.unassignedUsers.toLocaleString(),
+                        }
+                      : undefined
+                  }
+                />
+
+                <div className="xl:col-span-2">
+                  <DashboardTableCard
+                    title="Pending / Abandoned Checkouts"
+                    subtitle="Signed up but haven't paid in 7+ days"
+                    Icon={Wallet}
+                    iconColor="text-slate-700"
+                    iconBg="bg-slate-50"
+                    rows={(
+                      dashboardExtras?.tables?.abandonedCheckouts || []
+                    ).slice(0, 5)}
+                    emptyMessage="No abandoned checkouts right now."
+                    actionLabel="Follow Up"
+                    onAction={(row) =>
+                      navigate(`/admin/users`, { state: { user: row.name } })
+                    }
+                    columns={[
+                      {
+                        key: "sr_no",
+                        label: "Sr.No",
+                        render: (_, idx) => (
+                          <span className="text-foreground px-1">
+                            {idx + 1}
+                          </span>
+                        ),
+                      },
+                      { key: "name", label: "User" },
+                      {
+                        key: "signed_up_at",
+                        label: "Signed Up",
+                        render: (r) =>
+                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                      },
+                      {
+                        key: "days_since_signup",
+                        label: "Days Since",
+                        render: (r) => `${r.days_since_signup}d`,
+                      },
+                      {
+                        key: "main_goal",
+                        label: "Goal",
+                        render: (r) => (
+                          <span className="capitalize">{r.main_goal}</span>
+                        ),
+                      },
+                      {
+                        key: "gender",
+                        label: "Gender",
+                        render: (r) => (
+                          <span className="capitalize">{r.gender}</span>
+                        ),
+                      },
+                    ]}
+                  />
+                </div>
+
+                <DashboardTableCard
+                  title="Users Nearing Plan Expiry"
+                  subtitle="Renewal follow-up list"
+                  Icon={TrendingUp}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  rows={(dashboardExtras?.tables?.expiringSoon || []).slice(
+                    0,
+                    5,
+                  )}
+                  emptyMessage="No plans expiring soon."
+                  actionLabel="Renew"
+                  onAction={(row) =>
+                    navigate(`/admin/subscription-management/subscribers`, {
+                      state: { user: row.name },
+                    })
+                  }
+                  columns={[
+                    {
+                      key: "sr_no",
+                      label: "SR.No",
+                      width: "w-[10%]",
+                      render: (_, idx) => (
+                        <span className="font-bold text-foreground px-2">
+                          {idx + 1}
+                        </span>
+                      ),
+                    },
+                    { key: "name", label: "User", width: "w-[30%]" },
+                    { key: "plan_title", label: "Plan", width: "w-[25%]" },
+                    {
+                      key: "expires_at",
+                      label: "Expiry",
+                      width: "w-[20%]",
+                      render: (r) =>
+                        format(new Date(r.expires_at), "MMM dd, yyyy"),
+                    },
+                    {
+                      key: "days_left",
+                      label: "Days Left",
+                      width: "w-[15%]",
+                      render: (r) => (
+                        <span
+                          className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}
+                        >
+                          {r.days_left}d
+                        </span>
+                      ),
+                    },
+                  ]}
+                />
+
+                <DashboardTableCard
+                  title="Recent Notifications Sent"
+                  subtitle="Latest broadcast/push activity"
+                  Icon={Bell}
+                  iconColor="text-slate-700"
+                  iconBg="bg-slate-50"
+                  rows={(
+                    dashboardExtras?.tables?.recentNotifications || []
+                  ).slice(0, 5)}
+                  emptyMessage="No notifications sent yet."
+                  columns={[
+                    {
+                      key: "sr_no",
+                      label: "Sr.No",
+                      render: (_, idx) => (
+                        <span className="text-foreground px-1">{idx + 1}</span>
+                      ),
+                    },
+                    { key: "title", label: "Title" },
+                    {
+                      key: "channel",
+                      label: "Channel",
+                      render: (r) => (
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                            r.channel === "Push"
+                              ? "bg-blue-50 text-blue-600 border-blue-100"
+                              : "bg-violet-50 text-violet-600 border-violet-100"
+                          }`}
+                        >
+                          {r.channel}
+                        </span>
+                      ),
+                    },
+                    {
+                      key: "total_recipients",
+                      label: "Recipients",
+                      align: "left",
+                      render: (r) => r.total_recipients ?? "–",
+                    },
+                    {
+                      key: "success_count",
+                      label: "Success",
+                      align: "left",
+                      render: (r) => r.success_count ?? "–",
+                    },
+                    {
+                      key: "failed_count",
+                      label: "Failed",
+                      align: "left",
+                      render: (r) => r.failed_count ?? "–",
+                    },
+                    {
+                      key: "created_at",
+                      label: "Sent",
+                      render: (r) =>
+                        formatDistanceToNow(new Date(r.created_at), {
+                          addSuffix: true,
+                        }),
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

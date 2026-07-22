@@ -463,3 +463,14 @@ button[data-range-end="true"] {
   z-index: 99999 !important;
   pointer-events: auto !important;
 }
+
+.custom-scrollbar-chart::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar-chart::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar-chart::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.5);
+  border-radius: 20px;
+}

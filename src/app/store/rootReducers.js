@@ -18,6 +18,7 @@ import subscriptionManagementReducer from "@/modules/subscriptionManagement/stor
 import subscriptionDashboardReducer from "@/modules/subscriptionManagement/store/subscription-dashboard.slice";
 import transactionManagementReducer from "@/modules/transactionManagement/store/transaction.slice";
 import notificationManageReducer from "@/modules/notificationManage/store/notification.slice";
+import campaignsReducer from "@/modules/notificationManage/store/campaigns.slice";
 import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
 import nutritionReducer from "@/modules/dataManagement/store/nutrition.slice";
 import cmsManagementReducer from "@/modules/cmsManagement/store/cms.management.slice";
@@ -43,6 +44,7 @@ export const rootReducer = combineReducers({
   subscriptionDashboard: subscriptionDashboardReducer,
   transactionManagement: transactionManagementReducer,
   notificationManage: notificationManageReducer,
+  campaigns: campaignsReducer,
   faqManagement: faqManagementReducer,
   nutrition: nutritionReducer,
   cmsManagement: cmsManagementReducer,

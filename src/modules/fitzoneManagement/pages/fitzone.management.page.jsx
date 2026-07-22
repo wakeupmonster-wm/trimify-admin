@@ -1,7 +1,8 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Dumbbell, Plus } from "lucide-react";
+import { Dumbbell, Plus, CheckCircle, Clock, Flame } from "lucide-react";
+import { KpiStatCard } from "@/components/shared/KpiStatCard";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -110,24 +111,41 @@ const FitzoneManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
+  // KPI Calculations
+  const kpiStats = useMemo(() => {
+    const list = fitzones || [];
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return {
+      total: serverPagination?.total || list.length,
+      active: list.filter((f) => f.status === "Active").length,
+      inactive: list.filter((f) => f.status !== "Active").length,
+      recent: list.filter(
+        (f) => f.updated_at && new Date(f.updated_at) >= thirtyDaysAgo,
+      ).length,
+    };
+  }, [fitzones, serverPagination]);
+
   return (
     <Container>
       {/* Top Header Section outside of the white card */}
-
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Fitzone Management"
-                icon={<Dumbbell className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={
+                  <Dumbbell className="w-6 h-6 text-white shrink-0" />
+                }
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Create, configure, and monitor Fitzone workouts and sessions."
               />
             </div>
-            <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
                 onClick={() => navigate("add-fitzone")}
               >
                 <Plus className="w-4 h-4 shrink-0" />
@@ -136,6 +154,42 @@ const FitzoneManagementPage = () => {
             </div>
           </div>
         </Header>
+
+        {/* KPIs Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <KpiStatCard
+            title="Total Fitzones"
+            value={kpiStats.total}
+            icon={Dumbbell}
+            colorClass="text-brand-blue"
+            bgClass="bg-blue-50"
+            description="All workout groups"
+          />
+          <KpiStatCard
+            title="Active Fitzones"
+            value={kpiStats.active}
+            icon={CheckCircle}
+            colorClass="text-emerald-600"
+            bgClass="bg-emerald-50"
+            description="Currently accessible"
+          />
+          <KpiStatCard
+            title="Draft / Inactive"
+            value={kpiStats.inactive}
+            icon={Clock}
+            colorClass="text-amber-600"
+            bgClass="bg-amber-50"
+            description="Not visible to users"
+          />
+          <KpiStatCard
+            title="Recently Updated"
+            value={kpiStats.recent}
+            icon={Flame}
+            colorClass="text-rose-600"
+            bgClass="bg-rose-50"
+            description="Modified in last 30 days"
+          />
+        </div>
 
         <div className="w-full min-w-0 flex-1">
           <DataTable
@@ -164,7 +218,9 @@ const FitzoneManagementPage = () => {
       />
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of this fitzone to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}

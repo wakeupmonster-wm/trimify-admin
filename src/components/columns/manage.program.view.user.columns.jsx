@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Eye, MoreVertical } from "lucide-react";
+import { MoreHorizontal, Eye, Ellipsis } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -103,17 +103,22 @@ export const getViewUserProgramColumns = (onAction) => [
     minSize: 100,
     cell: ({ row }) => {
       const status = row.original.status || "Inactive";
+      const isActive = status === "Active";
       return (
-        <Badge
-          variant="outline"
-          className={`h-6 px-3 rounded-md text-[10px] font-semibold tracking-wide border-0 ${
-            status === "Active"
-              ? "bg-green-100/80 text-green-700 hover:bg-green-100"
-              : "bg-red-100/80 text-red-700 hover:bg-red-100"
+        <div
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+            isActive
+              ? "bg-emerald-50 text-emerald-700"
+              : "bg-rose-50 text-rose-700"
           }`}
         >
+          <span
+            className={`w-1 h-1 rounded-full ${
+              isActive ? "bg-emerald-600" : "bg-rose-600"
+            }`}
+          />
           {status}
-        </Badge>
+        </div>
       );
     },
   },
@@ -134,12 +139,12 @@ export const getViewUserProgramColumns = (onAction) => [
               variant="ghost"
               className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
             >
-              <MoreVertical className="h-4 w-4 text-foreground/90" />
+              <Ellipsis className="h-4 w-4 text-foreground/90" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
+            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
             <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions

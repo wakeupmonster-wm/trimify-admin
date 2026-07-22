@@ -63,14 +63,14 @@ const ManageFitzoneDetailsPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Fitzone Modules"
                 icon={
-                  <Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                  <Settings className="w-6 h-6 text-white shrink-0" />
                 }
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."

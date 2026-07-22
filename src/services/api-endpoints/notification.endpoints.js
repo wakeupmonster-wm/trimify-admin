@@ -15,3 +15,24 @@ export const NOTIFICATION = {
   /** GET — Retrieve list of sent notifications (paginated) */
   NOTIFICATION_LIST: `${ADMIN}/get-notification`,
 }
+
+
+export const CAMPAIGNS = {
+  /** POST: Push notification */
+  PUSH_NOTIFICATION: `${ADMIN}/campaigns/push`,
+
+  /** POST: Email notification */
+  EMAIL_NOTIFICATION: `${ADMIN}/campaigns/email`,
+
+  /** GET: Push notification History */
+  PUSH_HISTORY: `${ADMIN}/campaigns/push/history`,
+
+  /** GET: Email notification History */
+  EMAIL_HISTORY: `${ADMIN}/campaigns/email/history`,
+
+  /** GET: Campaign history */
+  CAMPAIGN_HISTORY: `${ADMIN}/campaigns/history`,
+
+  /** GET: Campaign delivery report */
+  CAMPAIGN_DELIVERY_REPORT: `${ADMIN}/campaigns/:channel/:id/delivery-report`,
+};

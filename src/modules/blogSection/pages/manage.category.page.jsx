@@ -1,7 +1,8 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, FolderTree, CheckCircle, EyeOff, Sparkles } from "lucide-react";
+import { KpiStatCard } from "@/components/shared/KpiStatCard";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -106,31 +107,81 @@ const ManageCategoryPage = () => {
     categoriesPagination && categoriesPagination.total > 0
   );
 
+  // KPI Calculations
+  const kpiStats = useMemo(() => {
+    const list = categories || [];
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return {
+      total: categoriesPagination?.total || list.length,
+      active: list.filter((c) => c.status === "Active").length,
+      inactive: list.filter((c) => c.status !== "Active").length,
+      recent: list.filter((c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo).length,
+    };
+  }, [categories, categoriesPagination]);
+
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Category"
-                icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<FileText className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-md"
                 subheading="Manage blog categories for the platform."
               />
             </div>
 
-            <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
                 onClick={() => navigate("/admin/blog-section/add-category")}
               >
-                <Plus className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
+                <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Create Category</span>
               </Button>
             </div>
           </div>
         </Header>
+
+         {/* KPIs Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <KpiStatCard
+            title="Total Categories"
+            value={kpiStats.total}
+            icon={FolderTree}
+            colorClass="text-brand-blue"
+            bgClass="bg-blue-50"
+            description="All blog categories"
+          />
+          <KpiStatCard
+            title="Active Categories"
+            value={kpiStats.active}
+            icon={CheckCircle}
+            colorClass="text-emerald-600"
+            bgClass="bg-emerald-50"
+            description="Currently visible"
+          />
+          <KpiStatCard
+            title="Inactive Categories"
+            value={kpiStats.inactive}
+            icon={EyeOff}
+            colorClass="text-amber-600"
+            bgClass="bg-amber-50"
+            description="Hidden from users"
+          />
+          <KpiStatCard
+            title="Recently Added"
+            value={kpiStats.recent}
+            icon={Sparkles}
+            colorClass="text-indigo-600"
+            bgClass="bg-indigo-50"
+            description="Added in last 30 days"
+          />
+        </div>
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

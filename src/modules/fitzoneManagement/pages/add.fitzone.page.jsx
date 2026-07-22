@@ -94,13 +94,13 @@ const AddFitzonePage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEditMode ? "Edit Fitzone" : "Add Fitzone"}
-                icon={<Activity className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<Activity className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading={
                   isEditMode
@@ -112,7 +112,7 @@ const AddFitzonePage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 w-full min-w-0">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
@@ -225,7 +225,7 @@ const AddFitzonePage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto rounded-xl px-5 sm:px-6 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
+                className="w-full sm:w-auto rounded-md px-6 h-100 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -233,7 +233,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {isSubmitting ? (
                   <>

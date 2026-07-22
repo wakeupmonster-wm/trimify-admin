@@ -19,15 +19,15 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
   const endRow = Math.min(currentPage * pageSize, rowCount || 0);
 
   return (
-    <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-6 sm:flex-row sm:gap-4">
+    <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-5 sm:flex-row sm:gap-4">
       {/* Left Side: Showing results count */}
-      <div className="text-xs font-medium text-slate-400 text-center xl:text-left w-full xl:w-auto">
+      <div className="text-xs font-medium text-slate-400 text-left w-full xl:w-max">
         Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount || 0}{" "}
         {itemName}
       </div>
 
       {/* Right Side: Pagination Controls */}
-      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-10 w-full xl:w-auto">
+      <div className="flex flex-wrap items-center justify-between sm:justify-end gap-4 sm:gap-6 lg:gap-10 w-full xl:w-max">
         {/* Row Select Bar */}
         <div className="flex items-center justify-center gap-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">

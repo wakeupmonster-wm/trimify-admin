@@ -126,7 +126,7 @@ export default function SampleProgramLayoutPage() {
                   </h2>
                   <Badge
                     className={cn(
-                      "rounded-md px-2.5 py-1 text-[10px] font-bold capitalize uppercase tracking-widest border-0",
+                      "rounded-md px-2.5 py-1 text-[10px] font-bold capitalize tracking-widest border-0",
                       PROGRAM_DATA.status === "Active"
                         ? "bg-emerald-500/20 text-emerald-300"
                         : "bg-amber-500/20 text-amber-300",

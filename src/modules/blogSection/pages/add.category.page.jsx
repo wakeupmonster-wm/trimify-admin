@@ -140,7 +140,7 @@ const AddCategoryPage = () => {
         </Header>
 
         {/* Main Form Card */}
-        <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -247,7 +247,7 @@ const AddCategoryPage = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 type="button"
                 variant="outline"

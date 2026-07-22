@@ -1,4 +1,4 @@
-import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -213,12 +213,12 @@ export const getNutritionFoodColumns = (onAction) => [
                 variant="ghost"
                 className="h-8 w-8 p-0 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 rounded-full transition-colors"
               >
-                <MoreVertical className="h-4 w-4" />
+                <Ellipsis className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
+              className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
             >
               <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
                 Actions

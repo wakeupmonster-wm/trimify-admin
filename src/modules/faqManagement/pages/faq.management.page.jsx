@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send, HelpCircle, Plus, X, Loader2 } from "lucide-react";
+import { Send, HelpCircle, Plus, X, Loader2, MessageCircle, CheckCircle, EyeOff, RefreshCw } from "lucide-react";
+import { KpiStatCard } from "@/components/shared/KpiStatCard";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -137,31 +138,51 @@ const FaqManagementPage = () => {
 
   const columns = useMemo(() => getFaqManagementColumns(handleAction), []);
 
+  // KPI Calculations
+  const kpiStats = useMemo(() => {
+    const list = faqs || [];
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return {
+      total: serverPagination?.total || list.length,
+      active: list.filter((f) => f.status === "Active").length,
+      inactive: list.filter((f) => f.status !== "Active").length,
+      recent: list.filter((f) => f.updated_at && new Date(f.updated_at) >= thirtyDaysAgo).length,
+    };
+  }, [faqs, serverPagination]);
+
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="FAQ"
-              icon={<HelpCircle className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-md"
-              subheading="Manage Frequently Asked Questions for the platform."
-            />
-          </div>
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
+              <PageHeader
+                heading="FAQ"
+                icon={<HelpCircle className="w-6 h-6 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-md"
+                subheading="Manage Frequently Asked Questions for the platform."
+              />
+            </div>
 
-          {/* Add one button for add FAQ */}
-          <Button
-            onClick={() => {
-              setFormData({ question: "", answer: "" });
-              setEditMode(false);
-              setCurrentFaqId(null);
-              setIsDialogOpen(true);
-            }}
-            className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 text-xs font-semibold gap-2"
-          >
-            <Plus className="w-4 h-4" /> Add FAQ
-          </Button>
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+
+              {/* Add one button for add FAQ */}
+              <Button
+                onClick={() => {
+                  setFormData({ question: "", answer: "" });
+                  setEditMode(false);
+                  setCurrentFaqId(null);
+                  setIsDialogOpen(true);
+                }}
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+              >
+                <Plus className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Add FAQ</span>
+              </Button>
+            </div>
+          </div>
         </Header>
 
         {/* FAQ Dialog */}
@@ -238,23 +259,61 @@ const FaqManagementPage = () => {
           </DialogContent>
         </Dialog>
 
+        {/* KPIs Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <KpiStatCard
+            title="Total FAQs"
+            value={kpiStats.total}
+            icon={MessageCircle}
+            colorClass="text-brand-blue"
+            bgClass="bg-blue-50"
+            description="All questions & answers"
+          />
+          <KpiStatCard
+            title="Active FAQs"
+            value={kpiStats.active}
+            icon={CheckCircle}
+            colorClass="text-emerald-600"
+            bgClass="bg-emerald-50"
+            description="Currently visible"
+          />
+          <KpiStatCard
+            title="Inactive FAQs"
+            value={kpiStats.inactive}
+            icon={EyeOff}
+            colorClass="text-amber-600"
+            bgClass="bg-amber-50"
+            description="Hidden from users"
+          />
+          <KpiStatCard
+            title="Recently Updated"
+            value={kpiStats.recent}
+            icon={RefreshCw}
+            colorClass="text-indigo-600"
+            bgClass="bg-indigo-50"
+            description="Modified in last 30 days"
+          />
+        </div>
+
         {/* DataTable */}
-        <DataTable
-          columns={columns}
-          data={faqs || []}
-          rowCount={
-            serverPagination ? serverPagination.total : faqs?.length || 0
-          }
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search by question or answer..."
-          itemName="entries"
-          isLoading={loading}
-          manualPagination={!!serverPagination}
-          manualFiltering={!!serverPagination}
-        />
+        <div className="w-full min-w-0 flex-1">
+          <DataTable
+            columns={columns}
+            data={faqs || []}
+            rowCount={
+              serverPagination ? serverPagination.total : faqs?.length || 0
+            }
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search by question or answer..."
+            itemName="entries"
+            isLoading={loading}
+            manualPagination={!!serverPagination}
+            manualFiltering={!!serverPagination}
+          />
+        </div>
       </div>
 
       <ConfirmModal
@@ -278,3 +337,4 @@ const FaqManagementPage = () => {
 };
 
 export default FaqManagementPage;
+

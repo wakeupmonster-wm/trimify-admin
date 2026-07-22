@@ -66,12 +66,12 @@ const CMSManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="CMS"
-              icon={<FileEdit className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              icon={<FileEdit className="w-6 h-6 text-white shrink-0" />}
               color="bg-app-primary2 shadow-md"
               subheading="Manage Content Management System pages like Privacy Policy and Terms & Conditions."
             />

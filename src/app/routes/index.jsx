@@ -8,76 +8,193 @@ import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
 import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
-
+import SampleDashboardPage from "@/modules/dashboard/pages/sample.dashboard";
 
 // ======== New trimify imports ===========//
-const AccountsPage = lazy(() => import("@/modules/accounts/page/accounts.page"));
-const SubAdminManagementPage = lazy(() => import("@/modules/subAdmin/pages/subadmin.page"));
-const AddSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/add.subadmin.page"));
-const EditSubAdminPage = lazy(() => import("@/modules/subAdmin/pages/edit.subadmin.page"));
-const UsersManagementPage = lazy(() => import("@/modules/userManagement/pages/users.management.page"));
-const ViewUserProfilePage = lazy(() => import("@/modules/userManagement/pages/view.user.profile.page"));
-const SampleProfileLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout.page"));
-const SampleProfileLayoutV2Page = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout-v2.page"));
-const SampleProfileLayoutV3Page = lazy(() => import("@/modules/userManagement/pages/sample-profile-layout-v3.page"));
-const SampleProgramLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-program-layout.page"));
-const SampleFitzoneLayoutPage = lazy(() => import("@/modules/userManagement/pages/sample-fitzone-layout.page"));
-const AccountSettingsPage = lazy(() => import("@/modules/accountSettings/pages/account.settings.page"));
-const FaqManagementPage = lazy(() => import("@/modules/faqManagement/pages/faq.management.page"));
-const NotificationManagePage = lazy(() => import("@/modules/notificationManage/pages/notification.manage.page"));
-const CMSManagementPage = lazy(() => import("@/modules/cmsManagement/pages/cms.management.page"));
-const TransactionManagementPage = lazy(() => import("@/modules/transactionManagement/pages/transaction.management.page"));
-const SubscriptionDashboardTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.dashboard.page"));
-const SubscriptionConfigTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.config.page"));
-const SubscriptionSubscribersTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.subscribers.page"));
-const SubscriptionTransactionsTabPage = lazy(() => import("@/modules/subscriptionManagement/pages/subscription.transactions.page"));
-const ManageCategoryPage = lazy(() => import("@/modules/blogSection/pages/manage.category.page"));
-const ManageBlogsPage = lazy(() => import("@/modules/blogSection/pages/manage.blogs.page"));
-const NutritionFoodPage = lazy(() => import("@/modules/dataManagement/pages/nutrition.food.page"));
-const AddNutritionPage = lazy(() => import("@/modules/dataManagement/pages/add.nutrition.page"));
-const AiFoodUploadPage = lazy(() => import("@/modules/aiFoodUpload/pages/ai.food.upload.page"));
-const AiFoodViewPage = lazy(() => import("@/modules/aiFoodUpload/pages/ai.food.view.page"));
-const FitzoneManagementPage = lazy(() => import("@/modules/fitzoneManagement/pages/fitzone.management.page"));
-const AddFitzonePage = lazy(() => import("@/modules/fitzoneManagement/pages/add.fitzone.page"));
-const ManageProgramPage = lazy(() => import("@/modules/manageProgram/pages/manage.program.page"));
-const AddProgramPage = lazy(() => import("@/modules/manageProgram/pages/add.program.page"));
-const ViewUserProgramPage = lazy(() => import("@/modules/manageProgram/pages/view.user.program.page"));
-const ManageProgramDetailsPage = lazy(() => import("@/modules/manageProgram/pages/manage.program.details.page"));
-const EditIntroProgramPage = lazy(() => import("@/modules/manageProgram/pages/edit.intro.program.page"));
-const AddFoodCategoryPage = lazy(() => import("@/modules/manageProgram/pages/add.food.category.page"));
-const ManageFoodProgramPage = lazy(() => import("@/modules/manageProgram/pages/manage.food.program.page"));
-const ManageFoodItemsPage = lazy(() => import("@/modules/manageProgram/pages/manage.food.items.page"));
-const ManageDietProgramPage = lazy(() => import("@/modules/manageProgram/pages/manage.diet.program.page"));
-const AddDietProgramPage = lazy(() => import("@/modules/manageProgram/pages/add.diet.program.page"));
-const EditDietProgramPage = lazy(() => import("@/modules/manageProgram/pages/edit.diet.program.page"));
+const AccountsPage = lazy(
+  () => import("@/modules/accounts/page/accounts.page"),
+);
+const SubAdminManagementPage = lazy(
+  () => import("@/modules/subAdmin/pages/subadmin.page"),
+);
+const AddSubAdminPage = lazy(
+  () => import("@/modules/subAdmin/pages/add.subadmin.page"),
+);
+const EditSubAdminPage = lazy(
+  () => import("@/modules/subAdmin/pages/edit.subadmin.page"),
+);
+const UsersManagementPage = lazy(
+  () => import("@/modules/userManagement/pages/users.management.page"),
+);
+const ViewUserProfilePage = lazy(
+  () => import("@/modules/userManagement/pages/view.user.profile.page"),
+);
+const SampleProfileLayoutPage = lazy(
+  () => import("@/modules/userManagement/pages/sample-profile-layout.page"),
+);
+const SampleProfileLayoutV2Page = lazy(
+  () => import("@/modules/userManagement/pages/sample-profile-layout-v2.page"),
+);
+const SampleProfileLayoutV3Page = lazy(
+  () => import("@/modules/userManagement/pages/sample-profile-layout-v3.page"),
+);
+const SampleProgramLayoutPage = lazy(
+  () => import("@/modules/userManagement/pages/sample-program-layout.page"),
+);
+const SampleFitzoneLayoutPage = lazy(
+  () => import("@/modules/userManagement/pages/sample-fitzone-layout.page"),
+);
+const AccountSettingsPage = lazy(
+  () => import("@/modules/accountSettings/pages/account.settings.page"),
+);
+const FaqManagementPage = lazy(
+  () => import("@/modules/faqManagement/pages/faq.management.page"),
+);
+const NotificationManagePage = lazy(
+  () => import("@/modules/notificationManage/pages/notification.manage.page"),
+);
+const CMSManagementPage = lazy(
+  () => import("@/modules/cmsManagement/pages/cms.management.page"),
+);
+const TransactionManagementPage = lazy(
+  () =>
+    import("@/modules/transactionManagement/pages/transaction.management.page"),
+);
+const SubscriptionDashboardTabPage = lazy(
+  () =>
+    import("@/modules/subscriptionManagement/pages/subscription.dashboard.page"),
+);
+const SubscriptionConfigTabPage = lazy(
+  () =>
+    import("@/modules/subscriptionManagement/pages/subscription.config.page"),
+);
+const SubscriptionSubscribersTabPage = lazy(
+  () =>
+    import("@/modules/subscriptionManagement/pages/subscription.subscribers.page"),
+);
+const SubscriptionTransactionsTabPage = lazy(
+  () =>
+    import("@/modules/subscriptionManagement/pages/subscription.transactions.page"),
+);
+const ManageCategoryPage = lazy(
+  () => import("@/modules/blogSection/pages/manage.category.page"),
+);
+const ManageBlogsPage = lazy(
+  () => import("@/modules/blogSection/pages/manage.blogs.page"),
+);
+const NutritionFoodPage = lazy(
+  () => import("@/modules/dataManagement/pages/nutrition.food.page"),
+);
+const AddNutritionPage = lazy(
+  () => import("@/modules/dataManagement/pages/add.nutrition.page"),
+);
+const AiFoodUploadPage = lazy(
+  () => import("@/modules/aiFoodUpload/pages/ai.food.upload.page"),
+);
+const AiFoodViewPage = lazy(
+  () => import("@/modules/aiFoodUpload/pages/ai.food.view.page"),
+);
+const FitzoneManagementPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/fitzone.management.page"),
+);
+const AddFitzonePage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/add.fitzone.page"),
+);
+const ManageProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/manage.program.page"),
+);
+const AddProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/add.program.page"),
+);
+const ViewUserProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/view.user.program.page"),
+);
+const ManageProgramDetailsPage = lazy(
+  () => import("@/modules/manageProgram/pages/manage.program.details.page"),
+);
+const EditIntroProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/edit.intro.program.page"),
+);
+const AddFoodCategoryPage = lazy(
+  () => import("@/modules/manageProgram/pages/add.food.category.page"),
+);
+const ManageFoodProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/manage.food.program.page"),
+);
+const ManageFoodItemsPage = lazy(
+  () => import("@/modules/manageProgram/pages/manage.food.items.page"),
+);
+const ManageDietProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/manage.diet.program.page"),
+);
+const AddDietProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/add.diet.program.page"),
+);
+const EditDietProgramPage = lazy(
+  () => import("@/modules/manageProgram/pages/edit.diet.program.page"),
+);
 
-const ManageFitzoneDetailsPage = lazy(() => import("@/modules/fitzoneManagement/pages/manage.fitzone.details.page"));
-const EditFitzoneIntroPage = lazy(() => import("@/modules/fitzoneManagement/pages/edit.fitzone.intro.page"));
-const ManageFitzoneCategoryPage = lazy(() => import("@/modules/fitzoneManagement/pages/manage.fitzone.category.page"));
-const AddFitzoneCategoryPage = lazy(() => import("@/modules/fitzoneManagement/pages/add.fitzone.category.page"));
-const ManageFitzoneSessionPage = lazy(() => import("@/modules/fitzoneManagement/pages/manage.fitzone.session.page"));
-const AddFitzoneSessionPage = lazy(() => import("@/modules/fitzoneManagement/pages/add.fitzone.session.page"));
+const ManageFitzoneDetailsPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/manage.fitzone.details.page"),
+);
+const EditFitzoneIntroPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/edit.fitzone.intro.page"),
+);
+const ManageFitzoneCategoryPage = lazy(
+  () =>
+    import("@/modules/fitzoneManagement/pages/manage.fitzone.category.page"),
+);
+const AddFitzoneCategoryPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/add.fitzone.category.page"),
+);
+const ManageFitzoneSessionPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/manage.fitzone.session.page"),
+);
+const AddFitzoneSessionPage = lazy(
+  () => import("@/modules/fitzoneManagement/pages/add.fitzone.session.page"),
+);
 
-const AddCategoryPage = lazy(() => import("@/modules/blogSection/pages/add.category.page"));
-const AddPostPage = lazy(() => import("@/modules/blogSection/pages/add.post.page"));
-const PrivacyAndPolicyPage = lazy(() => import("@/modules/cmsManagement/pages/privacy-policy.page"));
-const TermAndConditionsPage = lazy(() => import("@/modules/cmsManagement/pages/terms-conditions.page"));
-const AboutUsPage = lazy(() => import("@/modules/cmsManagement/pages/about-us.page"));
+const AddCategoryPage = lazy(
+  () => import("@/modules/blogSection/pages/add.category.page"),
+);
+const AddPostPage = lazy(
+  () => import("@/modules/blogSection/pages/add.post.page"),
+);
+const PrivacyAndPolicyPage = lazy(
+  () => import("@/modules/cmsManagement/pages/privacy-policy.page"),
+);
+const TermAndConditionsPage = lazy(
+  () => import("@/modules/cmsManagement/pages/terms-conditions.page"),
+);
+const AboutUsPage = lazy(
+  () => import("@/modules/cmsManagement/pages/about-us.page"),
+);
 
 // ======== New trimify imports =========
 
 // 2. LAZY LOAD COMPONENTS
 const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
 const App = lazy(() => import("@/App"));
-const NotFoundPage = lazy(() => import("@/modules/not-found/Pages/not-found.page"));
+const NotFoundPage = lazy(
+  () => import("@/modules/not-found/Pages/not-found.page"),
+);
 
 // Auth
-const LoginPage = lazy(() => import("@/modules/authentication/pages/login.page"));
-const ForgotPasswordPage = lazy(() => import("@/modules/authentication/pages/forgot-password.page"));
-const RequestResetEmailForm = lazy(() => import("@/modules/authentication/components/request-resetEmail"));
-const VerifyEmailOtp = lazy(() => import("@/modules/authentication/components/verify-emailOTP"));
-const ForgotPasswordForm = lazy(() => import("@/modules/authentication/components/forgotPasswordForm"));
-
+const LoginPage = lazy(
+  () => import("@/modules/authentication/pages/login.page"),
+);
+const ForgotPasswordPage = lazy(
+  () => import("@/modules/authentication/pages/forgot-password.page"),
+);
+const RequestResetEmailForm = lazy(
+  () => import("@/modules/authentication/components/request-resetEmail"),
+);
+const VerifyEmailOtp = lazy(
+  () => import("@/modules/authentication/components/verify-emailOTP"),
+);
+const ForgotPasswordForm = lazy(
+  () => import("@/modules/authentication/components/forgotPasswordForm"),
+);
 
 export const router = createBrowserRouter([
   {
@@ -132,15 +249,28 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
-      
+
       /*====================== Dashboard Module ======================*/
       {
         path: "dashboard",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <Dashboard />
-          </Suspense>
-        ),
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <Dashboard />
+              </Suspense>
+            ),
+          },
+          {
+            path: "sample-dashboard",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SampleDashboardPage />
+              </Suspense>
+            ),
+          },
+        ],
       },
 
       /*====================== Sub-Admin Management Module ======================*/

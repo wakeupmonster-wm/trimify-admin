@@ -5,11 +5,10 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { DataTable } from "@/components/shared/datatable";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Users } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { fetchProgramAssignedUsers } from "../store/program.slice";
 import { getViewUserProgramColumns } from "@/components/columns/manage.program.view.user.columns";
+import { LuUsersRound } from "react-icons/lu";
 
 const ViewUserProgramPage = () => {
   const { id } = useParams();
@@ -61,12 +60,12 @@ const ViewUserProgramPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="View Users"
-              icon={<Users className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
               color="bg-app-primary2 shadow-blue-200"
               subheading="View the list of users assigned to this program."
             />

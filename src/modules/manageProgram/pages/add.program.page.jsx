@@ -111,13 +111,13 @@ const AddProgramPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 min-w-0 w-full">
               <PageHeader
                 heading={isEditMode ? "Edit Program" : "Add Program"}
-                icon={<UploadCloud className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<UploadCloud className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-brand-blue"
                 subheading={
                   isEditMode
@@ -129,7 +129,7 @@ const AddProgramPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <form
             onSubmit={handleSubmit}
             className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6"
@@ -190,8 +190,8 @@ const AddProgramPage = () => {
               <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
-                    ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    ? "border-app-primary2 bg-app-primary2/20"
+                    : "border-slate-300/60 hover:border-app-primary2/80 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -205,7 +205,7 @@ const AddProgramPage = () => {
                   accept="image/*"
                   onChange={handleFileSelect}
                 />
-                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                 <p className="text-sm font-semibold text-slate-700">
                   {formData.bannerImage
                     ? formData.bannerImage.name
@@ -244,14 +244,14 @@ const AddProgramPage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate(-1)}
-                className="w-full sm:w-auto rounded-md px-8 py-2.5 h-auto text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {isSubmitting ? (
                   <>

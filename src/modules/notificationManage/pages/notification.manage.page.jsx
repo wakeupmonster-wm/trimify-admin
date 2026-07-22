@@ -3,43 +3,59 @@ import { Container } from "@/components/common/container";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { Send, Bell } from "lucide-react";
-import { DataTable } from "@/components/shared/datatable";
-import { getNotificationColumns } from "@/components/columns/notification.columns";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchNotificationList, sendNotification } from "../store/notification.slice";
+import CampaignHistory from "../components/campaign.history";
+import {
+  fetchCampaignHistory,
+  sendPushCampaign,
+  sendEmailCampaign,
+} from "../store/campaigns.slice";
 import { useEffect } from "react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { toast } from "sonner";
 
 const NotificationManagePage = () => {
   const dispatch = useDispatch();
-  const {
-    notifications,
-    loading,
-    isSending,
-    pagination: serverPagination,
-  } = useSelector((state) => state.notificationManage);
+  const { campaignHistory, campaignPagination, isSending } = useSelector(
+    (state) => state.campaigns,
+  );
 
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const [activeTab, setActiveTab] = useState("push");
+  const [channelFilter, setChannelFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [messageText, setMessageText] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
+  const [campaignName, setCampaignName] = useState("");
+  const [pushTitle, setPushTitle] = useState("");
+  const [target, setTarget] = useState("all");
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (activeTab === "history") {
-      dispatch(
-        fetchNotificationList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-        }),
-      );
+      const params = {
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        search: debouncedSearchTerm,
+      };
+      if (channelFilter !== "all") params.channel = channelFilter;
+      if (statusFilter !== "all") params.status = statusFilter;
+      dispatch(fetchCampaignHistory(params));
     }
   }, [
     dispatch,
@@ -47,57 +63,99 @@ const NotificationManagePage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    channelFilter,
+    statusFilter,
   ]);
 
-  const handleSendNotification = async () => {
+  const handlePreCheck = () => {
+    if (!campaignName.trim()) {
+      toast.error("Please enter a campaign name.");
+      return;
+    }
     if (!messageText.trim()) {
       toast.error("Please enter a message content.");
       return;
     }
-    
+    if (activeTab === "email" && !emailSubject.trim()) {
+      toast.error("Please enter an email subject.");
+      return;
+    }
+    if (activeTab === "push" && !pushTitle.trim()) {
+      toast.error("Please enter a push notification title.");
+      return;
+    }
+    setIsConfirmOpen(true);
+  };
+
+  const handleSendNotification = async () => {
+    setIsConfirmOpen(false);
+
     if (activeTab === "email") {
-      if (!emailSubject.trim()) {
-        toast.error("Please enter an email subject.");
-        return;
+      const payload = {
+        campaign_name: campaignName,
+        subject: emailSubject,
+        body: messageText,
+        target: target,
+      };
+
+      const resultAction = await dispatch(sendEmailCampaign(payload));
+      if (sendEmailCampaign.fulfilled.match(resultAction)) {
+        toast.success(
+          resultAction.payload?.message ||
+            "Email campaign queued successfully!",
+        );
+        setCampaignName("");
+        setEmailSubject("");
+        setMessageText("");
+        setTarget("all");
+      } else {
+        toast.error(resultAction.payload || "Failed to send email campaign.");
       }
-      toast.info("Email messaging API is not available yet.");
       return;
     }
 
     // Push notification
     const payload = {
+      campaign_name: campaignName,
+      title: pushTitle,
       message: messageText,
+      target: target,
     };
 
-    const resultAction = await dispatch(sendNotification(payload));
-    if (sendNotification.fulfilled.match(resultAction)) {
-      toast.success(resultAction.payload?.message || "Notification sent successfully!");
+    const resultAction = await dispatch(sendPushCampaign(payload));
+    if (sendPushCampaign.fulfilled.match(resultAction)) {
+      toast.success(
+        resultAction.payload?.message || "Push campaign queued successfully!",
+      );
+      setCampaignName("");
+      setPushTitle("");
       setMessageText("");
+      setTarget("all");
     } else {
-      toast.error(resultAction.payload || "Failed to send notification.");
+      toast.error(resultAction.payload || "Failed to send push campaign.");
     }
   };
 
-  const columns = useMemo(() => getNotificationColumns(), []);
-
   return (
     <Container>
-      <div className="space-y-8">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         {/* Header Title */}
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <PageHeader
-              heading="Manage Notification"
-              icon={<Bell className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
-              subheading="Create and manage notifications sent to users."
-            />
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
+              <PageHeader
+                heading="Manage Notification"
+                icon={<Bell className="w-6 h-6 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-brand-blue"
+                subheading="Create and manage notifications sent to users."
+              />
+            </div>
           </div>
         </Header>
 
-        <div className="mx-auto">
+        <div className="max-w-full">
           {/* TABS */}
-          <div className="flex flex-wrap items-center gap-6 border-b border-slate-300/60 mb-6">
+          <div className="w-max flex flex-wrap items-center gap-6 border-b border-slate-300/60 mb-6">
             <button
               onClick={() => setActiveTab("push")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
@@ -148,17 +206,78 @@ const NotificationManagePage = () => {
                   </div>
 
                   <div className="px-4 sm:px-6 py-6 space-y-6">
+                    <div className="space-y-2">
+                      <Label className="text-xs font-bold text-slate-800">
+                        Campaign Name
+                      </Label>
+                      <Input
+                        type="text"
+                        placeholder="e.g., Reminder - Riya"
+                        value={campaignName}
+                        onChange={(e) => setCampaignName(e.target.value)}
+                        className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-slate-800">
+                          Target Audience
+                        </Label>
+                        <Select value={target} onValueChange={setTarget}>
+                          <SelectTrigger className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium">
+                            <SelectValue placeholder="Select Target Audience" />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectItem
+                              value="all"
+                              className="text-xs rounded-lg"
+                            >
+                              All Users
+                            </SelectItem>
+                            <SelectItem
+                              value="active"
+                              className="text-xs rounded-lg"
+                            >
+                              Active Subscribers
+                            </SelectItem>
+                            <SelectItem
+                              value="expired"
+                              className="text-xs rounded-lg"
+                            >
+                              Expired Plan Users
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {activeTab === "push" && (
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-slate-800">
+                          Push Title
+                        </Label>
+                        <Input
+                          type="text"
+                          placeholder="Enter Push Title Here..."
+                          value={pushTitle}
+                          onChange={(e) => setPushTitle(e.target.value)}
+                          className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
+                        />
+                      </div>
+                    )}
+
                     {activeTab === "email" && (
                       <div className="space-y-2">
                         <Label className="text-xs font-bold text-slate-800">
                           Email Subject
                         </Label>
-                        <input
+                        <Input
                           type="text"
                           placeholder="Enter Subject Here..."
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
-                          className="w-full h-11 bg-[#F8FAFC]/50 border border-slate-300/60 rounded-lg px-4 text-[13px] font-medium outline-none focus:border-brand-blue"
+                          className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
                         />
                       </div>
                     )}
@@ -179,15 +298,17 @@ const NotificationManagePage = () => {
                       />
                     </div>
 
-                    <Button 
-                      onClick={handleSendNotification}
+                    <Button
+                      onClick={handlePreCheck}
                       disabled={isSending}
                       className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {activeTab === "email"
                         ? "Send Email"
-                        : (isSending ? "Sending..." : "Send Push Notification")}
+                        : isSending
+                          ? "Sending..."
+                          : "Send Push Notification"}
                     </Button>
                   </div>
                 </div>
@@ -243,6 +364,11 @@ const NotificationManagePage = () => {
                                   <span>now</span>
                                 </div>
                                 <p className="text-[12px] text-slate-800 line-clamp-3 leading-snug font-medium mt-1 whitespace-pre-wrap">
+                                  {pushTitle && (
+                                    <strong className="block mb-0.5">
+                                      {pushTitle}
+                                    </strong>
+                                  )}
                                   {messageText ||
                                     "Notification content will appear here..."}
                                 </p>
@@ -303,28 +429,58 @@ const NotificationManagePage = () => {
             </div>
           ) : (
             <div className="pt-2">
-              <DataTable
-                columns={columns}
-                data={notifications || []}
-                rowCount={
-                  serverPagination
-                    ? serverPagination.total
-                    : notifications?.length || 0
-                }
-                pagination={pagination}
+              <CampaignHistory
+                history={campaignHistory || []}
+                pagination={campaignPagination || {}}
+                paginationState={pagination}
                 onPaginationChange={setPagination}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-                searchPlaceholder="Search by message..."
-                itemName="entries"
-                isLoading={loading}
-                manualPagination={!!serverPagination}
-                manualFiltering={!!serverPagination}
+                channelFilter={channelFilter}
+                setChannelFilter={setChannelFilter}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                searchTerm={globalFilter}
+                setSearchTerm={setGlobalFilter}
               />
             </div>
           )}
         </div>
       </div>
+
+      {/* CONFIRMATION DIALOG */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleSendNotification}
+        title="Confirm Campaign"
+        type="brand"
+        loading={isSending}
+        confirmText="Yes, Send Now"
+        message={
+          <div className="space-y-3 mt-2 text-left">
+            <p>
+              Are you sure you want to send this{" "}
+              <strong>
+                {activeTab === "email" ? "Email" : "Push Notification"}
+              </strong>{" "}
+              campaign?
+            </p>
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+              <p className="flex justify-between items-center">
+                <strong className="text-slate-800">Name:</strong>
+                <span className="font-medium">{campaignName}</span>
+              </p>
+              <p className="flex justify-between items-center">
+                <strong className="text-slate-800">Target Audience:</strong>
+                <span className="font-medium capitalize">{target}</span>
+              </p>
+            </div>
+            <p className="text-red-500 font-medium text-[11.5px] pt-2">
+              This action cannot be undone. Notifications will be queued
+              immediately.
+            </p>
+          </div>
+        }
+      />
     </Container>
   );
 };

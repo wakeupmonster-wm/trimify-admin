@@ -82,22 +82,22 @@ const AboutUsPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="About Us"
-                icon={<Info className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<Info className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2"
                 subheading="Edit the About Us page content here."
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={handleViewPreview}
-                className="w-full sm:w-auto flex-1 sm:flex-none h-11 sm:h-10 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-xs uppercase tracking-wider rounded-xl sm:rounded-lg px-4 hover:bg-white hover:text-slate-500 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto flex-1 sm:flex-none h-10 px-4 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-xs uppercase tracking-wider rounded-md hover:bg-slate-50 hover:text-slate-600 flex items-center justify-center gap-2"
               >
                 <Eye className="h-4 w-4 text-slate-400 transition-colors duration-300 shrink-0" />
                 <span className="whitespace-nowrap">Preview</span>
@@ -106,7 +106,7 @@ const AboutUsPage = () => {
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-sm sm:text-xs gap-2 h-11 sm:h-10 px-6 shadow-sm rounded-xl sm:rounded-md transition-all border-none flex items-center justify-center"
+                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-sm sm:text-xs gap-2 h-10 px-4 shadow-sm rounded-md transition-all border-none flex items-center justify-center"
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 mr-1 animate-spin shrink-0" />
@@ -119,8 +119,8 @@ const AboutUsPage = () => {
           </div>
         </Header>
 
-        <div className="space-y-4">
-          <div className="px-2">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
+          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0">
             <RichTextEditor
               value={content}
               onChange={setContent}

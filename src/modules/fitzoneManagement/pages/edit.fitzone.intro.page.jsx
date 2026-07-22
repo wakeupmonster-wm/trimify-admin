@@ -76,14 +76,14 @@ const EditFitzoneIntroPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         {/* Top Header */}
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Introduction"
-                icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<FileText className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Edit the introduction content for this fitzone."
               />
@@ -92,7 +92,7 @@ const EditFitzoneIntroPage = () => {
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden w-full min-w-0">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">

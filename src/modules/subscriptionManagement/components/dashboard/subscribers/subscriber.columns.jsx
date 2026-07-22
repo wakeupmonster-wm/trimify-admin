@@ -2,12 +2,7 @@ import React from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  MoreVertical,
-  ArrowUpCircle,
-  CalendarOff,
-  ShieldOff,
-} from "lucide-react";
+import { Ellipsis, ArrowUpCircle, CalendarOff, ShieldOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -171,7 +166,7 @@ export const getSubscriberColumns = (onAction) => [
                 variant="ghost"
                 className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
               >
-                <MoreVertical className="h-4 w-4 text-foreground/90" />
+                <Ellipsis className="h-4 w-4 text-foreground/90" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent

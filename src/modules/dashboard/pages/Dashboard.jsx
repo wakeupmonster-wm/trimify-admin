@@ -4,7 +4,10 @@ import { RecentUsersTable } from "@/components/shared/recent-users-table";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchDashboardExtras, setDashboardDateRange } from "../store/dashboard.slice";
+import {
+  fetchDashboardExtras,
+  setDashboardDateRange,
+} from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
 import {
   LayoutDashboard,
@@ -45,8 +48,13 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { dashboardData, dashboardExtras, dashboardMeta, dateRange, lastUpdated } =
-    useSelector((state) => state.dashboard);
+  const {
+    dashboardData,
+    dashboardExtras,
+    dashboardMeta,
+    dateRange,
+    lastUpdated,
+  } = useSelector((state) => state.dashboard);
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
   );
@@ -571,9 +579,22 @@ export default function Dashboard() {
                   columns={[
                     { key: "user_name", label: "User" },
                     { key: "plan_title", label: "Plan" },
-                    { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
-                    { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
+                    {
+                      key: "amount",
+                      label: "Amount",
+                      render: (r) => `$${Number(r.amount).toLocaleString()}`,
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
+                    {
+                      key: "created_at",
+                      label: "Date",
+                      render: (r) =>
+                        format(new Date(r.created_at), "MMM dd, HH:mm"),
+                    },
                   ]}
                 />
 
@@ -587,13 +608,31 @@ export default function Dashboard() {
                   emptyMessage="No sub-admins yet."
                   columns={[
                     { key: "name", label: "Name" },
-                    { key: "role", label: "Role", render: (r) => <span className="capitalize">{r.role}</span> },
-                    { key: "managed_users", label: "Users Managed", align: "right" },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
+                    {
+                      key: "role",
+                      label: "Role",
+                      render: (r) => (
+                        <span className="capitalize">{r.role}</span>
+                      ),
+                    },
+                    {
+                      key: "managed_users",
+                      label: "Users Managed",
+                      align: "right",
+                    },
+                    {
+                      key: "status",
+                      label: "Status",
+                      render: (r) => <StatusPill status={r.status} />,
+                    },
                   ]}
                   footerStat={
                     dashboardExtras?.tables?.unassignedUsers != null
-                      ? { label: "Unassigned Users", value: dashboardExtras.tables.unassignedUsers.toLocaleString() }
+                      ? {
+                          label: "Unassigned Users",
+                          value:
+                            dashboardExtras.tables.unassignedUsers.toLocaleString(),
+                        }
                       : undefined
                   }
                 />
@@ -608,13 +647,36 @@ export default function Dashboard() {
                     rows={dashboardExtras?.tables?.abandonedCheckouts || []}
                     emptyMessage="No abandoned checkouts right now."
                     actionLabel="Follow Up"
-                    onAction={(row) => navigate(`/admin/users`, { state: { user: row.name } })}
+                    onAction={(row) =>
+                      navigate(`/admin/users`, { state: { user: row.name } })
+                    }
                     columns={[
                       { key: "name", label: "User" },
-                      { key: "signed_up_at", label: "Signed Up", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm") },
-                      { key: "days_since_signup", label: "Days Since", render: (r) => `${r.days_since_signup}d` },
-                      { key: "main_goal", label: "Goal", render: (r) => <span className="capitalize">{r.main_goal}</span> },
-                      { key: "gender", label: "Gender", render: (r) => <span className="capitalize">{r.gender}</span> },
+                      {
+                        key: "signed_up_at",
+                        label: "Signed Up",
+                        render: (r) =>
+                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                      },
+                      {
+                        key: "days_since_signup",
+                        label: "Days Since",
+                        render: (r) => `${r.days_since_signup}d`,
+                      },
+                      {
+                        key: "main_goal",
+                        label: "Goal",
+                        render: (r) => (
+                          <span className="capitalize">{r.main_goal}</span>
+                        ),
+                      },
+                      {
+                        key: "gender",
+                        label: "Gender",
+                        render: (r) => (
+                          <span className="capitalize">{r.gender}</span>
+                        ),
+                      },
                     ]}
                   />
                 </div>
@@ -693,10 +755,32 @@ export default function Dashboard() {
                         </span>
                       ),
                     },
-                    { key: "total_recipients", label: "Recipients", align: "right", render: (r) => r.total_recipients ?? "–" },
-                    { key: "success_count", label: "Success", align: "right", render: (r) => r.success_count ?? "–" },
-                    { key: "failed_count", label: "Failed", align: "right", render: (r) => r.failed_count ?? "–" },
-                    { key: "created_at", label: "Sent", render: (r) => formatDistanceToNow(new Date(r.created_at), { addSuffix: true }) },
+                    {
+                      key: "total_recipients",
+                      label: "Recipients",
+                      align: "right",
+                      render: (r) => r.total_recipients ?? "–",
+                    },
+                    {
+                      key: "success_count",
+                      label: "Success",
+                      align: "right",
+                      render: (r) => r.success_count ?? "–",
+                    },
+                    {
+                      key: "failed_count",
+                      label: "Failed",
+                      align: "right",
+                      render: (r) => r.failed_count ?? "–",
+                    },
+                    {
+                      key: "created_at",
+                      label: "Sent",
+                      render: (r) =>
+                        formatDistanceToNow(new Date(r.created_at), {
+                          addSuffix: true,
+                        }),
+                    },
                   ]}
                 />
               </div>

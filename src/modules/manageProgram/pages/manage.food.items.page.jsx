@@ -231,13 +231,13 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+     <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 min-w-0 w-full">
               <PageHeader
                 heading={isEditing ? "Edit Food Item" : "Add Food Item"}
-                icon={<Utensils className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+                icon={<Utensils className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading={
                   isEditing
@@ -249,7 +249,7 @@ const ManageFoodItemsPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             {/* Approval Status */}
             <div className="space-y-1.5">
@@ -453,7 +453,7 @@ const ManageFoodItemsPage = () => {
               {isEditing && (
                 <Button
                   variant="outline"
-                  className="w-full sm:w-auto rounded-md px-8 py-2.5 h-auto text-xs font-semibold"
+                  className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
                   onClick={resetForm}
                   disabled={loading}
                 >
@@ -461,7 +461,7 @@ const ManageFoodItemsPage = () => {
                 </Button>
               )}
               <Button
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-8 py-2.5 h-auto text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >

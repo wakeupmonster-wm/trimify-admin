@@ -27,6 +27,12 @@ const navigationData = {
       url: "/admin/dashboard",
       icon: IconLayoutDashboard,
       badge: null,
+      items: [
+        {
+          title: "Sample Dashbaord",
+          url: "/admin/dashboard/sample-dashboard",
+        },
+      ]
     },
     {
       title: "Sub Admin Management",

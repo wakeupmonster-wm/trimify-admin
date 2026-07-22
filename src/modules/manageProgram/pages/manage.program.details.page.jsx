@@ -70,18 +70,18 @@ const ManageProgramDetailsPage = () => {
     return staticData.filter(
       (item) =>
         item.title.toLowerCase().includes(searchStr) ||
-        item.description.toLowerCase().includes(searchStr)
+        item.description.toLowerCase().includes(searchStr),
     );
   }, [globalFilter]);
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="Manage Program Modules"
-              icon={<Settings className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
+              icon={<Settings className="w-6 h-6 text-white shrink-0" />}
               color="bg-app-primary2 shadow-blue-200"
               subheading="Manage program details like Introduction,   Foods, and Diet Plan."
             />

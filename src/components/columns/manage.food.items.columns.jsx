@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -99,10 +99,17 @@ export const getManageFoodItemsColumns = (handleAction) => [
       return (
         <div className="flex justify-center">
           <div
-            className={`px-3 py-1 rounded-sm text-[10px] font-bold uppercase ${
-              isApproved ? "bg-[#28A745] text-white" : "bg-[#DC3545] text-white"
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+              isApproved
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-rose-100 text-rose-800"
             }`}
           >
+            <span
+              className={`w-1 h-1 rounded-full ${
+                isApproved ? "bg-emerald-600" : "bg-rose-600"
+              }`}
+            />
             {isApproved ? "Approved" : "Non Approved"}
           </div>
         </div>
@@ -154,12 +161,12 @@ export const getManageFoodItemsColumns = (handleAction) => [
                 variant="ghost"
                 className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
               >
-                <MoreVertical className="h-4 w-4 text-foreground/90" />
+                <Ellipsis className="h-4 w-4 text-foreground/90" />
               </Button>
             </DropdownMenuTrigger>{" "}
             <DropdownMenuContent
               align="end"
-              className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
+              className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
             >
               <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
                 Actions

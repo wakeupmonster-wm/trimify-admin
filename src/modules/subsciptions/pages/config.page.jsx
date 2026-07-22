@@ -33,7 +33,7 @@ import {
   Info,
   Plus,
   Edit,
-  MoreVertical,
+  Ellipsis,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -896,7 +896,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
             size="icon"
             className="h-8 w-8 rounded-lg text-slate-400"
           >
-            <MoreVertical className="w-3.5 h-3.5" />
+            <Ellipsis className="w-3.5 h-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
