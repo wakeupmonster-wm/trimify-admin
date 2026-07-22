@@ -62,7 +62,7 @@ const DonutStatCard = ({
           Icon={Icon}
           iconColor={iconColor}
           iconBg={iconBg}
-          tooltipText={tooltipText}
+          tooltipText={tooltipText || footnote}
         />
       </div>
 
@@ -119,7 +119,7 @@ const DonutStatCard = ({
         </div>
 
         <div
-          className="w-full mt-4 max-h-[168px] overflow-y-auto pr-1"
+          className="w-full my-auto max-h-[220px] overflow-y-auto pr-1"
         >
           <div className="divide-y divide-slate-100">
             {data.map((item, idx) => {
@@ -149,11 +149,6 @@ const DonutStatCard = ({
           </div>
         </div>
 
-        {footnote && (
-          <p className="mt-4 text-[10px] text-slate-400 leading-relaxed">
-            {footnote}
-          </p>
-        )}
       </div>
     </div>
   );

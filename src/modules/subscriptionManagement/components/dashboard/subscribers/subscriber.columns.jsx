@@ -32,6 +32,25 @@ const formatDate = (value) => {
   }
 };
 
+// revoked_reason is derived server-side from the subscriber's latest
+// transaction: "auto_refund"/"auto_dispute" mean the revoke was a side-effect
+// of a payment refund/dispute, not an admin action; "manual_admin" means the
+// admin actually pressed Revoke. Falls back to a humanized raw value for any
+// future reason we don't know about yet.
+const REVOKE_REASON_LABEL = {
+  auto_refund: "Auto-revoked · Refund",
+  auto_dispute: "Auto-revoked · Dispute",
+  manual_admin: "Manually revoked",
+};
+
+const humanizeReason = (value) =>
+  REVOKE_REASON_LABEL[value] ||
+  String(value || "")
+    .replace(/_/g, " ")
+    .split(" ")
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
+
 export const getSubscriberColumns = (onAction) => [
   {
     id: "sno",
@@ -98,7 +117,7 @@ export const getSubscriberColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <div className="font-semibold text-slate-600 text-[11px]">
-        {row.original.plan_title || "-"}
+        {row.original.plan_title || "Unknown Plan"}
       </div>
     ),
   },
@@ -141,16 +160,26 @@ export const getSubscriberColumns = (onAction) => [
     ),
     size: 150,
     minSize: 150,
-    cell: ({ row }) => (
-      <Badge
-        className={cn(
-          "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5",
-          STATUS_STYLE[row.original.status] || "bg-slate-100 text-slate-500",
-        )}
-      >
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const { status, revoked_reason } = row.original;
+      return (
+        <div className="flex flex-col items-start gap-1">
+          <Badge
+            className={cn(
+              "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5",
+              STATUS_STYLE[status] || "bg-slate-100 text-slate-500",
+            )}
+          >
+            {status}
+          </Badge>
+          {status === "Revoked" && revoked_reason && (
+            <span className="text-[10px] font-medium text-slate-400 pl-0.5">
+              {humanizeReason(revoked_reason)}
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     id: "actions",

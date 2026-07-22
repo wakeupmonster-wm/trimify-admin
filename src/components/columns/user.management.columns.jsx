@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { STATUS_COLORS } from "@/config/theme.config";
 
 export const getUserManagementColumns = (onAction) => [
   {
@@ -209,9 +210,13 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 75,
     cell: ({ row }) => {
       const status = row.original.status || "Active";
+      const bgColor = STATUS_COLORS[status.toLowerCase()] || STATUS_COLORS.active;
       return (
         <div className="flex justify-center">
-          <Badge className="bg-green-600 hover:bg-green-700 text-white font-bold text-[10px] uppercase rounded-md px-2">
+          <Badge 
+            className="text-white font-bold text-[10px] uppercase rounded-md px-2 border-none transition-opacity hover:opacity-90"
+            style={{ backgroundColor: bgColor }}
+          >
             {status}
           </Badge>
         </div>

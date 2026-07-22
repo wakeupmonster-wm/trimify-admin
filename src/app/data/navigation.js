@@ -91,17 +91,17 @@ const navigationData = {
       badge: null,
       items: [
         { title: "Dashboard", url: "/admin/subscription-management" },
-        { title: "Config", url: "/admin/subscription-management/config" },
+        { title: "Products", url: "/admin/subscription-management/products" },
         { title: "Subscribers", url: "/admin/subscription-management/subscribers" },
         { title: "Transactions", url: "/admin/subscription-management/transactions" },
       ],
     },
-    {
-      title: "Transaction Management",
-      url: "/admin/transaction-management",
-      icon: IconReceipt,
-      badge: null,
-    },
+    // {
+    //   title: "Transaction Management",
+    //   url: "/admin/transaction-management",
+    //   icon: IconReceipt,
+    //   badge: null,
+    // },
     {
       title: "Content Management",
       url: "/admin/cms-management",

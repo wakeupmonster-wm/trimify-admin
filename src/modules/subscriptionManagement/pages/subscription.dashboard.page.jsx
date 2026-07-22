@@ -96,6 +96,7 @@ export default function SubscriptionDashboardPage() {
           dailyPerformance={dailyPerformance}
           dashboardExtras={dashboardExtras}
           rangeLabel={rangeLabel}
+          dateRange={dateRange}
           onRetry={handleRefresh}
         />
       </div>

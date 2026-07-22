@@ -22,7 +22,7 @@ const SecondaryKpiRow = ({ data }) => {
           value={fmtMoney(data.totalRevenueAllTime)}
           description="All-time, all plans"
           tone="emerald"
-          onClick={() => navigate("/admin/transaction-management")}
+          onClick={() => navigate("/admin/subscription-management/transactions")}
         />
         <KpiCard
           label="Total Users"
@@ -34,13 +34,14 @@ const SecondaryKpiRow = ({ data }) => {
           label="New Signups"
           value={data.newSignupsToday.toLocaleString()}
           description="Signed up today"
+          onClick={() => navigate("/admin/users", { state: { filterId: "new_today" } })}
         />
         <KpiCard
           label="Expiring Soon"
           value={data.expiringSoon.toLocaleString()}
           description="Next 7 days · tap to view"
           tone="amber"
-          onClick={() => navigate("/admin/subscription-management/subscribers")}
+          onClick={() => navigate("/admin/subscription-management/subscribers", { state: { filterId: "expiring_soon" } })}
         />
       </div>
 

@@ -21,8 +21,13 @@ export default function OverviewView({
   dailyPerformance,
   dashboardExtras,
   rangeLabel,
+  dateRange,
   onRetry,
 }) {
+  // Build serialisable from/to strings for navigation state
+  const navDateRange = dateRange
+    ? { from: format(dateRange.from, "yyyy-MM-dd"), to: format(dateRange.to, "yyyy-MM-dd") }
+    : null;
   const navigate = useNavigate();
 
   if (overviewLoading && !overview) return <DashboardOverviewSkeleton />;
@@ -38,35 +43,61 @@ export default function OverviewView({
   return (
     <div className="space-y-3 px-3 md:px-6 py-6">
       {overview && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
-            label="Today's Revenue"
-            value={`$${Number(overview.todaysRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
-            description="Successful transactions today"
+            label="Total Revenue"
+            value={`$${Number(dashboardExtras?.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+            description="All-time, all plans"
+            onClick={() => navigate("/admin/subscription-management/transactions")}
           />
           <KpiCard
             label="MRR"
             value={`$${Number(overview.mrr || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             description="Monthly recurring revenue"
             tone="amber"
+            onClick={() => navigate("/admin/subscription-management/transactions")}
           />
           <KpiCard
             label="Active Subscribers"
             value={(overview.activeSubscribers || 0).toLocaleString()}
             description="Not revoked, not expired"
             tone="emerald"
+            onClick={() => navigate("/admin/subscription-management/subscribers", { state: { filterId: "active" } })}
           />
           <KpiCard
             label="Churn"
             value={(dashboardExtras?.churn?.count || 0).toLocaleString()}
             description={`${dashboardExtras?.churn?.rate || "0%"} churn rate`}
             tone="rose"
+            onClick={() => navigate("/admin/subscription-management/subscribers", { state: { filterId: "canceled" } })}
           />
           <KpiCard
             label="Failed Transactions"
             value={(dashboardExtras?.failedTransactions?.count || 0).toLocaleString()}
             description={rangeLabel ? `In ${rangeLabel.toLowerCase()}` : "Selected period"}
             tone="rose"
+            onClick={() => navigate("/admin/subscription-management/transactions", { state: { filterId: "failed", dateRange: navDateRange } })}
+          />
+          <KpiCard
+            label="Refunded"
+            value={(dashboardExtras?.refundedTransactions?.count || 0).toLocaleString()}
+            description={`$${Number(dashboardExtras?.refundedTransactions?.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} refunded`}
+            tone="violet"
+            onClick={() => navigate("/admin/subscription-management/transactions", { state: { filterId: "refunded", dateRange: navDateRange } })}
+          />
+          <KpiCard
+            label="Disputed"
+            value={(dashboardExtras?.disputedTransactions?.count || 0).toLocaleString()}
+            description={rangeLabel ? `In ${rangeLabel.toLowerCase()}` : "Selected period"}
+            tone="amber"
+            onClick={() => navigate("/admin/subscription-management/transactions", { state: { filterId: "disputed", dateRange: navDateRange } })}
+          />
+          <KpiCard
+            label="Expiring Soon"
+            value={(dashboardExtras?.expiringSoonCount || 0).toLocaleString()}
+            description="Plans renewing soon"
+            tone="cyan"
+            onClick={() => navigate("/admin/subscription-management/subscribers", { state: { filterId: "expiring_soon" } })}
           />
         </div>
       )}
@@ -78,7 +109,7 @@ export default function OverviewView({
           </Badge>
         </div>
 
-        {/* Users by Plan Type / Transaction Status — moved here from the
+        {/* Users by Plan Type / Transaction Health — moved here from the
             main Dashboard's Composition section. */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <DonutStatCard
@@ -91,8 +122,8 @@ export default function OverviewView({
             footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
           />
           <DonutStatCard
-            title="Transaction Status"
-            subtitle="Success / failed / pending"
+            title="Transaction Health"
+            subtitle="Success / Failed / Refunded / Disputed / Pending"
             Icon={Receipt}
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
@@ -183,7 +214,7 @@ export default function OverviewView({
             emptyMessage="No transactions yet."
             columns={[
               { key: "user_name", label: "User" },
-              { key: "plan_title", label: "Plan" },
+              { key: "plan_title", label: "Plan", render: (r) => r.plan_title || "Unknown Plan" },
               { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
               { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
               { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
@@ -218,7 +249,7 @@ export default function OverviewView({
                 ),
               },
               { key: "name", label: "User", width: "w-[30%]" },
-              { key: "plan_title", label: "Plan", width: "w-[25%]" },
+              { key: "plan_title", label: "Plan", width: "w-[25%]", render: (r) => r.plan_title || "Unknown Plan" },
               {
                 key: "expires_at",
                 label: "Expiry",

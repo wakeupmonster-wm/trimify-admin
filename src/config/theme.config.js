@@ -30,4 +30,6 @@ export const STATUS_COLORS = {
   churned: "hsl(0, 84%, 60%)",
   pending: "hsl(38, 92%, 50%)",  // Amber / Yellow
   revoked: "hsl(215, 16%, 65%)", // Gray
+  refunded: "hsl(258, 90%, 66%)", // Violet
+  disputed: "hsl(24, 94%, 50%)",  // Orange
 };

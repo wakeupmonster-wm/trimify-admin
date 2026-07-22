@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Users, UserCheck, CalendarOff, ShieldOff } from "lucide-react";
-import { DataTable } from "@/components/shared/datatable";
+import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
 import StatsGrid from "@/components/common/stats.grid";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import ErrorState from "@/components/shared/ErrorState";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocation } from "react-router-dom";
 import { colorMap, bgMap } from "@/constants/colors";
 import {
   Select,
@@ -21,9 +22,10 @@ import {
   fetchSubscribers,
   manageSubscriber,
 } from "../../../store/subscription-dashboard.slice";
+import { getSubscribersAPI } from "../../../services/subscription-dashboard.services";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
 
-const STATUS_OPTIONS = ["All", "Active", "Expired", "Revoked"];
+const STATUS_OPTIONS = ["Active", "Expired", "Revoked", "canceled", "expiring_soon"];
 
 export default function SubscribersView() {
   const dispatch = useDispatch();
@@ -37,14 +39,42 @@ export default function SubscribersView() {
   } = useSelector((state) => state.subscriptionDashboard);
   const { plans } = useSelector((state) => state.subscriptionManagement);
 
+  const location = useLocation();
+
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [planFilter, setPlanFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const [planFilter, setPlanFilter] = useState("");
 
   const [confirmAction, setConfirmAction] = useState(null); // { subscriber, action: "expire"|"revoke" }
   const [upgradeSubscriber, setUpgradeSubscriber] = useState(null);
+
+  const isUnfiltered = !statusFilter && !planFilter && !debouncedSearch;
+  const [pinnedCounts, setPinnedCounts] = useState(null);
+
+  useEffect(() => {
+    // If we arrived with a filter, background fetch the true unfiltered stats
+    if (!isUnfiltered && !pinnedCounts) {
+      getSubscribersAPI({ limit: 1 }).then((res) => {
+        if (res && res.success) {
+          setPinnedCounts({
+            total: res.data.counts?.total || 0,
+            active: res.data.counts?.active || 0,
+            expired: res.data.counts?.expired || 0,
+            revoked: res.data.counts?.revoked || 0,
+          });
+        }
+      }).catch(() => {});
+    }
+  }, [isUnfiltered, pinnedCounts]);
+
+  // Capture unfiltered when the main list loads unfiltered
+  useEffect(() => {
+    if (isUnfiltered && subscribersCounts.total > 0 && !pinnedCounts) {
+      setPinnedCounts({ ...subscribersCounts });
+    }
+  }, [isUnfiltered, subscribersCounts, pinnedCounts]);
 
   useEffect(() => {
     if (!plans?.length) dispatch(fetchSubscriptionPlans({ limit: 100 }));
@@ -60,8 +90,8 @@ export default function SubscribersView() {
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       search: debouncedSearch,
-      status: statusFilter === "All" ? "" : statusFilter,
-      plan_id: planFilter === "all" ? "" : planFilter,
+      status: statusFilter,
+      plan_id: planFilter,
     }),
     [pagination, debouncedSearch, statusFilter, planFilter],
   );
@@ -107,43 +137,90 @@ export default function SubscribersView() {
     if (ok) setUpgradeSubscriber(null);
   };
 
+  const kpiCounts = pinnedCounts || subscribersCounts || { total: 0, active: 0, expired: 0, revoked: 0 };
+
   const stats = useMemo(
     () => [
       {
         label: "Total Subscribers",
-        val: subscribersCounts.total || 0,
+        val: kpiCounts.total || 0,
         icon: <Users size={22} />,
         color: "blue",
         description: "All-time, unfiltered",
       },
       {
         label: "Active",
-        val: subscribersCounts.active || 0,
+        val: kpiCounts.active || 0,
         icon: <UserCheck size={22} />,
         color: "emerald",
-        description: "Currently subscribed",
+        description: "Tap to filter",
+        onClick: () => {
+          setStatusFilter("Active");
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Expired",
-        val: subscribersCounts.expired || 0,
+        val: kpiCounts.expired || 0,
         icon: <CalendarOff size={22} />,
         color: "amber",
-        description: "Subscription ended",
+        description: "Tap to filter",
+        onClick: () => {
+          setStatusFilter("Expired");
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        isSelected: statusFilter === "Expired",
       },
       {
         label: "Revoked",
-        val: subscribersCounts.revoked || 0,
+        val: kpiCounts.revoked || 0,
         icon: <ShieldOff size={22} />,
         color: "rose",
-        description: "Access removed",
+        description: "Tap to filter",
+        onClick: () => {
+          setStatusFilter("Revoked");
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        isSelected: statusFilter === "Revoked",
       },
     ],
-    [subscribersCounts],
+    [kpiCounts, statusFilter],
   );
 
   const columns = useMemo(() => getSubscriberColumns(handleAction), []);
 
   const isFirstLoad = subscribersLoading && subscribersPagination === null;
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: (v) => {
+        setStatusFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: STATUS_OPTIONS.map((s) => ({
+        label: s === "canceled" ? "Canceled" : s === "expiring_soon" ? "Expiring Soon" : s.charAt(0).toUpperCase() + s.slice(1),
+        value: s,
+      })),
+      placeholder: "All Statuses",
+    },
+    {
+      type: "select",
+      id: "planFilter",
+      label: "Plan",
+      value: planFilter,
+      onChange: (v) => {
+        setPlanFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
+      placeholder: "All Plans",
+    },
+  ];
 
   if (subscribersError && !subscribersPagination) {
     return (
@@ -181,50 +258,17 @@ export default function SubscribersView() {
         manualFiltering
         toolbarChildren={
           <>
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => {
-                setStatusFilter(v);
-                setPagination((p) => ({ ...p, pageIndex: 0 }));
-              }}
-            >
-              <SelectTrigger className="h-9 3xl:h-10 w-[130px] bg-white border-slate-300/60 text-xs font-medium">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_OPTIONS.map((s) => (
-                  <SelectItem key={s} value={s} className="text-xs">
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={planFilter}
-              onValueChange={(v) => {
-                setPlanFilter(v);
-                setPagination((p) => ({ ...p, pageIndex: 0 }));
-              }}
-            >
-              <SelectTrigger className="h-9 3xl:h-10 w-[150px] bg-white border-slate-300/60 text-xs font-medium">
-                <SelectValue placeholder="All Plans" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">
-                  All Plans
-                </SelectItem>
-                {plans?.map((plan) => (
-                  <SelectItem
-                    key={plan.id}
-                    value={String(plan.id)}
-                    className="text-xs"
-                  >
-                    {plan.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <DataTableFilters filterConfig={filterConfig} />
           </>
+        }
+        activeFiltersChildren={
+          <DataTableActiveChips
+            filterConfig={filterConfig}
+            onClearAll={() => {
+              setStatusFilter("");
+              setPlanFilter("");
+            }}
+          />
         }
       />
 

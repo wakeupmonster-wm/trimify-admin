@@ -16,7 +16,7 @@ const TONE_STYLES = {
   slate: { iconBg: "bg-slate-100", iconColor: "text-slate-600", border: "border-slate-200 hover:border-slate-400" },
 };
 
-const KpiCard = ({ label, value, description, tone = "default", onClick }) => {
+const KpiCard = ({ label, value, description, tone = "default", onClick, isSelected }) => {
   const t = TONE_STYLES[tone] || TONE_STYLES.default;
   return (
     <div
@@ -32,6 +32,7 @@ const KpiCard = ({ label, value, description, tone = "default", onClick }) => {
         "flex flex-col justify-center rounded-2xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-md",
         t.border,
         onClick && "cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-blue focus-visible:outline-none",
+        isSelected && "border-brand-blue/60 shadow-brand-blue/10 shadow-md",
       )}
     >
       <div className="min-w-0 flex-1">

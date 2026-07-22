@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { LayoutDashboard, Plus, ClipboardCheck, CheckCircle2, XCircle, Users2 } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DataTable,
   DataTableFilters,
@@ -34,9 +34,11 @@ const ManageProgramPage = () => {
     pagination: serverPagination,
   } = useSelector((state) => state.manageProgram);
 
+  const location = useLocation();
+
   const [globalFilter, setGlobalFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -180,6 +182,8 @@ const ManageProgramPage = () => {
       options: [
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
+        { label: "Zero Enrollment", value: "zero_enrollment" },
+        { label: "Stale Content", value: "stale_content" },
       ],
       placeholder: "All Statuses",
     },

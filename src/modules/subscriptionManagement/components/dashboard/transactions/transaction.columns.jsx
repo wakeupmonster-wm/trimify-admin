@@ -7,6 +7,8 @@ const STATUS_STYLE = {
   success: "bg-emerald-50 text-emerald-600",
   failed: "bg-rose-50 text-rose-600",
   pending: "bg-amber-50 text-amber-600",
+  refunded: "bg-violet-50 text-violet-600",
+  disputed: "bg-orange-50 text-orange-600",
 };
 
 export const getTransactionColumns = () => [
@@ -65,7 +67,7 @@ export const getTransactionColumns = () => [
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Plan</div>,
     size: 200,
     minSize: 200,
-    cell: ({ row }) => <div className="font-semibold text-slate-600 text-[11px]">{row.original.plan_title || "-"}</div>,
+    cell: ({ row }) => <div className="font-semibold text-slate-600 text-[11px]">{row.original.plan_title || "Unknown Plan"}</div>,
   },
   {
     accessorKey: "amount",
