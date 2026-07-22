@@ -1,6 +1,6 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { LayoutDashboard, Plus } from "lucide-react";
+import { LayoutDashboard, Plus, ClipboardCheck, CheckCircle2, XCircle, Users2 } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
   DataTableFilters,
   DataTableActiveChips,
 } from "@/components/shared/datatable";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getManageProgramColumns } from "@/components/columns/manage.program.columns";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,12 +29,14 @@ const ManageProgramPage = () => {
   const dispatch = useDispatch();
   const {
     programs,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.manageProgram);
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -46,6 +49,7 @@ const ManageProgramPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         duration: durationFilter,
+        status: statusFilter,
       }),
     );
   }, [
@@ -54,6 +58,7 @@ const ManageProgramPage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
     durationFilter,
+    statusFilter,
   ]);
 
   const handleAction = async (row, action, value) => {
@@ -91,6 +96,7 @@ const ManageProgramPage = () => {
             limit: pagination.pageSize,
             search: debouncedSearchTerm,
             duration: durationFilter,
+            status: statusFilter,
           }),
         );
       }
@@ -107,6 +113,7 @@ const ManageProgramPage = () => {
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
           duration: durationFilter,
+          status: statusFilter,
         }),
       );
     }
@@ -137,11 +144,17 @@ const ManageProgramPage = () => {
 
   // Local fallback filtering
   const displayData = useMemo(() => {
-    if (!durationFilter) return programs || [];
-    return (programs || []).filter(
-      (p) => String(p.duration) === String(durationFilter),
-    );
-  }, [programs, durationFilter]);
+    let data = programs || [];
+    if (durationFilter) {
+      data = data.filter((p) => String(p.duration) === String(durationFilter));
+    }
+    if (statusFilter) {
+      data = data.filter(
+        (p) => String(p.status || "Active").toLowerCase() === statusFilter.toLowerCase(),
+      );
+    }
+    return data;
+  }, [programs, durationFilter, statusFilter]);
 
   const filterConfig = [
     {
@@ -158,6 +171,64 @@ const ManageProgramPage = () => {
       ],
       placeholder: "All Durations",
     },
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+      ],
+      placeholder: "All Statuses",
+    },
+  ];
+
+  const localKpis = useMemo(() => {
+    if (kpis) return kpis;
+    const all = programs || [];
+    const active = all.filter(
+      (p) => String(p.status || "Active").toLowerCase() === "active"
+    ).length;
+    return {
+      totalPrograms: serverPagination?.total || all.length,
+      activePrograms: active,
+      inactivePrograms: all.length - active,
+      totalAssignedUsers: all.reduce((sum, p) => sum + (p.assigned_users_count || 0), 0),
+    };
+  }, [kpis, programs, serverPagination]);
+
+  const kpiItems = [
+    {
+      icon: ClipboardCheck,
+      label: "Total Programs",
+      value: localKpis?.totalPrograms?.toLocaleString() || "0",
+      description: "Across all durations",
+    },
+    {
+      icon: CheckCircle2,
+      label: "Active Programs",
+      value: localKpis?.activePrograms?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+    },
+    {
+      icon: XCircle,
+      label: "Inactive Programs",
+      value: localKpis?.inactivePrograms?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "rose",
+      onClick: () => setStatusFilter("Inactive"),
+    },
+    {
+      icon: Users2,
+      label: "Assigned Users",
+      value: localKpis?.totalAssignedUsers?.toLocaleString() || "0",
+      description: "Across all programs",
+      tone: "violet",
+    },
   ];
 
   return (
@@ -169,16 +240,16 @@ const ManageProgramPage = () => {
               <PageHeader
                 heading="Manage Program"
                 icon={
-                <LayoutDashboard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                  <LayoutDashboard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-blue-200"
+                color="bg-app-primary2 shadow-md shadow-blue-200/50"
                 subheading="Create, configure, and monitor health and wellness programs."
               />
             </div>
 
             <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm transition-all"
                 onClick={() => navigate("add-program")}
               >
                 <Plus className="w-4 h-4 shrink-0" />
@@ -187,6 +258,8 @@ const ManageProgramPage = () => {
             </div>
           </div>
         </Header>
+
+        <ModuleKpiRow items={kpiItems} loading={loading && !programs?.length} />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable
@@ -208,7 +281,10 @@ const ManageProgramPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setDurationFilter("")}
+                onClearAll={() => {
+                  setDurationFilter("");
+                  setStatusFilter("");
+                }}
               />
             }
           />

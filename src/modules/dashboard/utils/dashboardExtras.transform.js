@@ -4,29 +4,7 @@
 // / ConversionFunnel) already consume — so swapping dummy → real data never
 // touches the widgets themselves, only this mapping layer.
 
-// Fixed categorical order — assigned by index, never by rank/value, so a
-// slice's color stays stable even if the underlying counts change.
-export const CATEGORICAL_COLORS = [
-  "hsl(212, 100%, 45%)", // brand blue
-  "hsl(182, 59%, 54%)", // teal / brand accent
-  "hsl(38, 92%, 50%)", // amber
-  "hsl(160, 84%, 39%)", // emerald
-  "hsl(262, 60%, 62%)", // violet
-  "hsl(340, 82%, 60%)", // rose
-];
-
-// Reserved status colors — used only for genuinely stateful data
-// (success/failed/pending/…), never recycled as a categorical hue.
-export const STATUS_COLORS = {
-  success: "hsl(160, 84%, 39%)",
-  paid: "hsl(160, 84%, 39%)",
-  active: "hsl(160, 84%, 39%)",
-  failed: "hsl(0, 84%, 60%)",
-  expired: "hsl(0, 84%, 60%)",
-  churned: "hsl(0, 84%, 60%)",
-  pending: "hsl(38, 92%, 50%)",
-  revoked: "hsl(215, 16%, 65%)",
-};
+import { APP_COLORS as CATEGORICAL_COLORS, STATUS_COLORS } from "@/config/theme.config.js";
 
 const titleCase = (str) =>
   String(str || "")

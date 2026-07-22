@@ -7,17 +7,20 @@ import {
   DataTableFilters,
   DataTableActiveChips,
 } from "@/components/shared/datatable";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getUserManagementColumns } from "@/components/columns/user.management.columns";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { LuUsersRound } from "react-icons/lu";
+import { Users, UserCheck, UserX, UserPlus } from "lucide-react";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
   const {
     users,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.usersManagement);
@@ -56,6 +59,59 @@ const UsersManagementPage = () => {
   };
 
   const columns = useMemo(() => getUserManagementColumns(handleAction), []);
+
+  const localKpis = useMemo(() => {
+    if (kpis) return kpis;
+    const all = users || [];
+    const active = all.filter(
+      (u) =>
+        String(u.status || "Active").toLowerCase() === "active" ||
+        u.status === "1" ||
+        u.status === "true"
+    ).length;
+    return {
+      totalUsers: serverPagination?.total || all.length,
+      activeUsers: active,
+      inactiveUsers: all.length - active,
+      newSignupsToday: all.filter((u) => {
+        if (!u.created_at) return false;
+        const today = new Date().toISOString().split("T")[0];
+        return String(u.created_at).startsWith(today);
+      }).length,
+    };
+  }, [kpis, users, serverPagination]);
+
+  const kpiItems = [
+    {
+      icon: Users,
+      label: "Total Users",
+      value: localKpis?.totalUsers?.toLocaleString() || "0",
+      description: "All-time platform total",
+    },
+    {
+      icon: UserCheck,
+      label: "Active Users",
+      value: localKpis?.activeUsers?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+    },
+    {
+      icon: UserX,
+      label: "Inactive Users",
+      value: localKpis?.inactiveUsers?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "rose",
+      onClick: () => setStatusFilter("Inactive"),
+    },
+    {
+      icon: UserPlus,
+      label: "New Signups",
+      value: localKpis?.newSignupsToday?.toLocaleString() || "0",
+      description: "Signed up today",
+      tone: "amber",
+    },
+  ];
 
   // Check if the backend is doing manual pagination.
   // If serverPagination.total exists, it's server-paginated.
@@ -111,6 +167,8 @@ const UsersManagementPage = () => {
             </div>
           </div>
         </Header>
+
+        <ModuleKpiRow items={kpiItems} loading={loading && !users?.length} />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

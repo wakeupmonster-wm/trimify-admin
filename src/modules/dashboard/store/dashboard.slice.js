@@ -107,6 +107,7 @@ export const fetchDashboardExtras = createAsyncThunk(
         retentionRes,
         expiringSoonRes,
         abandonedRes,
+        contentRes,
       ] = await Promise.allSettled([
         dashboardSummaryAPI(dateRange),
         dashboardDemographicsChartsAPI(),
@@ -118,6 +119,7 @@ export const fetchDashboardExtras = createAsyncThunk(
         getRetentionTrendAPI(),
         getExpiringSoonAPI({ limit: 10 }),
         getAbandonedCheckoutsAPI({ limit: 10 }),
+        dashboardContentChartsAPI(dateRange),
       ]);
 
       const pick = (res) => (res.status === "fulfilled" && res.value?.success ? res.value.data : null);
@@ -132,6 +134,7 @@ export const fetchDashboardExtras = createAsyncThunk(
       const retention = pick(retentionRes);
       const expiringSoon = pick(expiringSoonRes);
       const abandoned = pick(abandonedRes);
+      const content = pick(contentRes);
 
       return {
         secondaryKpis: buildSecondaryKpis(summary),
@@ -150,6 +153,7 @@ export const fetchDashboardExtras = createAsyncThunk(
           fitzoneCompletion: fitzone?.fitzoneStatusTrend || [],
           fitzoneStatuses: fitzone?.statuses || [],
           planRevenue: dailyPerf?.topSellingPlans || [],
+          popularPrograms: content?.popularPrograms || [],
         },
         tables: {
           recentTransactions: recentActivity?.recentTransactions || [],

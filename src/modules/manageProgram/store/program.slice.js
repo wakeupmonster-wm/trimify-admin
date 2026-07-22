@@ -11,6 +11,16 @@ import {
   getProgramFoodVisibilityAPI
 } from "../services/program.services";
 
+// Backend TODO: `GET /admin/view-programs` should return a `kpis` object
+// alongside `programs`/`pagination`, aggregated over the FULL table —
+// { totalPrograms, activePrograms, inactivePrograms, totalAssignedUsers }.
+// `totalAssignedUsers` needs a new aggregate — today the assigned-user
+// count only exists per-program via the "View User" drill-down
+// (getProgramAssignedUsersAPI), there's no sum across all programs.
+// Until the backend sends `kpis`, it stays null and the KPI row on
+// ManageProgramPage renders a loading placeholder instead of a
+// page-local (and therefore wrong) count.
+
 // Fetch List
 export const fetchProgramList = createAsyncThunk(
   "manageProgram/fetchList",
@@ -20,9 +30,10 @@ export const fetchProgramList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           programs: response.programs || [],
+          kpis: response.kpis || null,
           pagination: {
             page: response.pagination?.current_page || response.pagination?.page || 1,
-            limit: response.pagination?.per_page || 10, 
+            limit: response.pagination?.per_page || 10,
             total: response.pagination?.total || 0,
             totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
@@ -194,6 +205,7 @@ const manageProgramSlice = createSlice({
   name: "manageProgram",
   initialState: {
     programs: [],
+    kpis: null,
     assignedUsers: [],
     loading: false,
     error: null,
@@ -230,6 +242,7 @@ const manageProgramSlice = createSlice({
       .addCase(fetchProgramList.fulfilled, (state, action) => {
         state.loading = false;
         state.programs = action.payload.programs;
+        state.kpis = action.payload.kpis;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchProgramList.rejected, (state, action) => {

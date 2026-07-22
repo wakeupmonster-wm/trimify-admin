@@ -7,6 +7,13 @@ import {
   deleteFitzoneAPI
 } from "../services/fitzone.services";
 
+// Backend TODO: `GET /admin/view-fitzone` should return a `kpis` object
+// alongside `fitzones`/`pagination`, aggregated over the FULL table —
+// { totalFitzones, activeFitzones, inactiveFitzones, totalSessions }.
+// Until the backend sends it, `kpis` stays null and the KPI row on
+// FitzoneManagementPage renders a loading placeholder instead of a
+// page-local (and therefore wrong) count.
+
 // Fetch List
 export const fetchFitzoneList = createAsyncThunk(
   "fitzoneManagement/fetchList",
@@ -17,6 +24,7 @@ export const fetchFitzoneList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           fitzones: response.fitzones || response.data || [],
+          kpis: response.kpis || null,
           pagination: {
             page: response.pagination?.current_page || 1,
             limit: 50,
@@ -111,6 +119,7 @@ const fitzoneManagementSlice = createSlice({
   name: "fitzoneManagement",
   initialState: {
     fitzones: [],
+    kpis: null,
     loading: false,
     error: null,
     pagination: {
@@ -139,6 +148,7 @@ const fitzoneManagementSlice = createSlice({
       .addCase(fetchFitzoneList.fulfilled, (state, action) => {
         state.loading = false;
         state.fitzones = action.payload.fitzones;
+        state.kpis = action.payload.kpis;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchFitzoneList.rejected, (state, action) => {

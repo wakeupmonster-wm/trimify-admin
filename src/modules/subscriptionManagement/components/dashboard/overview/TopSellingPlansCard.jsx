@@ -11,7 +11,7 @@ export default function TopSellingPlansCard({ plans = [] }) {
       isEmpty={!plans.length}
       emptyMessage="No plan sales recorded yet"
     >
-      <div className="space-y-1.5 overflow-y-auto max-h-[280px] pr-1">
+      <div className="flex-1 space-y-1.5 overflow-y-auto pr-1">
         {plans.map((plan, idx) => (
           <div
             key={plan.id}

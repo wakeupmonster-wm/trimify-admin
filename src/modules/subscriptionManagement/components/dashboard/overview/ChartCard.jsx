@@ -8,27 +8,24 @@ export default function ChartCard({
   icon,
   isEmpty,
   emptyMessage,
-  height = 320,
   headerRight,
   children,
 }) {
   return (
-    <div className="bg-white border border-slate-300/60 rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
-      <div className="px-5 py-4 border-b border-slate-300/60 flex items-center justify-between gap-3">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="pt-5 pb-4 px-6 border-b border-slate-100 flex items-center justify-between gap-3">
         <DashboardHead
           title={title}
           subtitle={subtitle}
           Icon={icon}
-          iconColor="text-brand-aqua"
-          iconBg="bg-brand-aqua/10"
+          iconColor="text-slate-600"
+          iconBg="bg-slate-100/50"
         />
         {headerRight}
       </div>
-      {/* Fixed (not min-) height so ResponsiveContainer inside always resolves against a
-          definite pixel height, regardless of flex/grid stretch behavior. */}
-      <div className="p-4" style={{ height }}>
+      <div className="flex-1 p-4 flex flex-col min-h-[200px]">
         {isEmpty ? (
-          <div className="h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center">
             <DataNotFound message={emptyMessage} />
           </div>
         ) : (

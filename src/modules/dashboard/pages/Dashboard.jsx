@@ -39,7 +39,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
-
+import { APP_COLORS } from "@/config/theme.config.js";
 export default function Dashboard() {
   const socket = useSocket();
   const dispatch = useDispatch();
@@ -53,25 +53,13 @@ export default function Dashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [liveEvents, setLiveEvents] = useState([]);
 
-  // --- Flutter App Palette ---
-  const appColors = [
-    "#007FC0", // primary2
-    "#15B097", // cardGreen
-    "#DC6B1B", // cardOrange
-    "#EDA145", // cardYellow
-    "#5AA0C1", // primary3
-    "#FF5252", // caloriesRed
-    "#4A90E2", // proteinBlue
-    "#FFC107", // fatsYellow
-    "#8BC34A", // carbsGreen
-    "#04365F", // primary5
-  ];
+  // --- Unified Brand Palette imported from theme.config.js ---
 
   const mapChartColors = (dataArray) => {
     if (!dataArray) return [];
     return dataArray.map((item, i) => ({
       ...item,
-      color: appColors[i % appColors.length],
+      color: APP_COLORS[i % APP_COLORS.length],
     }));
   };
 
@@ -263,8 +251,7 @@ export default function Dashboard() {
                 heading="Dashboard Overview"
                 icon={
                   <LayoutDashboard
-                    strokeWidth={2}
-                    className="w-8 h-8 text-white"
+                    className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0"
                   />
                 }
                 color="bg-app-primary2 shadow-brand-blue"
@@ -392,8 +379,8 @@ export default function Dashboard() {
                   title="User Goal Distribution"
                   subtitle="Primary goal, main_goal field"
                   Icon={Target}
-                  iconColor="text-violet-600"
-                  iconBg="bg-violet-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   // data={dashboardExtras?.pieCharts?.userGoals || []}
                   data={mapChartColors(
                     dashboardExtras?.pieCharts?.userGoals || [],
@@ -402,9 +389,10 @@ export default function Dashboard() {
                 />
                 <DonutStatCard
                   title="Gender Distribution"
+                  subtitle="Male vs Female user breakdown"
                   Icon={Users2}
-                  iconColor="text-cyan-600"
-                  iconBg="bg-cyan-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   // data={dashboardExtras?.pieCharts?.gender || []}
                   data={mapChartColors(
                     dashboardExtras?.pieCharts?.gender || [],
@@ -412,9 +400,10 @@ export default function Dashboard() {
                 />
                 <DonutStatCard
                   title="Vegetarian vs Non-veg"
+                  subtitle="Dietary preference split"
                   Icon={Salad}
-                  iconColor="text-amber-600"
-                  iconBg="bg-amber-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   // data={dashboardExtras?.pieCharts?.dietPreference || []}
                   data={mapChartColors(
                     dashboardExtras?.pieCharts?.dietPreference || [],
@@ -435,92 +424,60 @@ export default function Dashboard() {
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                 <TrendChartCard
-                  title="Active vs Churned Users"
-                  subtitle="Month-wise comparison"
-                  Icon={TrendingUp}
-                  iconColor="text-brand-blue"
-                  iconBg="bg-blue-50"
-                  tooltipText="Churned figures are approximate."
-                  data={dashboardExtras?.trends?.activeVsChurned || []}
-                  xKey="month"
-                  series={[
-                    {
-                      key: "activeUsers",
-                      label: "Active",
-                      // color: "hsl(160, 84%, 39%)",
-                      color: "#15B097", // cardGreen
-                      type: "line",
-                    },
-                    {
-                      key: "churnedUsers",
-                      label: "Churned",
-                      // color: "hsl(0, 84%, 60%)",
-                      color: "#FF5252", // caloriesRed
-                      type: "line",
-                    },
-                  ]}
-                  note="Churn numbers are approximate — a user who churned and later renewed no longer shows up as churned that month."
-                />
-                <TrendChartCard
                   title="Engagement Trend (DAU)"
                   subtitle="Users logging food / water / steps / weight"
                   Icon={ActivityIcon}
-                  iconColor="text-cyan-600"
-                  iconBg="bg-cyan-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   data={dashboardExtras?.trends?.engagementDAU || []}
                   xKey="date"
+                  periodLabel={dynamicPeriodLabel}
                   series={[
                     {
                       key: "active_users",
                       label: "Daily Active Users",
                       // color: "hsl(182, 59%, 54%)",
                       color: "#007FC0", // primary2
-                      type: "line",
+                      type: "area",
                     },
                   ]}
-                />
-                <TrendChartCard
-                  title="Plan-wise Revenue"
-                  subtitle="Revenue contribution per plan"
-                  Icon={Wallet}
-                  iconColor="text-emerald-600"
-                  iconBg="bg-emerald-50"
-                  data={dashboardExtras?.trends?.planRevenue || []}
-                  xKey="title"
-                  series={[
-                    {
-                      key: "revenue",
-                      label: "Revenue",
-                      // color: "hsl(212, 100%, 45%)",
-                      color: "#5AA0C1", // primary3
-                      type: "bar",
-                    },
-                  ]}
+                  note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
                 />
                 <TrendChartCard
                   title="Fitzone Session Completion"
                   subtitle="Assignment volume per period"
                   Icon={Dumbbell}
-                  iconColor="text-rose-600"
-                  iconBg="bg-rose-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   data={dashboardExtras?.trends?.fitzoneCompletion || []}
                   xKey="date"
+                  periodLabel={dynamicPeriodLabel}
                   series={(
                     dashboardExtras?.trends?.fitzoneStatuses || ["Active"]
                   ).map((status, i) => ({
                     key: status,
                     label: status,
-                    color: [
-                      // "hsl(340, 82%, 60%)",
-                      // "hsl(160, 84%, 39%)",
-                      // "hsl(38, 92%, 50%)",
-                      "#C03744", // logOutRed
-                      "#15B097", // cardGreen
-                      "#EDA145", // cardYellow
-                    ][i % 3],
+                    color: APP_COLORS[i % APP_COLORS.length],
                     type: "bar",
                   }))}
                   note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
+                />
+                <TrendChartCard
+                  title="Program Enrollment Split"
+                  subtitle="Top 10 ranked programs"
+                  Icon={TrendingUp}
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
+                  data={dashboardExtras?.trends?.popularPrograms || []}
+                  xKey="title"
+                  series={[
+                    {
+                      key: "total",
+                      label: "Users Enrolled",
+                      color: "#007FC0", // Primary Blue
+                      type: "bar",
+                    },
+                  ]}
                 />
               </div>
             </div>
@@ -559,30 +516,16 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <DashboardTableCard
-                  title="Recent Transactions"
-                  subtitle="Latest 10"
-                  Icon={Receipt}
-                  iconColor="text-emerald-600"
-                  iconBg="bg-emerald-50"
-                  rows={dashboardExtras?.tables?.recentTransactions || []}
-                  emptyMessage="No transactions yet."
-                  columns={[
-                    { key: "user_name", label: "User" },
-                    { key: "plan_title", label: "Plan" },
-                    { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
-                    { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
-                    { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
-                  ]}
-                />
+              <div className="grid grid-cols-1 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+                {/* MOVED TO SUBSCRIPTION DASHBOARD: Recent Transactions */}
 
+                {/* 
                 <DashboardTableCard
                   title="Sub-Admin Roster"
                   subtitle="Managers & how many users they cover"
                   Icon={ShieldCheck}
-                  iconColor="text-slate-700"
-                  iconBg="bg-slate-100"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   rows={dashboardExtras?.tables?.subAdminRoster || []}
                   emptyMessage="No sub-admins yet."
                   columns={[
@@ -597,14 +540,15 @@ export default function Dashboard() {
                       : undefined
                   }
                 />
+                */}
 
-                <div className="xl:col-span-2">
+                <div className="w-full">
                   <DashboardTableCard
                     title="Pending / Abandoned Checkouts"
                     subtitle="Signed up but haven't paid in 7+ days"
                     Icon={Wallet}
-                    iconColor="text-rose-600"
-                    iconBg="bg-rose-50"
+                    iconColor="text-slate-600"
+                    iconBg="bg-slate-100/50"
                     rows={dashboardExtras?.tables?.abandonedCheckouts || []}
                     emptyMessage="No abandoned checkouts right now."
                     actionLabel="Follow Up"
@@ -619,61 +563,15 @@ export default function Dashboard() {
                   />
                 </div>
 
-                <DashboardTableCard
-                  title="Users Nearing Plan Expiry"
-                  subtitle="Renewal follow-up list"
-                  Icon={TrendingUp}
-                  iconColor="text-amber-600"
-                  iconBg="bg-amber-50"
-                  rows={dashboardExtras?.tables?.expiringSoon || []}
-                  emptyMessage="No plans expiring soon."
-                  actionLabel="Renew"
-                  onAction={(row) =>
-                    navigate(`/admin/subscription-management/subscribers`, {
-                      state: { user: row.name },
-                    })
-                  }
-                  columns={[
-                    {
-                      key: "sr_no",
-                      label: "SR.No",
-                      width: "w-[10%]",
-                      render: (_, idx) => (
-                        <span className="font-bold text-foreground/90 px-2">
-                          {idx + 1}
-                        </span>
-                      ),
-                    },
-                    { key: "name", label: "User", width: "w-[30%]" },
-                    { key: "plan_title", label: "Plan", width: "w-[25%]" },
-                    {
-                      key: "expires_at",
-                      label: "Expiry",
-                      width: "w-[20%]",
-                      render: (r) =>
-                        format(new Date(r.expires_at), "MMM dd, yyyy"),
-                    },
-                    {
-                      key: "days_left",
-                      label: "Days Left",
-                      width: "w-[15%]",
-                      render: (r) => (
-                        <span
-                          className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}
-                        >
-                          {r.days_left}d
-                        </span>
-                      ),
-                    },
-                  ]}
-                />
+                {/* MOVED TO SUBSCRIPTION DASHBOARD: Users Nearing Plan Expiry */}
 
+                {/* 
                 <DashboardTableCard
                   title="Recent Notifications Sent"
                   subtitle="Latest broadcast/push activity"
                   Icon={Bell}
-                  iconColor="text-brand-blue"
-                  iconBg="bg-blue-50"
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
                   rows={dashboardExtras?.tables?.recentNotifications || []}
                   emptyMessage="No notifications sent yet."
                   columns={[
@@ -683,11 +581,10 @@ export default function Dashboard() {
                       label: "Channel",
                       render: (r) => (
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                            r.channel === "Push"
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${r.channel === "Push"
                               ? "bg-blue-50 text-blue-600 border-blue-100"
                               : "bg-violet-50 text-violet-600 border-violet-100"
-                          }`}
+                            }`}
                         >
                           {r.channel}
                         </span>
@@ -699,6 +596,7 @@ export default function Dashboard() {
                     { key: "created_at", label: "Sent", render: (r) => formatDistanceToNow(new Date(r.created_at), { addSuffix: true }) },
                   ]}
                 />
+                */}
               </div>
             </div>
           </div>
