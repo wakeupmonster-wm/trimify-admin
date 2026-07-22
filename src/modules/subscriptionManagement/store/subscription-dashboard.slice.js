@@ -7,11 +7,13 @@ import {
   manageSubscriberAPI,
   getTransactionsAPI,
   exportTransactionsAPI,
+  getRetentionTrendAPI,
+  getExpiringSoonAPI,
 } from "../services/subscription-dashboard.services";
 // Reused from the main Dashboard module — "Users by Plan Type" / "Transaction
 // Status" pies and the Churn / Failed Transactions KPIs moved here from the
 // main Dashboard, so they need the same source endpoints + transforms.
-import { dashboardSummaryAPI, dashboardRevenueChartsAPI } from "@/modules/dashboard/services/dashboard.services";
+import { dashboardSummaryAPI, dashboardRevenueChartsAPI, dashboardRecentActivityAPI } from "@/modules/dashboard/services/dashboard.services";
 import { toCategoricalPie, toStatusPie } from "@/modules/dashboard/utils/dashboardExtras.transform";
 
 // Shape B envelope: { success: true|false, message, data }
@@ -49,12 +51,18 @@ export const fetchDashboardExtrasForSubscription = createAsyncThunk(
   "subscriptionDashboard/fetchDashboardExtras",
   async (dateRange, { rejectWithValue }) => {
     try {
-      const [summaryRes, revenueRes] = await Promise.allSettled([
+      const [summaryRes, revenueRes, retentionRes, recentRes, expiringRes] = await Promise.allSettled([
         dashboardSummaryAPI(dateRange),
         dashboardRevenueChartsAPI(dateRange),
+        getRetentionTrendAPI(dateRange),
+        dashboardRecentActivityAPI(dateRange),
+        getExpiringSoonAPI({ limit: 10 }),
       ]);
       const summary = summaryRes.status === "fulfilled" && summaryRes.value?.success ? summaryRes.value.data : null;
       const revenue = revenueRes.status === "fulfilled" && revenueRes.value?.success ? revenueRes.value.data : null;
+      const retention = retentionRes.status === "fulfilled" && retentionRes.value?.success ? retentionRes.value.data : null;
+      const recentActivity = recentRes.status === "fulfilled" && recentRes.value?.success ? recentRes.value.data : null;
+      const expiringSoon = expiringRes.status === "fulfilled" && expiringRes.value?.success ? expiringRes.value.data : null;
 
       return {
         churn: { count: summary?.churnCount || 0, rate: `${summary?.churnRate ?? 0}%` },
@@ -62,6 +70,13 @@ export const fetchDashboardExtrasForSubscription = createAsyncThunk(
         pieCharts: {
           planType: revenue?.planWiseSubscribers ? toCategoricalPie(revenue.planWiseSubscribers, "title", "total") : [],
           txStatus: revenue?.transactionStatus ? toStatusPie(revenue.transactionStatus) : [],
+        },
+        trends: {
+          activeVsChurned: retention?.retentionTrend || [],
+        },
+        tables: {
+          recentTransactions: recentActivity?.recentTransactions || [],
+          expiringSoon: expiringSoon?.subscribers || [],
         },
       };
     } catch (err) {

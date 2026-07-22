@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getUserManagementAPI, getSingleUserProfileAPI } from "../services/user.services";
 
+// Backend TODO: `GET /admin/users` should return a `kpis` object alongside
+// `users`/`pagination`, aggregated over the FULL table (not just the current
+// page) — { totalUsers, activeUsers, inactiveUsers, newSignupsToday }.
+// Until the backend sends it, `kpis` stays null and the KPI row on
+// UsersManagementPage renders a loading placeholder instead of a
+// page-local (and therefore wrong) count.
+
 // Async Thunk for getting the users list
 export const fetchUsersList = createAsyncThunk(
   "userManagement/fetchList",
@@ -11,9 +18,10 @@ export const fetchUsersList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           users: response.users || [],
+          kpis: response.kpis || null,
           pagination: {
             page: response.pagination?.current_page || response.pagination?.page || 1,
-            limit: response.pagination?.per_page || 10, 
+            limit: response.pagination?.per_page || 10,
             total: response.pagination?.total || 0,
             totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
@@ -49,6 +57,7 @@ const userManagementSlice = createSlice({
   name: "userManagement",
   initialState: {
     users: [],
+    kpis: null,
     loading: false,
     error: null,
     pagination: {
@@ -84,6 +93,7 @@ const userManagementSlice = createSlice({
       .addCase(fetchUsersList.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload.users;
+        state.kpis = action.payload.kpis;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchUsersList.rejected, (state, action) => {

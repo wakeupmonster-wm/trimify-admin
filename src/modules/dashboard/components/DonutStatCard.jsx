@@ -37,7 +37,6 @@ const DonutStatCard = ({
   tooltipText,
   data = [],
   centerLabel = "TOTAL",
-  scrollableLegend = false,
   footnote,
 }) => {
   const hasData = data.some((d) => d.value > 0);
@@ -120,35 +119,34 @@ const DonutStatCard = ({
         </div>
 
         <div
-          className={`flex-1 w-full space-y-3 mt-4 ${scrollableLegend ? "max-h-[168px] overflow-y-auto pr-1" : ""}`}
+          className="w-full mt-4 max-h-[168px] overflow-y-auto pr-1"
         >
-          {data.map((item, idx) => {
-            const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
-            return (
-              <div key={idx} className="flex flex-col gap-1">
-                <div className="flex items-center justify-between gap-2">
+          <div className="divide-y divide-slate-100">
+            {data.map((item, idx) => {
+              const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
+              return (
+                <div key={idx} className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0">
                   <div className="flex items-center gap-2 min-w-0">
                     <div
-                      className="w-2 h-2 rounded-full shrink-0"
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-xs font-bold text-slate-800 tracking-tight truncate">
+                    <span className="text-xs font-medium text-slate-700 truncate">
                       {item.label}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-slate-500 shrink-0">
-                    {item.value.toLocaleString()} · {pct}%
-                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-xs font-bold text-slate-900 tabular-nums">
+                      {item.value.toLocaleString()}
+                    </span>
+                    <span className="text-[10px] font-medium text-slate-400 tabular-nums">
+                      ({pct}%)
+                    </span>
+                  </div>
                 </div>
-                <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000 ease-in-out"
-                    style={{ backgroundColor: item.color, width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {footnote && (

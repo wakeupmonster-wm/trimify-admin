@@ -7,18 +7,20 @@ import {
   DataTableFilters,
   DataTableActiveChips,
 } from "@/components/shared/datatable";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getUserManagementColumns } from "@/components/columns/user.management.columns";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { LuUsersRound, LuCreditCard, LuGift, LuActivity } from "react-icons/lu";
-import { KpiStatCard } from "@/components/shared/KpiStatCard";
+import { LuUsersRound } from "react-icons/lu";
+import { Users, UserCheck, UserX, UserPlus } from "lucide-react";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
   const {
     users,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.usersManagement);
@@ -57,6 +59,59 @@ const UsersManagementPage = () => {
   };
 
   const columns = useMemo(() => getUserManagementColumns(handleAction), []);
+
+  const localKpis = useMemo(() => {
+    if (kpis) return kpis;
+    const all = users || [];
+    const active = all.filter(
+      (u) =>
+        String(u.status || "Active").toLowerCase() === "active" ||
+        u.status === "1" ||
+        u.status === "true"
+    ).length;
+    return {
+      totalUsers: serverPagination?.total || all.length,
+      activeUsers: active,
+      inactiveUsers: all.length - active,
+      newSignupsToday: all.filter((u) => {
+        if (!u.created_at) return false;
+        const today = new Date().toISOString().split("T")[0];
+        return String(u.created_at).startsWith(today);
+      }).length,
+    };
+  }, [kpis, users, serverPagination]);
+
+  const kpiItems = [
+    {
+      icon: Users,
+      label: "Total Users",
+      value: localKpis?.totalUsers?.toLocaleString() || "0",
+      description: "All-time platform total",
+    },
+    {
+      icon: UserCheck,
+      label: "Active Users",
+      value: localKpis?.activeUsers?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+    },
+    {
+      icon: UserX,
+      label: "Inactive Users",
+      value: localKpis?.inactiveUsers?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "rose",
+      onClick: () => setStatusFilter("Inactive"),
+    },
+    {
+      icon: UserPlus,
+      label: "New Signups",
+      value: localKpis?.newSignupsToday?.toLocaleString() || "0",
+      description: "Signed up today",
+      tone: "amber",
+    },
+  ];
 
   // Check if the backend is doing manual pagination.
   // If serverPagination.total exists, it's server-paginated.
@@ -129,41 +184,7 @@ const UsersManagementPage = () => {
           </div>
         </Header>
 
-        {/* KPIs Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <KpiStatCard
-            title="Total Users"
-            value={kpiStats.total}
-            icon={LuUsersRound}
-            colorClass="text-brand-blue"
-            bgClass="bg-blue-50"
-            description="Total registered users"
-          />
-          <KpiStatCard
-            title="Paid Users"
-            value={kpiStats.paid}
-            icon={LuCreditCard}
-            colorClass="text-emerald-600"
-            bgClass="bg-emerald-50"
-            description="Premium plan members"
-          />
-          <KpiStatCard
-            title="Free Users"
-            value={kpiStats.free}
-            icon={LuGift}
-            colorClass="text-amber-600"
-            bgClass="bg-amber-50"
-            description="Free tier members"
-          />
-          <KpiStatCard
-            title="Active Users"
-            value={kpiStats.active}
-            icon={LuActivity}
-            colorClass="text-indigo-600"
-            bgClass="bg-indigo-50"
-            description="Active accounts"
-          />
-        </div>
+        <ModuleKpiRow items={kpiItems} loading={loading && !users?.length} />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

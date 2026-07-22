@@ -13,7 +13,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[10px] font-bold uppercase tracking-wider">
+      <div className="w-12 text-left text-[11px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
@@ -25,7 +25,7 @@ export const getManageProgramColumns = (onAction) => [
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-10 text-left px-1 font-bold text-[11px] text-foreground/90">
+        <div className="w-12 text-left px-1 font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -36,7 +36,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "title",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-left">
         Program Name
       </div>
     ),
@@ -51,7 +51,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "duration",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-left">
         Program Duration
       </div>
     ),
@@ -66,7 +66,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "assignedPrograms",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
         Assigned Programs
       </div>
     ),
@@ -76,7 +76,7 @@ export const getManageProgramColumns = (onAction) => [
       <div className="flex justify-center">
         <Button
           onClick={() => onAction && onAction(row.original, "view-user")}
-          className="bg-app-primary2 hover:bg-app-primary5 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-app-primary5 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
         >
           View User
         </Button>
@@ -86,7 +86,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "manageProgram",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
         Manage Program
       </div>
     ),
@@ -96,7 +96,7 @@ export const getManageProgramColumns = (onAction) => [
       <div className="flex justify-center">
         <Button
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-app-primary2 hover:bg-app-primary5 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-app-primary5 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
         >
           Open Program
         </Button>
@@ -106,7 +106,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
         Status
       </div>
     ),
@@ -131,7 +131,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "is_approve_nonapproved_foods_show",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
         Food Visibility
       </div>
     ),
@@ -159,7 +159,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "actions",
     header: () => (
-      <div className="text-center text-[10px] font-bold uppercase tracking-wider">
+      <div className="text-center text-[11px] font-bold uppercase tracking-wider">
         Action
       </div>
     ),
@@ -180,11 +180,11 @@ export const getManageProgramColumns = (onAction) => [
             align="end"
             className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
-            <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-blue-50 focus:text-blue-700 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

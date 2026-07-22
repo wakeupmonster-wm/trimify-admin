@@ -1,12 +1,16 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Dumbbell, Plus, CheckCircle, Clock, Flame } from "lucide-react";
-import { KpiStatCard } from "@/components/shared/KpiStatCard";
+import { Dumbbell, Plus, CheckCircle2, XCircle, ListVideo } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getFitzoneManagementColumns } from "@/components/columns/fitzone.management.columns";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -23,11 +27,13 @@ const FitzoneManagementPage = () => {
   const dispatch = useDispatch();
   const {
     fitzones,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.fitzoneManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteModal, setDeleteModal] = useState({
@@ -46,6 +52,7 @@ const FitzoneManagementPage = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
+        status: statusFilter,
       }),
     );
   }, [
@@ -53,6 +60,7 @@ const FitzoneManagementPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    statusFilter,
   ]);
 
   const handleAction = async (row, action, value) => {
@@ -79,6 +87,7 @@ const FitzoneManagementPage = () => {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
+          status: statusFilter,
         }),
       );
     } else {
@@ -97,6 +106,7 @@ const FitzoneManagementPage = () => {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
+          status: statusFilter,
         }),
       );
     } else {
@@ -111,21 +121,74 @@ const FitzoneManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
-  // KPI Calculations
-  const kpiStats = useMemo(() => {
-    const list = fitzones || [];
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  // Local fallback filtering in case the backend ignores the `status` parameter
+  const displayData = useMemo(() => {
+    if (!statusFilter) return fitzones || [];
+    return (fitzones || []).filter(
+      (fz) => String(fz.status || "Active").toLowerCase() === statusFilter.toLowerCase(),
+    );
+  }, [fitzones, statusFilter]);
 
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+      ],
+      placeholder: "All Statuses",
+    },
+  ];
+
+  const localKpis = useMemo(() => {
+    if (kpis) return kpis;
+    const all = fitzones || [];
+    const active = all.filter(
+      (fz) => String(fz.status || "Active").toLowerCase() === "active"
+    ).length;
     return {
-      total: serverPagination?.total || list.length,
-      active: list.filter((f) => f.status === "Active").length,
-      inactive: list.filter((f) => f.status !== "Active").length,
-      recent: list.filter(
-        (f) => f.updated_at && new Date(f.updated_at) >= thirtyDaysAgo,
-      ).length,
+      totalFitzones: serverPagination?.total || all.length,
+      activeFitzones: active,
+      inactiveFitzones: all.length - active,
+      totalSessions: all.reduce((sum, fz) => sum + (fz.sessions?.length || fz.session_count || 0), 0),
     };
-  }, [fitzones, serverPagination]);
+  }, [kpis, fitzones, serverPagination]);
+
+  const kpiItems = [
+    {
+      icon: Dumbbell,
+      label: "Total Fitzones",
+      value: localKpis?.totalFitzones?.toLocaleString() || "0",
+      description: "All workout zones",
+    },
+    {
+      icon: CheckCircle2,
+      label: "Active Fitzones",
+      value: localKpis?.activeFitzones?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+    },
+    {
+      icon: XCircle,
+      label: "Inactive Fitzones",
+      value: localKpis?.inactiveFitzones?.toLocaleString() || "0",
+      description: "Tap to filter",
+      tone: "rose",
+      onClick: () => setStatusFilter("Inactive"),
+    },
+    {
+      icon: ListVideo,
+      label: "Total Sessions",
+      value: localKpis?.totalSessions?.toLocaleString() || "0",
+      description: "Across all fitzones",
+      tone: "cyan",
+    },
+  ];
 
   return (
     <Container>
@@ -155,47 +218,13 @@ const FitzoneManagementPage = () => {
           </div>
         </Header>
 
-        {/* KPIs Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <KpiStatCard
-            title="Total Fitzones"
-            value={kpiStats.total}
-            icon={Dumbbell}
-            colorClass="text-brand-blue"
-            bgClass="bg-blue-50"
-            description="All workout groups"
-          />
-          <KpiStatCard
-            title="Active Fitzones"
-            value={kpiStats.active}
-            icon={CheckCircle}
-            colorClass="text-emerald-600"
-            bgClass="bg-emerald-50"
-            description="Currently accessible"
-          />
-          <KpiStatCard
-            title="Draft / Inactive"
-            value={kpiStats.inactive}
-            icon={Clock}
-            colorClass="text-amber-600"
-            bgClass="bg-amber-50"
-            description="Not visible to users"
-          />
-          <KpiStatCard
-            title="Recently Updated"
-            value={kpiStats.recent}
-            icon={Flame}
-            colorClass="text-rose-600"
-            bgClass="bg-rose-50"
-            description="Modified in last 30 days"
-          />
-        </div>
+        <ModuleKpiRow items={kpiItems} loading={loading && !fitzones?.length} />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={fitzones || []}
-            rowCount={isManual ? serverPagination.total : fitzones?.length || 0}
+            data={displayData}
+            rowCount={isManual ? serverPagination.total : displayData?.length || 0}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
@@ -205,6 +234,13 @@ const FitzoneManagementPage = () => {
             isLoading={loading}
             manualPagination={isManual}
             manualFiltering={isManual}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setStatusFilter("")}
+              />
+            }
           />
         </div>
       </div>

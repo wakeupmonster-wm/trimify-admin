@@ -3,6 +3,7 @@ import {
   ComposedChart,
   Line,
   Bar,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -32,6 +33,7 @@ const TrendChartCard = ({
   tooltipText,
   data = [],
   xKey,
+  periodLabel,
   series = [],
   note,
   height = "h-[240px]",
@@ -59,14 +61,36 @@ const TrendChartCard = ({
           <ChartContainer config={chartConfig} className={`w-full ${height}`}>
             <ComposedChart
               data={data}
-              margin={{ top: 8, right: 12, left: -12, bottom: 0 }}
+              margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
             >
+              <defs>
+                {series.map((s) => {
+                  if (s.type === "area") {
+                    return (
+                      <linearGradient key={`gradient-${s.key}`} id={`gradient-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={s.color} stopOpacity={0.4} />
+                        <stop offset="95%" stopColor={s.color} stopOpacity={0} />
+                      </linearGradient>
+                    );
+                  }
+                  return null;
+                })}
+              </defs>
               <CartesianGrid vertical={false} stroke="hsl(215, 20%, 92%)" />
               <XAxis
                 dataKey={xKey}
                 tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
+                tickMargin={10}
+                tickFormatter={(value) => {
+                  if (data.length === 1 && String(value).toLowerCase() === "today" && periodLabel && periodLabel !== "Today") {
+                    // Custom date ranges come back as "Mar 01 - Mar 01, 2026", we just use it directly
+                    // Pre-defined ranges like Yesterday come back as "Yesterday"
+                    return periodLabel;
+                  }
+                  return value;
+                }}
               />
               <YAxis
                 type="number"
@@ -75,36 +99,82 @@ const TrendChartCard = ({
                 tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
-                width={36}
+                tickMargin={10}
+                width={45}
               />
               <ChartTooltip
-                content={<ChartTooltipContent className="bg-white" />}
-                cursor={{ fill: "hsl(215, 20%, 96%)" }}
+                content={
+                  <ChartTooltipContent
+                    className="bg-white"
+                    labelFormatter={(label) => {
+                      if (data.length === 1 && String(label).toLowerCase() === "today" && periodLabel && periodLabel !== "Today") {
+                        return periodLabel;
+                      }
+                      return label;
+                    }}
+                    formatter={(value, name) => {
+                      const matchedSeries = series.find((s) => s.key === name);
+                      return (
+                        <div className="flex w-full items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                              style={{ backgroundColor: matchedSeries?.color || "hsl(215, 16%, 65%)" }}
+                            />
+                            <span className="text-muted-foreground">
+                              {matchedSeries?.label || name}
+                            </span>
+                          </div>
+                          <span className="font-mono font-medium tabular-nums text-foreground">
+                            {Number(value).toLocaleString()}
+                          </span>
+                        </div>
+                      );
+                    }}
+                  />
+                }
+                cursor={{ stroke: "hsl(215, 20%, 90%)", strokeWidth: 1, strokeDasharray: "4 4", fill: "transparent" }}
               />
-              {series.length > 1 && (
-                <ChartLegend content={<ChartLegendContent />} />
-              )}
-              {series.map((s) =>
-                s.type === "bar" ? (
-                  <Bar
-                    key={s.key}
-                    dataKey={s.key}
-                    fill={s.color}
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={36}
-                  />
-                ) : (
-                  <Line
-                    key={s.key}
-                    type="monotone"
-                    dataKey={s.key}
-                    stroke={s.color}
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4 }}
-                  />
-                ),
-              )}
+              <ChartLegend content={<ChartLegendContent />} />
+              {series.map((s) => {
+                const effectiveType = data.length === 1 ? "bar" : s.type;
+                if (effectiveType === "bar") {
+                  return (
+                    <Bar
+                      key={s.key}
+                      dataKey={s.key}
+                      fill={s.color}
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={48}
+                    />
+                  );
+                } else if (effectiveType === "area") {
+                  return (
+                    <Area
+                      key={s.key}
+                      type="monotone"
+                      dataKey={s.key}
+                      stroke={s.color}
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill={`url(#gradient-${s.key})`}
+                      activeDot={{ r: 6, strokeWidth: 0, fill: s.color }}
+                    />
+                  );
+                } else {
+                  return (
+                    <Line
+                      key={s.key}
+                      type="monotone"
+                      dataKey={s.key}
+                      stroke={s.color}
+                      strokeWidth={2}
+                      dot={false}
+                      activeDot={{ r: 4 }}
+                    />
+                  );
+                }
+              })}
             </ComposedChart>
           </ChartContainer>
         ) : (
@@ -116,7 +186,7 @@ const TrendChartCard = ({
         )}
 
         {note && (
-          <div className="mt-3 mx-2 flex items-start gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
+          <div className="mt-auto mx-2 flex items-start gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
             <Info size={12} className="text-brand-blue mt-0.5 shrink-0" />
             {note}
           </div>

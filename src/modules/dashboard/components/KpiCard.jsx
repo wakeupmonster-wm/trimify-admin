@@ -13,27 +13,31 @@ const TONE_STYLES = {
   rose: { iconBg: "bg-rose-50", iconColor: "text-rose-600", border: "border-rose-200 hover:border-rose-400" },
   violet: { iconBg: "bg-violet-50", iconColor: "text-violet-600", border: "border-slate-200 hover:border-violet-300" },
   cyan: { iconBg: "bg-cyan-50", iconColor: "text-cyan-600", border: "border-slate-200 hover:border-cyan-300" },
-  slate: { iconBg: "bg-slate-100", iconColor: "text-slate-600", border: "border-slate-200 hover:border-slate-300" },
+  slate: { iconBg: "bg-slate-100", iconColor: "text-slate-600", border: "border-slate-200 hover:border-slate-400" },
 };
 
-const KpiCard = ({ icon: Icon, label, value, description, tone = "default", onClick }) => {
+const KpiCard = ({ label, value, description, tone = "default", onClick }) => {
   const t = TONE_STYLES[tone] || TONE_STYLES.default;
   return (
     <div
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      tabIndex={onClick ? 0 : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-2xl border bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md",
+        "flex flex-col justify-center rounded-2xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-md",
         t.border,
-        onClick && "cursor-pointer",
+        onClick && "cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-blue focus-visible:outline-none",
       )}
     >
-      <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", t.iconBg)}>
-        {Icon && <Icon className={cn("h-5 w-5", t.iconColor)} />}
-      </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[11px] font-semibold text-slate-500">{label}</p>
-        <h4 className="truncate text-lg font-extrabold leading-tight text-slate-900">{value}</h4>
-        {description && <p className="truncate text-[10px] font-medium text-slate-400 mt-0.5">{description}</p>}
+        <p className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</p>
+        <h4 className="truncate text-2xl font-extrabold leading-tight text-slate-900 mt-1">{value}</h4>
+        {description && <p className="truncate text-[11px] font-medium text-slate-400 mt-1.5">{description}</p>}
       </div>
     </div>
   );

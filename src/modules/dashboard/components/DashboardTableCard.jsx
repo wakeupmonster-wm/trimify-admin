@@ -32,7 +32,7 @@ const DashboardTableCard = ({
 }) => {
   return (
     <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
-      <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
+      <div className="pt-5 pb-4 px-6 border-b border-slate-100">
         <DashboardHead
           title={title}
           subtitle={subtitle}
@@ -42,20 +42,20 @@ const DashboardTableCard = ({
         />
       </div>
 
-      <div className="flex-1 overflow-x-auto">
+      <div className="flex-1 w-full min-h-[200px] overflow-auto">
         <Table className="min-w-[520px]">
-          <TableHeader className="bg-slate-50/60">
-            <TableRow className="hover:bg-transparent">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent border-b border-slate-100">
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
-                  className={`text-[10px] font-bold uppercase tracking-wider text-slate-500 h-10 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                 >
                   {col.label}
                 </TableHead>
               ))}
               {actionLabel && (
-                <TableHead className="text-right text-[10px] font-bold uppercase tracking-wider text-slate-500 h-10">
+                <TableHead className="text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6">
                   Action
                 </TableHead>
               )}
@@ -73,23 +73,23 @@ const DashboardTableCard = ({
               </TableRow>
             ) : (
               rows.map((row, idx) => (
-                <TableRow key={row.list_key ?? row.id ?? idx} className="hover:bg-slate-50/70">
+                <TableRow key={row.list_key ?? row.id ?? idx} className="hover:bg-slate-50/50 border-b border-slate-100/60 last:border-0 transition-colors">
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}
-                      className={`py-2.5 text-xs font-medium text-slate-700 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                      className={`py-2.5 text-xs font-medium text-slate-700 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                     >
                       {col.render ? col.render(row, idx) : row[col.key]}
                     </TableCell>
                   ))}
                   {actionLabel && (
-                    <TableCell className="py-2.5 text-right">
+                    <TableCell className="py-3.5 text-right first:pl-6 last:pr-6">
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => onAction?.(row)}
-                        className="h-7 text-[11px] px-2.5"
+                        className="h-8 text-[11px] px-2.5 rounded-full border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
                         {actionLabel}
                       </Button>
@@ -103,7 +103,7 @@ const DashboardTableCard = ({
       </div>
 
       {footerStat && (
-        <div className="px-6 py-2.5 border-t border-slate-200 bg-slate-50/60 flex items-center justify-between shrink-0">
+        <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/40 flex items-center justify-between shrink-0">
           <span className="text-[11px] font-semibold text-slate-500">{footerStat.label}</span>
           <span className="text-xs font-extrabold text-slate-800">{footerStat.value}</span>
         </div>

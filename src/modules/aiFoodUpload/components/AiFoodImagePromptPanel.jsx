@@ -153,16 +153,17 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
   };
 
   return (
-    <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <Wand2 className="w-4 h-4 text-brand-blue" />
+    <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6">
+      <div className="flex items-center gap-2 mb-5">
+        <Wand2 className="w-4 h-4 text-app-primary2" />
         <h3 className="text-sm font-bold text-slate-800">
           Guided Image Generation
         </h3>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6 items-start">
       <Tabs defaultValue="prompt">
-        <TabsList className="grid grid-cols-2 w-full max-w-xs">
+        <TabsList className="grid grid-cols-2 w-full max-w-sm">
           <TabsTrigger value="prompt">Text Prompt</TabsTrigger>
           <TabsTrigger value="audio">Voice / Audio</TabsTrigger>
         </TabsList>
@@ -200,7 +201,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
             <div className="flex flex-col items-center justify-center gap-3 py-6 border border-dashed border-slate-300 rounded-md">
               {isConverting ? (
                 <>
-                  <Spinner className="w-6 h-6 text-brand-blue" />
+                  <Spinner className="w-6 h-6 text-app-primary2" />
                   <p className="text-xs font-medium text-slate-500">Processing recording…</p>
                 </>
               ) : (
@@ -211,7 +212,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
                     className={`w-14 h-14 rounded-full flex items-center justify-center shadow transition-colors ${
                       isRecording
                         ? "bg-red-600 hover:bg-red-700 animate-pulse"
-                        : "bg-brand-blue hover:bg-brand-hoverBlue"
+                        : "bg-app-primary2 hover:bg-app-primary5"
                     }`}
                   >
                     {isRecording ? (
@@ -254,7 +255,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
             <div className="space-y-3">
               <div className="flex items-center gap-3 bg-slate-50 border border-slate-300/60 rounded-md p-3">
                 <div className="w-9 h-9 rounded-full bg-app-primary2/10 flex items-center justify-center shrink-0">
-                  <Play className="w-4 h-4 text-brand-blue" />
+                  <Play className="w-4 h-4 text-app-primary2" />
                 </div>
                 <audio controls src={audioUrl} className="flex-1 h-9" />
               </div>
@@ -329,7 +330,7 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
                     type="button"
                     onClick={handleAudioSubmit}
                     disabled={busy}
-                    className="bg-brand-blue hover:bg-brand-hoverBlue text-white flex items-center gap-2"
+                    className="bg-app-primary2 hover:bg-app-primary5 text-white flex items-center gap-2"
                   >
                     {busy ? <Spinner className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                     {busy ? "Generating…" : "Generate Image from Audio"}
@@ -341,14 +342,17 @@ const AiFoodImagePromptPanel = ({ onGenerateFromPrompt, onGenerateFromAudio, onC
         </TabsContent>
       </Tabs>
 
-      <div className="flex items-start gap-2 bg-blue-50/60 border border-blue-100 rounded-md px-3 py-2">
-        <Info className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
-        <p className="text-[11px] text-blue-700 leading-relaxed">
-          Only updates this item's photo — food name and nutrition stay untouched. Each regenerate
-          uses a real (paid) AI image call, so use it deliberately rather than repeatedly. "Cancel"
-          only stops waiting on this screen — a generation already in progress still finishes in the
-          background and the photo updates automatically once it's ready.
-        </p>
+      <div className="bg-slate-50/70 border border-slate-200 rounded-lg p-4 space-y-3 h-fit">
+        <div className="flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-app-primary2" />
+          <p className="text-xs font-bold text-slate-700">Good to know</p>
+        </div>
+        <ul className="space-y-2 text-[11px] text-slate-500 leading-relaxed list-disc pl-4">
+          <li>Only updates this item's photo — food name and nutrition stay untouched.</li>
+          <li>Each regenerate uses a real (paid) AI image call, so use it deliberately rather than repeatedly.</li>
+          <li>"Cancel" only stops waiting here — a generation already running still finishes in the background and the photo updates automatically once it's ready.</li>
+        </ul>
+      </div>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ export const ConversionFunnel = ({ data }) => {
       </div>
 
       <CardContent className="flex-1 flex flex-col pt-1">
-        <div className="flex-1 flex flex-col pt-1">
+        <div className="flex-1 flex flex-col justify-center pt-1">
           {stages.map((stage, idx) => {
             // Calculate the top and bottom widths for this specific trapezoid
             const currentTop = startWidth - idx * reductionPerSegment;
@@ -143,8 +143,8 @@ export const ConversionFunnel = ({ data }) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="pt-2">
-        <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
+      <CardFooter className="pt-2 mt-auto">
+        <div className="w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
             <Info size={14} className="text-brand-blue shrink-0" />
           </div>
