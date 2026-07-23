@@ -66,7 +66,7 @@ const DonutStatCard = ({
         />
       </div>
 
-      <div className="flex-1 flex flex-col px-6 py-4">
+      <div className="flex-1 flex gap-8 items-center px-6 py-8">
         <div className="relative w-full aspect-square max-w-[200px] mx-auto flex items-center justify-center">
           <ChartContainer config={chartConfig} className="h-full w-full">
             <PieChart>
@@ -118,14 +118,16 @@ const DonutStatCard = ({
           </ChartContainer>
         </div>
 
-        <div
-          className="w-full mt-4 max-h-[168px] overflow-y-auto pr-1"
-        >
+        <div className="w-full max-h-[170px] overflow-y-auto pr-1">
           <div className="divide-y divide-slate-100">
             {data.map((item, idx) => {
-              const pct = total > 0 ? Math.round((item.value / total) * 100) : 0;
+              const pct =
+                total > 0 ? Math.round((item.value / total) * 100) : 0;
               return (
-                <div key={idx} className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0">
+                <div
+                  key={idx}
+                  className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0"
+                >
                   <div className="flex items-center gap-2 min-w-0">
                     <div
                       className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -148,12 +150,6 @@ const DonutStatCard = ({
             })}
           </div>
         </div>
-
-        {footnote && (
-          <p className="mt-4 text-[10px] text-slate-400 leading-relaxed">
-            {footnote}
-          </p>
-        )}
       </div>
     </div>
   );

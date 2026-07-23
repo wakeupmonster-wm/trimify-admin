@@ -3,7 +3,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Loader2 } from "lucide-react";
+import { Save, UploadCloud, Loader2, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -113,18 +113,29 @@ const AddProgramPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex-1 min-w-0 w-full">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEditMode ? "Edit Program" : "Add Program"}
                 icon={<UploadCloud className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   isEditMode
                     ? "Edit and configure program details."
                     : "Create a new health and wellness program."
                 }
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -143,7 +154,7 @@ const AddProgramPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -159,7 +170,7 @@ const AddProgramPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 maxLength={500}
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
                 required
               />
               <div className="text-xs text-slate-500 font-medium">
@@ -227,7 +238,7 @@ const AddProgramPage = () => {
                 onValueChange={handleDurationChange}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>

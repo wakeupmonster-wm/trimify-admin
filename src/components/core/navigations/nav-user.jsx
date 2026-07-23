@@ -51,7 +51,7 @@ export function NavUser({ user }) {
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-brand-blue hover:bg-slate-50"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-app-primary2 hover:bg-slate-50"
               >
                 <Avatar className="h-9 w-9 rounded-full">
                   <AvatarImage src={user.avatar} alt={"admin.webp"} />

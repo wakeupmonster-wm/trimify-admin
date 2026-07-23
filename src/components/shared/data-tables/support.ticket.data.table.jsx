@@ -87,7 +87,7 @@ export default function SupportTicketsDataTables({
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
             <Input
               placeholder={searchPlaceholder}
-              className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+              className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -112,7 +112,8 @@ export default function SupportTicketsDataTables({
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      hasActiveFilters && "border-brand-blue text-brand-blue",
+                      hasActiveFilters &&
+                        "border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="text-xs">
@@ -162,7 +163,7 @@ export default function SupportTicketsDataTables({
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between min-w-[120px]",
                       filters.categoryFilter &&
-                        "border-brand-blue text-brand-blue",
+                        "border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="text-xs">
@@ -210,7 +211,7 @@ export default function SupportTicketsDataTables({
 
             {/* 2. ITEM COUNT INDICATOR */}
             <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-300/60">
-              <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
+              <span className="text-xs 3xl:text-sm font-bold text-app-primary2">
                 {rowCount ?? data.length}
               </span>
               <span className="text-xs 3xl:text-sm text-slate-400 font-medium">
@@ -501,7 +502,7 @@ export default function SupportTicketsDataTables({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
+                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2"
                             : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                         )}
                       >

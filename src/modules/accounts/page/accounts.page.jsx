@@ -81,7 +81,7 @@ export default function AccountsPage() {
           {/* HERO SECTION */}
           <div className="relative bg-white rounded-lg shadow-sm shadow-gray-200 overflow-hidden border border-gray-200">
             {/* Cover Banner */}
-            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-brand-blue via-brand-blue to-brand-blue relative overflow-hidden">
+            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-app-primary2 via-app-primary2 to-app-primary2 relative overflow-hidden">
               {/* Decorative patterns */}
               <img
                 src={accountBg}
@@ -101,7 +101,7 @@ export default function AccountsPage() {
                       alt={account?.nickname}
                       className="object-cover"
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-brand-blue to-brand-blue text-white text-5xl font-black">
+                    <AvatarFallback className="bg-gradient-to-br from-app-primary2 to-app-primary2 text-white text-5xl font-black">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -117,11 +117,11 @@ export default function AccountsPage() {
 
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 md:gap-8 text-xs font-semibold text-foreground/50">
                     <span className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-brand-blue" />
+                      <Calendar className="w-3.5 h-3.5 text-app-primary2" />
                       Joined {formatDateSafe(account?.memberSince)}
                     </span>
                     <span className="flex flex-row items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-brand-blue" />
+                      <Clock className="w-3.5 h-3.5 text-app-primary2" />
                       Last login {formatDateSafe(account?.lastLoginAt)}
                     </span>
                   </div>
@@ -130,7 +130,7 @@ export default function AccountsPage() {
                 {/* Action */}
                 <div className="mb-2 shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <AdminEditDialog currentData={account}>
-                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary5 hover:border-brand-blue font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
+                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary5 hover:border-app-primary2 font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
                       <Edit3 className="w-3.5 h-3.5" strokeWidth={2} />
                       Configure Profile
                     </Button>
@@ -162,7 +162,7 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Mail
-                        className="w-4 h-4 text-brand-blue"
+                        className="w-4 h-4 text-app-primary2"
                         strokeWidth={2.5}
                       />
                     }
@@ -174,7 +174,7 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Phone
-                        className="w-4 h-4 text-brand-blue"
+                        className="w-4 h-4 text-app-primary2"
                         strokeWidth={2.5}
                       />
                     }
@@ -202,7 +202,7 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Calendar
-                        className="w-4 h-4 text-brand-blue"
+                        className="w-4 h-4 text-app-primary2"
                         strokeWidth={2.5}
                       />
                     }
@@ -213,7 +213,7 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Clock
-                        className="w-4 h-4 text-brand-blue"
+                        className="w-4 h-4 text-app-primary2"
                         strokeWidth={2.5}
                       />
                     }

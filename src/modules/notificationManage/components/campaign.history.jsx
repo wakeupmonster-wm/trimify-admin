@@ -15,8 +15,7 @@ import {
   IconDeviceMobile,
   IconX,
 } from "@tabler/icons-react";
-import StatsGrid from "@/components/common/stats.grid";
-import { bgMap, colorMap } from "@/constants/colors";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchCampaignDeliveryReport,
@@ -63,29 +62,47 @@ export default function CampaignHistory({
     [statusFilter],
   );
 
-  const stats = [
-    {
-      label: "Total Campaigns",
-      val: pagination?.total || 0,
-      icon: <IconChartBar size={22} />,
-      color: "blue",
-      description: "Overall campaigns",
-    },
-    {
-      label: "Emails Dispatched",
-      val: pagination?.emailCount || 0,
-      icon: <IconMail size={22} />,
-      color: "indigo",
-      description: "Email communications",
-    },
-    {
-      label: "Pushes Dispatched",
-      val: pagination?.pushCount || 0,
-      icon: <IconDeviceMobile size={22} />,
-      color: "emerald",
-      description: "Mobile notifications",
-    },
-  ];
+  const kpiItems = useMemo(() => {
+    const handleKpiClick = (channel) => {
+      setSearchTerm("");
+      setChannelFilter(channel);
+      setStatusFilter("all");
+      onPaginationChange((prev) => ({ ...prev, pageIndex: 0 }));
+    };
+
+    return [
+      {
+        label: "Total Campaigns",
+        value: pagination?.total || 0,
+        icon: IconChartBar,
+        tone: "blue",
+        description: "Overall campaigns",
+        onClick: () => handleKpiClick("all"),
+      },
+      {
+        label: "Emails Dispatched",
+        value: pagination?.emailCount || 0,
+        icon: IconMail,
+        tone: "indigo",
+        description: "Email communications",
+        onClick: () => handleKpiClick("email"),
+      },
+      {
+        label: "Pushes Dispatched",
+        value: pagination?.pushCount || 0,
+        icon: IconDeviceMobile,
+        tone: "emerald",
+        description: "Mobile notifications",
+        onClick: () => handleKpiClick("push"),
+      },
+    ];
+  }, [
+    pagination,
+    setSearchTerm,
+    setChannelFilter,
+    setStatusFilter,
+    onPaginationChange,
+  ]);
 
   return (
     <div className="space-y-4">
@@ -104,25 +121,10 @@ export default function CampaignHistory({
 
         <div className="px-6 pb-4">
           {/* History KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatsGrid
-              stats={stats}
-              colorMap={colorMap}
-              bgMap={bgMap}
-              onCardClick={(label) => {
-                setSearchTerm("");
-                setChannelFilter("all");
-                setStatusFilter("all");
-
-                if (label === "Emails Dispatched") {
-                  setChannelFilter("email");
-                } else if (label === "Pushes Dispatched") {
-                  setChannelFilter("push");
-                }
-                onPaginationChange((prev) => ({ ...prev, pageIndex: 0 }));
-              }}
-            />
-          </div>
+          <ModuleKpiRow
+            items={kpiItems}
+            loading={loading && !history?.length}
+          />
         </div>
       </Card>
 

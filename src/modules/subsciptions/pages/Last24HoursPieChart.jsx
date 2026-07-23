@@ -311,7 +311,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
 
       {/* ─── FOOTER BANNER ─── */}
       <div className="px-5 pb-5">
-        <div className="w-full bg-app-primary2 border border-brand-blue rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
+        <div className="w-full bg-app-primary2 border border-app-primary2 rounded-xl text-foreground/80 p-1.5 flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#edffff] flex items-center justify-center flex-shrink-0 text-white shadow-sm">
             <TrendingUp
               size={16}

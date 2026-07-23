@@ -258,7 +258,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 "transition-colors",
                 hasDownloaded
                   ? "text-slate-400"
-                  : "text-slate-400 group-hover:text-brand-blue",
+                  : "text-slate-400 group-hover:text-app-primary2",
               )}
             />
             {hasDownloaded ? "Downloaded" : "Download Receipt"}
@@ -277,7 +277,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Payment Details"
                 subtitle="Transaction amount and payment gateway info"
                 Icon={IconReceipt}
-                iconColor="text-brand-blue"
+                iconColor="text-app-primary2"
                 iconBg="bg-app-primary2"
               />
             </div>
@@ -350,7 +350,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Product Details"
                 subtitle="Purchased plan or consumable item information"
                 Icon={IconBox}
-                iconColor="text-brand-blue"
+                iconColor="text-app-primary2"
                 iconBg="bg-app-primary2"
               />
             </div>
@@ -406,7 +406,7 @@ export default function TransactionDetails({ transaction, onBack }) {
             <div className="flex items-center gap-4 p-4 bg-slate-100/60 rounded-xl border border-slate-300/60 mb-4 shadow-sm">
               <div
                 className={cn(
-                  "w-11 h-11 rounded-full text-brand-blue flex items-center justify-center text-lg font-black shrink-0 shadow-sm border-2 border-white overflow-hidden",
+                  "w-11 h-11 rounded-full text-app-primary2 flex items-center justify-center text-lg font-black shrink-0 shadow-sm border-2 border-white overflow-hidden",
                   transaction.user?.selfieUrl
                     ? "cursor-pointer"
                     : "bg-app-primary2",
@@ -488,7 +488,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                 title="Timeline"
                 subtitle="Step-by-step transaction processing history"
                 Icon={IconClock}
-                iconColor="text-brand-blue"
+                iconColor="text-app-primary2"
                 iconBg="bg-app-primary2"
               />
             </div>
@@ -612,7 +612,7 @@ export default function TransactionDetails({ transaction, onBack }) {
             />
           ) : (
             <div className="w-16 h-16 rounded-xl bg-app-primary2 flex items-center justify-center mx-auto mb-3">
-              <IconReceipt size={28} className="text-brand-blue" />
+              <IconReceipt size={28} className="text-app-primary2" />
             </div>
           )}
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">

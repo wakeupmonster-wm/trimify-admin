@@ -258,15 +258,13 @@ export default function Dashboard() {
               <PageHeader
                 heading="Dashboard Overview"
                 icon={
-                  <LayoutDashboard
-                    className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0"
-                  />
+                  <LayoutDashboard className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-blue font-semibold">
+                    <span className="text-app-primary2 font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>
@@ -379,7 +377,7 @@ export default function Dashboard() {
                   How the current user & revenue base breaks down
                 </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                 {/* "Users by Plan Type" and "Transaction Status" moved to the
                     Subscription Dashboard (OverviewView.jsx) — plan/revenue
                     breakdowns belong with the rest of subscription analytics. */}
@@ -412,11 +410,10 @@ export default function Dashboard() {
                   Icon={Salad}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={dashboardExtras?.pieCharts?.dietPreference || []}
+                  tooltipText="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
                   data={mapChartColors(
                     dashboardExtras?.pieCharts?.dietPreference || [],
                   )}
-                  footnote="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
                 />
                 <ConversionFunnel data={dashboardExtras?.funnel} />
               </div>
@@ -579,7 +576,9 @@ export default function Dashboard() {
                     emptyMessage="No abandoned checkouts right now."
                     actionLabel="Follow Up"
                     onAction={(row) =>
-                      navigate(`/admin/users`, { state: { user: row.name } })
+                      navigate(
+                        `/admin/users/view-user/${row.user_id || row.id}`,
+                      )
                     }
                     columns={[
                       { key: "name", label: "User" },

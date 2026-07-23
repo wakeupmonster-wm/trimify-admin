@@ -14,7 +14,7 @@ import { KYCInspectorModal } from "../components/kyc-inspector-modal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
 import ReasonDialog from "@/modules/users/components/Dialogs/RejectReasonDialog";
-import StatsGrid from "@/components/common/stats.grid";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
   IconCircleCheck,
   IconClipboardList,
@@ -246,42 +246,54 @@ export default function KYCVerificationPage() {
   }, [pendingVerifications]);
 
   // 2. Optimized Stats Calculation
-  const statsData = useMemo(() => {
+  const kpiItems = useMemo(() => {
+    const handleKpiClick = (status) => {
+      setStatusFilter(status);
+      setSortBy("");
+      setGlobalFilter("");
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    };
+
     return [
       {
         label: "Total Requests",
-        val: kpiStats?.totalRequests || 0,
-        icon: <IconClipboardList size={22} />,
-        color: "blue",
+        value: kpiStats?.totalRequests || 0,
+        icon: IconClipboardList,
+        tone: "blue",
         description: "Active KYC queue",
+        onClick: () => handleKpiClick(""),
       },
       {
         label: "Not Started",
-        val: kpiStats?.not_started || 0,
-        icon: <IconCircleDashed size={22} />,
-        color: "slate",
+        value: kpiStats?.not_started || 0,
+        icon: IconCircleDashed,
+        tone: "slate",
         description: "Yet to begin KYC",
+        onClick: () => handleKpiClick("not_started"),
       },
       {
         label: "Approved",
-        val: kpiStats?.approved || 0,
-        icon: <IconCircleCheck size={22} />,
-        color: "emerald",
+        value: kpiStats?.approved || 0,
+        icon: IconCircleCheck,
+        tone: "emerald",
         description: "Verified users",
+        onClick: () => handleKpiClick("approved"),
       },
       {
         label: "Pending",
-        val: kpiStats?.pending || 0,
-        icon: <IconLoader size={22} className="animate-spin-slow" />,
-        color: "amber",
+        value: kpiStats?.pending || 0,
+        icon: IconLoader,
+        tone: "amber",
         description: "Waiting for review",
+        onClick: () => handleKpiClick("pending"),
       },
       {
         label: "Rejected",
-        val: kpiStats?.rejected || 0,
-        icon: <IconX size={22} />,
-        color: "rose",
+        value: kpiStats?.rejected || 0,
+        icon: IconX,
+        tone: "rose",
         description: "Declined requests",
+        onClick: () => handleKpiClick("rejected"),
       },
     ];
   }, [filteredData, reduxPagination?.total, kpiStats]);
@@ -294,13 +306,13 @@ export default function KYCVerificationPage() {
             <PageHeader
               heading="KYC Verifications"
               icon={<ShieldCheck className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
+              color="bg-app-primary2 shadow-app-primary2"
               subheading="Manage user identity documents."
             />
           </div>
           <Badge
             variant="outline"
-            className="cursor-pointer bg-white hover:bg-app-primary5 text-slate-400 hover:text-white border border-slate-300/60 hover:border-brand-blue transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
+            className="cursor-pointer bg-white hover:bg-app-primary5 text-slate-400 hover:text-white border border-slate-300/60 hover:border-app-primary2 transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
           >
             <Users className="h-4 w-4" strokeWidth={2} />
             <span className="whitespace-nowrap">
@@ -309,31 +321,11 @@ export default function KYCVerificationPage() {
           </Badge>
         </header>
 
-        {/* --- STATS GRID (Staggered) --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          <StatsGrid
-            stats={statsData}
-            colorMap={colorMap}
-            bgMap={bgMap}
-            onCardClick={(label) => {
-              // Reset all filters first
-              setStatusFilter("");
-              setSortBy("");
-              setGlobalFilter("");
-
-              if (label === "Approved") {
-                setStatusFilter("approved");
-              } else if (label === "Not Started") {
-                setStatusFilter("not_started");
-              } else if (label === "Pending") {
-                setStatusFilter("pending");
-              } else if (label === "Rejected") {
-                setStatusFilter("rejected");
-              }
-              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-            }}
-          />
-        </div>
+        {/* --- STATS GRID --- */}
+        <ModuleKpiRow
+          items={kpiItems}
+          loading={loading && !filteredData?.length}
+        />
 
         <KYCVerificationDataTable
           columns={columns}

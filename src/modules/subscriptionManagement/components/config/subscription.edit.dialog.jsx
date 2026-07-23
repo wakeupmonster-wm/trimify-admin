@@ -53,7 +53,7 @@ export function SubscriptionEditDialog({
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-slate-300/60 rounded-xl shadow-2xl">
         <DialogHeader className="px-6 py-5 border-b border-slate-300/60 flex flex-row items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-app-primary2/10 flex items-center justify-center shrink-0">
-            <CreditCard className="w-5 h-5 text-brand-blue" />
+            <CreditCard className="w-5 h-5 text-app-primary2" />
           </div>
           <div>
             <DialogTitle className="text-slate-900 text-lg font-bold text-left">
@@ -101,7 +101,7 @@ export function SubscriptionEditDialog({
                 placeholder="e.g. 34.99"
                 value={formData.price}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -128,7 +128,7 @@ export function SubscriptionEditDialog({
                 placeholder="e.g. Unlimited Projects, Priority Support, Advanced Analytics"
                 value={formData.features}
                 onChange={handleChange}
-                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
                 required
               />
             </div>

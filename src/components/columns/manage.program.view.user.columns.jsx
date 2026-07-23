@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const getViewUserProgramColumns = (onAction) => [
   {
@@ -105,19 +106,24 @@ export const getViewUserProgramColumns = (onAction) => [
       const status = row.original.status || "Inactive";
       const isActive = status === "Active";
       return (
-        <div
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
-            isActive
-              ? "bg-emerald-50 text-emerald-700"
-              : "bg-rose-50 text-rose-700"
-          }`}
-        >
-          <span
-            className={`w-1 h-1 rounded-full ${
-              isActive ? "bg-emerald-600" : "bg-rose-600"
-            }`}
-          />
-          {status}
+        <div className="flex justify-center">
+          <Badge
+            variant="outline"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+              isActive
+                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
+                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100",
+            )}
+          >
+            <span
+              className={cn(
+                "w-1 h-1 rounded-full",
+                isActive ? "bg-emerald-600" : "bg-rose-600",
+              )}
+            />
+            {status}
+          </Badge>
         </div>
       );
     },
@@ -150,7 +156,7 @@ export const getViewUserProgramColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

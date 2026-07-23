@@ -40,25 +40,25 @@ export default function ResponsiveRevenueDashboard({
         {/* --- MOBILE: SELECT BAR (Visible only on small screens) --- */}
         <div className="w-full md:hidden">
           <Select value={activeTab} onValueChange={setActiveTab}>
-            <SelectTrigger className="h-12 w-full rounded-xl bg-slate-200/50 border-none backdrop-blur-md px-4 font-bold text-slate-700 focus:ring-brand-blue">
+            <SelectTrigger className="h-12 w-full rounded-xl bg-slate-200/50 border-none backdrop-blur-md px-4 font-bold text-slate-700 focus:ring-app-primary2">
               <SelectValue placeholder="Select Section" />
             </SelectTrigger>
             <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
               <SelectItem value="overview" className="py-3">
                 <div className="flex items-center gap-2">
-                  <LayoutDashboard size={18} className="text-brand-blue" />
+                  <LayoutDashboard size={18} className="text-app-primary2" />
                   <span className="font-semibold">Overview</span>
                 </div>
               </SelectItem>
               <SelectItem value="transactions" className="py-3">
                 <div className="flex items-center gap-2">
-                  <ReceiptText size={18} className="text-brand-blue" />
+                  <ReceiptText size={18} className="text-app-primary2" />
                   <span className="font-semibold">Transactions</span>
                 </div>
               </SelectItem>
               <SelectItem value="risk" className="py-3">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert size={18} className="text-brand-blue" />
+                  <ShieldAlert size={18} className="text-app-primary2" />
                   <span className="font-semibold">Risk & Cancellation</span>
                 </div>
               </SelectItem>
@@ -70,7 +70,7 @@ export default function ResponsiveRevenueDashboard({
         <TabsList className="hidden md:grid h-12 p-1 bg-slate-200/50 backdrop-blur-md rounded-2xl w-full max-w-max grid-cols-3">
           <TabsTrigger
             value="overview"
-            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-blue transition-all duration-300"
+            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-app-primary2 transition-all duration-300"
           >
             <LayoutDashboard size={16} />
             <span className="font-semibold">Overview</span>
@@ -78,7 +78,7 @@ export default function ResponsiveRevenueDashboard({
 
           <TabsTrigger
             value="transactions"
-            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-blue transition-all"
+            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-app-primary2 transition-all"
           >
             <ReceiptText size={16} />
             <span className="font-semibold">Transactions</span>
@@ -86,7 +86,7 @@ export default function ResponsiveRevenueDashboard({
 
           <TabsTrigger
             value="risk"
-            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-blue transition-all"
+            className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-app-primary2 transition-all"
           >
             <ShieldAlert size={16} />
             <span className="font-semibold">Risk & Cancellation</span>

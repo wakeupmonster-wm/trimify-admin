@@ -62,8 +62,8 @@ export const ProductDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
-              <Package className="h-6 w-6 text-brand-blue" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-app-primary2">
+              <Package className="h-6 w-6 text-app-primary2" />
             </div>
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -137,7 +137,7 @@ export const ProductDialog = ({
                       className={cn(
                         "rounded-md font-bold text-[11px] uppercase tracking-wider border-2 transition-all",
                         formData.type === t
-                          ? "border-brand-blue bg-app-primary2 text-brand-blue"
+                          ? "border-app-primary2 bg-app-primary2 text-app-primary2"
                           : "border-slate-300/60 bg-slate-50 text-slate-400 hover:border-slate-300/60",
                       )}
                     >
@@ -393,7 +393,7 @@ export const ProductDialog = ({
                     placeholder="e.g. MOST POPULAR"
                     value={formData.badgeText || ""}
                     onChange={(e) => updateField("badgeText", e.target.value)}
-                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue w-full pr-24"
+                    className="h-12 px-3.5 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-app-primary2 focus-visible:border-app-primary2 w-full pr-24"
                   />
                   {formData.badgeText && (
                     <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -418,7 +418,7 @@ export const ProductDialog = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-pointer">
-                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-blue transition-colors" />
+                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-app-primary2 transition-colors" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[350px] text-center">
@@ -467,7 +467,7 @@ export const ProductDialog = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="cursor-pointer">
-                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-brand-blue transition-colors" />
+                        <Info className="w-3.5 h-3.5 text-slate-400 hover:text-app-primary2 transition-colors" />
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="right" className="max-w-[350px] text-center">
@@ -542,7 +542,7 @@ export const ProductDialog = ({
                       placeholder={`Feature ${i + 1}`}
                       value={f}
                       onChange={(e) => updateFeature(i, e.target.value)}
-                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-brand-blue focus-visible:border-brand-blue"
+                      className="flex-1 h-10 text-sm font-medium rounded-md border-slate-300/60 shadow-none focus-visible:ring-app-primary2 focus-visible:border-app-primary2"
                     />
                     <button
                       onClick={() => removeFeature(i)}
@@ -554,7 +554,7 @@ export const ProductDialog = ({
                 ))}
                 <button
                   onClick={addFeature}
-                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-brand-blue bg-app-primary2 hover:bg-app-primary5 rounded-md transition-colors border border-brand-blue"
+                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-app-primary2 bg-app-primary2 hover:bg-app-primary5 rounded-md transition-colors border border-app-primary2"
                 >
                   <Plus className="w-4 h-4" /> Add Feature
                 </button>

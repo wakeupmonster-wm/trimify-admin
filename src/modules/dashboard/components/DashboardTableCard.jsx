@@ -45,7 +45,7 @@ const DashboardTableCard = ({
       <div className="flex-1 w-full min-h-[200px] overflow-auto">
         <Table className="min-w-[520px]">
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-b border-slate-100">
+            <TableRow className="hover:bg-transparent border-y border-slate-300/60 bg-slate-100/60 ">
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
@@ -73,7 +73,10 @@ const DashboardTableCard = ({
               </TableRow>
             ) : (
               rows.map((row, idx) => (
-                <TableRow key={row.list_key ?? row.id ?? idx} className="hover:bg-slate-50/50 border-b border-slate-100/60 last:border-0 transition-colors">
+                <TableRow
+                  key={row.list_key ?? row.id ?? idx}
+                  className="hover:bg-slate-100/50 border-y border-slate-200/60 last:border-0 transition-colors"
+                >
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}
@@ -104,8 +107,12 @@ const DashboardTableCard = ({
 
       {footerStat && (
         <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/40 flex items-center justify-between shrink-0">
-          <span className="text-[11px] font-semibold text-slate-500">{footerStat.label}</span>
-          <span className="text-xs font-extrabold text-slate-800">{footerStat.value}</span>
+          <span className="text-[11px] font-semibold text-slate-500">
+            {footerStat.label}
+          </span>
+          <span className="text-xs font-extrabold text-slate-800">
+            {footerStat.value}
+          </span>
         </div>
       )}
     </div>

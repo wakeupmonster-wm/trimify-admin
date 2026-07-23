@@ -259,7 +259,7 @@ export function ProductsDataTable({
                       className={cn(
                         "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                         isActive
-                          ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                          ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2 border-none"
                           : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                       )}
                     >

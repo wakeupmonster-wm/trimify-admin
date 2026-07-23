@@ -5,7 +5,13 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, Loader2, PlayCircle, UploadCloud } from "lucide-react";
+import {
+  Save,
+  Loader2,
+  PlayCircle,
+  UploadCloud,
+  ArrowLeft,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -168,7 +174,7 @@ const AddFitzoneSessionPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEdit ? "Edit Session" : "Add Session"}
@@ -180,6 +186,17 @@ const AddFitzoneSessionPage = () => {
                     : "Add a new workout session with videos."
                 }
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -198,7 +215,7 @@ const AddFitzoneSessionPage = () => {
                 value={sessionTitle}
                 onChange={(e) => setSessionTitle(e.target.value)}
                 placeholder="Enter Title Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -212,7 +229,7 @@ const AddFitzoneSessionPage = () => {
                 value={sessionDetails}
                 onChange={(e) => setSessionDetails(e.target.value)}
                 placeholder="Enter Details Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
               />
             </div>
 
@@ -241,8 +258,8 @@ const AddFitzoneSessionPage = () => {
               <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
-                    ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    ? "border-app-primary2 bg-blue-50"
+                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -256,7 +273,7 @@ const AddFitzoneSessionPage = () => {
                   ref={fileInputRef}
                   onChange={handleVideoChange}
                 />
-                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                 <p className="text-sm font-semibold text-slate-700">
                   {videoFile
                     ? videoFile.name
@@ -277,7 +294,7 @@ const AddFitzoneSessionPage = () => {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="Enter Video URL here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
               />
             </div>
 
@@ -290,7 +307,7 @@ const AddFitzoneSessionPage = () => {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="Enter Video Duration"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
               />
             </div>
 
@@ -305,7 +322,7 @@ const AddFitzoneSessionPage = () => {
                 onValueChange={(val) => setSessionCategoryId(val)}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -327,7 +344,7 @@ const AddFitzoneSessionPage = () => {
                 value={stepDescription}
                 onChange={(e) => setStepDescription(e.target.value)}
                 placeholder="Enter description"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Note: Please enter each step on a new line.

@@ -2,7 +2,13 @@ import React from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Ellipsis, ArrowUpCircle, CalendarOff, ShieldOff } from "lucide-react";
+import {
+  Ellipsis,
+  ArrowUpCircle,
+  CalendarOff,
+  ShieldOff,
+  Eye,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -11,12 +17,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const STATUS_STYLE = {
-  Active: "bg-emerald-50 text-emerald-600",
-  Expired: "bg-amber-50 text-amber-600",
-  Revoked: "bg-rose-50 text-rose-600",
-};
 
 const formatDate = (value) => {
   if (!value) return "-";
@@ -136,16 +136,52 @@ export const getSubscriberColumns = (onAction) => [
     ),
     size: 150,
     minSize: 150,
-    cell: ({ row }) => (
-      <Badge
-        className={cn(
-          "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5",
-          STATUS_STYLE[row.original.status] || "bg-slate-100 text-slate-500",
-        )}
-      >
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const rawStatus = row.original.status || "Unknown";
+      let config = {
+        bg: "bg-slate-100/70",
+        text: "text-slate-700",
+        dot: "bg-slate-500",
+        hover: "hover:bg-slate-100",
+      };
+      if (rawStatus === "Active") {
+        config = {
+          bg: "bg-emerald-100/70",
+          text: "text-emerald-700",
+          dot: "bg-emerald-600",
+          hover: "hover:bg-emerald-100",
+        };
+      } else if (rawStatus === "Expired") {
+        config = {
+          bg: "bg-amber-100/70",
+          text: "text-amber-700",
+          dot: "bg-amber-600",
+          hover: "hover:bg-amber-100",
+        };
+      } else if (rawStatus === "Revoked") {
+        config = {
+          bg: "bg-rose-100/70",
+          text: "text-rose-700",
+          dot: "bg-rose-600",
+          hover: "hover:bg-rose-100",
+        };
+      }
+
+      return (
+        <Badge
+          variant="outline"
+          className={cn(
+            "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+            config.bg,
+            config.text,
+            config.hover,
+          )}
+        >
+          <span className={cn("w-1 h-1 rounded-full", config.dot)} />
+          {rawStatus}
+        </Badge>
+      );
+    },
   },
   {
     id: "actions",
@@ -177,7 +213,15 @@ export const getSubscriberColumns = (onAction) => [
                 Manage
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-app-primary2/10 focus:text-brand-blue font-semibold text-xs"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-app-primary2/10 focus:text-app-primary2 font-semibold text-xs"
+                onClick={() => onAction(sub, "view")}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                View User
+              </DropdownMenuItem>
+              {/* 
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-app-primary2/10 focus:text-app-primary2 font-semibold text-xs"
                 onClick={() => onAction(sub, "upgrade")}
               >
                 <ArrowUpCircle className="w-3.5 h-3.5" />
@@ -199,6 +243,7 @@ export const getSubscriberColumns = (onAction) => [
                 <ShieldOff className="w-3.5 h-3.5" />
                 Revoke Access
               </DropdownMenuItem>
+              */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

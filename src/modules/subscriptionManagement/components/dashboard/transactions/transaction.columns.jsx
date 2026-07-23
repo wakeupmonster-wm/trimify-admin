@@ -3,11 +3,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const STATUS_STYLE = {
-  success: "bg-emerald-50 text-emerald-600",
-  failed: "bg-rose-50 text-rose-600",
-  pending: "bg-amber-50 text-amber-600",
-};
+
 
 export const getTransactionColumns = () => [
   {
@@ -83,10 +79,53 @@ export const getTransactionColumns = () => [
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">Status</div>,
     size: 120,
     minSize: 120,
-    cell: ({ row }) => (
-      <Badge className={cn("text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5", STATUS_STYLE[row.original.status] || "bg-slate-100 text-slate-500")}>
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const rawStatus = row.original.status || "Unknown";
+      let config = {
+        bg: "bg-slate-100/70",
+        text: "text-slate-700",
+        dot: "bg-slate-500",
+        hover: "hover:bg-slate-100",
+      };
+      
+      const s = rawStatus.toLowerCase();
+      if (s === "success" || s === "active") {
+        config = {
+          bg: "bg-emerald-100/70",
+          text: "text-emerald-700",
+          dot: "bg-emerald-600",
+          hover: "hover:bg-emerald-100",
+        };
+      } else if (s === "pending") {
+        config = {
+          bg: "bg-amber-100/70",
+          text: "text-amber-700",
+          dot: "bg-amber-600",
+          hover: "hover:bg-amber-100",
+        };
+      } else if (s === "failed" || s === "revoked") {
+        config = {
+          bg: "bg-rose-100/70",
+          text: "text-rose-700",
+          dot: "bg-rose-600",
+          hover: "hover:bg-rose-100",
+        };
+      }
+
+      return (
+        <Badge
+          variant="outline"
+          className={cn(
+            "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+            config.bg,
+            config.text,
+            config.hover
+          )}
+        >
+          <span className={cn("w-1 h-1 rounded-full", config.dot)} />
+          {rawStatus}
+        </Badge>
+      );
+    },
   },
 ];

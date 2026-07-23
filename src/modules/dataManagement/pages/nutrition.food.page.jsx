@@ -72,7 +72,7 @@ const NutritionFoodPage = () => {
               <PageHeader
                 heading="Nutrition Food"
                 icon={<Apple className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading="Manage all nutrition food items and recipes."
               />
             </div>
@@ -80,7 +80,7 @@ const NutritionFoodPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/data-management/add-nutrition")}
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border border-slate-300/60 shadow-sm rounded-md px-4 sm:px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Food</span>
@@ -89,7 +89,7 @@ const NutritionFoodPage = () => {
                 onClick={() =>
                   navigate("/admin/data-management/ai-food-upload")
                 }
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border border-slate-300/60 shadow-sm rounded-md px-4 sm:px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <UploadCloud className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Upload Food</span>

@@ -54,12 +54,12 @@ const DashboardHead = ({
             <TooltipProvider>
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
-                  <div className="cursor-help text-slate-400 hover:text-brand-blue transition-colors">
+                  <div className="cursor-help text-slate-400 hover:text-app-primary2 transition-colors">
                     <Info size={14} strokeWidth={2.5} />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
-                  className="bg-slate-900 border-slate-800 text-slate-100 max-w-[250px] p-2.5 rounded-lg text-[11px] font-medium leading-relaxed shadow-xl"
+                  className="bg-slate-900 border-slate-800 text-slate-100 max-w-xs p-2.5 rounded-lg text-[11px] font-medium leading-relaxed shadow-xl"
                   side="right"
                 >
                   {tooltipText}

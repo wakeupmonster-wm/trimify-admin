@@ -7,20 +7,17 @@ import {
   Calculator,
   Download,
   Loader2,
+  Star,
+  Crown,
 } from "lucide-react";
-import { DataTable } from "@/components/shared/datatable";
-import StatsGrid from "@/components/common/stats.grid";
-import ErrorState from "@/components/shared/ErrorState";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { colorMap, bgMap } from "@/constants/colors";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
+import ErrorState from "@/components/shared/ErrorState";
+import { Button } from "@/components/ui/button";
 import { getTransactionColumns } from "./transaction.columns";
 import {
   fetchTransactions,
@@ -31,8 +28,6 @@ import { downloadCsvBlob } from "../../../utils/downloadCsvBlob";
 
 // Only "success" is confirmed in the API docs — extend this list once backend
 // confirms the full enum (e.g. failed/pending).
-const STATUS_OPTIONS = ["All", "success"];
-
 export default function TransactionsView() {
   const dispatch = useDispatch();
   const {
@@ -48,8 +43,8 @@ export default function TransactionsView() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [planFilter, setPlanFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [planFilter, setPlanFilter] = useState("");
 
   useEffect(() => {
     if (!plans?.length) dispatch(fetchSubscriptionPlans({ limit: 100 }));
@@ -65,8 +60,8 @@ export default function TransactionsView() {
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       search: debouncedSearch,
-      status: statusFilter === "All" ? "" : statusFilter,
-      plan_id: planFilter === "all" ? "" : planFilter,
+      status: statusFilter,
+      plan_id: planFilter,
     }),
     [pagination, debouncedSearch, statusFilter, planFilter],
   );
@@ -94,32 +89,75 @@ export default function TransactionsView() {
       ? transactionsSummary.grossRevenue / transactionsSummary.totalTransactions
       : 0;
 
-  const stats = useMemo(
+  const kpiItems = useMemo(
     () => [
       {
         label: "Gross Revenue",
-        val: `$${Number(transactionsSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: <DollarSign size={22} />,
-        color: "blue",
+        value: `$${Number(transactionsSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+        icon: DollarSign,
+        tone: "blue",
         description: "All-time, unfiltered",
       },
       {
         label: "Total Transactions",
-        val: transactionsSummary.totalTransactions || 0,
-        icon: <Receipt size={22} />,
-        color: "emerald",
+        value: transactionsSummary.totalTransactions || 0,
+        icon: Receipt,
+        tone: "emerald",
         description: "All-time, unfiltered",
       },
+      // {
+      //   label: "Basic Plan",
+      //   value: transactionsSummary.basic || 0,
+      //   icon: Star,
+      //   tone: "slate",
+      //   description: "Standard tier",
+      // },
+      // {
+      //   label: "Premium Plan",
+      //   value: transactionsSummary.premium || 0,
+      //   icon: Crown,
+      //   tone: "amber",
+      //   description: "Pro tier",
+      // },
       {
         label: "Avg. Transaction",
-        val: `$${avgTransactionValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: <Calculator size={22} />,
-        color: "aqua",
+        value: `$${avgTransactionValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+        icon: Calculator,
+        tone: "aqua",
         description: "Gross revenue / transactions",
       },
     ],
     [transactionsSummary, avgTransactionValue],
   );
+
+  const filterConfig = useMemo(() => [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: (v) => {
+        setStatusFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: [
+        { label: "Success", value: "success" },
+      ],
+      placeholder: "All Statuses",
+    },
+    {
+      type: "select",
+      id: "planFilter",
+      label: "Plan",
+      value: planFilter,
+      onChange: (v) => {
+        setPlanFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: plans?.map((p) => ({ label: p.title, value: String(p.id) })) || [],
+      placeholder: "All Plans",
+    },
+  ], [statusFilter, planFilter, plans]);
 
   const columns = useMemo(() => getTransactionColumns(), []);
 
@@ -136,15 +174,7 @@ export default function TransactionsView() {
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {isFirstLoad ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-[110px] rounded-xl" />
-          ))
-        ) : (
-          <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
-        )}
-      </div>
+      <ModuleKpiRow items={kpiItems} loading={isFirstLoad} />
 
       <DataTable
         columns={columns}
@@ -161,55 +191,13 @@ export default function TransactionsView() {
         manualFiltering
         toolbarChildren={
           <>
-            <Select
-              value={statusFilter}
-              onValueChange={(v) => {
-                setStatusFilter(v);
-                setPagination((p) => ({ ...p, pageIndex: 0 }));
-              }}
-            >
-              <SelectTrigger className="h-9 3xl:h-10 w-[130px] bg-white border-slate-300/60 text-xs font-medium">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_OPTIONS.map((s) => (
-                  <SelectItem key={s} value={s} className="text-xs capitalize">
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={planFilter}
-              onValueChange={(v) => {
-                setPlanFilter(v);
-                setPagination((p) => ({ ...p, pageIndex: 0 }));
-              }}
-            >
-              <SelectTrigger className="h-9 3xl:h-10 w-[150px] bg-white border-slate-300/60 text-xs font-medium">
-                <SelectValue placeholder="All Plans" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">
-                  All Plans
-                </SelectItem>
-                {plans?.map((plan) => (
-                  <SelectItem
-                    key={plan.id}
-                    value={String(plan.id)}
-                    className="text-xs"
-                  >
-                    {plan.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <DataTableFilters filterConfig={filterConfig} />
             <Button
               type="button"
               variant="outline"
               onClick={handleExport}
               disabled={exportLoading}
-              className="h-9 3xl:h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white transition-all active:scale-95"
+              className="h-9 3xl:h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white text-xs font-medium transition-all active:scale-95"
             >
               {exportLoading ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
@@ -219,6 +207,16 @@ export default function TransactionsView() {
               Export CSV
             </Button>
           </>
+        }
+        activeFiltersChildren={
+          <DataTableActiveChips
+            filterConfig={filterConfig}
+            onClearAll={() => {
+              setStatusFilter("");
+              setPlanFilter("");
+              setPagination((p) => ({ ...p, pageIndex: 0 }));
+            }}
+          />
         }
       />
     </div>

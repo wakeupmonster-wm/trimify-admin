@@ -248,7 +248,7 @@ export function RecentUsersTable({ recentActivityData }) {
                             title={nickname}
                           >
                             <Avatar
-                              className="h-8 w-8 border border-slate-100 shadow-sm cursor-pointer hover:ring-2 hover:ring-brand-blue transition-all"
+                              className="h-8 w-8 border border-slate-100 shadow-sm cursor-pointer hover:ring-2 hover:ring-app-primary2 transition-all"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const photoUrl = Array.isArray(user?.photos)
@@ -392,9 +392,9 @@ export function RecentUsersTable({ recentActivityData }) {
                                 <Eye
                                   size={14}
                                   strokeWidth={2.5}
-                                  className="text-slate-500 group-hover:text-brand-blue"
+                                  className="text-slate-500 group-hover:text-app-primary2"
                                 />
-                                <span className="text-xs font-semibold text-slate-700 group-hover:text-brand-blue">
+                                <span className="text-xs font-semibold text-slate-700 group-hover:text-app-primary2">
                                   View Profile
                                 </span>
                               </DropdownMenuItem>

@@ -104,7 +104,7 @@ const PageHeader = React.forwardRef(
             )}
           </div>
         </div>
-      </motion.div>             
+      </motion.div>
     );
   },
 );

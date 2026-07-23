@@ -657,7 +657,7 @@ export default function ConfigPage() {
         <div className="pb-10 mx-6">
           <div className="bg-slate-800 rounded-xl p-6 flex items-start gap-4 shadow-xl">
             <div className="p-2 bg-app-primary2 rounded-xl mt-0.5">
-              <Info className="w-5 h-5 text-brand-blue" />
+              <Info className="w-5 h-5 text-app-primary2" />
             </div>
             <div className="space-y-1 flex-1">
               <h4 className="text-sm font-black text-white">
@@ -665,7 +665,7 @@ export default function ConfigPage() {
               </h4>
               <p className="text-xs font-medium text-slate-400 leading-relaxed">
                 Changes take effect{" "}
-                <span className="text-brand-blue font-bold">immediately</span>{" "}
+                <span className="text-app-primary2 font-bold">immediately</span>{" "}
                 after saving. Free/Premium limits control daily quotas.
               </p>
             </div>
@@ -818,7 +818,7 @@ const FeatureToggle = ({
         className={cn(
           "p-2 rounded-xl transition-all duration-300",
           checked
-            ? "bg-app-primary2 text-brand-blue"
+            ? "bg-app-primary2 text-app-primary2"
             : "bg-slate-200/60 text-slate-400",
         )}
       >
@@ -837,7 +837,7 @@ const FeatureToggle = ({
       <span
         className={cn(
           "text-[10px] font-black uppercase tracking-widest transition-colors",
-          checked ? "text-brand-blue" : "text-slate-400",
+          checked ? "text-app-primary2" : "text-slate-400",
         )}
       >
         {checked ? "ON" : "OFF"}
@@ -854,13 +854,13 @@ const FeatureToggle = ({
 /* ======================== DYNAMIC FEATURE COMPONENTS ======================== */
 
 const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
-  <div className="flex items-center justify-between bg-white border border-slate-100 p-3 rounded-xl group hover:border-brand-blue transition-all shadow-sm">
+  <div className="flex items-center justify-between bg-white border border-slate-100 p-3 rounded-xl group hover:border-app-primary2 transition-all shadow-sm">
     <div className="flex items-center gap-3">
       <div
         className={cn(
           "p-2 rounded-lg flex items-center justify-center",
           feature.isActive
-            ? "bg-app-primary2 text-brand-blue"
+            ? "bg-app-primary2 text-app-primary2"
             : "bg-slate-100 text-slate-400",
         )}
       >
@@ -884,7 +884,7 @@ const DynamicFeatureItem = ({ feature, onEdit, onToggle, onDelete }) => (
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 rounded-lg text-slate-400 hover:text-brand-blue"
+        className="h-8 w-8 rounded-lg text-slate-400 hover:text-app-primary2"
         onClick={() => onEdit(feature)}
       >
         <Edit className="w-3.5 h-3.5" />

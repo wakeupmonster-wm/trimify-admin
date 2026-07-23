@@ -129,12 +129,12 @@ const navigationData = {
         { title: "Transactions", url: "/admin/subscription-management/transactions" },
       ],
     },
-    {
-      title: "Transaction Management",
-      url: "/admin/transaction-management",
-      icon: IconReceipt,
-      badge: null,
-    },
+    // {
+    //   title: "Transaction Management",
+    //   url: "/admin/transaction-management",
+    //   icon: IconReceipt,
+    //   badge: null,
+    // },
     {
       title: "Content Management",
       url: "/admin/cms-management",

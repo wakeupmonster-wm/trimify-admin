@@ -67,9 +67,24 @@ const TrendChartCard = ({
                 {series.map((s) => {
                   if (s.type === "area") {
                     return (
-                      <linearGradient key={`gradient-${s.key}`} id={`gradient-${s.key}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={s.color} stopOpacity={0.4} />
-                        <stop offset="95%" stopColor={s.color} stopOpacity={0} />
+                      <linearGradient
+                        key={`gradient-${s.key}`}
+                        id={`gradient-${s.key}`}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={s.color}
+                          stopOpacity={0.4}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={s.color}
+                          stopOpacity={0}
+                        />
                       </linearGradient>
                     );
                   }
@@ -84,7 +99,12 @@ const TrendChartCard = ({
                 tickLine={false}
                 tickMargin={10}
                 tickFormatter={(value) => {
-                  if (data.length === 1 && String(value).toLowerCase() === "today" && periodLabel && periodLabel !== "Today") {
+                  if (
+                    data.length === 1 &&
+                    String(value).toLowerCase() === "today" &&
+                    periodLabel &&
+                    periodLabel !== "Today"
+                  ) {
                     // Custom date ranges come back as "Mar 01 - Mar 01, 2026", we just use it directly
                     // Pre-defined ranges like Yesterday come back as "Yesterday"
                     return periodLabel;
@@ -107,7 +127,12 @@ const TrendChartCard = ({
                   <ChartTooltipContent
                     className="bg-white"
                     labelFormatter={(label) => {
-                      if (data.length === 1 && String(label).toLowerCase() === "today" && periodLabel && periodLabel !== "Today") {
+                      if (
+                        data.length === 1 &&
+                        String(label).toLowerCase() === "today" &&
+                        periodLabel &&
+                        periodLabel !== "Today"
+                      ) {
                         return periodLabel;
                       }
                       return label;
@@ -119,7 +144,10 @@ const TrendChartCard = ({
                           <div className="flex items-center gap-1.5">
                             <div
                               className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
-                              style={{ backgroundColor: matchedSeries?.color || "hsl(215, 16%, 65%)" }}
+                              style={{
+                                backgroundColor:
+                                  matchedSeries?.color || "hsl(215, 16%, 65%)",
+                              }}
                             />
                             <span className="text-muted-foreground">
                               {matchedSeries?.label || name}
@@ -133,7 +161,12 @@ const TrendChartCard = ({
                     }}
                   />
                 }
-                cursor={{ stroke: "hsl(215, 20%, 90%)", strokeWidth: 1, strokeDasharray: "4 4", fill: "transparent" }}
+                cursor={{
+                  stroke: "hsl(215, 20%, 90%)",
+                  strokeWidth: 1,
+                  strokeDasharray: "4 4",
+                  fill: "transparent",
+                }}
               />
               <ChartLegend content={<ChartLegendContent />} />
               {series.map((s) => {
@@ -155,7 +188,7 @@ const TrendChartCard = ({
                       type="monotone"
                       dataKey={s.key}
                       stroke={s.color}
-                      strokeWidth={3}
+                      strokeWidth={1.5}
                       fillOpacity={1}
                       fill={`url(#gradient-${s.key})`}
                       activeDot={{ r: 6, strokeWidth: 0, fill: s.color }}
@@ -168,7 +201,7 @@ const TrendChartCard = ({
                       type="monotone"
                       dataKey={s.key}
                       stroke={s.color}
-                      strokeWidth={2}
+                      strokeWidth={1.5}
                       dot={false}
                       activeDot={{ r: 4 }}
                     />
@@ -186,8 +219,8 @@ const TrendChartCard = ({
         )}
 
         {note && (
-          <div className="mt-auto mx-2 flex items-start gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
-            <Info size={12} className="text-brand-blue mt-0.5 shrink-0" />
+          <div className="mt-4 mx-2 flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
+            <Info size={12} className="text-app-primary2 mt-0.5 shrink-0" />
             {note}
           </div>
         )}

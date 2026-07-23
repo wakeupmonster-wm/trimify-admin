@@ -146,7 +146,7 @@ const NotificationManagePage = () => {
               <PageHeader
                 heading="Manage Notification"
                 icon={<Bell className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading="Create and manage notifications sent to users."
               />
             </div>
@@ -160,7 +160,7 @@ const NotificationManagePage = () => {
               onClick={() => setActiveTab("push")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
                 activeTab === "push"
-                  ? "text-brand-blue border-b-2 border-brand-blue"
+                  ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
@@ -170,7 +170,7 @@ const NotificationManagePage = () => {
               onClick={() => setActiveTab("email")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
                 activeTab === "email"
-                  ? "text-brand-blue border-b-2 border-brand-blue"
+                  ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
@@ -180,7 +180,7 @@ const NotificationManagePage = () => {
               onClick={() => setActiveTab("history")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
                 activeTab === "history"
-                  ? "text-brand-blue border-b-2 border-brand-blue"
+                  ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
@@ -301,7 +301,7 @@ const NotificationManagePage = () => {
                     <Button
                       onClick={handlePreCheck}
                       disabled={isSending}
-                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-app-primary2 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {activeTab === "email"
@@ -394,7 +394,7 @@ const NotificationManagePage = () => {
                               {emailSubject || "(No Subject)"}
                             </h3>
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-blue to-brand-hoverBlue flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-brand-hoverBlue flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 T
                               </div>
                               <div className="leading-tight">

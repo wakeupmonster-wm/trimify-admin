@@ -1,15 +1,16 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { LuUserRoundCog } from "react-icons/lu";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
-  LuUserRoundCog,
-  LuUsers,
-  LuUserCheck,
-  LuShield,
-  LuShieldAlert,
-} from "react-icons/lu";
-import { KpiStatCard } from "@/components/shared/KpiStatCard";
-import { Plus, FileText } from "lucide-react";
+  Plus,
+  FileText,
+  Users,
+  UserCheck,
+  Shield,
+  ShieldAlert,
+} from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -121,6 +122,39 @@ const SubAdminManagementPage = () => {
       ).length,
     };
   }, [subAdmins, pagination]);
+
+  const kpiItems = [
+    {
+      icon: Users,
+      label: "Total Admins",
+      value: kpiStats.total.toLocaleString(),
+      description: "Total registered users",
+      tone: "blue",
+    },
+    {
+      icon: UserCheck,
+      label: "Active Accounts",
+      value: kpiStats.active.toLocaleString(),
+      description: "Currently active",
+      tone: "emerald",
+    },
+    {
+      icon: Shield,
+      label: "Sub-Admin Users",
+      value: kpiStats.subAdmins.toLocaleString(),
+      description: "Tap to filter",
+      tone: "indigo",
+      onClick: () => setRoleFilter("0"),
+    },
+    {
+      icon: ShieldAlert,
+      label: "WhiteListing Users",
+      value: kpiStats.whiteListing.toLocaleString(),
+      description: "Tap to filter",
+      tone: "rose",
+      onClick: () => setRoleFilter("1"),
+    },
+  ];
 
   useEffect(() => {
     dispatch(
@@ -243,22 +277,22 @@ const SubAdminManagementPage = () => {
                 icon={
                   <LuUserRoundCog className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-md shadow-blue-200/50"
                 subheading="Manage sub-administrators and their access roles."
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/sub-admin-management/add")}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Sub Admin</span>
               </Button>
               <Button
                 onClick={() => downloadCSV(subAdmins)}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <FileText className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Download CSV</span>
@@ -267,41 +301,10 @@ const SubAdminManagementPage = () => {
           </div>
         </Header>
 
-        {/* KPIs Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <KpiStatCard
-            title="Total Admins"
-            value={kpiStats.total}
-            icon={LuUsers}
-            colorClass="text-brand-blue"
-            bgClass="bg-blue-50"
-            description="Total registered users"
-          />
-          <KpiStatCard
-            title="Active Accounts"
-            value={kpiStats.active}
-            icon={LuUserCheck}
-            colorClass="text-emerald-600"
-            bgClass="bg-emerald-50"
-            description="Currently active"
-          />
-          <KpiStatCard
-            title="Sub-Admin Users"
-            value={kpiStats.subAdmins}
-            icon={LuShield}
-            colorClass="text-indigo-600"
-            bgClass="bg-indigo-50"
-            description="Standard sub-admins"
-          />
-          <KpiStatCard
-            title="WhiteListing Users"
-            value={kpiStats.whiteListing}
-            icon={LuShieldAlert}
-            colorClass="text-rose-600"
-            bgClass="bg-rose-50"
-            description="Whitelisting capabilities"
-          />
-        </div>
+        <ModuleKpiRow
+          items={kpiItems}
+          loading={loading && !subAdmins?.length}
+        />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

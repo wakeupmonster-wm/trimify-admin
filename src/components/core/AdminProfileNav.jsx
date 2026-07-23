@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSelector } from "react-redux";
-import dummyImg from "@/assets/web/avatar.png";
+import dummyImg from "@/assets/web/owner.png";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
@@ -54,7 +54,7 @@ export function AdminProfileNav() {
           side="bottom"
           className="flex flex-col gap-1 p-3 bg-slate-50 border-slate-300/60 shadow-md"
         >
-          <p className="font-bold text-brand-blue">{displayName}</p>
+          <p className="font-bold text-app-primary2">{displayName}</p>
           <p className="text-xs text-slate-500">{displayEmail}</p>
         </TooltipContent>
       </Tooltip>

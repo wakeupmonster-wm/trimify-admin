@@ -163,7 +163,7 @@ export function TodayAtAGlance({
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-300/60 hover:border-brand-blue hover:shadow-sm cursor-pointer group flex flex-col justify-between min-h-[128px]"
+                  className="bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-300/60 hover:border-app-primary2 hover:shadow-sm cursor-pointer group flex flex-col justify-between min-h-[128px]"
                   onClick={() => {
                     sessionStorage.clear();
                     navigate(stat.route, {

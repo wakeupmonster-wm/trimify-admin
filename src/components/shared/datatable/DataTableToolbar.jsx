@@ -12,13 +12,15 @@ export function DataTableToolbar({
 }) {
   return (
     <div className="flex flex-col">
-      <div className={`w-full flex flex-col md:flex-row items-center justify-between gap-4 py-1 ${children ? "" :"mb-2"}`}>
+      <div
+        className={`w-full flex flex-col md:flex-row items-center justify-between gap-4 py-1 ${children ? "" : "mb-2"}`}
+      >
         {/* 1. LEFT SIDE: Search Input (Expanded) */}
         <div className="relative flex-1 min-w-0 w-full md:max-w-full">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
           <Input
             placeholder={searchPlaceholder}
-            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter?.(e.target.value)}
           />

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
-import trimifyLogo2 from "@/assets/web/trimifyLogo2.png";
+import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,8 +67,8 @@ export function LoginForm({ className, ...props }) {
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="inline-flex items-center justify-center mx-auto w-44 h-12 mb-1">
             <img
-              src={trimifyLogo2}
-              alt={trimifyLogo2}
+              src={trimifyLogo}
+              alt={trimifyLogo}
               loading="lazy"
               className="h-full w-full"
             />
@@ -85,7 +85,7 @@ export function LoginForm({ className, ...props }) {
               Email
             </FieldLabel>
             <div className="relative">
-              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-blue" />
+              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-app-primary2" />
               <Input
                 id="email"
                 type="email"
@@ -94,7 +94,7 @@ export function LoginForm({ className, ...props }) {
                 className={`w-full px-9 py-5 bg-gray-50 outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-100"
-                    : "focus:border-brand-blue focus-visible:ring-brand-blue"
+                    : "focus:border-app-primary2 focus-visible:ring-app-primary2"
                 }`}
               />
             </div>
@@ -117,7 +117,7 @@ export function LoginForm({ className, ...props }) {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-blue" />
+              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-app-primary2" />
               <Input
                 id="password"
                 // Dynamic type based on state
@@ -127,7 +127,7 @@ export function LoginForm({ className, ...props }) {
                 className={`w-full px-9 py-5 pr-12 bg-gray-50 border !outline-none transition-all ${
                   errors.password
                     ? "border-red-500 focus-visible:ring-red-100"
-                    : "focus:border-brand-blue focus-visible:ring-brand-blue"
+                    : "focus:border-app-primary2 focus-visible:ring-app-primary2"
                 }`}
               />
 
@@ -138,9 +138,9 @@ export function LoginForm({ className, ...props }) {
                 tabIndex="-1" // Prevents tabbing to the eye icon before the next field
               >
                 {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-brand-blue" />
+                  <EyeOff className="h-4 w-4 text-app-primary2" />
                 ) : (
-                  <Eye className="h-4 w-4 text-brand-blue" />
+                  <Eye className="h-4 w-4 text-app-primary2" />
                 )}
               </button>
             </div>

@@ -151,7 +151,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-300/60 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-brand-blue focus-visible:ring-0",
+              "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-300/60 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-app-primary2 focus-visible:ring-0",
               compact ? "h-8 text-xs px-2 gap-2" : "h-10 text-xs gap-3",
               !date && "text-slate-400",
             )}
@@ -194,7 +194,7 @@ export function CalendarDateRangePicker({
                 className={cn(
                   "w-full text-left px-3 py-2 rounded-md text-[11px] sm:text-xs font-semibold transition-all duration-300",
                   presetValue === p.value
-                    ? "bg-blue-50 text-brand-blue"
+                    ? "bg-blue-50 text-app-primary2"
                     : "text-muted-foreground/90 hover:bg-slate-50 hover:text-foreground",
                 )}
               >
@@ -238,10 +238,10 @@ export function CalendarDateRangePicker({
                       "bg-app-primary2 text-white rounded-l-xl my-0.5",
                     range_end: "bg-app-primary2 text-white rounded-r-xl my-0.5",
                     range_middle:
-                      "bg-app-primary2 text-brand-blue rounded-none my-0.5",
+                      "bg-app-primary2 text-app-primary2 rounded-none my-0.5",
                     selected: "bg-app-primary2 text-white",
                     today:
-                      "text-brand-blue font-bold underline decoration-2 underline-offset-4",
+                      "text-app-primary2 font-bold underline decoration-2 underline-offset-4",
                     outside: "text-slate-300 opacity-50",
                   }}
                 />

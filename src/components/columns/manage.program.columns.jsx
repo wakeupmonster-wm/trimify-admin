@@ -13,7 +13,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-12 text-left text-[11px] font-bold uppercase tracking-wider">
+      <div className="w-12 text-left text-[10px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
@@ -36,7 +36,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "title",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Program Name
       </div>
     ),
@@ -51,7 +51,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "duration",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
         Program Duration
       </div>
     ),
@@ -66,7 +66,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "assignedPrograms",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Assigned Programs
       </div>
     ),
@@ -86,7 +86,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "manageProgram",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Manage Program
       </div>
     ),
@@ -106,7 +106,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Status
       </div>
     ),
@@ -131,7 +131,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     accessorKey: "is_approve_nonapproved_foods_show",
     header: () => (
-      <div className="text-[11px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Food Visibility
       </div>
     ),
@@ -159,7 +159,7 @@ export const getManageProgramColumns = (onAction) => [
   {
     id: "actions",
     header: () => (
-      <div className="text-center text-[11px] font-bold uppercase tracking-wider">
+      <div className="text-center text-[10px] font-bold uppercase tracking-wider">
         Action
       </div>
     ),

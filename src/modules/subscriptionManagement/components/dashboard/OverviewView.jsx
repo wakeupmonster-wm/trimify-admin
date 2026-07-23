@@ -80,7 +80,7 @@ export default function OverviewView({
 
         {/* Users by Plan Type / Transaction Status — moved here from the
             main Dashboard's Composition section. */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <DonutStatCard
             title="Users by Plan Type"
             subtitle="Monthly vs Quarterly"

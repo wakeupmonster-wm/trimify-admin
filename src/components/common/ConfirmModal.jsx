@@ -39,7 +39,7 @@ const ConfirmModal = ({
     : type === "danger"
       ? "bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-100"
       : type === "brand"
-        ? "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-sm shadow-brand-blue"
+        ? "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-sm shadow-app-primary2"
         : type === "success"
           ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100"
           : "bg-orange-500 hover:bg-orange-600 text-white shadow-sm shadow-orange-100";

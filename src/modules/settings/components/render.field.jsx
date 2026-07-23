@@ -43,7 +43,7 @@ export const RenderField = ({
 
           <div className="relative group">
             {Icon && (
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-blue transition-colors">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-app-primary2 transition-colors">
                 <Icon size={18} />
               </div>
             )}
@@ -53,7 +53,7 @@ export const RenderField = ({
                 <FormControl>
                   <SelectTrigger
                     className={cn(
-                      "border border-slate-300/60 text-gray-800 h-11 focus:ring-brand-blue rounded-md transition-all bg-white",
+                      "border border-slate-300/60 text-gray-800 h-11 focus:ring-app-primary2 rounded-md transition-all bg-white",
                       Icon && "pl-11",
                     )}
                   >
@@ -76,7 +76,7 @@ export const RenderField = ({
                   {...field}
                   placeholder={placeholder}
                   className={cn(
-                    "border border-slate-300/60 text-gray-800 min-h-[120px] focus-visible:ring-brand-blue rounded-md transition-all bg-white",
+                    "border border-slate-300/60 text-gray-800 min-h-[120px] focus-visible:ring-app-primary2 rounded-md transition-all bg-white",
                     Icon && "pl-11",
                   )}
                 />
@@ -88,7 +88,7 @@ export const RenderField = ({
                   type={type}
                   placeholder={placeholder}
                   className={cn(
-                    "border border-slate-300/60 text-slate-800 h-10 focus-visible:ring-brand-blue rounded-md transition-all bg-[#f9fafb] shadow-none",
+                    "border border-slate-300/60 text-slate-800 h-10 focus-visible:ring-app-primary2 rounded-md transition-all bg-[#f9fafb] shadow-none",
                     Icon && "pl-11",
                   )}
                 />

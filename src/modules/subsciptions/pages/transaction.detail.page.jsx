@@ -21,7 +21,7 @@ export default function TransactionDetailPage() {
           </p>
           <button
             onClick={handleBack}
-            className="text-sm font-bold text-brand-blue hover:underline"
+            className="text-sm font-bold text-app-primary2 hover:underline"
           >
             ← Go Back
           </button>

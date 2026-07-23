@@ -37,20 +37,20 @@ export function KYCInspectorModal({
           <DashboardHead
             title="Visual Identity Inspector"
             titleSizeClass="text-[18px]"
-            iconSizeClass="w-12 h-12 rounded-xl shadow-lg shadow-brand-blue"
+            iconSizeClass="w-12 h-12 rounded-xl shadow-lg shadow-app-primary2"
             iconInnerClass="h-6 w-6"
             subtitle={
               <div className="flex items-center gap-1">
                 <span className="text-xs font-semibold text-slate-400">
                   Reviewing:
                 </span>
-                <span className="text-xs font-semibold text-brand-blue">
+                <span className="text-xs font-semibold text-app-primary2">
                   {config.userName || "Unknown User"}
                 </span>
               </div>
             }
             Icon={IconShieldCheck}
-            iconColor="text-brand-blue"
+            iconColor="text-app-primary2"
             iconBg="bg-app-primary2"
           />
           {/* <button

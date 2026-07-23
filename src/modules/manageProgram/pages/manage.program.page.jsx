@@ -1,6 +1,13 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { LayoutDashboard, Plus, ClipboardCheck, CheckCircle2, XCircle, Users2 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Plus,
+  ClipboardCheck,
+  CheckCircle2,
+  XCircle,
+  Users2,
+} from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -150,7 +157,9 @@ const ManageProgramPage = () => {
     }
     if (statusFilter) {
       data = data.filter(
-        (p) => String(p.status || "Active").toLowerCase() === statusFilter.toLowerCase(),
+        (p) =>
+          String(p.status || "Active").toLowerCase() ===
+          statusFilter.toLowerCase(),
       );
     }
     return data;
@@ -189,13 +198,16 @@ const ManageProgramPage = () => {
     if (kpis) return kpis;
     const all = programs || [];
     const active = all.filter(
-      (p) => String(p.status || "Active").toLowerCase() === "active"
+      (p) => String(p.status || "Active").toLowerCase() === "active",
     ).length;
     return {
       totalPrograms: serverPagination?.total || all.length,
       activePrograms: active,
       inactivePrograms: all.length - active,
-      totalAssignedUsers: all.reduce((sum, p) => sum + (p.assigned_users_count || 0), 0),
+      totalAssignedUsers: all.reduce(
+        (sum, p) => sum + (p.assigned_users_count || 0),
+        0,
+      ),
     };
   }, [kpis, programs, serverPagination]);
 
@@ -235,22 +247,22 @@ const ManageProgramPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Program"
                 icon={
-                  <LayoutDashboard className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                  <LayoutDashboard className="w-6 h-6 text-white shrink-0" />
                 }
                 color="bg-app-primary2 shadow-md shadow-blue-200/50"
                 subheading="Create, configure, and monitor health and wellness programs."
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm transition-all"
                 onClick={() => navigate("add-program")}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Create Program</span>

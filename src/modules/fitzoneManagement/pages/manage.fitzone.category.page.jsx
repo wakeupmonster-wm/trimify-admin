@@ -21,7 +21,11 @@ const ManageFitzoneCategoryPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { categories, loading, pagination: serverPagination } = useSelector((state) => state.fitzoneCategory);
+  const {
+    categories,
+    loading,
+    pagination: serverPagination,
+  } = useSelector((state) => state.fitzoneCategory);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
@@ -30,14 +34,22 @@ const ManageFitzoneCategoryPage = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getFitzoneCategories({
-        id,
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        search: debouncedSearch
-      }));
+      dispatch(
+        getFitzoneCategories({
+          id,
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearch,
+        }),
+      );
     }
-  }, [dispatch, id, pagination.pageIndex, pagination.pageSize, debouncedSearch]);
+  }, [
+    dispatch,
+    id,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearch,
+  ]);
 
   const handleAction = (row, action) => {
     if (action === "edit") {
@@ -92,7 +104,7 @@ const ManageFitzoneCategoryPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={openAddModal}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Session Category</span>

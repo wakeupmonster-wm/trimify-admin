@@ -17,35 +17,12 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import { ImagePreviewModal } from "../components/image.preview.modal";
 import {
   IconCircleCheck,
-  IconCircleX,
   IconExclamationCircle,
   IconTicket,
 } from "@tabler/icons-react";
-import StatsGrid from "@/components/common/stats.grid";
-import { bgMap, colorMap } from "@/constants/colors";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { Container } from "@/components/common/container";
 import { FiLoader } from "react-icons/fi";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 15 },
-  },
-};
 
 export default function SupportTicketsPage() {
   const navigate = useNavigate();
@@ -135,42 +112,45 @@ export default function SupportTicketsPage() {
   });
 
   // --- Optimized Stats Calculation ---
-  const ticketStats = useMemo(() => {
+  const kpiItems = useMemo(() => {
+    const handleKpiClick = (status) => {
+      setStatusFilter(status);
+      setGlobalFilter("");
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    };
+
     return [
       {
         label: "Total Tickets",
-        val: kpiStats?.totalTickets || 0,
-        icon: <IconTicket size={22} />, // Represents the whole collection
-        color: "blue",
+        value: kpiStats?.totalTickets || 0,
+        icon: IconTicket,
+        tone: "blue",
         description: "All tickets in system",
+        onClick: () => handleKpiClick(""),
       },
       {
         label: "Open",
-        val: kpiStats?.openTickets || 0,
-        icon: <IconExclamationCircle size={22} />, // Represents something needing attention
-        color: "indigo",
+        value: kpiStats?.openTickets || 0,
+        icon: IconExclamationCircle,
+        tone: "indigo",
         description: "Awaiting assignment",
+        onClick: () => handleKpiClick("open"),
       },
       {
         label: "In Progress",
-        val: kpiStats?.inProgressTickets || 0,
-        icon: <FiLoader size={22} />, // Represents active work
-        color: "emerald",
+        value: kpiStats?.inProgressTickets || 0,
+        icon: FiLoader,
+        tone: "emerald",
         description: "Currently being handled",
+        onClick: () => handleKpiClick("in_progress"),
       },
       {
         label: "Resolved",
-        val: kpiStats?.resolvedTickets || 0,
-        icon: <IconCircleCheck size={22} />, // Represents successful completion
-        color: "amber",
+        value: kpiStats?.resolvedTickets || 0,
+        icon: IconCircleCheck,
+        tone: "amber",
         description: "Fixed, pending closure",
-      },
-      {
-        label: "Closed",
-        val: kpiStats?.closedTickets || 0,
-        icon: <IconCircleX size={22} />, // Represents finalized/archived
-        color: "rose",
-        description: "Finalized tickets",
+        onClick: () => handleKpiClick("resolved"),
       },
     ];
   }, [kpiStats]);
@@ -297,36 +277,17 @@ export default function SupportTicketsPage() {
             <PageHeader
               heading="Support Management"
               icon={<Inbox className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue-500/20"
+              color="bg-app-primary2 shadow-app-primary2-500/20"
               subheading="Track and manage customer queries."
             />
           </div>
         </header>
 
-        {/* --- STATS GRID (Staggered) --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsGrid
-            stats={ticketStats.filter((stat) => stat.label !== "Closed")}
-            colorMap={colorMap}
-            bgMap={bgMap}
-            onCardClick={(label) => {
-              // Reset filters first
-              setStatusFilter("");
-              setGlobalFilter("");
-
-              if (label === "Open") {
-                setStatusFilter("open");
-              } else if (label === "In Progress") {
-                setStatusFilter("in_progress");
-              } else if (label === "Closed") {
-                setStatusFilter("closed");
-              } else if (label === "Resolved") {
-                setStatusFilter("resolved");
-              }
-              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-            }}
-          />
-        </div>
+        {/* --- STATS GRID --- */}
+        <ModuleKpiRow
+          items={kpiItems}
+          loading={loading && !myTickets?.length}
+        />
 
         <SupportTicketsDataTables
           columns={columns}

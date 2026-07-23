@@ -27,7 +27,7 @@ import { ProductDialog } from "../components/Dialogs/ProductDialog";
 import { getProductsColumns } from "../components/products.columns";
 import { ProductsDataTable } from "../components/ProductsDataTable";
 import { PageHeader } from "@/components/common/headSubhead";
-import StatsGrid from "@/components/common/stats.grid";
+
 import { Container } from "@/components/common/container";
 import { bgMap, colorMap } from "@/constants/colors";
 import { GrCatalog } from "react-icons/gr";
@@ -62,7 +62,7 @@ const EMPTY_PRODUCT = {
 const CATEGORY_MAP = {
   PREMIUM_PLAN: {
     label: "Premium Plan",
-    color: "text-brand-blue",
+    color: "text-app-primary2",
   },
   SUPER_KEEN: { label: "Super Keen", color: "text-amber-600" },
   SUPERCHARGE: {
@@ -318,7 +318,7 @@ export default function ProductsPage() {
               icon={
                 <GrCatalog strokeWidth={2} className="w-9 h-9 text-white" />
               }
-              color="bg-app-primary2 shadow-brand-blue"
+              color="bg-app-primary2 shadow-app-primary2"
               subheading="Manage subscription plans & consumable packs."
             />
             <div className="flex items-center gap-2 w-full lg:w-auto">
@@ -380,7 +380,7 @@ export default function ProductsPage() {
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
               <Input
                 placeholder="Search by name, key or product ID..."
-                className="pl-9 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+                className="pl-9 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -416,7 +416,7 @@ export default function ProductsPage() {
                       <SelectItem
                         key={tab.key}
                         value={tab.key}
-                        className="text-[10px] font-black uppercase tracking-widest focus:bg-app-primary2 focus:text-brand-blue"
+                        className="text-[10px] font-black uppercase tracking-widest focus:bg-app-primary2 focus:text-app-primary2"
                       >
                         <div className="flex flex-1 items-center justify-between w-full gap-8">
                           <span>{tab.label}</span>
@@ -442,7 +442,7 @@ export default function ProductsPage() {
                     className={cn(
                       "px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-2 whitespace-nowrap",
                       activeTab === tab.key
-                        ? "bg-app-primary2 text-white shadow-md shadow-brand-blue"
+                        ? "bg-app-primary2 text-white shadow-md shadow-app-primary2"
                         : "text-slate-400 hover:text-slate-600 hover:bg-slate-50",
                     )}
                   >
@@ -451,7 +451,7 @@ export default function ProductsPage() {
                       className={cn(
                         "text-[9px] font-black px-1.5 py-0.5 rounded-full transition-colors",
                         activeTab === tab.key
-                          ? "bg-white text-brand-blue"
+                          ? "bg-white text-app-primary2"
                           : "bg-slate-100 text-slate-400",
                       )}
                     >

@@ -64,11 +64,11 @@ export default function AdminLayout() {
   const { pathname } = useLocation();
   const mainRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (mainRef.current) {
-  //     mainRef.current.scrollTo(0, 0);
-  //   }
-  // }, [pathname]);
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo(0, 0);
+    }
+  }, [pathname]);
 
   // if (!isAuthenticated || user?.role !== ROLES.ADMIN) {
   //   return navigate("/");
@@ -76,26 +76,26 @@ export default function AdminLayout() {
 
   return (
     // <SocketProvider token={token}>
-      // <GlobalSocketHandler />
-      <SidebarProvider>
-        {/* <GlobalCampaignAlert /> */}
-        {/* 1. The Sidebar remains fixed on the left */}
-        <AppSidebar />
+    // <GlobalSocketHandler />
+    <SidebarProvider>
+      {/* <GlobalCampaignAlert /> */}
+      {/* 1. The Sidebar remains fixed on the left */}
+      <AppSidebar />
 
-        {/* 2. The Inset area creates the "frame" for your content */}
-        <SidebarInset className="flex h-screen flex-1 flex-col min-w-0 bg-white overflow-hidden">
-          <SiteHeader />
+      {/* 2. The Inset area creates the "frame" for your content */}
+      <SidebarInset className="flex h-screen flex-1 flex-col min-w-0 bg-white overflow-hidden">
+        <SiteHeader />
 
-          {/* 3. The Main content area with proper max-width for readability */}
-          <main
-            ref={mainRef}
-            className="flex-1 overflow-y-auto overflow-x-hidden bg-white text-foreground font-['Plus_Jakarta_Sans',sans-serif]"
-          >
-            {/* bg-[#F8FAFC] */}
-            <Outlet />
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
+        {/* 3. The Main content area with proper max-width for readability */}
+        <main
+          ref={mainRef}
+          className="flex-1 overflow-y-auto overflow-x-hidden bg-white text-foreground font-['Plus_Jakarta_Sans',sans-serif]"
+        >
+          {/* bg-[#F8FAFC] */}
+          <Outlet />
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
     // </SocketProvider>
   );
 }

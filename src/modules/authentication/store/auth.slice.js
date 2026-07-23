@@ -47,6 +47,30 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
+export const requestOtpThunk = createAsyncThunk(
+  "auth/requestOtp",
+  async (data, { rejectWithValue }) => {
+    try {
+      // Mocked for now - hook up real API endpoint when available
+      return { success: true, message: "OTP requested successfully" };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  }
+);
+
+export const verifyOtpThunk = createAsyncThunk(
+  "auth/verifyOtp",
+  async (data, { rejectWithValue }) => {
+    try {
+      // Mocked for now - hook up real API endpoint when available
+      return { success: true, message: "OTP verified successfully" };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  }
+);
+
 /* =========== AUTH SLICE ================ */
 const authSlice = createSlice({
   name: "auth",
@@ -102,6 +126,30 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.isAuthenticated = false;
+      })
+      // requestOtpThunk
+      .addCase(requestOtpThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(requestOtpThunk.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(requestOtpThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // verifyOtpThunk
+      .addCase(verifyOtpThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOtpThunk.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(verifyOtpThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

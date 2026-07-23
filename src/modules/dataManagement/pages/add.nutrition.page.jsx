@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Apple, Save, Loader2 } from "lucide-react";
+import { Apple, Save, Loader2, ArrowLeft } from "lucide-react";
 import Header from "@/components/common/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -125,18 +125,29 @@ const AddNutritionPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEdit ? "Edit Food" : "Add Food"}
                 icon={<Apple className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   isEdit
                     ? "Update existing nutrition food details."
                     : "Add new nutrition food items and recipes."
                 }
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -160,7 +171,7 @@ const AddNutritionPage = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Enter Food Title"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -178,7 +189,7 @@ const AddNutritionPage = () => {
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="Enter Image URL"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 />
                 <p className="text-[10px] text-slate-500 font-medium">
                   Note: Please provide the jpg image URL here
@@ -201,7 +212,7 @@ const AddNutritionPage = () => {
                   value={formData.protein}
                   onChange={handleChange}
                   placeholder="Enter Proteins"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -222,7 +233,7 @@ const AddNutritionPage = () => {
                   value={formData.carbs}
                   onChange={handleChange}
                   placeholder="Enter Carbs"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -243,7 +254,7 @@ const AddNutritionPage = () => {
                   value={formData.calories}
                   onChange={handleChange}
                   placeholder="Enter Calories"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -264,7 +275,7 @@ const AddNutritionPage = () => {
                   value={formData.fats}
                   onChange={handleChange}
                   placeholder="Enter Fats"
-                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   required
                 />
               </div>
@@ -283,7 +294,7 @@ const AddNutritionPage = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Enter Description"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.description?.length || 0}
@@ -302,7 +313,7 @@ const AddNutritionPage = () => {
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select Meal Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -325,7 +336,7 @@ const AddNutritionPage = () => {
                 value={formData.meal_description}
                 onChange={handleChange}
                 placeholder="Enter Meal Instructions"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.meal_description?.length || 0}. Note:
@@ -346,7 +357,7 @@ const AddNutritionPage = () => {
                 value={formData.meal_ingredients}
                 onChange={handleChange}
                 placeholder="Enter ingredients"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60 resize-none p-3"
+                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
               />
               <div className="text-[10px] text-slate-500 font-medium">
                 Character Count: {formData.meal_ingredients?.length || 0}. Note:
@@ -369,7 +380,7 @@ const AddNutritionPage = () => {
                 value={formData.Meal_Serving}
                 onChange={handleChange}
                 placeholder="Enter Meal Serving"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 required
               />
             </div>

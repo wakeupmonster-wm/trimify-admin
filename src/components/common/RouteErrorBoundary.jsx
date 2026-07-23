@@ -113,7 +113,7 @@ export default function RouteErrorBoundary() {
 
           <Button
             variant="outline"
-            className="border-[#46C7CD] text-brand-blue hover:bg-[#46C7CD] hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
+            className="border-[#46C7CD] text-app-primary2 hover:bg-[#46C7CD] hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
             onClick={handleGoHome}
           >
             <Home className="h-4 w-4" /> Back to Home

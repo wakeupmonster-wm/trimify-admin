@@ -201,7 +201,7 @@ export default function ChartUserDistribution({
       <CardFooter className="pt-1">
         <div className="mt-6 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
-            <Info size={14} className="text-brand-blue shrink-0" />
+            <Info size={14} className="text-app-primary2 shrink-0" />
           </div>
           <span>
             {footnote
@@ -210,8 +210,6 @@ export default function ChartUserDistribution({
           </span>
         </div>
       </CardFooter>
-
-      
     </Card>
   );
 }

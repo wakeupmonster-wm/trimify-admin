@@ -740,14 +740,14 @@ export const router = createBrowserRouter([
       },
 
       /*====================== Transaction Management Module ======================*/
-      {
-        path: "transaction-management",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <TransactionManagementPage />
-          </Suspense>
-        ),
-      },
+      // {
+      //   path: "transaction-management",
+      //   element: (
+      //     <Suspense fallback={<PreLoader />}>
+      //       <TransactionManagementPage />
+      //     </Suspense>
+      //   ),
+      // },
 
       /*====================== CMS Management Module ======================*/
       {

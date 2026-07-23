@@ -40,7 +40,7 @@ export const getFitzoneManagementColumns = (onAction) => [
         Fitzone Name
       </div>
     ),
-    size: 300,
+    size: 200,
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-[11px] font-medium text-slate-700 tracking-tight">
@@ -51,12 +51,12 @@ export const getFitzoneManagementColumns = (onAction) => [
   {
     id: "manage",
     header: () => (
-      <div className="text-[10px] text-left font-bold uppercase tracking-wider">
+      <div className="text-[10px] px-1 text-left font-bold uppercase tracking-wider">
         Manage
       </div>
     ),
-    size: 250,
-    minSize: 120,
+    size: 200,
+    minSize: 150,
     cell: ({ row }) => (
       <div className="flex">
         <Button
@@ -67,6 +67,57 @@ export const getFitzoneManagementColumns = (onAction) => [
         </Button>
       </div>
     ),
+  },
+  {
+    accessorKey: "description",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Description
+      </div>
+    ),
+    size: 350,
+    minSize: 300,
+    cell: ({ row }) => {
+      const desc = row.original.description || "-";
+      return (
+        <div
+          className="text-[11px] font-medium text-slate-500 tracking-tight line-clamp-2"
+          title={desc}
+        >
+          {desc}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Created At
+      </div>
+    ),
+    size: 150,
+    minSize: 100,
+    cell: ({ row }) => {
+      const dateVal = row.original.created_at || row.original.createdAt;
+      if (!dateVal) {
+        return (
+          <div className="text-[11px] font-medium text-slate-500 tracking-tight">
+            -
+          </div>
+        );
+      }
+      const formatted = new Date(dateVal).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+      return (
+        <div className="text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {formatted}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -121,7 +172,7 @@ export const getFitzoneManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

@@ -125,7 +125,9 @@ const FitzoneManagementPage = () => {
   const displayData = useMemo(() => {
     if (!statusFilter) return fitzones || [];
     return (fitzones || []).filter(
-      (fz) => String(fz.status || "Active").toLowerCase() === statusFilter.toLowerCase(),
+      (fz) =>
+        String(fz.status || "Active").toLowerCase() ===
+        statusFilter.toLowerCase(),
     );
   }, [fitzones, statusFilter]);
 
@@ -148,13 +150,16 @@ const FitzoneManagementPage = () => {
     if (kpis) return kpis;
     const all = fitzones || [];
     const active = all.filter(
-      (fz) => String(fz.status || "Active").toLowerCase() === "active"
+      (fz) => String(fz.status || "Active").toLowerCase() === "active",
     ).length;
     return {
       totalFitzones: serverPagination?.total || all.length,
       activeFitzones: active,
       inactiveFitzones: all.length - active,
-      totalSessions: all.reduce((sum, fz) => sum + (fz.sessions?.length || fz.session_count || 0), 0),
+      totalSessions: all.reduce(
+        (sum, fz) => sum + (fz.sessions?.length || fz.session_count || 0),
+        0,
+      ),
     };
   }, [kpis, fitzones, serverPagination]);
 
@@ -192,24 +197,21 @@ const FitzoneManagementPage = () => {
 
   return (
     <Container>
-      {/* Top Header Section outside of the white card */}
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Fitzone Management"
-                icon={
-                  <Dumbbell className="w-6 h-6 text-white shrink-0" />
-                }
+                icon={<Dumbbell className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Create, configure, and monitor Fitzone workouts and sessions."
               />
             </div>
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
                 onClick={() => navigate("add-fitzone")}
+                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Create Fitzone</span>
@@ -224,7 +226,9 @@ const FitzoneManagementPage = () => {
           <DataTable
             columns={columns}
             data={displayData}
-            rowCount={isManual ? serverPagination.total : displayData?.length || 0}
+            rowCount={
+              isManual ? serverPagination.total : displayData?.length || 0
+            }
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}

@@ -166,7 +166,7 @@ const TrendChartCard = ({
 
         {note && (
           <div className="mt-1 flex items-start gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
-            <Info size={12} className="text-brand-blue mt-0.5 shrink-0" />
+            <Info size={12} className="text-app-primary2 mt-0.5 shrink-0" />
             {note}
           </div>
         )}

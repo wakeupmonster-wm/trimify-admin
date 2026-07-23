@@ -105,7 +105,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
     <Card className="mx-auto border-none gap-4 shadow-none bg-transparent overflow-hidden font-jakarta w-full">
       <CardHeader className="p-0">
         {/* <div className="flex items-center gap-5">
-          <div className="p-4 bg-app-primary2 rounded-2xl text-brand-blue ring-4 ring-brand-blue">
+          <div className="p-4 bg-app-primary2 rounded-2xl text-app-primary2 ring-4 ring-app-primary2">
             <IconLock size={32} stroke={2.5} />
           </div>
           <div className="space-y-1">
@@ -270,7 +270,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               form.newPassword !== form.confirmPassword ||
               !form.newPassword
             }
-            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary5 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-brand-blue transition-all duration-300"
+            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary5 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-app-primary2 transition-all duration-300"
           >
             {loading ? (
               <div className="flex items-center gap-2">

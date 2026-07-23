@@ -276,11 +276,11 @@ export default function SampleDashboardPage() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-blue font-semibold">
+                    <span className="text-app-primary2 font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>
@@ -447,7 +447,7 @@ export default function SampleDashboardPage() {
                   title="Active vs Churned Users"
                   subtitle="Month-wise comparison"
                   Icon={TrendingUp}
-                  iconColor="text-brand-blue"
+                  iconColor="text-app-primary2"
                   iconBg="bg-blue-50"
                   tooltipText="Churned figures are approximate."
                   data={dashboardExtras?.trends?.activeVsChurned || []}
@@ -735,7 +735,7 @@ export default function SampleDashboardPage() {
                   title="Recent Notifications Sent"
                   subtitle="Latest broadcast/push activity"
                   Icon={Bell}
-                  iconColor="text-brand-blue"
+                  iconColor="text-app-primary2"
                   iconBg="bg-blue-50"
                   rows={dashboardExtras?.tables?.recentNotifications || []}
                   emptyMessage="No notifications sent yet."

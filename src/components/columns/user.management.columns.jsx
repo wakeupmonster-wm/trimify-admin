@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Ellipsis, Eye } from "lucide-react";
 import {
@@ -208,11 +209,31 @@ export const getUserManagementColumns = (onAction) => [
     size: 80,
     minSize: 75,
     cell: ({ row }) => {
-      const status = row.original.status || "Active";
+      const rawStatus = String(row.original.status || "Active");
+      const isActive =
+        rawStatus.toLowerCase() === "active" ||
+        rawStatus === "1" ||
+        rawStatus.toLowerCase() === "true";
+      const displayStatus = isActive ? "Active" : "Inactive";
+
       return (
         <div className="flex justify-center">
-          <Badge className="bg-green-600 hover:bg-green-700 text-white font-bold text-[10px] uppercase rounded-md px-2">
-            {status}
+          <Badge
+            variant="outline"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+              isActive
+                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
+                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100"
+            )}
+          >
+            <span
+              className={cn(
+                "w-1 h-1 rounded-full",
+                isActive ? "bg-emerald-600" : "bg-rose-600"
+              )}
+            />
+            {displayStatus}
           </Badge>
         </div>
       );
@@ -246,7 +267,7 @@ export const getUserManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

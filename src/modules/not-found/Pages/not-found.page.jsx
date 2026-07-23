@@ -13,7 +13,7 @@ export default function NotFoundPage() {
         {/* Visual Element */}
         <div className="relative flex justify-center">
           <div className="bg-white p-6 rounded-full shadow-lg border border-[#E6FFFD] relative">
-            <ShieldAlert className="w-20 h-20 text-brand-blue animate-pulse" />
+            <ShieldAlert className="w-20 h-20 text-app-primary2 animate-pulse" />
             <div className="absolute top-0 right-1">
               <span className="flex h-6 w-6">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#46C7CD] opacity-75"></span>
@@ -26,7 +26,7 @@ export default function NotFoundPage() {
         {/* Text Content */}
         <div className="space-y-4">
           <h1 className="text-8xl font-extrabold text-[#212121] tracking-tighter">
-            4<span className="text-brand-blue">0</span>4
+            4<span className="text-app-primary2">0</span>4
           </h1>
           <h2 className="text-2xl md:text-3xl font-bold text-[#212121]">
             Page Not Found
@@ -41,7 +41,7 @@ export default function NotFoundPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
           <Button
             variant="outline"
-            className="border-[#46C7CD] text-brand-blue hover:bg-[#46C7CD]/5 hover:text-[#46C7CD] h-12 px-8 rounded-full font-bold transition-all"
+            className="border-[#46C7CD] text-app-primary2 hover:bg-[#46C7CD]/5 hover:text-[#46C7CD] h-12 px-8 rounded-full font-bold transition-all"
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Go Back

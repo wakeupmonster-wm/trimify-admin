@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -66,12 +68,52 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
       </div>
     ),
     size: 250,
-    minSize: 150,
+    minSize: 200,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px] tracking-tight">
         {row.original.description || "N/A"}
       </span>
     ),
+  },
+  {
+    accessorKey: "status",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Status
+      </div>
+    ),
+    size: 100,
+    minSize: 80,
+    cell: ({ row }) => {
+      const rawStatus = String(row.original.status || "Active");
+      const isActive =
+        rawStatus.toLowerCase() === "active" ||
+        rawStatus === "1" ||
+        rawStatus.toLowerCase() === "true";
+      const displayStatus = isActive ? "Active" : "Inactive";
+
+      return (
+        <div className="flex justify-center">
+          <Badge
+            variant="outline"
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+              isActive
+                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
+                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100",
+            )}
+          >
+            <span
+              className={cn(
+                "w-1.5 h-1.5 rounded-full",
+                isActive ? "bg-emerald-600" : "bg-rose-600",
+              )}
+            />
+            {displayStatus}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "icon",
@@ -80,8 +122,8 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         Icon
       </div>
     ),
-    size: 80,
-    minSize: 60,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => {
       const iconUrl = row.original.icon || row.original.icon_url;
       return (
@@ -135,7 +177,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
                 onClick={() => onAction && onAction(row.original, "edit")}
               >
                 <Edit className="w-3.5 h-3.5" />

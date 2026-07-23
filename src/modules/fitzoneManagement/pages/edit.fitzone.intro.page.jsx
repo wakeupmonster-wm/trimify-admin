@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Save, FileText } from "lucide-react";
+import { Save, FileText, ArrowLeft } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import {
   getFitzoneIntro,
@@ -79,7 +79,7 @@ const EditFitzoneIntroPage = () => {
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         {/* Top Header */}
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Introduction"
@@ -87,6 +87,17 @@ const EditFitzoneIntroPage = () => {
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Edit the introduction content for this fitzone."
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -103,7 +114,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Begin Your Path to Better Health"
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
               />
             </div>
 
@@ -116,7 +127,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Embrace a healthier lifestyle with our tailored fitness programs"
                 value={subheading}
                 onChange={(e) => setSubheading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
               />
             </div>
 

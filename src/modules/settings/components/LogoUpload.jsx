@@ -82,8 +82,8 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
       <div
         className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
           isDragging
-            ? "border-brand-blue bg-blue-50"
-            : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+            ? "border-app-primary2 bg-blue-50"
+            : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -111,7 +111,7 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
           </div>
         ) : (
           <>
-            <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+            <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
             <p className="text-sm font-semibold text-slate-700 text-center">
               Click or drag and drop to upload
             </p>

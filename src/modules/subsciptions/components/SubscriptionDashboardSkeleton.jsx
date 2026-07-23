@@ -178,7 +178,7 @@ export const SubscriptionDashboardSkeleton = () => {
             <div className="flex-1 flex items-center justify-center py-6">
               {/* Circular Pie Chart Skeleton */}
               <div className="relative flex items-center justify-center h-48 w-48 rounded-full border-[16px] border-slate-100 animate-pulse">
-                <div className="absolute inset-0 rounded-full border-[16px] border-transparent border-t-brand-blue border-r-brand-blue rotate-45" />
+                <div className="absolute inset-0 rounded-full border-[16px] border-transparent border-t-app-primary2 border-r-app-primary2 rotate-45" />
                 <div className="space-y-1.5 text-center">
                   <Skeleton className="h-6 w-16 mx-auto" />
                   <Skeleton className="h-3.5 w-12 mx-auto" />

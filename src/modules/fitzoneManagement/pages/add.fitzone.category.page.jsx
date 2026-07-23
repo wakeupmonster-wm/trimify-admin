@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { UploadCloud, Layers, Send, Loader2 } from "lucide-react";
+import { UploadCloud, Layers, Send, Loader2, ArrowLeft } from "lucide-react";
 import {
   addFitzoneCategory,
   updateFitzoneCategory,
@@ -118,7 +118,7 @@ const AddFitzoneCategoryPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={
@@ -132,6 +132,17 @@ const AddFitzoneCategoryPage = () => {
                     : "Create a new workout session category."
                 }
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -150,7 +161,7 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryName}
                 onChange={(e) => setCategoryName(e.target.value)}
                 placeholder="Enter Title Here"
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium"
               />
             </div>
 
@@ -163,7 +174,7 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryDetails}
                 onChange={(e) => setCategoryDetails(e.target.value)}
                 placeholder="e.g. 20 min , 182 kcal"
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium"
               />
             </div>
 
@@ -190,15 +201,15 @@ const AddFitzoneCategoryPage = () => {
               <div
                 className={`w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
                   isDragging
-                    ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    ? "border-app-primary2 bg-blue-50"
+                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                 <p className="text-sm font-semibold text-slate-700 text-center">
                   {iconFile
                     ? "Icon selected. Click or drag to replace."
@@ -225,7 +236,7 @@ const AddFitzoneCategoryPage = () => {
                 value={htmlContent}
                 onChange={(e) => setHtmlContent(e.target.value)}
                 placeholder="Enter Description"
-                className="w-full px-4 py-3 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors font-medium resize-y min-h-[100px]"
+                className="w-full px-4 py-3 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium resize-y min-h-[100px]"
               />
               <div className="text-[11px] text-slate-500 font-medium">
                 Character Count: {htmlContent.length}

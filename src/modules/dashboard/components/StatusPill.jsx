@@ -1,31 +1,39 @@
 import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 // Reserved status colors, consistent across every dashboard widget:
-// Active/Success/Paid → green · Inactive/Failed/Expired/Churned → red ·
-// Pending/Expiring Soon → amber · Revoked → grey.
+// Active/Success/Paid → green · Inactive/Failed/Churned → red ·
+// Pending/Expiring Soon/Expired → amber · Revoked → grey.
 const STATUS_STYLES = {
-  active: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  success: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  paid: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  inactive: "bg-red-50 text-red-600 border-red-200",
-  failed: "bg-red-50 text-red-600 border-red-200",
-  expired: "bg-red-50 text-red-600 border-red-200",
-  churned: "bg-red-50 text-red-600 border-red-200",
-  pending: "bg-amber-50 text-amber-600 border-amber-200",
-  "expiring soon": "bg-amber-50 text-amber-600 border-amber-200",
-  revoked: "bg-slate-100 text-slate-500 border-slate-300/60",
+  active: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
+  success: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
+  paid: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
+  inactive: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
+  failed: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
+  expired: { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
+  churned: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
+  pending: { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
+  "expiring soon": { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
+  revoked: { bg: "bg-slate-100/70 hover:bg-slate-100", text: "text-slate-700", dot: "bg-slate-500" },
 };
 
 const StatusPill = ({ status }) => {
   const key = String(status || "").toLowerCase();
-  const className =
-    STATUS_STYLES[key] || "bg-slate-100 text-slate-500 border-slate-300/60";
+  const config = STATUS_STYLES[key] || { bg: "bg-slate-100/70 hover:bg-slate-100", text: "text-slate-700", dot: "bg-slate-500" };
+
   return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${className}`}
+    <Badge
+      variant="outline"
+      className={cn(
+        "h-6 px-2.5 rounded-xl border-transparent gap-1.5 font-semibold text-[10px] uppercase tracking-wider transition-colors shadow-none",
+        config.bg,
+        config.text
+      )}
     >
+      <span className={cn("h-1 w-1 rounded-full shrink-0", config.dot)} />
       {status}
-    </span>
+    </Badge>
   );
 };
 

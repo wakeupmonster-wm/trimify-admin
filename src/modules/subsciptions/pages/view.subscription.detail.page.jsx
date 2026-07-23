@@ -245,8 +245,8 @@ export default function ViewSubscriptionDetailPage() {
               className={cn(
                 "group flex items-center gap-2 bg-slate-50 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-slate-300/60 transition-all active:scale-95 shadow-sm",
                 copied
-                  ? "text-brand-blue border-brand-blue bg-app-primary2"
-                  : "text-slate-500 hover:border-brand-blue hover:text-brand-blue hover:bg-white",
+                  ? "text-app-primary2 border-app-primary2 bg-app-primary2"
+                  : "text-slate-500 hover:border-app-primary2 hover:text-app-primary2 hover:bg-white",
               )}
             >
               <Hash className="w-3 h-3 opacity-50" />
@@ -273,7 +273,7 @@ export default function ViewSubscriptionDetailPage() {
                   className="rounded-lg object-cover"
                   src={user?.photo || user?.avatar?.url || dummyImg}
                 />
-                <AvatarFallback className="text-2xl font-black bg-app-primary2 text-brand-blue rounded-lg">
+                <AvatarFallback className="text-2xl font-black bg-app-primary2 text-app-primary2 rounded-lg">
                   {user?.nickname?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
@@ -366,7 +366,7 @@ export default function ViewSubscriptionDetailPage() {
                   <span className="text-slate-300">•</span>
                   <span className="text-slate-400">
                     Granted:{" "}
-                    <span className="text-brand-blue font-bold">
+                    <span className="text-app-primary2 font-bold">
                       {stats.details.superKeens.granted}
                     </span>
                   </span>
@@ -393,7 +393,7 @@ export default function ViewSubscriptionDetailPage() {
                   <span className="text-slate-300">•</span>
                   <span className="text-slate-400">
                     Granted:{" "}
-                    <span className="text-brand-blue font-bold">
+                    <span className="text-app-primary2 font-bold">
                       {stats.details.boosts.granted}
                     </span>
                   </span>
@@ -416,7 +416,7 @@ export default function ViewSubscriptionDetailPage() {
                 title="Access Cycle"
                 subtitle="Entitlement Roadmap"
                 Icon={Clock}
-                iconColor="text-brand-blue"
+                iconColor="text-app-primary2"
                 iconBg="bg-app-primary2"
                 titleSizeClass="text-[15px]"
               />
@@ -467,7 +467,7 @@ export default function ViewSubscriptionDetailPage() {
                           : "—"}
                       </span>
                     </span>
-                    <span className="text-[11px] font-semibold text-brand-blue">
+                    <span className="text-[11px] font-semibold text-app-primary2">
                       {sub?.expiresAt
                         ? `${Math.max(0, Math.ceil((new Date(sub.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)))} Days Remaining`
                         : "No expiry"}
@@ -475,7 +475,7 @@ export default function ViewSubscriptionDetailPage() {
                   </div>
                   <div className="h-2.5 bg-slate-100 border border-slate-300/60/60 rounded-full overflow-hidden shadow-inner p-[1px]">
                     <div
-                      className="h-full bg-gradient-to-r from-brand-blue to-blue-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,217,214,0.3)]"
+                      className="h-full bg-gradient-to-r from-app-primary2 to-blue-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,217,214,0.3)]"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -567,7 +567,7 @@ export default function ViewSubscriptionDetailPage() {
                     value={consumableType}
                     onValueChange={setConsumableType}
                   >
-                    <SelectTrigger className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm">
+                    <SelectTrigger className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-app-primary2 shadow-sm">
                       <SelectValue placeholder="Select Asset" />
                     </SelectTrigger>
                     <SelectContent className="rounded-lg border-slate-300/60 shadow-xl">
@@ -594,7 +594,7 @@ export default function ViewSubscriptionDetailPage() {
                     type="number"
                     value={consumableAmount}
                     onChange={(e) => setConsumableAmount(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm"
+                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-app-primary2 shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -605,7 +605,7 @@ export default function ViewSubscriptionDetailPage() {
                     placeholder="Admin Grant"
                     value={consumableReason}
                     onChange={(e) => setConsumableReason(e.target.value)}
-                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-brand-blue shadow-sm placeholder:text-slate-300"
+                    className="h-10 rounded-lg border-slate-300/60 bg-white text-xs font-bold focus:ring-1 focus:ring-app-primary2 shadow-sm placeholder:text-slate-300"
                   />
                 </div>
                 <Button
@@ -654,7 +654,7 @@ export default function ViewSubscriptionDetailPage() {
                 title="Subscription History"
                 subtitle="Past entitlement logs"
                 Icon={History}
-                iconColor="text-brand-blue"
+                iconColor="text-app-primary2"
                 iconBg="bg-app-primary2"
                 titleSizeClass="text-[15px]"
               />
@@ -889,7 +889,7 @@ export default function ViewSubscriptionDetailPage() {
                               ) {
                                 icon = <FaUserTie className="size-3.5" />;
                                 style =
-                                  "text-brand-blue border-brand-blue bg-app-primary2";
+                                  "text-app-primary2 border-app-primary2 bg-app-primary2";
                               }
 
                               return (
@@ -1130,7 +1130,7 @@ const LocalPagination = ({
                 className={cn(
                   "h-8 w-8 text-xs font-bold rounded-md transition-all",
                   isActive
-                    ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                    ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2 border-none"
                     : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                 )}
               >

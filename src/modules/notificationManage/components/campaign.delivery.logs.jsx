@@ -102,12 +102,12 @@ export default function CampaignDeliveryLogs({
                       key={i}
                       className="hover:bg-slate-50/80 border-slate-100"
                     >
-                      <TableCell className="w-[8%] px-2 py-2.5 text-center">
+                      <TableCell className="w-1/12 px-2 py-2.5 text-center">
                         <span className="text-[11px] font-bold text-slate-500">
                           {i + 1}
                         </span>
                       </TableCell>
-                      <TableCell className="w-[27%] px-4 py-2.5">
+                      <TableCell className="w-1/4 px-4 py-2.5">
                         <span className="text-[13px] font-bold text-slate-700 block truncate">
                           {log.name || log.email || `User ${log.user_id}`}
                         </span>
@@ -117,7 +117,7 @@ export default function CampaignDeliveryLogs({
                           </span>
                         )}
                       </TableCell>
-                      <TableCell className="w-[15%] px-4 py-2.5 text-left">
+                      <TableCell className="w-1/6 px-4 py-2.5 text-left">
                         <Badge
                           className={cn(
                             "px-2 py-0 h-5 text-[9px] font-black uppercase rounded-md",
@@ -131,7 +131,7 @@ export default function CampaignDeliveryLogs({
                           {log.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="w-[30%] px-4 py-2.5">
+                      <TableCell className="w-4/12 px-4 py-2.5">
                         <span
                           className={cn(
                             "text-[11px] font-medium block max-w-sm line-clamp-2",
@@ -145,7 +145,7 @@ export default function CampaignDeliveryLogs({
                             : "Delivered Successfully"}
                         </span>
                       </TableCell>
-                      <TableCell className="w-[20%] px-4 py-2.5 text-center">
+                      <TableCell className="w-1/6 px-4 py-2.5 text-center">
                         <span className="text-[11px] font-medium text-slate-400">
                           {log.createdAt || log.created_at
                             ? new Date(

@@ -10,12 +10,18 @@ import {
   fetchDailyPerformance,
   fetchDashboardExtrasForSubscription,
 } from "../store/subscription-dashboard.slice";
+import { cn } from "@/lib/utils";
 
 export default function SubscriptionDashboardPage() {
   const dispatch = useDispatch();
-  const { overview, overviewLoading, overviewError, charts, dailyPerformance, dashboardExtras } = useSelector(
-    (state) => state.subscriptionDashboard
-  );
+  const {
+    overview,
+    overviewLoading,
+    overviewError,
+    charts,
+    dailyPerformance,
+    dashboardExtras,
+  } = useSelector((state) => state.subscriptionDashboard);
 
   const [scrolled, setScrolled] = useState(false);
   const [dateRange, setDateRange] = useState(() => ({
@@ -23,6 +29,7 @@ export default function SubscriptionDashboardPage() {
     to: endOfDay(new Date()),
     preset: "last30",
   }));
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -59,7 +66,7 @@ export default function SubscriptionDashboardPage() {
       dispatch(fetchCharts(params));
       dispatch(fetchDashboardExtrasForSubscription(params));
     },
-    [dispatch]
+    [dispatch],
   );
 
   useEffect(() => {
@@ -75,17 +82,27 @@ export default function SubscriptionDashboardPage() {
     dispatch(fetchOverview());
     dispatch(fetchDailyPerformance());
     fetchChartsForRange(dateRange);
+    setLastUpdated(new Date());
   };
 
   return (
     <TooltipProvider>
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen w-full min-w-0 overflow-x-hidden">
+      <div
+        className={cn(
+          "flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen w-full min-w-0",
+          scrolled
+            ? "backdrop-blur-md bg-white/95 border-b border-slate-300/60 shadow-sm shadow-slate-300/50"
+            : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
+        )}
+      >
         <DashboardHeader
           scrolled={scrolled}
           dateRange={dateRange}
           onDateChange={setDateRange}
           onRefresh={handleRefresh}
           refreshing={overviewLoading}
+          lastUpdated={lastUpdated}
+          rangeLabel={rangeLabel}
         />
 
         <OverviewView

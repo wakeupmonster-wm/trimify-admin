@@ -45,7 +45,12 @@ const SubscriptionConfigPage = () => {
         search: debouncedSearchTerm,
       }),
     );
-  }, [dispatch, pagination.pageIndex, pagination.pageSize, debouncedSearchTerm]);
+  }, [
+    dispatch,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+  ]);
 
   const handleAction = (row, action) => {
     if (action === "edit") {
@@ -77,25 +82,23 @@ const SubscriptionConfigPage = () => {
       <Container>
         <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
           <Header>
-            <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
-              <div className="flex-1 min-w-0 w-full xl:w-auto">
+            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+              <div className="flex-1 min-w-0 w-full md:w-auto">
                 <PageHeader
                   heading="All Subscription"
-                  icon={
-                    <CreditCard className="w-6 h-6 text-white shrink-0" />
-                  }
+                  icon={<CreditCard className="w-6 h-6 text-white shrink-0" />}
                   color="bg-app-primary2 shadow-blue-200"
                   subheading="Manage subscription plans and their details."
                 />
               </div>
 
-              <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="w-full sm:w-auto flex-1 md:flex-none">
                       <Button
                         disabled
-                        className="w-full sm:w-auto bg-slate-50 border border-slate-200 text-slate-400 rounded-md px-4 sm:px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-none cursor-not-allowed"
+                        className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
                       >
                         <Plus className="w-4 h-4 shrink-0" />
                         <span className="whitespace-nowrap">

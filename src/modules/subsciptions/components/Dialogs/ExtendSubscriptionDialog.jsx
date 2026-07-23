@@ -53,8 +53,8 @@ export const ExtendSubscriptionDialog = ({ open, onOpenChange, onExtend }) => {
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
-              <CalendarPlus className="h-6 w-6 text-brand-blue" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-app-primary2">
+              <CalendarPlus className="h-6 w-6 text-app-primary2" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">

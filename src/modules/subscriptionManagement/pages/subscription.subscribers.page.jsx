@@ -1,9 +1,9 @@
 import React from "react";
-import { Users } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import SubscribersView from "../components/dashboard/subscribers/SubscribersView";
+import { LuUsersRound } from "react-icons/lu";
 
 export default function SubscriptionSubscribersPage() {
   return (
@@ -14,8 +14,8 @@ export default function SubscriptionSubscribersPage() {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Subscribers"
-                icon={<Users className="w-6 h-6 text-white shrink-0" />}
-              color="bg-app-primary2 shadow-blue-200"
+                icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
+                color="bg-app-primary2 shadow-blue-200"
                 subheading="Monitor and manage all subscription subscribers."
               />
             </div>

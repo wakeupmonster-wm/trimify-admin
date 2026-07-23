@@ -98,7 +98,7 @@ export function NavPlateform({ items }) {
                         className={cn(
                           "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                           isActive || hasActiveChild
-                            ? "text-brand-blue"
+                            ? "text-app-primary2"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
@@ -109,7 +109,7 @@ export function NavPlateform({ items }) {
                         className={cn(
                           "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
                           isActive || hasActiveChild
-                            ? "text-brand-blue font-bold"
+                            ? "text-app-primary2 font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
                         )}
                       >
@@ -161,7 +161,7 @@ export function NavPlateform({ items }) {
                     <div
                       className={cn(
                         "flex size-5 items-center justify-center transition-all duration-300",
-                        isActive ? "text-brand-blue" : "text-slate-400",
+                        isActive ? "text-app-primary2" : "text-slate-400",
                       )}
                     >
                       <Icon className="size-5" />
@@ -171,7 +171,7 @@ export function NavPlateform({ items }) {
                       className={cn(
                         "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300 group-data-[collapsible=icon]:hidden",
                         isActive
-                          ? "text-brand-blue font-bold"
+                          ? "text-app-primary2 font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
                       )}
                     >
@@ -211,7 +211,7 @@ export function NavPlateform({ items }) {
                             className={cn(
                               "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
                               isSubActive
-                                ? "!text-brand-blue font-semibold !bg-app-primary2"
+                                ? "!text-app-primary2 font-semibold !bg-app-primary2"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >

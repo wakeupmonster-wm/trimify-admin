@@ -240,7 +240,7 @@ export const getAiFoodColumns = ({ selectedIds, onToggleSelect, onView }) => [
           variant="ghost"
           size="icon"
           onClick={() => onView(row.original.id)}
-          className="h-8 w-8 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 rounded-full transition-colors"
+          className="h-8 w-8 text-slate-400 hover:text-app-primary2 hover:bg-app-primary5 rounded-full transition-colors"
           title="View"
         >
           <Eye className="h-4 w-4" />

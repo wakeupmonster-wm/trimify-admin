@@ -118,7 +118,7 @@ export default function VerifyEmailOtp() {
             type="button"
             disabled={timer > 0 || loading}
             onClick={handleResend}
-            className="text-brand-blue font-semibold hover:underline disabled:opacity-90 disabled:cursor-not-allowed"
+            className="text-app-primary2 font-semibold hover:underline disabled:opacity-90 disabled:cursor-not-allowed"
           >
             Resend {timer > 0 && `(${timer}s)`}
           </button>

@@ -184,7 +184,7 @@ export function ActivityHeatmap({ data }) {
 
             <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-brand-aqua/5 border border-brand-aqua/40 rounded-xl text-foreground/80 text-xs font-medium">
               <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                <Info size={12} className="text-brand-blue" />
+                <Info size={12} className="text-app-primary2" />
               </div>
               {peakCell ? (
                 <span>

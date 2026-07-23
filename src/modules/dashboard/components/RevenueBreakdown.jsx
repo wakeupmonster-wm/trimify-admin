@@ -183,7 +183,7 @@ export function RevenueBreakdown({ data, revenueChartsData }) {
         {/* Insight Box */}
         <div className="mt-8 lg:mt-1 flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
-            <Info size={12} className="text-brand-blue" />
+            <Info size={12} className="text-app-primary2" />
           </div>
           {insightText}
         </div>

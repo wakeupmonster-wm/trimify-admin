@@ -273,7 +273,7 @@ export default function NotificationManagementPages() {
               className={cn(
                 "pb-4 text-[13px] font-semibold transition-all px-2 relative",
                 activeTab === "new"
-                  ? "text-brand-blue"
+                  ? "text-app-primary2"
                   : "text-slate-500 hover:text-slate-600",
               )}
             >
@@ -290,7 +290,7 @@ export default function NotificationManagementPages() {
               className={cn(
                 "pb-4 text-[13px] font-semibold transition-all px-2 relative",
                 activeTab === "history"
-                  ? "text-brand-blue"
+                  ? "text-app-primary2"
                   : "text-slate-500 hover:text-slate-600",
               )}
             >
@@ -321,7 +321,7 @@ export default function NotificationManagementPages() {
                   <div className="px-4 sm:px-6 space-y-8">
                     {/* Channel Type */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-blue">
+                      <div className="flex items-center gap-2 text-app-primary2">
                         <Monitor size={18} />
                         <span className="text-[13px] font-bold">
                           Channel Type
@@ -342,7 +342,7 @@ export default function NotificationManagementPages() {
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "email"
-                              ? "border-brand-blue bg-app-primary2"
+                              ? "border-app-primary2 bg-app-primary2"
                               : "border-slate-100 bg-white hover:border-slate-300/60",
                           )}
                         >
@@ -381,7 +381,7 @@ export default function NotificationManagementPages() {
                           className={cn(
                             "flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left",
                             form.channel === "push"
-                              ? "border-brand-blue bg-app-primary2"
+                              ? "border-app-primary2 bg-app-primary2"
                               : "border-slate-100 bg-white hover:border-slate-300/60",
                           )}
                         >
@@ -409,7 +409,7 @@ export default function NotificationManagementPages() {
 
                     {/* Target Audience */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-blue">
+                      <div className="flex items-center gap-2 text-app-primary2">
                         <LuUsersRound size={18} />
                         <span className="text-[13px] font-bold">
                           Target Audience
@@ -454,7 +454,7 @@ export default function NotificationManagementPages() {
                     {/* Expiry Reminder Schedule (Drip Sequence) */}
                     {form.target === "expiring" && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-brand-blue">
+                        <div className="flex items-center gap-2 text-app-primary2">
                           <Clock size={18} />
                           <span className="text-[13px] font-bold">
                             Reminder Schedule (Drip Sequence)
@@ -467,12 +467,12 @@ export default function NotificationManagementPages() {
                               className={cn(
                                 "flex items-center gap-2 cursor-pointer border px-4 py-2.5 rounded-lg transition-all",
                                 dripDays.includes(day)
-                                  ? "bg-app-primary2 border-brand-blue"
+                                  ? "bg-app-primary2 border-app-primary2"
                                   : "bg-white border-slate-300/60 hover:border-slate-300/60",
                               )}
                             >
                               <Checkbox
-                                className="w-4 h-4 border-slate-300/60 data-[state=checked]:bg-app-primary2 data-[state=checked]:border-brand-blue data-[state=checked]:text-white rounded-[4px]"
+                                className="w-4 h-4 border-slate-300/60 data-[state=checked]:bg-app-primary2 data-[state=checked]:border-app-primary2 data-[state=checked]:text-white rounded-[4px]"
                                 checked={dripDays.includes(day)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
@@ -490,7 +490,7 @@ export default function NotificationManagementPages() {
                                 className={cn(
                                   "text-[13px] font-bold",
                                   dripDays.includes(day)
-                                    ? "text-brand-blue"
+                                    ? "text-app-primary2"
                                     : "text-slate-600",
                                 )}
                               >
@@ -508,7 +508,7 @@ export default function NotificationManagementPages() {
 
                     {/* Internal Reference */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-blue">
+                      <div className="flex items-center gap-2 text-app-primary2">
                         <Link2 size={18} />
                         <span className="text-[13px] font-bold">
                           Internal Reference
@@ -526,7 +526,7 @@ export default function NotificationManagementPages() {
 
                     {/* Creative Content */}
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2 text-brand-blue">
+                      <div className="flex items-center gap-2 text-app-primary2">
                         <Type size={18} />
                         <span className="text-[13px] font-bold">
                           {form.channel === "email"
@@ -565,7 +565,7 @@ export default function NotificationManagementPages() {
                     {/* Call To Action */}
                     {form.channel === "push" && (
                       <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-brand-blue">
+                        <div className="flex items-center gap-2 text-app-primary2">
                           <MousePointer2 size={18} />
                           <span className="text-[13px] font-bold">
                             Call To Action (CTA)
@@ -602,7 +602,7 @@ export default function NotificationManagementPages() {
                       type="button"
                       onClick={handleLaunchClick}
                       disabled={isLoading}
-                      className="w-full h-10 bg-app-primary2 hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-brand-blue flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-10 bg-app-primary2 hover:bg-brand-hoverAqua text-white rounded-lg font-bold text-xs shadow-md shadow-app-primary2 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {isLoading ? "Launching..." : "Launch Campaign"}
@@ -628,7 +628,7 @@ export default function NotificationManagementPages() {
                         "px-3 py-1 rounded-full text-[11px] font-bold",
                         previewType === "email"
                           ? "bg-[#E0E7FF] text-[#4338CA]"
-                          : "bg-app-primary2 text-brand-blue",
+                          : "bg-app-primary2 text-app-primary2",
                       )}
                     >
                       {previewType === "email" ? "Email" : "Mobile Push"}
@@ -715,7 +715,7 @@ export default function NotificationManagementPages() {
                                 {form.subject || "(No Subject)"}
                               </h3>
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary2 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                   K
                                 </div>
                                 <div className="leading-tight">
@@ -780,7 +780,7 @@ export default function NotificationManagementPages() {
         message={
           <>
             Are you sure you want to launch the{" "}
-            <strong className="text-brand-blue font-bold">
+            <strong className="text-app-primary2 font-bold">
               {form.campaignName || "Draft"}
             </strong>{" "}
             campaign? This will be dispatched to the{" "}

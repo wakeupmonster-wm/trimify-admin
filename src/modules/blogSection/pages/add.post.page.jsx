@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, FileText, Loader2 } from "lucide-react";
+import { Save, UploadCloud, FileText, Loader2, ArrowLeft } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -152,15 +152,32 @@ const AddPostPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 w-full">
-            <PageHeader
-              heading={isEdit ? "Edit Blog Post" : "Add Blog Post"}
-              icon={<FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
-              color="bg-app-primary2 shadow-blue-200"
-              subheading={
-                isEdit ? "Update existing blog post." : "Create a new blog post."
-              }
-            />
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
+              <PageHeader
+                heading={isEdit ? "Edit Blog Post" : "Add Blog Post"}
+                icon={
+                  <FileText className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
+                color="bg-app-primary2 shadow-blue-200"
+                subheading={
+                  isEdit
+                    ? "Update existing blog post."
+                    : "Create a new blog post."
+                }
+              />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
+            </div>
           </div>
         </Header>
 
@@ -180,7 +197,7 @@ const AddPostPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 required
               />
             </div>
@@ -196,7 +213,7 @@ const AddPostPage = () => {
                 onValueChange={(val) => handleSelectChange("category", val)}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -246,8 +263,8 @@ const AddPostPage = () => {
               <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
-                    ? "border-brand-blue bg-blue-50"
-                    : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                    ? "border-app-primary2 bg-blue-50"
+                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -261,7 +278,7 @@ const AddPostPage = () => {
                   accept="image/*"
                   onChange={handleFileSelect}
                 />
-                <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                 <p className="text-sm font-semibold text-slate-700">
                   {formData.bannerImage
                     ? formData.bannerImage.name
@@ -281,7 +298,7 @@ const AddPostPage = () => {
                 onValueChange={(val) => handleSelectChange("status", val)}
                 required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue font-medium border-slate-300/60">
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -296,7 +313,7 @@ const AddPostPage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto rounded-xl px-6 py-2.5 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-md px-4 py-2.5 h-10 text-sm font-semibold border-slate-300/60"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -304,7 +321,7 @@ const AddPostPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-xl px-6 py-2.5 h-11 sm:h-10 text-sm sm:text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 py-2.5 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {loading ? (
                   <>

@@ -114,7 +114,7 @@ export default function SettingsPage() {
         {/* <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" /> */}
         <CardHeader className="pb-2">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-app-primary2 rounded-xl text-brand-blue shadow-inner">
+            <div className="p-3 bg-app-primary2 rounded-xl text-app-primary2 shadow-inner">
               <IconLock size={28} />
             </div>
             <div>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
                 form.newPassword !== form.confirmPassword ||
                 !form.newPassword
               }
-              className="h-14 bg-app-primary2 hover:bg-app-primary5 border border-brand-blue text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-14 bg-app-primary2 hover:bg-app-primary5 border border-app-primary2 text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

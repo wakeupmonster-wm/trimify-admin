@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, CalendarCheck } from "lucide-react";
+import { Save, X, CalendarCheck, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import {
   getProgramDuration,
@@ -118,14 +118,25 @@ const AddDietProgramPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex-1 min-w-0 w-full">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Add Diet Meal Plan"
                 icon={<CalendarCheck className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Add a new diet meal to this plan."
               />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back</span>
+              </Button>
             </div>
           </div>
         </Header>
@@ -139,7 +150,7 @@ const AddDietProgramPage = () => {
                   Choose Week
                 </Label>
                 <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Week" />
                   </SelectTrigger>
                   <SelectContent>
@@ -158,7 +169,7 @@ const AddDietProgramPage = () => {
                   Choose Day
                 </Label>
                 <Select value={selectedDay} onValueChange={setSelectedDay}>
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Day" />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,7 +191,7 @@ const AddDietProgramPage = () => {
                   value={selectedMealType}
                   onValueChange={setSelectedMealType}
                 >
-                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-brand-blue transition-colors bg-white font-medium">
+                  <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
                     <SelectValue placeholder="Select Meal" />
                   </SelectTrigger>
                   <SelectContent>
@@ -221,7 +232,7 @@ const AddDietProgramPage = () => {
                   <Input
                     type="text"
                     placeholder="Search Food..."
-                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-brand-blue transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />

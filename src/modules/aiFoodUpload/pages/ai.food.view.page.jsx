@@ -111,8 +111,12 @@ const AiFoodViewPage = () => {
   useAiFoodPolling();
 
   const itemId = Number(id);
-  const item = useSelector((state) => state.aiFood.items.find((i) => i.id === itemId));
-  const isBusy = useSelector((state) => state.aiFood.itemActionIds.includes(itemId));
+  const item = useSelector((state) =>
+    state.aiFood.items.find((i) => i.id === itemId),
+  );
+  const isBusy = useSelector((state) =>
+    state.aiFood.itemActionIds.includes(itemId),
+  );
 
   const [fields, setFields] = useState(() => (item ? buildFields(item) : {}));
   const [syncedStatus, setSyncedStatus] = useState(item?.status);
@@ -148,12 +152,12 @@ const AiFoodViewPage = () => {
             This item isn't in your current review session anymore.
           </p>
           <Button
-            variant="outline"
+            type="button"
             onClick={() => navigate(BACK_TO_LIST)}
-            className="flex items-center gap-2 mt-2"
+            className="bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all mt-2"
           >
-            <ArrowLeft size={16} />
-            Back to List
+            <ArrowLeft className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">Back </span>
           </Button>
         </div>
       </Container>
@@ -161,8 +165,12 @@ const AiFoodViewPage = () => {
   }
 
   const statusMeta = STATUS_META[item.status] || STATUS_META.draft;
-  const isInFlight = (item.status === "draft" || item.status === "processing") && !imageRegenerating;
-  const showReviewForm = item.status === "pending_review" || (item.status === "processing" && imageRegenerating);
+  const isInFlight =
+    (item.status === "draft" || item.status === "processing") &&
+    !imageRegenerating;
+  const showReviewForm =
+    item.status === "pending_review" ||
+    (item.status === "processing" && imageRegenerating);
 
   const handleChange = (name, value) => {
     setFields((prev) => ({ ...prev, [name]: value }));
@@ -232,7 +240,9 @@ const AiFoodViewPage = () => {
       .then(() => toast.success("Regenerating image from your recording…"))
       .catch((error) => {
         setImageRegenerating(false);
-        toast.error(error || "Couldn't process that recording — please try again.");
+        toast.error(
+          error || "Couldn't process that recording — please try again.",
+        );
       });
   };
 
@@ -241,7 +251,9 @@ const AiFoodViewPage = () => {
   // the result whenever it's ready, cancelled or not.
   const handleCancelRegenerate = () => {
     setImageRegenerating(false);
-    toast.info("Stopped waiting — the image will still update automatically once it's ready.");
+    toast.info(
+      "Stopped waiting — the image will still update automatically once it's ready.",
+    );
   };
 
   const handleRemove = () => {
@@ -311,12 +323,14 @@ const AiFoodViewPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full md:w-auto">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={item.food_name}
-                icon={<Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                icon={
+                  <Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+                }
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   <Badge
                     variant="outline"
@@ -334,14 +348,16 @@ const AiFoodViewPage = () => {
               />
             </div>
 
-            <Button
-              variant="outline"
-              onClick={() => navigate(BACK_TO_LIST)}
-              className="w-full sm:w-auto flex-1 md:flex-none rounded-xl px-4 sm:px-5 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50 mt-2 sm:mt-4 md:mt-0 shrink-0"
-            >
-              <ArrowLeft className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
-              <span className="whitespace-nowrap">Back to List</span>
-            </Button>
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <Button
+                type="button"
+                onClick={() => navigate(BACK_TO_LIST)}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Back </span>
+              </Button>
+            </div>
           </div>
         </Header>
 
@@ -486,61 +502,65 @@ const AiFoodViewPage = () => {
 
         {showReviewForm && (
           <>
-          <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
-            <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-4 space-y-3">
-              <div className="flex items-center gap-2">
-                <ImageIcon className="w-3.5 h-3.5 text-app-primary2" />
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Photo</h3>
-              </div>
-              <div className="aspect-square w-full rounded-md overflow-hidden bg-slate-100 border border-slate-200 relative group">
-                {item.Meal_Image_url ? (
-                  <button
-                    type="button"
-                    onClick={() => setPreviewOpen(true)}
-                    className="w-full h-full block"
-                    title="View full image"
-                  >
-                    <img
-                      src={item.Meal_Image_url}
-                      alt={item.food_name}
-                      className={`w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 ${imageRegenerating ? "opacity-40" : ""}`}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
-                      <Eye className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </button>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-300">
-                    <ImageIcon className="w-10 h-10" />
-                  </div>
-                )}
-                {imageRegenerating && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70">
-                    <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
-                    <p className="text-[11px] font-semibold text-slate-600">Regenerating…</p>
+            <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
+              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="w-3.5 h-3.5 text-app-primary2" />
+                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Photo
+                  </h3>
+                </div>
+                <div className="aspect-square w-full rounded-md overflow-hidden bg-slate-100 border border-slate-200 relative group">
+                  {item.Meal_Image_url ? (
                     <button
                       type="button"
-                      onClick={handleCancelRegenerate}
-                      className="text-[11px] font-semibold text-slate-500 underline hover:text-slate-800"
+                      onClick={() => setPreviewOpen(true)}
+                      className="w-full h-full block"
+                      title="View full image"
                     >
-                      Cancel
+                      <img
+                        src={item.Meal_Image_url}
+                        alt={item.food_name}
+                        className={`w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 ${imageRegenerating ? "opacity-40" : ""}`}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
+                        <Eye className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
                     </button>
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={handleRegenerateImage}
-                  disabled={isBusy || imageRegenerating}
-                  title="Regenerate image"
-                  className="absolute bottom-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow border border-slate-200 disabled:opacity-50"
-                >
-                  {isBusy ? (
-                    <Spinner className="w-3.5 h-3.5" />
                   ) : (
-                    <RefreshCcw className="w-3.5 h-3.5 text-slate-600" />
+                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                      <ImageIcon className="w-10 h-10" />
+                    </div>
                   )}
-                </button>
-              </div>
+                  {imageRegenerating && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70">
+                      <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
+                      <p className="text-[11px] font-semibold text-slate-600">
+                        Regenerating…
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleCancelRegenerate}
+                        className="text-[11px] font-semibold text-slate-500 underline hover:text-slate-800"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handleRegenerateImage}
+                    disabled={isBusy || imageRegenerating}
+                    title="Regenerate image"
+                    className="absolute bottom-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow border border-slate-200 disabled:opacity-50"
+                  >
+                    {isBusy ? (
+                      <Spinner className="w-3.5 h-3.5" />
+                    ) : (
+                      <RefreshCcw className="w-3.5 h-3.5 text-slate-600" />
+                    )}
+                  </button>
+                </div>
 
                 {item.Meal_Image_url && item.image_attribution_name && (
                   <p className="text-[11px] text-slate-400">
@@ -684,12 +704,12 @@ const AiFoodViewPage = () => {
               </div>
             </div>
 
-          <AiFoodImagePromptPanel
-            onGenerateFromPrompt={handleGenerateFromPrompt}
-            onGenerateFromAudio={handleGenerateFromAudio}
-            onCancel={handleCancelRegenerate}
-            busy={isBusy || imageRegenerating}
-          />
+            <AiFoodImagePromptPanel
+              onGenerateFromPrompt={handleGenerateFromPrompt}
+              onGenerateFromAudio={handleGenerateFromAudio}
+              onCancel={handleCancelRegenerate}
+              busy={isBusy || imageRegenerating}
+            />
           </>
         )}
       </div>

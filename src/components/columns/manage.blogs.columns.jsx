@@ -127,7 +127,7 @@ export const getManageBlogsColumns = (onAction) => [
               onAction && onAction(row.original, "change-status", val)
             }
           >
-            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60">
+            <SelectTrigger className="h-7 text-[11px] focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/60">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -171,7 +171,7 @@ export const getManageBlogsColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "edit")}
             >
               <Edit className="w-3.5 h-3.5" />

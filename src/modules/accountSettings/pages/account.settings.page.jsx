@@ -21,7 +21,7 @@ const AccountSettingsPage = () => {
             <PageHeader
               heading="Account Settings"
               icon={<Settings className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-brand-blue"
+              color="bg-app-primary2 shadow-app-primary2"
               subheading="Manage your personal account settings and preferences."
             />
           </div>
@@ -35,7 +35,7 @@ const AccountSettingsPage = () => {
               onClick={() => setActiveTab("password")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
                 activeTab === "password"
-                  ? "text-brand-blue border-b-2 border-brand-blue"
+                  ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
@@ -45,7 +45,7 @@ const AccountSettingsPage = () => {
               onClick={() => setActiveTab("email")}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
                 activeTab === "email"
-                  ? "text-brand-blue border-b-2 border-brand-blue"
+                  ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >

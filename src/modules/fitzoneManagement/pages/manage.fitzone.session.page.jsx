@@ -29,6 +29,7 @@ const ManageFitzoneSessionPage = () => {
   } = useSelector((state) => state.fitzoneSession);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toggleTarget, setToggleTarget] = useState(null);
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
@@ -58,18 +59,33 @@ const ManageFitzoneSessionPage = () => {
         { state: { editData: row } },
       );
     } else if (action === "toggle-status") {
+      setToggleTarget({ row, value });
+    } else if (action === "delete") {
+      setDeleteTarget(row);
+    }
+  };
+
+  const handleConfirmToggle = async () => {
+    if (toggleTarget) {
+      const { row, value } = toggleTarget;
       const statusStr = value ? "Active" : "Inactive";
       const resultAction = await dispatch(
         toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
       );
       if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
         toast.success("Status updated successfully!");
-        dispatch(getFitzoneSessions(id));
+        dispatch(
+          getFitzoneSessions({
+            id,
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearch,
+          })
+        );
       } else {
         toast.error(resultAction.payload || "Failed to update status");
       }
-    } else if (action === "delete") {
-      setDeleteTarget(row);
+      setToggleTarget(null);
     }
   };
 
@@ -80,7 +96,14 @@ const ManageFitzoneSessionPage = () => {
       );
       if (deleteFitzoneSession.fulfilled.match(resultAction)) {
         toast.success("Session deleted successfully!");
-        dispatch(getFitzoneSessions(id));
+        dispatch(
+          getFitzoneSessions({
+            id,
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearch,
+          })
+        );
       } else {
         toast.error(resultAction.payload || "Failed to delete session");
       }
@@ -105,9 +128,7 @@ const ManageFitzoneSessionPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Session Management"
-                icon={
-                  <Video className="w-6 h-6 text-white shrink-0" />
-                }
+                icon={<Video className="w-6 h-6 text-white shrink-0" />}
                 color="bg-app-primary2 shadow-blue-200"
                 subheading="Manage workout sessions and videos."
               />
@@ -115,7 +136,7 @@ const ManageFitzoneSessionPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={openAddModal}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Session</span>
@@ -149,6 +170,16 @@ const ManageFitzoneSessionPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Session"
         message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
+      />
+
+      <ConfirmModal
+        isOpen={!!toggleTarget}
+        onClose={() => setToggleTarget(null)}
+        onConfirm={handleConfirmToggle}
+        title="Confirm Status Change"
+        message={`Are you sure you want to change the status of "${toggleTarget?.row?.title || "this session"}" to ${toggleTarget?.value ? "Active" : "Inactive"}?`}
+        confirmText="Update"
+        type="brand"
       />
     </Container>
   );

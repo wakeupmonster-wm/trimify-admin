@@ -1,12 +1,24 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { FileText, Plus, FolderTree, CheckCircle, EyeOff, Sparkles } from "lucide-react";
-import { KpiStatCard } from "@/components/shared/KpiStatCard";
+import {
+  FileText,
+  Plus,
+  FolderTree,
+  CheckCircle,
+  EyeOff,
+  Sparkles,
+  X,
+} from "lucide-react";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import { getManageCategoryColumns } from "@/components/columns/manage.category.columns";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,6 +41,7 @@ const ManageCategoryPage = () => {
     pageIndex: Math.max(0, categoriesPagination.page - 1),
     pageSize: categoriesPagination.limit || 10,
   });
+  const [statusFilter, setStatusFilter] = useState("");
   const [deleteModal, setDeleteModal] = useState({
     open: false,
     rowData: null,
@@ -101,31 +114,96 @@ const ManageCategoryPage = () => {
     () => getManageCategoryColumns(handleCategoryAction),
     [],
   );
-  const displayCategories =
-    categories && categories.length > 0 ? categories : [];
+  const displayCategories = useMemo(() => {
+    let list = categories && categories.length > 0 ? categories : [];
+    if (statusFilter === "Active") {
+      list = list.filter((c) => c.status === "Active");
+    } else if (statusFilter === "Inactive") {
+      list = list.filter((c) => c.status !== "Active");
+    } else if (statusFilter === "Recent") {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      list = list.filter(
+        (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo
+      );
+    }
+    return list;
+  }, [categories, statusFilter]);
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+        { label: "Recent", value: "Recent" },
+      ],
+      placeholder: "All Statuses",
+    },
+  ];
+
   const isCategoryManual = !!(
     categoriesPagination && categoriesPagination.total > 0
   );
 
   // KPI Calculations
-  const kpiStats = useMemo(() => {
+  const kpiItems = useMemo(() => {
     const list = categories || [];
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    return {
-      total: categoriesPagination?.total || list.length,
-      active: list.filter((c) => c.status === "Active").length,
-      inactive: list.filter((c) => c.status !== "Active").length,
-      recent: list.filter((c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo).length,
-    };
-  }, [categories, categoriesPagination]);
+    const total = categoriesPagination?.total || list.length;
+    const active = list.filter((c) => c.status === "Active").length;
+    const inactive = list.filter((c) => c.status !== "Active").length;
+    const recent = list.filter(
+      (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo
+    ).length;
+
+    return [
+      {
+        label: "Total Categories",
+        value: total,
+        icon: FolderTree,
+        tone: statusFilter === "" ? "blue" : "slate",
+        description: "All blog categories",
+        onClick: () => setStatusFilter(""),
+      },
+      {
+        label: "Active Categories",
+        value: active,
+        icon: CheckCircle,
+        tone: statusFilter === "Active" ? "emerald" : (statusFilter === "" ? "emerald" : "slate"),
+        description: "Currently visible",
+        onClick: () => setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+      },
+      {
+        label: "Inactive Categories",
+        value: inactive,
+        icon: EyeOff,
+        tone: statusFilter === "Inactive" ? "amber" : (statusFilter === "" ? "amber" : "slate"),
+        description: "Hidden from users",
+        onClick: () => setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+      },
+      {
+        label: "Recently Added",
+        value: recent,
+        icon: Sparkles,
+        tone: statusFilter === "Recent" ? "indigo" : (statusFilter === "" ? "indigo" : "slate"),
+        description: "Added in last 30 days",
+        onClick: () => setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+      },
+    ];
+  }, [categories, categoriesPagination?.total, statusFilter]);
 
   return (
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Category"
@@ -135,10 +213,10 @@ const ManageCategoryPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
                 onClick={() => navigate("/admin/blog-section/add-category")}
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Create Category</span>
@@ -147,41 +225,8 @@ const ManageCategoryPage = () => {
           </div>
         </Header>
 
-         {/* KPIs Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <KpiStatCard
-            title="Total Categories"
-            value={kpiStats.total}
-            icon={FolderTree}
-            colorClass="text-brand-blue"
-            bgClass="bg-blue-50"
-            description="All blog categories"
-          />
-          <KpiStatCard
-            title="Active Categories"
-            value={kpiStats.active}
-            icon={CheckCircle}
-            colorClass="text-emerald-600"
-            bgClass="bg-emerald-50"
-            description="Currently visible"
-          />
-          <KpiStatCard
-            title="Inactive Categories"
-            value={kpiStats.inactive}
-            icon={EyeOff}
-            colorClass="text-amber-600"
-            bgClass="bg-amber-50"
-            description="Hidden from users"
-          />
-          <KpiStatCard
-            title="Recently Added"
-            value={kpiStats.recent}
-            icon={Sparkles}
-            colorClass="text-indigo-600"
-            bgClass="bg-indigo-50"
-            description="Added in last 30 days"
-          />
-        </div>
+        {/* KPIs Row */}
+        <ModuleKpiRow items={kpiItems} loading={categoriesLoading && !categories?.length} />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable
@@ -201,6 +246,13 @@ const ManageCategoryPage = () => {
             isLoading={categoriesLoading}
             manualPagination={isCategoryManual}
             manualFiltering={isCategoryManual}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setStatusFilter("")}
+              />
+            }
           />
         </div>
       </div>
@@ -214,7 +266,9 @@ const ManageCategoryPage = () => {
       />
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of this category to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}

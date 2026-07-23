@@ -29,7 +29,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import StatsGrid from "@/components/common/stats.grid";
+
 import { bgMap, colorMap } from "@/constants/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -207,7 +207,7 @@ export default function CampaignHistory({
             placeholder="Search campaigns..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+            className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
           />
           {searchTerm && (
             <button
@@ -263,7 +263,7 @@ export default function CampaignHistory({
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                 Results
               </span>
-              <span className="text-xs font-black text-brand-blue">
+              <span className="text-xs font-black text-app-primary2">
                 {pagination?.total || 0}
               </span>
             </div>
@@ -404,7 +404,7 @@ export default function CampaignHistory({
                             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
                             item.channel === "email"
                               ? "bg-indigo-50 text-indigo-600"
-                              : "bg-app-primary2 text-brand-blue",
+                              : "bg-app-primary2 text-app-primary2",
                           )}
                         >
                           {item.channel || "Push"}
@@ -466,7 +466,7 @@ export default function CampaignHistory({
                             className={cn(
                               "text-[11px] font-bold uppercase tracking-wider",
                               item.status === "completed"
-                                ? "text-brand-blue"
+                                ? "text-app-primary2"
                                 : "text-amber-600",
                             )}
                           >
@@ -479,7 +479,7 @@ export default function CampaignHistory({
                           variant="outline"
                           size="sm"
                           disabled={item.channel !== "email"}
-                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-300/60 hover:bg-app-primary5 hover:text-white hover:border-brand-blue transition-all"
+                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-300/60 hover:bg-app-primary5 hover:text-white hover:border-app-primary2 transition-all"
                           onClick={() => handleViewLogs(item)}
                         >
                           Logs
@@ -622,7 +622,7 @@ export default function CampaignHistory({
                         className={cn(
                           "h-8 min-w-[32px] px-2 text-xs font-bold rounded-md transition-all",
                           isActive
-                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue"
+                            ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2"
                             : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                         )}
                       >

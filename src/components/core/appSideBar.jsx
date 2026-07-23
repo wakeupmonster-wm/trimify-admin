@@ -17,11 +17,11 @@ import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
 import { Link, useLocation } from "react-router-dom";
-import dummyImg from "@/assets/web/avatar.png";
+import dummyImg from "@/assets/web/owner.png";
 import { useDispatch, useSelector } from "react-redux";
 // import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
-import trimifyLogo from "@/assets/web/trimifyLogo2.png";
+import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { cn } from "@/lib/utils";
 // import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
 // import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
@@ -111,9 +111,6 @@ export function AppSidebar({ ...props }) {
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  {/* <div className="grid flex-1 text-left leading-[14px] text-brand-blue truncate text-sm font-bold">
-                    Trimify Admin
-                  </div> */}
                 </Link>
               </SidebarMenuButton>
             )}

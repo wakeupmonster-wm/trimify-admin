@@ -87,8 +87,8 @@ export const FeatureDialog = ({
         {/* ── Header ── */}
         <DialogHeader className="px-6 pt-6 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
-              <Sparkles className="h-5 w-5 text-brand-blue" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-app-primary2">
+              <Sparkles className="h-5 w-5 text-app-primary2" />
             </div>
             <div className="flex flex-col gap-0.5">
               <DialogTitle className="text-base font-extrabold text-slate-900 tracking-tight">
@@ -178,8 +178,8 @@ export const FeatureDialog = ({
             <div
               className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                 isDragging
-                  ? "border-brand-blue bg-blue-50"
-                  : "border-slate-300/60 hover:border-brand-blue/50 bg-slate-50 hover:bg-slate-50/80"
+                  ? "border-app-primary2 bg-blue-50"
+                  : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -193,7 +193,7 @@ export const FeatureDialog = ({
                 ref={fileInputRef}
                 onChange={onFileUpload}
               />
-              <UploadCloud className="w-10 h-10 text-brand-blue mb-3" />
+              <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
               <p className="text-sm font-semibold text-slate-700 text-center">
                 {isUploading
                   ? "Uploading..."
@@ -261,7 +261,7 @@ export const FeatureDialog = ({
               "rounded-lg px-5 font-bold text-[11px] h-9 gap-2 transition-all active:scale-95 flex items-center justify-center min-w-[130px]",
               success
                 ? "bg-green-500 hover:bg-green-600 text-white shadow-none border border-emerald-800/20"
-                : "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-md shadow-brand-blue",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-md shadow-app-primary2",
             )}
             onClick={handleSubmit}
             disabled={localLoading || success}

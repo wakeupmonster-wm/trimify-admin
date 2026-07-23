@@ -190,7 +190,7 @@ export default function ViewSubscriptionsPage() {
                     <Copy
                       onClick={copyEmail}
                       title="Copy Email"
-                      className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-brand-blue"
+                      className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-app-primary2"
                     />
                   </span>
 
@@ -200,7 +200,7 @@ export default function ViewSubscriptionsPage() {
                     <Copy
                       onClick={copyPhone}
                       title="Copy Phone"
-                      className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-brand-blue"
+                      className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-app-primary2"
                     />
                   </span>
                 </div>
@@ -284,7 +284,7 @@ export default function ViewSubscriptionsPage() {
               <CardHeader>
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <ShieldCheck
-                    className="w-5 h-5 text-brand-blue"
+                    className="w-5 h-5 text-app-primary2"
                     strokeWidth={2.5}
                   />
                   Identity
@@ -318,7 +318,7 @@ export default function ViewSubscriptionsPage() {
                 <CardHeader>
                   <CardTitle className="text-base font-black flex items-center gap-2">
                     <Calendar
-                      className="w-5 h-5 text-brand-blue"
+                      className="w-5 h-5 text-app-primary2"
                       strokeWidth={2.5}
                     />{" "}
                     Subscription Cycle
@@ -415,7 +415,7 @@ export default function ViewSubscriptionsPage() {
               <CardHeader>
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <History
-                    className="w-5 h-5 text-brand-blue"
+                    className="w-5 h-5 text-app-primary2"
                     strokeWidth={2.5}
                   />{" "}
                   Transactional History
@@ -474,12 +474,12 @@ export default function ViewSubscriptionsPage() {
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-base font-bold flex items-center gap-2">
                     <Database
-                      className="w-5 h-5 text-brand-blue"
+                      className="w-5 h-5 text-app-primary2"
                       strokeWidth={2.5}
                     />
                     Webhook Lifecycle
                   </CardTitle>
-                  <Badge className="bg-app-primary2 text-brand-blue border-brand-blue">
+                  <Badge className="bg-app-primary2 text-app-primary2 border-app-primary2">
                     System Active
                   </Badge>
                 </div>
@@ -620,7 +620,7 @@ const InfoRow = ({ label, value, icon: Icon, badge, mono, capitalize }) => (
   <div className="flex items-center gap-3">
     {Icon && (
       <div className="p-2 bg-slate-200/60 rounded-lg border border-slate-100">
-        <Icon className="w-3.5 h-3.5 text-brand-blue" strokeWidth={2.5} />
+        <Icon className="w-3.5 h-3.5 text-app-primary2" strokeWidth={2.5} />
       </div>
     )}
     <div className="min-w-0 flex-1">

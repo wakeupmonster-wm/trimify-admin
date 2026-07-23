@@ -77,7 +77,7 @@ const GenderRatioBar = ({ ratio, maleCount, femaleCount, value }) => {
           {ratio > 0 ? (
             <span
               className={`text-[10px] font-black whitespace-nowrap ${
-                ratio > 15 ? "text-white drop-shadow-sm" : "text-brand-blue"
+                ratio > 15 ? "text-white drop-shadow-sm" : "text-app-primary2"
               }`}
             >
               {ratio}%
@@ -86,7 +86,7 @@ const GenderRatioBar = ({ ratio, maleCount, femaleCount, value }) => {
             <div />
           )}
           {femaleRatio > 0 ? (
-            <span className="text-[10px] font-black whitespace-nowrap text-brand-blue">
+            <span className="text-[10px] font-black whitespace-nowrap text-app-primary2">
               {femaleRatio}%
             </span>
           ) : (
@@ -271,7 +271,7 @@ export function KeyMetricsHealth({ data }) {
               return (
                 <div
                   key={idx}
-                  className="bg-white border border-slate-300/60 rounded-xl py-5 shadow-sm hover:border-brand-blue transition-all duration-300"
+                  className="bg-white border border-slate-300/60 rounded-xl py-5 shadow-sm hover:border-app-primary2 transition-all duration-300"
                 >
                   <MatchLiquidityCard metric={metric} />
                 </div>
@@ -281,7 +281,7 @@ export function KeyMetricsHealth({ data }) {
             return (
               <div
                 key={idx}
-                className="bg-white border border-slate-300/60 rounded-xl py-5 hover:border-brand-blue transition-all duration-300 shadow-sm"
+                className="bg-white border border-slate-300/60 rounded-xl py-5 hover:border-app-primary2 transition-all duration-300 shadow-sm"
               >
                 <div className="flex items-start gap-2 pb-4 px-5 border-b border-slate-300/60">
                   <DashboardHead

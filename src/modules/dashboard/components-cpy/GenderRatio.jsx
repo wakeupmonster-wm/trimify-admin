@@ -92,7 +92,7 @@ export function GenderRatio({ data }) {
                 className={`text-[10px] font-black whitespace-nowrap ${
                   maleProgressWidth > 15
                     ? "text-white drop-shadow-sm"
-                    : "text-brand-blue"
+                    : "text-app-primary2"
                 }`}
               >
                 {maleRatioText}%
@@ -101,7 +101,7 @@ export function GenderRatio({ data }) {
               <div />
             )}
             {femaleProgressWidth > 0 ? (
-              <span className="text-[10px] font-black whitespace-nowrap text-brand-blue">
+              <span className="text-[10px] font-black whitespace-nowrap text-app-primary2">
                 {femaleRatioText}%
               </span>
             ) : (

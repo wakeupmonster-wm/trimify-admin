@@ -3,22 +3,42 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { TrendingUp, AlertTriangle, RefreshCcw, TrendingDown, DollarSign, Percent, Crown, Trophy } from "lucide-react";
+import {
+  TrendingUp,
+  AlertTriangle,
+  RefreshCcw,
+  TrendingDown,
+  DollarSign,
+  Percent,
+  Crown,
+  Trophy,
+} from "lucide-react";
 import { LuUserRoundCheck } from "react-icons/lu";
 import { colorMap } from "@/constants/colors";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { fetchSubscriptionKPIs, setSubscriptionDateRange } from "../store/subscription.slice";
+import {
+  fetchSubscriptionKPIs,
+  setSubscriptionDateRange,
+} from "../store/subscription.slice";
 import { format } from "date-fns";
 import { SubscriptionDashboardSkeleton } from "../components/SubscriptionDashboardSkeleton";
 import { PageHeader } from "@/components/common/headSubhead";
 import Last24HoursPieChart from "./Last24HoursPieChart";
 import PlanDistributionChart from "./PlanDistributionChart";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
-import { IconTrendingUp as TablerTrendingUp, IconTrendingDown as TablerTrendingDown, } from "@tabler/icons-react";
+import {
+  IconTrendingUp as TablerTrendingUp,
+  IconTrendingDown as TablerTrendingDown,
+} from "@tabler/icons-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { TableLoader } from "@/app/loader/table.loader";
-import { Tooltip as ShadTooltip, TooltipTrigger as ShadTooltipTrigger, TooltipContent as ShadTooltipContent, TooltipProvider as ShadTooltipProvider,} from "@/components/ui/tooltip";
+import {
+  Tooltip as ShadTooltip,
+  TooltipTrigger as ShadTooltipTrigger,
+  TooltipContent as ShadTooltipContent,
+  TooltipProvider as ShadTooltipProvider,
+} from "@/components/ui/tooltip";
 import RevenueTrendChart from "./RevenueTrendChart";
 import PlatformMixChart from "./PlatformMixChart";
 import SubscriberGrowthChart from "./SubscriberGrowthChart";
@@ -40,7 +60,10 @@ const getSubTrendExplanation = (stat) => {
     return `${stat.tooltipData.subscribers?.toLocaleString()} active subscribers out of ${stat.tooltipData.totalUsers?.toLocaleString()} total users.`;
   }
 
-  if ("cancellations" in stat.tooltipData && "activeAtStart" in stat.tooltipData) {
+  if (
+    "cancellations" in stat.tooltipData &&
+    "activeAtStart" in stat.tooltipData
+  ) {
     return `${stat.tooltipData.cancellations?.toLocaleString()} cancellations from ${stat.tooltipData.activeAtStart?.toLocaleString()} active subscribers at the start of the period.`;
   }
 
@@ -766,7 +789,7 @@ export default function SubscriptionDashboard() {
       {
         name: "1 Month Premium",
         subscribers: oneMonthCount,
-        // fill: "hsl(var(--brand-blue))",
+        // fill: "hsl(var(--app-primary2))",
         fill: "#007FC0", // primary2
       },
       {
@@ -906,7 +929,7 @@ export default function SubscriptionDashboard() {
         >
           <Button
             onClick={handleRefresh}
-            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-app-primary5 text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-brand-blue transition-all duration-300 active:scale-95 overflow-hidden"
+            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-app-primary5 text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-app-primary2 transition-all duration-300 active:scale-95 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-3">
               <RefreshCcw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
@@ -967,11 +990,11 @@ export default function SubscriptionDashboard() {
                 icon={
                   <TrendingUp strokeWidth={2} className="w-8 h-8 text-white" />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-blue font-semibold">
+                    <span className="text-app-primary2 font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>
@@ -1030,7 +1053,7 @@ export default function SubscriptionDashboard() {
                                   className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 cursor-help transition-transform ${
                                     isNegative
                                       ? "text-rose-600 bg-rose-50 border-rose-200"
-                                      : "text-brand-blue bg-app-primary2 border-brand-blue"
+                                      : "text-app-primary2 bg-app-primary2 border-app-primary2"
                                   }`}
                                 >
                                   {isTrendingUp && hasTrend ? (
@@ -1042,7 +1065,7 @@ export default function SubscriptionDashboard() {
                                 </div>
                               </ShadTooltipTrigger>
                               <ShadTooltipContent
-                                className="bg-slate-900 border-brand-blue text-slate-100 shadow-xl shadow-brand-blue max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium"
+                                className="bg-slate-900 border-app-primary2 text-slate-100 shadow-xl shadow-app-primary2 max-w-xs text-xs space-y-1.5 p-3 rounded-xl font-medium"
                                 side="bottom"
                                 align="end"
                               >
@@ -1114,7 +1137,7 @@ export default function SubscriptionDashboard() {
                                         className={
                                           isNegative
                                             ? "text-rose-400"
-                                            : "text-brand-blue"
+                                            : "text-app-primary2"
                                         }
                                       >
                                         {stat.tooltipData.current -

@@ -211,9 +211,9 @@ export const getNutritionFoodColumns = (onAction) => [
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 w-8 p-0 text-slate-400 hover:text-brand-blue hover:bg-app-primary5 rounded-full transition-colors"
+                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
               >
-                <Ellipsis className="h-4 w-4" />
+                <Ellipsis className="h-4 w-4 text-foreground/90" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -224,7 +224,7 @@ export const getNutritionFoodColumns = (onAction) => [
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-brand-blue font-semibold text-xs "
+                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
                 onClick={() => onAction && onAction(row.original, "edit")}
               >
                 <Edit className="w-3.5 h-3.5" />

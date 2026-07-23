@@ -77,28 +77,33 @@ export function NavManagements({ items }) {
       currentPath.includes("/view-subscription")
     )
       return true;
-
     if (
       lastSegment === "users-management" &&
       currentPath.includes("users-management/view-profile") &&
-      location.state?.source !== "fake-profiles" &&
-      location.state?.source !== "giveaway" &&
-      location.state?.source !== "transactions" &&
-      location.state?.source !== "support" &&
       location.state?.from !== "/admin/dashboard"
     )
       return true;
     if (
-      lastSegment === "users-management" &&
-      currentPath.includes("/ghosting-users")
+      lastSegment === "nutrition-food" &&
+      (currentPath.includes("/add-nutrition") ||
+        currentPath.includes("/edit-nutrition"))
     )
       return true;
-    if (lastSegment === "support" && currentPath.includes("/view-ticket"))
+    if (
+      lastSegment === "ai-food-upload" &&
+      currentPath.includes("/ai-food-upload")
+    ) {
+      return true;
+    }
+    if (
+      lastSegment === "manage-category" &&
+      (currentPath.includes("/add-category") ||
+        currentPath.includes("/edit-category"))
+    )
       return true;
     if (
-      lastSegment === "support" &&
-      currentPath.includes("/view-profile") &&
-      location.state?.source === "support"
+      lastSegment === "manage-blogs" &&
+      (currentPath.includes("/add-post") || currentPath.includes("/edit-post"))
     )
       return true;
 
@@ -114,7 +119,7 @@ export function NavManagements({ items }) {
       {/* <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
         Management
       </SidebarGroupLabel> */}
-      <SidebarMenu className="group-data-[collapsible=icon]:gap-1.5 group-data-[collapsible=icon]:!items-start gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-4 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
           const isActive =
             isPathActive(location.pathname, item.url) ||

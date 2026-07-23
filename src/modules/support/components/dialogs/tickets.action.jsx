@@ -73,8 +73,8 @@ export const TicketAction = ({
         {/* ── Header ── */}
         <DialogHeader className="px-7 pt-7 pb-5 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-brand-blue">
-              <MessageSquare className="h-6 w-6 text-brand-blue" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-app-primary2 border border-app-primary2">
+              <MessageSquare className="h-6 w-6 text-app-primary2" />
             </div>
             <div className="flex flex-col gap-0.5 text-left">
               <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight">
@@ -209,7 +209,7 @@ export const TicketAction = ({
               "h-10 px-4 text-white font-black text-xs rounded-md shadow-lg disabled:cursor-not-allowed transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 min-w-[140px]",
               success
                 ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
-                : "bg-app-primary2 hover:bg-brand-hoverAqua shadow-brand-blue",
+                : "bg-app-primary2 hover:bg-brand-hoverAqua shadow-app-primary2",
             )}
             disabled={
               localLoading || success || !statusUpdate || !reply?.trim()

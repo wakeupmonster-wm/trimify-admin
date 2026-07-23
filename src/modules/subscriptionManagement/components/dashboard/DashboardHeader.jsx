@@ -1,9 +1,9 @@
 import React from "react";
-import { LayoutDashboard, RefreshCcw } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/headSubhead";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
+import LastUpdatedIndicator from "../../../dashboard/components/LastUpdatedIndicator";
 
 export default function DashboardHeader({
   scrolled,
@@ -11,6 +11,8 @@ export default function DashboardHeader({
   onDateChange,
   onRefresh,
   refreshing,
+  lastUpdated,
+  rangeLabel,
 }) {
   return (
     <header
@@ -21,35 +23,32 @@ export default function DashboardHeader({
           : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
       )}
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 w-full min-w-0">
-        <div className="flex-1 min-w-0 w-full md:w-auto">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6 w-full min-w-0">
+        <div className="flex-1 min-w-0 w-max md:w-auto">
           <PageHeader
             heading="Subscription Dashboard"
             icon={
-              <LayoutDashboard strokeWidth={2} className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
+              <LayoutDashboard
+                strokeWidth={2}
+                className="w-6 h-6 text-white shrink-0"
+              />
             }
             color="bg-app-primary2 shadow-blue-200"
             subheading="Plans, subscribers and revenue at a glance."
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-max shrink-0 mt-2 md:mt-0">
+        <div className="flex items-center gap-2.5 w-full md:w-max shrink-0 mt-2 md:mt-0">
+          <LastUpdatedIndicator
+            lastUpdated={lastUpdated}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+          />
           <CalendarDateRangePicker
             value={dateRange}
             onDateChange={onDateChange}
-            className="flex-1 md:flex-none w-full md:w-auto h-11 md:h-10"
+            className="flex-1 w-full max-w-max"
           />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onRefresh}
-            disabled={refreshing}
-            className="h-11 md:h-10 w-11 md:w-10 shrink-0 border-slate-300/60 bg-white hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white transition-all active:scale-95 flex items-center justify-center p-0 rounded-xl md:rounded-lg"
-          >
-            <RefreshCcw
-              className={cn("h-4 sm:h-5 w-4 sm:w-5", refreshing && "animate-spin")}
-            />
-          </Button>
         </div>
       </div>
     </header>

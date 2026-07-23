@@ -100,7 +100,7 @@ const SubscriptionManagementPage = () => {
               <PageHeader
                 heading="All Subscription"
                 icon={<CreditCard className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading="Manage subscription plans and their details."
               />
             </div>

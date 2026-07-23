@@ -264,7 +264,7 @@ export default function SubscriptionPage() {
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-1">
                 <CardTitle className="text-base font-black flex items-center gap-2">
-                  <BarChart3 className="w-6 h-6 text-brand-blue" />
+                  <BarChart3 className="w-6 h-6 text-app-primary2" />
                   Revenue Trend
                 </CardTitle>
                 <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest leading-relaxed">
@@ -603,12 +603,12 @@ export default function SubscriptionPage() {
                 <div className="flex items-center justify-between px-2">
                   <div className="space-y-1">
                     <h3 className="text-sm font-black flex items-center gap-2 text-slate-900">
-                      <Layers className="w-4 h-4 text-brand-blue" />
+                      <Layers className="w-4 h-4 text-app-primary2" />
                       Best Selling Products
                     </h3>
                     <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
                       Top products by sales volume ·{" "}
-                      <span className="text-brand-blue">
+                      <span className="text-app-primary2">
                         {totalSales.toLocaleString()} total sales
                       </span>
                     </p>
@@ -655,7 +655,7 @@ export default function SubscriptionPage() {
                         <span
                           className={cn(
                             "text-sm font-black tabular-nums",
-                            idx === 0 ? "text-brand-blue" : "text-slate-400",
+                            idx === 0 ? "text-app-primary2" : "text-slate-400",
                           )}
                         >
                           {String(idx + 1).padStart(2, "0")}
@@ -686,7 +686,7 @@ export default function SubscriptionPage() {
 
                         {/* Market Share */}
                         <div className="text-right">
-                          <Badge className="bg-app-primary2 text-brand-blue border-brand-blue font-black text-[9px] px-2 py-0 h-5 rounded-md">
+                          <Badge className="bg-app-primary2 text-app-primary2 border-app-primary2 font-black text-[9px] px-2 py-0 h-5 rounded-md">
                             {marketShare.toFixed(1)}%
                           </Badge>
                         </div>

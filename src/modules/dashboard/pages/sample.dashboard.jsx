@@ -298,11 +298,11 @@ export default function SampleDashboardPage() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
-                    <span className="text-brand-blue font-semibold">
+                    <span className="text-app-primary2 font-semibold">
                       {dynamicPeriodLabel}
                     </span>
                   </div>

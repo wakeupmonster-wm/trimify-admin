@@ -336,7 +336,7 @@ export default function ViewTicketDetails() {
                   {ticket.adminReply && (
                     <div className="mx-6 mb-6 p-5 bg-[#F0FDFB] border border-[#CCFBF1] rounded-xl animate-in fade-in slide-in-from-top-2">
                       <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2 text-brand-blue font-bold text-[11px] uppercase tracking-tight">
+                        <div className="flex items-center gap-2 text-app-primary2 font-bold text-[11px] uppercase tracking-tight">
                           <Reply className="w-4 h-4" strokeWidth={2.5} />
                           Email Response Sent
                         </div>
@@ -368,7 +368,7 @@ export default function ViewTicketDetails() {
                                   key={idx}
                                   type="button"
                                   onClick={() => setZoomImage(att.url)}
-                                  className="group relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
+                                  className="group relative w-16 h-16 rounded-lg overflow-hidden border-2 border-teal-200 hover:border-app-primary2 transition-all shadow-sm hover:shadow-md"
                                   title={att.name || `attachment-${idx + 1}`}
                                 >
                                   <img
@@ -408,7 +408,7 @@ export default function ViewTicketDetails() {
                         <div className="flex items-center gap-2 text-xs font-semibold uppercase text-foreground/80">
                           <Reply
                             strokeWidth={1.4}
-                            className="w-4 h-4 text-brand-blue"
+                            className="w-4 h-4 text-app-primary2"
                           />
                           Send Email Reply to User
                         </div>
@@ -424,7 +424,7 @@ export default function ViewTicketDetails() {
                           onChange={setReply}
                           placeholder="Write your email response here..."
                           isExpanded={isExpanded}
-                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-300/60 shadow-sm focus-within:ring-1 focus-within:ring-brand-blue transition-all duration-300`}
+                          className={`text-[14px] px-4 py-3 bg-white rounded-md border border-slate-300/60 shadow-sm focus-within:ring-1 focus-within:ring-app-primary2 transition-all duration-300`}
                         />
 
                         {attachments.length > 0 && (
@@ -437,7 +437,7 @@ export default function ViewTicketDetails() {
                                   <button
                                     type="button"
                                     onClick={() => setZoomImage(preview.url)}
-                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-300/60 hover:border-brand-blue transition-all shadow-sm hover:shadow-md"
+                                    className="block w-16 h-16 rounded-lg overflow-hidden border-2 border-slate-300/60 hover:border-app-primary2 transition-all shadow-sm hover:shadow-md"
                                     title={file.name}
                                   >
                                     <img
@@ -571,7 +571,7 @@ export default function ViewTicketDetails() {
                           <Button
                             type="submit"
                             disabled={loading || !reply.trim()}
-                            className="bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-lg shadow-brand-blue disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
+                            className="bg-app-primary2 hover:bg-brand-hoverAqua text-white shadow-lg shadow-app-primary2 disabled:opacity-95 disabled:cursor-not-allowed rounded-lg px-8 h-10 font-bold text-xs"
                           >
                             {loading ? (
                               <Loader2 className="animate-spin w-4 h-4" />
@@ -746,9 +746,9 @@ export default function ViewTicketDetails() {
                         },
                       )
                     }
-                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-brand-blue hover:border-brand-blue rounded-md transition-all group"
+                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-app-primary2 hover:border-app-primary2 rounded-md transition-all group"
                   >
-                    <User className="w-4 h-4 text-slate-400 group-hover:text-brand-blue transition-colors" />
+                    <User className="w-4 h-4 text-slate-400 group-hover:text-app-primary2 transition-colors" />
                     View User Profile
                   </Button>
                   {/* <Button

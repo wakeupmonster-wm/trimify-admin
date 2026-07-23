@@ -7,7 +7,6 @@ import { ROLES } from "@/constants/roles";
 // import GlobalLoader from "@/components/common/GlobalLoader";
 
 export default function RootLayout() {
-
   // const { isAuthenticated, user, initialized } = useSelector(
   //   (state) => state.auth,
   // );
@@ -36,16 +35,6 @@ export default function RootLayout() {
       <main className="flex-1 flex flex-col">
         <Outlet />
       </main>
-
-
-      {/* <footer className="bg-gray-50 border-t border-brand-blue py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Trimify Admin DATING APP ALL RIGHTS
-            RESERVED
-          </p>
-        </div>
-      </footer> */}
     </div>
   );
 }

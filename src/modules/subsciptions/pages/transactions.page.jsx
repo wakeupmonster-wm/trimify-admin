@@ -63,7 +63,7 @@ import {
   setExportProgress,
 } from "../store/subscription.slice";
 import { useSelector, useDispatch } from "react-redux";
-import StatsGrid from "@/components/common/stats.grid";
+
 import { PreLoader } from "@/app/loader/preloader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import {
@@ -273,9 +273,9 @@ export default function TransactionsPage() {
     if (sortBy !== column)
       return <ArrowUpDown className="w-3 h-3 ml-1 text-slate-300" />;
     return sortOrder === "asc" ? (
-      <ArrowUp className="w-3 h-3 ml-1 text-brand-blue" />
+      <ArrowUp className="w-3 h-3 ml-1 text-app-primary2" />
     ) : (
-      <ArrowDown className="w-3 h-3 ml-1 text-brand-blue" />
+      <ArrowDown className="w-3 h-3 ml-1 text-app-primary2" />
     );
   };
 
@@ -423,7 +423,7 @@ export default function TransactionsPage() {
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
                   placeholder="Search by email."
-                  className="pl-10 pr-10 bg-slate-50/50 border-slate-300/60/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-none outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-blue focus-visible:border-brand-blue rounded-md w-full transition-all"
+                  className="pl-10 pr-10 bg-slate-50/50 border-slate-300/60/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-none outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-app-primary2 focus-visible:border-app-primary2 rounded-md w-full transition-all"
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value);
@@ -454,7 +454,8 @@ export default function TransactionsPage() {
                       variant="outline"
                       className={cn(
                         "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
-                        eventTypeFilter && "border-brand-blue text-brand-blue",
+                        eventTypeFilter &&
+                          "border-app-primary2 text-app-primary2",
                       )}
                     >
                       <span className="text-xs">
@@ -505,7 +506,8 @@ export default function TransactionsPage() {
                       variant="outline"
                       className={cn(
                         "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
-                        itemTypeFilter && "border-brand-blue text-brand-blue",
+                        itemTypeFilter &&
+                          "border-app-primary2 text-app-primary2",
                       )}
                     >
                       <span className="text-xs">
@@ -554,7 +556,8 @@ export default function TransactionsPage() {
                       variant="outline"
                       className={cn(
                         "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all",
-                        platformFilter && "border-brand-blue text-brand-blue",
+                        platformFilter &&
+                          "border-app-primary2 text-app-primary2",
                       )}
                     >
                       <span className="text-xs">
@@ -596,7 +599,7 @@ export default function TransactionsPage() {
 
                 {/* 3. COUNT INDICATOR */}
                 <div className="pl-2 pr-1 border-l border-slate-300/60 ml-1.5 flex items-center gap-1.5">
-                  <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
+                  <span className="text-xs 3xl:text-sm font-bold text-app-primary2">
                     {pagination.totalItems || 0}
                   </span>
                   <span className="text-xs 3xl:text-sm text-slate-400 font-medium">
@@ -906,7 +909,7 @@ export default function TransactionsPage() {
                             ) {
                               icon = <FaUserTie className="size-3.5" />;
                               style =
-                                "text-brand-blue border-brand-blue bg-app-primary2";
+                                "text-app-primary2 border-app-primary2 bg-app-primary2";
                             }
 
                             return (
@@ -970,7 +973,7 @@ export default function TransactionsPage() {
                                     },
                                   )
                                 }
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-app-primary5 hover:text-brand-blue transition-colors"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-app-primary5 hover:text-app-primary2 transition-colors"
                               >
                                 <Eye size={16} />
                                 <span>View Transaction</span>
@@ -1108,7 +1111,7 @@ export default function TransactionsPage() {
                             className={cn(
                               "h-8 w-8 text-xs font-bold rounded-md transition-all",
                               isActive
-                                ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                                ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2 border-none"
                                 : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                             )}
                           >
@@ -1169,7 +1172,7 @@ export default function TransactionsPage() {
                         "h-11 w-11 rounded-2xl flex items-center justify-center border shadow-sm transition-all duration-500",
                         exportProgress === 100
                           ? "bg-emerald-50 border-emerald-100 shadow-emerald-100/50"
-                          : "bg-app-primary2 border-brand-blue",
+                          : "bg-app-primary2 border-app-primary2",
                       )}
                     >
                       {exportProgress === 100 ? (
@@ -1181,7 +1184,7 @@ export default function TransactionsPage() {
                           <CheckCircle2 className="h-6 w-6 text-emerald-500" />
                         </motion.div>
                       ) : (
-                        <Loader2 className="animate-spin h-5 w-5 text-brand-blue" />
+                        <Loader2 className="animate-spin h-5 w-5 text-app-primary2" />
                       )}
                     </div>
                     <div>
@@ -1202,7 +1205,7 @@ export default function TransactionsPage() {
                       "px-3 py-1.5 rounded-xl border transition-colors duration-500",
                       exportProgress === 100
                         ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                        : "bg-app-primary2 border-brand-blue text-brand-blue",
+                        : "bg-app-primary2 border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="font-mono text-base font-bold tracking-tighter">

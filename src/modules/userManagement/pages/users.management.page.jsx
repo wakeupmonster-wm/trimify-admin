@@ -67,7 +67,7 @@ const UsersManagementPage = () => {
       (u) =>
         String(u.status || "Active").toLowerCase() === "active" ||
         u.status === "1" ||
-        u.status === "true"
+        u.status === "true",
     ).length;
     return {
       totalUsers: serverPagination?.total || all.length,
@@ -177,7 +177,7 @@ const UsersManagementPage = () => {
               <PageHeader
                 heading="User Management"
                 icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading="Manage application users, view their active plans, and modify their statuses."
               />
             </div>

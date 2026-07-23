@@ -68,7 +68,7 @@ const CMSManagementPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 w-full">
+          <div className="flex-1 min-w-0 w-full"> 
             <PageHeader
               heading="CMS"
               icon={<FileEdit className="w-6 h-6 text-white shrink-0" />}

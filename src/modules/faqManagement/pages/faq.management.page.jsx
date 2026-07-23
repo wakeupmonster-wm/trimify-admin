@@ -1,14 +1,28 @@
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import React, { useState, useMemo, useEffect } from "react";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import { getFaqManagementColumns } from "@/components/columns/faq.management.columns";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Send, HelpCircle, Plus, X, Loader2, MessageCircle, CheckCircle, EyeOff, RefreshCw } from "lucide-react";
-import { KpiStatCard } from "@/components/shared/KpiStatCard";
+import {
+  Send,
+  HelpCircle,
+  Plus,
+  X,
+  Loader2,
+  MessageCircle,
+  CheckCircle,
+  EyeOff,
+  RefreshCw,
+} from "lucide-react";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +48,7 @@ const FaqManagementPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [statusFilter, setStatusFilter] = useState("");
   const [formData, setFormData] = useState({ question: "", answer: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -113,11 +128,13 @@ const FaqManagementPage = () => {
     const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
     try {
       // Assuming unwrap() is available or handle success properly
-      const res = await dispatch(toggleFaqStatus({ id: toggleModal.rowData.id, status: newStatus }));
+      const res = await dispatch(
+        toggleFaqStatus({ id: toggleModal.rowData.id, status: newStatus }),
+      );
       if (toggleFaqStatus.fulfilled.match(res)) {
-         toast.success(`FAQ marked as ${newStatus}`);
+        toast.success(`FAQ marked as ${newStatus}`);
       } else {
-         toast.error("Failed to update FAQ status");
+        toast.error("Failed to update FAQ status");
       }
     } catch (error) {
       toast.error(error?.message || error || "Failed to update FAQ status");
@@ -138,25 +155,110 @@ const FaqManagementPage = () => {
 
   const columns = useMemo(() => getFaqManagementColumns(handleAction), []);
 
+  const displayFaqs = useMemo(() => {
+    let list = faqs && faqs.length > 0 ? faqs : [];
+    if (statusFilter === "Active") {
+      list = list.filter((f) => f.status === "Active");
+    } else if (statusFilter === "Inactive") {
+      list = list.filter((f) => f.status !== "Active");
+    } else if (statusFilter === "Recent") {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      list = list.filter(
+        (f) => new Date(f.updatedAt || f.createdAt) >= thirtyDaysAgo,
+      );
+    }
+    return list;
+  }, [faqs, statusFilter]);
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+        { label: "Recent", value: "Recent" },
+      ],
+      placeholder: "All Statuses",
+    },
+  ];
+
   // KPI Calculations
-  const kpiStats = useMemo(() => {
+  const kpiItems = useMemo(() => {
     const list = faqs || [];
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    return {
-      total: serverPagination?.total || list.length,
-      active: list.filter((f) => f.status === "Active").length,
-      inactive: list.filter((f) => f.status !== "Active").length,
-      recent: list.filter((f) => f.updated_at && new Date(f.updated_at) >= thirtyDaysAgo).length,
-    };
-  }, [faqs, serverPagination]);
+    const total = serverPagination?.total || list.length;
+    const active = list.filter((f) => f.status === "Active").length;
+    const inactive = list.filter((f) => f.status !== "Active").length;
+    const recent = list.filter(
+      (f) => new Date(f.updatedAt || f.createdAt) >= thirtyDaysAgo,
+    ).length;
+
+    return [
+      {
+        label: "Total FAQs",
+        value: total,
+        icon: MessageCircle,
+        tone: statusFilter === "" ? "blue" : "slate",
+        description: "All questions & answers",
+        onClick: () => setStatusFilter(""),
+      },
+      {
+        label: "Active FAQs",
+        value: active,
+        icon: CheckCircle,
+        tone:
+          statusFilter === "Active"
+            ? "emerald"
+            : statusFilter === ""
+              ? "emerald"
+              : "slate",
+        description: "Currently visible",
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+      },
+      {
+        label: "Inactive FAQs",
+        value: inactive,
+        icon: EyeOff,
+        tone:
+          statusFilter === "Inactive"
+            ? "amber"
+            : statusFilter === ""
+              ? "amber"
+              : "slate",
+        description: "Hidden from users",
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+      },
+      {
+        label: "Recently Updated",
+        value: recent,
+        icon: RefreshCw,
+        tone:
+          statusFilter === "Recent"
+            ? "indigo"
+            : statusFilter === ""
+              ? "indigo"
+              : "slate",
+        description: "Modified in last 30 days",
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+      },
+    ];
+  }, [faqs, serverPagination?.total, statusFilter]);
 
   return (
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="FAQ"
@@ -166,9 +268,7 @@ const FaqManagementPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-
-              {/* Add one button for add FAQ */}
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => {
                   setFormData({ question: "", answer: "" });
@@ -190,7 +290,7 @@ const FaqManagementPage = () => {
           <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
             <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300/60 bg-slate-50/50">
               <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-brand-blue" />
+                <HelpCircle className="w-5 h-5 text-app-primary2" />
                 {editMode ? "Edit FAQ" : "Add New FAQ"}
               </DialogTitle>
               <button
@@ -211,7 +311,7 @@ const FaqManagementPage = () => {
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60 bg-slate-50 hover:bg-white transition-colors"
+                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/60 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
@@ -224,7 +324,7 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-brand-blue border-slate-300/60 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/60 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
@@ -259,49 +359,18 @@ const FaqManagementPage = () => {
           </DialogContent>
         </Dialog>
 
-        {/* KPIs Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          <KpiStatCard
-            title="Total FAQs"
-            value={kpiStats.total}
-            icon={MessageCircle}
-            colorClass="text-brand-blue"
-            bgClass="bg-blue-50"
-            description="All questions & answers"
-          />
-          <KpiStatCard
-            title="Active FAQs"
-            value={kpiStats.active}
-            icon={CheckCircle}
-            colorClass="text-emerald-600"
-            bgClass="bg-emerald-50"
-            description="Currently visible"
-          />
-          <KpiStatCard
-            title="Inactive FAQs"
-            value={kpiStats.inactive}
-            icon={EyeOff}
-            colorClass="text-amber-600"
-            bgClass="bg-amber-50"
-            description="Hidden from users"
-          />
-          <KpiStatCard
-            title="Recently Updated"
-            value={kpiStats.recent}
-            icon={RefreshCw}
-            colorClass="text-indigo-600"
-            bgClass="bg-indigo-50"
-            description="Modified in last 30 days"
-          />
-        </div>
+        {/* KPIs Row */}
+        <ModuleKpiRow items={kpiItems} loading={loading && !faqs?.length} />
 
         {/* DataTable */}
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={faqs || []}
+            data={displayFaqs}
             rowCount={
-              serverPagination ? serverPagination.total : faqs?.length || 0
+              serverPagination
+                ? serverPagination.total
+                : displayFaqs?.length || 0
             }
             pagination={pagination}
             onPaginationChange={setPagination}
@@ -312,6 +381,13 @@ const FaqManagementPage = () => {
             isLoading={loading}
             manualPagination={!!serverPagination}
             manualFiltering={!!serverPagination}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => setStatusFilter("")}
+              />
+            }
           />
         </div>
       </div>
@@ -325,7 +401,9 @@ const FaqManagementPage = () => {
       />
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of this FAQ to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
@@ -337,4 +415,3 @@ const FaqManagementPage = () => {
 };
 
 export default FaqManagementPage;
-

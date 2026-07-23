@@ -45,7 +45,7 @@ import {
 import { fetchSubscribers } from "../store/subscription.slice";
 import { getSubscriberColumns } from "../components/subscriber.columns";
 import { PageHeader } from "@/components/common/headSubhead";
-import StatsGrid from "@/components/common/stats.grid";
+
 import { bgMap, colorMap } from "@/constants/colors";
 import { PreLoader } from "@/app/loader/preloader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
@@ -265,7 +265,7 @@ export default function SubscriberManagementPage() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-app-primary2 shadow-brand-blue"
+                color="bg-app-primary2 shadow-app-primary2"
                 subheading="Monitor and manage all application subscribers."
               />
             </div>
@@ -305,7 +305,7 @@ export default function SubscriberManagementPage() {
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by nickname, email or phone..."
-                className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-brand-blue rounded-md w-full transition-all outline-none"
+                className="pl-10 pr-10 bg-white border-slate-300/60 h-9 3xl:h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -333,7 +333,7 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      statusFilter && "border-brand-blue text-brand-blue",
+                      statusFilter && "border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="text-xs truncate">
@@ -380,7 +380,7 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      planFilter && "border-brand-blue text-brand-blue",
+                      planFilter && "border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="text-xs truncate">
@@ -421,7 +421,7 @@ export default function SubscriberManagementPage() {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
-                      platformFilter && "border-brand-blue text-brand-blue",
+                      platformFilter && "border-app-primary2 text-app-primary2",
                     )}
                   >
                     <span className="text-xs truncate">
@@ -459,7 +459,7 @@ export default function SubscriberManagementPage() {
 
               {/* 4. COUNT INDICATOR */}
               <div className="flex items-center gap-1.5 pl-2 md:pl-2 border-l-0 md:border-l border-slate-300/60 md:ml-1.5 justify-center md:justify-start py-1 md:py-0">
-                <span className="text-xs 3xl:text-sm font-bold text-brand-blue">
+                <span className="text-xs 3xl:text-sm font-bold text-app-primary2">
                   {serverPagination?.total || 0}
                 </span>
                 <span className="text-xs 3xl:text-sm text-slate-400 font-medium whitespace-nowrap">
@@ -772,7 +772,7 @@ export default function SubscriberManagementPage() {
                             className={cn(
                               "h-8 w-8 text-xs font-bold rounded-md transition-all",
                               isActive
-                                ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-brand-blue border-none"
+                                ? "bg-app-primary2 text-white hover:bg-brand-hoverAqua shadow-md shadow-app-primary2 border-none"
                                 : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                             )}
                           >

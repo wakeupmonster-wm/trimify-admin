@@ -36,7 +36,7 @@ export default function ErrorState({ error, fetchVisitorData }) {
           {/* Premium Styled Retry Button */}
           <Button
             onClick={fetchVisitorData}
-            className="group relative flex items-center gap-3 px-8 py-6 border border-slate-300/60 bg-white hover:bg-app-primary5 text-brand-blue hover:text-white rounded-2xl font-bold text-sm transition-all duration-300 hover:shadow-lg active:scale-95"
+            className="group relative flex items-center gap-3 px-8 py-6 border border-slate-300/60 bg-white hover:bg-app-primary5 text-app-primary2 hover:text-white rounded-2xl font-bold text-sm transition-all duration-300 hover:shadow-lg active:scale-95"
           >
             <IconRefresh
               size={18}

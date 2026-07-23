@@ -63,7 +63,7 @@ export default function RequestResetEmailForm() {
         <Field>
           <FieldLabel className="text-sm">Email Address</FieldLabel>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-blue" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-app-primary2" />
             <Input
               {...register("email")}
               placeholder="info@trimify.com.au"
@@ -94,7 +94,7 @@ export default function RequestResetEmailForm() {
 
         <Link
           to="/auth/login"
-          className="flex items-center justify-center gap-2 text-sm text-slate-700 hover:text-brand-blue transition-colors"
+          className="flex items-center justify-center gap-2 text-sm text-slate-700 hover:text-app-primary2 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Login
         </Link>
