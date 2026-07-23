@@ -14,7 +14,7 @@ import {
 // Status" pies and the Churn / Failed Transactions KPIs moved here from the
 // main Dashboard, so they need the same source endpoints + transforms.
 import { dashboardSummaryAPI, dashboardRevenueChartsAPI, dashboardRecentActivityAPI } from "@/modules/dashboard/services/dashboard.services";
-import { toCategoricalPie, toStatusPie } from "@/modules/dashboard/utils/dashboardExtras.transform";
+import { toCategoricalPie, toTransactionHealthPie } from "@/modules/dashboard/utils/dashboardExtras.transform";
 
 // Shape B envelope: { success: true|false, message, data }
 
@@ -65,11 +65,17 @@ export const fetchDashboardExtrasForSubscription = createAsyncThunk(
       const expiringSoon = expiringRes.status === "fulfilled" && expiringRes.value?.success ? expiringRes.value.data : null;
 
       return {
+        totalRevenue: summary?.totalRevenueAllTime || 0,
         churn: { count: summary?.churnCount || 0, rate: `${summary?.churnRate ?? 0}%` },
         failedTransactions: { count: summary?.failedTransactions || 0 },
+        refundedTransactions: { count: summary?.refundedTransactions || 0, amount: summary?.refundedAmount || 0 },
+        disputedTransactions: { count: summary?.disputedTransactions || 0 },
+        expiringSoonCount: summary?.expiringSoonCount || 0,
         pieCharts: {
           planType: revenue?.planWiseSubscribers ? toCategoricalPie(revenue.planWiseSubscribers, "title", "total") : [],
-          txStatus: revenue?.transactionStatus ? toStatusPie(revenue.transactionStatus) : [],
+          txStatus: revenue?.transactionStatus
+            ? toTransactionHealthPie(revenue.transactionStatus, summary?.refundedTransactions, summary?.disputedTransactions)
+            : [],
         },
         trends: {
           activeVsChurned: retention?.retentionTrend || [],

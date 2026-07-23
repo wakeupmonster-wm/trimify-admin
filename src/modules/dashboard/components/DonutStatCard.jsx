@@ -62,7 +62,7 @@ const DonutStatCard = ({
           Icon={Icon}
           iconColor={iconColor}
           iconBg={iconBg}
-          tooltipText={tooltipText}
+          tooltipText={tooltipText || footnote}
         />
       </div>
 
@@ -118,7 +118,9 @@ const DonutStatCard = ({
           </ChartContainer>
         </div>
 
-        <div className="w-full max-h-[170px] overflow-y-auto pr-1">
+        <div
+          className="w-full my-auto max-h-[220px] overflow-y-auto pr-1"
+        >
           <div className="divide-y divide-slate-100">
             {data.map((item, idx) => {
               const pct =
@@ -150,6 +152,7 @@ const DonutStatCard = ({
             })}
           </div>
         </div>
+
       </div>
     </div>
   );

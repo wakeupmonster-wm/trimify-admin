@@ -11,7 +11,8 @@ import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getUserManagementColumns } from "@/components/columns/user.management.columns";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsersList } from "../store/user.slice";
-import { useNavigate } from "react-router-dom";
+import { getUserManagementAPI } from "../services/user.services";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { LuUsersRound } from "react-icons/lu";
 import { Users, UserCheck, UserX, UserPlus } from "lucide-react";
@@ -25,11 +26,13 @@ const UsersManagementPage = () => {
     pagination: serverPagination,
   } = useSelector((state) => state.usersManagement);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [globalFilter, setGlobalFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(
@@ -58,28 +61,66 @@ const UsersManagementPage = () => {
     }
   };
 
+  const isUnfiltered = !statusFilter && !debouncedSearchTerm;
+  const [pinnedKpis, setPinnedKpis] = useState(null);
+
+  // Background fetch for true KPIs if we arrive with a filter applied
+  useEffect(() => {
+    if (!isUnfiltered && !pinnedKpis) {
+      getUserManagementAPI({ limit: 1 }).then((res) => {
+        if (res && res.status === "success") {
+          const fetchedKpis = res.kpis || {
+            totalUsers: res.pagination?.total || 0,
+            activeUsers: 0, // Fallback if backend doesn't provide
+            inactiveUsers: 0,
+            newSignupsToday: 0,
+          };
+          setPinnedKpis(fetchedKpis);
+        }
+      }).catch(() => {});
+    }
+  }, [isUnfiltered, pinnedKpis]);
+
   const columns = useMemo(() => getUserManagementColumns(handleAction), []);
 
   const localKpis = useMemo(() => {
-    if (kpis) return kpis;
-    const all = users || [];
-    const active = all.filter(
-      (u) =>
-        String(u.status || "Active").toLowerCase() === "active" ||
-        u.status === "1" ||
-        u.status === "true",
-    ).length;
+    // If we have pinned KPIs, ALWAYS use them. This ensures clicking a filter doesn't change the cards.
+    if (pinnedKpis) return pinnedKpis;
+
+    // If the data is unfiltered right now, we can calculate and pin the real KPIs
+    if (isUnfiltered && (kpis || users?.length > 0)) {
+      const all = users || [];
+      const active = all.filter(
+        (u) =>
+          String(u.status || "Active").toLowerCase() === "active" ||
+          u.status === "1" ||
+          u.status === "true"
+      ).length;
+      
+      const computedKpis = kpis || {
+        totalUsers: serverPagination?.total || all.length,
+        activeUsers: active,
+        inactiveUsers: (serverPagination?.total || all.length) - active,
+        newSignupsToday: all.filter((u) => {
+          if (!u.created_at) return false;
+          const today = new Date().toISOString().split("T")[0];
+          return String(u.created_at).startsWith(today);
+        }).length,
+      };
+      
+      // Update the pinned state in the next tick to avoid render warnings
+      setTimeout(() => setPinnedKpis(computedKpis), 0);
+      return computedKpis;
+    }
+
+    // Fallback while loading
     return {
-      totalUsers: serverPagination?.total || all.length,
-      activeUsers: active,
-      inactiveUsers: all.length - active,
-      newSignupsToday: all.filter((u) => {
-        if (!u.created_at) return false;
-        const today = new Date().toISOString().split("T")[0];
-        return String(u.created_at).startsWith(today);
-      }).length,
+      totalUsers: 0,
+      activeUsers: 0,
+      inactiveUsers: 0,
+      newSignupsToday: 0,
     };
-  }, [kpis, users, serverPagination]);
+  }, [kpis, users, serverPagination, isUnfiltered, pinnedKpis]);
 
   const kpiItems = [
     {
@@ -94,7 +135,11 @@ const UsersManagementPage = () => {
       value: localKpis?.activeUsers?.toLocaleString() || "0",
       description: "Tap to filter",
       tone: "emerald",
-      onClick: () => setStatusFilter("Active"),
+      onClick: () => {
+        setStatusFilter("Active");
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      isSelected: statusFilter === "Active",
     },
     {
       icon: UserX,
@@ -102,14 +147,23 @@ const UsersManagementPage = () => {
       value: localKpis?.inactiveUsers?.toLocaleString() || "0",
       description: "Tap to filter",
       tone: "rose",
-      onClick: () => setStatusFilter("Inactive"),
+      onClick: () => {
+        setStatusFilter("Inactive");
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      isSelected: statusFilter === "Inactive",
     },
     {
       icon: UserPlus,
       label: "New Signups",
       value: localKpis?.newSignupsToday?.toLocaleString() || "0",
-      description: "Signed up today",
-      tone: "amber",
+      description: "Tap to filter",
+      tone: "violet",
+      onClick: () => {
+        setStatusFilter("new_today");
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      isSelected: statusFilter === "new_today",
     },
   ];
 
@@ -163,8 +217,10 @@ const UsersManagementPage = () => {
       options: [
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
+        { label: "Ghosted", value: "ghosted" },
+        { label: "Zero Engagement", value: "zero_engagement" },
       ],
-      placeholder: "All Status",
+      placeholder: "Any Status",
     },
   ];
 

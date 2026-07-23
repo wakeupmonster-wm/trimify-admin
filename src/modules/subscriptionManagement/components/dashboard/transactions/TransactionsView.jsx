@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
@@ -10,24 +10,33 @@ import {
   Star,
   Crown,
 } from "lucide-react";
-import {
-  DataTable,
-  DataTableFilters,
-  DataTableActiveChips,
-} from "@/components/shared/datatable";
-import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
+import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
+import StatsGrid from "@/components/common/stats.grid";
 import ErrorState from "@/components/shared/ErrorState";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { colorMap, bgMap } from "@/constants/colors";
+import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
+import { subDays, startOfDay, endOfDay, format, parseISO } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getTransactionColumns } from "./transaction.columns";
 import {
   fetchTransactions,
   exportTransactions,
 } from "../../../store/subscription-dashboard.slice";
+import { getTransactionsAPI } from "../../../services/subscription-dashboard.services";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
 import { downloadCsvBlob } from "../../../utils/downloadCsvBlob";
 
-// Only "success" is confirmed in the API docs — extend this list once backend
-// confirms the full enum (e.g. failed/pending).
+const STATUS_OPTIONS = ["success", "failed", "pending", "refunded", "disputed"];
+
 export default function TransactionsView() {
   const dispatch = useDispatch();
   const {
@@ -40,11 +49,50 @@ export default function TransactionsView() {
   } = useSelector((state) => state.subscriptionDashboard);
   const { plans } = useSelector((state) => state.subscriptionManagement);
 
+  const location = useLocation();
+
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
   const [planFilter, setPlanFilter] = useState("");
+
+  // Date range — initialise from navigation state if the user clicked a
+  // date-scoped KPI on the subscription dashboard, otherwise null (= all time).
+  const [dateRange, setDateRange] = useState(() => {
+    const nav = location.state?.dateRange;
+    if (nav?.from && nav?.to) {
+      return {
+        from: parseISO(nav.from),
+        to: endOfDay(parseISO(nav.to)),
+      };
+    }
+    return null; // null = no date filter (all time)
+  });
+
+  const isUnfiltered = !statusFilter && !planFilter && !debouncedSearch && !dateRange;
+  const [pinnedSummary, setPinnedSummary] = useState(null);
+
+  useEffect(() => {
+    // If we arrived with a filter, background fetch the true unfiltered stats
+    if (!isUnfiltered && !pinnedSummary) {
+      getTransactionsAPI({ limit: 1 }).then((res) => {
+        if (res && res.success) {
+          setPinnedSummary({
+            grossRevenue: res.data.grossRevenue || 0,
+            totalTransactions: res.data.totalTransactions || 0,
+          });
+        }
+      }).catch(() => {});
+    }
+  }, [isUnfiltered, pinnedSummary]);
+
+  // Capture unfiltered when the main list loads unfiltered
+  useEffect(() => {
+    if (isUnfiltered && transactionsSummary.totalTransactions > 0 && !pinnedSummary) {
+      setPinnedSummary({ ...transactionsSummary });
+    }
+  }, [isUnfiltered, transactionsSummary, pinnedSummary]);
 
   useEffect(() => {
     if (!plans?.length) dispatch(fetchSubscriptionPlans({ limit: 100 }));
@@ -62,8 +110,9 @@ export default function TransactionsView() {
       search: debouncedSearch,
       status: statusFilter,
       plan_id: planFilter,
+      ...(dateRange ? { from: format(dateRange.from, "yyyy-MM-dd"), to: format(dateRange.to, "yyyy-MM-dd") } : {}),
     }),
-    [pagination, debouncedSearch, statusFilter, planFilter],
+    [pagination, debouncedSearch, statusFilter, planFilter, dateRange],
   );
 
   useEffect(() => {
@@ -84,25 +133,27 @@ export default function TransactionsView() {
     }
   };
 
+  const kpiSummary = pinnedSummary || transactionsSummary || { grossRevenue: 0, totalTransactions: 0 };
+
   const avgTransactionValue =
-    transactionsSummary.totalTransactions > 0
-      ? transactionsSummary.grossRevenue / transactionsSummary.totalTransactions
+    kpiSummary.totalTransactions > 0
+      ? kpiSummary.grossRevenue / kpiSummary.totalTransactions
       : 0;
 
   const kpiItems = useMemo(
     () => [
       {
         label: "Gross Revenue",
-        value: `$${Number(transactionsSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: DollarSign,
-        tone: "blue",
+        val: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+        icon: <DollarSign size={22} />,
+        color: "blue",
         description: "All-time, unfiltered",
       },
       {
         label: "Total Transactions",
-        value: transactionsSummary.totalTransactions || 0,
-        icon: Receipt,
-        tone: "emerald",
+        val: kpiSummary.totalTransactions || 0,
+        icon: <Receipt size={22} />,
+        color: "emerald",
         description: "All-time, unfiltered",
       },
       // {
@@ -127,10 +178,14 @@ export default function TransactionsView() {
         description: "Gross revenue / transactions",
       },
     ],
-    [transactionsSummary, avgTransactionValue],
+    [kpiSummary, avgTransactionValue, statusFilter],
   );
 
-  const filterConfig = useMemo(() => [
+  const columns = useMemo(() => getTransactionColumns(), []);
+
+  const isFirstLoad = transactionsLoading && transactionsPagination === null;
+
+  const filterConfig = [
     {
       type: "select",
       id: "statusFilter",
@@ -140,9 +195,10 @@ export default function TransactionsView() {
         setStatusFilter(v);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      options: [
-        { label: "Success", value: "success" },
-      ],
+      options: STATUS_OPTIONS.map((s) => ({
+        label: s.charAt(0).toUpperCase() + s.slice(1),
+        value: s,
+      })),
       placeholder: "All Statuses",
     },
     {
@@ -154,14 +210,15 @@ export default function TransactionsView() {
         setPlanFilter(v);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      options: plans?.map((p) => ({ label: p.title, value: String(p.id) })) || [],
+      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
       placeholder: "All Plans",
     },
-  ], [statusFilter, planFilter, plans]);
+  ];
 
-  const columns = useMemo(() => getTransactionColumns(), []);
-
-  const isFirstLoad = transactionsLoading && transactionsPagination === null;
+  // Formatted label for the date range chip
+  const dateRangeLabel = dateRange
+    ? `${format(dateRange.from, "MMM dd, yyyy")} – ${format(dateRange.to, "MMM dd, yyyy")}`
+    : "";
 
   if (transactionsError && !transactionsPagination) {
     return (
@@ -192,6 +249,12 @@ export default function TransactionsView() {
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />
+            <CalendarDateRangePicker
+              value={dateRange}
+              onDateChange={setDateRange}
+              className="h-9 3xl:h-10"
+              compact
+            />
             <Button
               type="button"
               variant="outline"
@@ -210,11 +273,14 @@ export default function TransactionsView() {
         }
         activeFiltersChildren={
           <DataTableActiveChips
-            filterConfig={filterConfig}
+            filterConfig={[
+              ...filterConfig,
+              ...(dateRange ? [{ id: "dateRange", label: "Date Range", value: dateRangeLabel, onChange: () => {} }] : []),
+            ]}
             onClearAll={() => {
               setStatusFilter("");
               setPlanFilter("");
-              setPagination((p) => ({ ...p, pageIndex: 0 }));
+              setDateRange(null);
             }}
           />
         }

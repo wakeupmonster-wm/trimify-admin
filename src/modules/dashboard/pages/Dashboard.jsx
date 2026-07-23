@@ -21,6 +21,7 @@ import {
   Wallet,
   ShieldCheck,
   Bell,
+  Eye,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +34,7 @@ import { ContentPerformance } from "@/components/shared/ContentPerformance";
 import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { ConversionFunnel } from "../components/ConversionFunnel";
 import SecondaryKpiRow from "../components/SecondaryKpiRow";
+import { EcosystemAlerts } from "../components/EcosystemAlerts";
 import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
@@ -366,6 +368,7 @@ export default function Dashboard() {
             )}
 
             <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
+            <EcosystemAlerts data={{ alerts: dashboardExtras?.alerts || [] }} selectedDate={selectedDate} />
 
             {/* Composition — pie/donut breakdowns */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
@@ -383,7 +386,7 @@ export default function Dashboard() {
                     breakdowns belong with the rest of subscription analytics. */}
                 <DonutStatCard
                   title="User Goal Distribution"
-                  subtitle="Primary goal, main_goal field"
+                  subtitle="Primary fitness goal"
                   Icon={Target}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
@@ -484,6 +487,24 @@ export default function Dashboard() {
                     },
                   ]}
                 />
+                <div className="w-full h-full min-h-[320px]">
+                  <DashboardTableCard
+                    title="Recent Joined Users"
+                    subtitle="Monitor the latest member registrations"
+                    Icon={Users2}
+                    iconColor="text-slate-600"
+                    iconBg="bg-slate-100/50"
+                    rows={(dashboardExtras?.tables?.recentUsers || []).slice(0, 5)}
+                    emptyMessage="No recent users found."
+                    columns={[
+                      { key: "name", label: "User", render: (r) => <span className="block max-w-[100px] truncate font-semibold" title={r.name}>{r.name}</span> },
+                      { key: "email", label: "Email", render: (r) => <span className="block max-w-[120px] truncate text-slate-500" title={r.email}>{r.email || "-"}</span> },
+                      { key: "created_at", label: "Joined", render: (r) => <span className="whitespace-nowrap">{r.created_at ? format(new Date(r.created_at), "MMM dd") : "-"}</span> },
+                    ]}
+                    actionLabel={<Eye size={14} />}
+                    onAction={(row) => navigate(`/admin/users/view-user/${row.id}`, { state: { from: "/admin/dashboard" } })}
+                  />
+                </div>
               </div>
             </div>
 

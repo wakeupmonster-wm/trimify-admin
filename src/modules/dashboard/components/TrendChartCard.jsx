@@ -36,7 +36,7 @@ const TrendChartCard = ({
   periodLabel,
   series = [],
   note,
-  height = "h-[240px]",
+  height = "flex-1 min-h-[240px]",
 }) => {
   const chartConfig = Object.fromEntries(
     series.map((s) => [s.key, { label: s.label, color: s.color }]),
@@ -52,7 +52,7 @@ const TrendChartCard = ({
           Icon={Icon}
           iconColor={iconColor}
           iconBg={iconBg}
-          tooltipText={tooltipText}
+          tooltipText={tooltipText || note}
         />
       </div>
 

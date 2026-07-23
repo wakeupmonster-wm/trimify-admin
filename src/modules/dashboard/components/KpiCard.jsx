@@ -44,7 +44,7 @@ const TONE_STYLES = {
   },
 };
 
-const KpiCard = ({ label, value, description, tone = "default", onClick }) => {
+const KpiCard = ({ label, value, description, tone = "default", onClick, isSelected }) => {
   const t = TONE_STYLES[tone] || TONE_STYLES.default;
   return (
     <div
@@ -59,8 +59,8 @@ const KpiCard = ({ label, value, description, tone = "default", onClick }) => {
       className={cn(
         "flex flex-col justify-center rounded-xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-md",
         t.border,
-        onClick &&
-          "cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
+        onClick && "cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-blue focus-visible:outline-none",
+        isSelected && "border-brand-blue/60 shadow-brand-blue/10 shadow-md",
       )}
     >
       <div className="min-w-0 flex-1">

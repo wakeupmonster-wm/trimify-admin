@@ -55,8 +55,8 @@ const DashboardTableCard = ({
                 </TableHead>
               ))}
               {actionLabel && (
-                <TableHead className="text-right text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6">
-                  Action
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6">
+                  <div className="flex justify-end w-full">Action</div>
                 </TableHead>
               )}
             </TableRow>
@@ -86,16 +86,18 @@ const DashboardTableCard = ({
                     </TableCell>
                   ))}
                   {actionLabel && (
-                    <TableCell className="py-3.5 text-right first:pl-6 last:pr-6">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onAction?.(row)}
-                        className="h-8 text-[11px] px-2.5 rounded-full border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
-                      >
-                        {actionLabel}
-                      </Button>
+                    <TableCell className="py-3.5 first:pl-6 last:pr-6">
+                      <div className="flex justify-end w-full">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onAction?.(row)}
+                          className="h-8 text-[11px] px-2.5 rounded-full border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                        >
+                          {actionLabel}
+                        </Button>
+                      </div>
                     </TableCell>
                   )}
                 </TableRow>

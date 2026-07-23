@@ -17,4 +17,5 @@ export const DASHBOARD_ENDPOINTS = {
   CONVERSION_FUNNEL: `${ADMIN}/dashboard/conversion-funnel`,
   DEMOGRAPHICS_CHARTS: `${ADMIN}/dashboard/demographics-charts`,
   FITZONE_COMPLETION_TREND: `${ADMIN}/dashboard/fitzone-completion-trend`,
+  ALERTS: `${ADMIN}/dashboard/alerts`,
 }

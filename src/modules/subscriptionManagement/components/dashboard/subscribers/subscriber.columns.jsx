@@ -27,6 +27,25 @@ const formatDate = (value) => {
   }
 };
 
+// revoked_reason is derived server-side from the subscriber's latest
+// transaction: "auto_refund"/"auto_dispute" mean the revoke was a side-effect
+// of a payment refund/dispute, not an admin action; "manual_admin" means the
+// admin actually pressed Revoke. Falls back to a humanized raw value for any
+// future reason we don't know about yet.
+const REVOKE_REASON_LABEL = {
+  auto_refund: "Auto-revoked · Refund",
+  auto_dispute: "Auto-revoked · Dispute",
+  manual_admin: "Manually revoked",
+};
+
+const humanizeReason = (value) =>
+  REVOKE_REASON_LABEL[value] ||
+  String(value || "")
+    .replace(/_/g, " ")
+    .split(" ")
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(" ");
+
 export const getSubscriberColumns = (onAction) => [
   {
     id: "sno",
@@ -93,7 +112,7 @@ export const getSubscriberColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <div className="font-semibold text-slate-600 text-[11px]">
-        {row.original.plan_title || "-"}
+        {row.original.plan_title || "Unknown Plan"}
       </div>
     ),
   },
@@ -137,49 +156,23 @@ export const getSubscriberColumns = (onAction) => [
     size: 150,
     minSize: 150,
     cell: ({ row }) => {
-      const rawStatus = row.original.status || "Unknown";
-      let config = {
-        bg: "bg-slate-100/70",
-        text: "text-slate-700",
-        dot: "bg-slate-500",
-        hover: "hover:bg-slate-100",
-      };
-      if (rawStatus === "Active") {
-        config = {
-          bg: "bg-emerald-100/70",
-          text: "text-emerald-700",
-          dot: "bg-emerald-600",
-          hover: "hover:bg-emerald-100",
-        };
-      } else if (rawStatus === "Expired") {
-        config = {
-          bg: "bg-amber-100/70",
-          text: "text-amber-700",
-          dot: "bg-amber-600",
-          hover: "hover:bg-amber-100",
-        };
-      } else if (rawStatus === "Revoked") {
-        config = {
-          bg: "bg-rose-100/70",
-          text: "text-rose-700",
-          dot: "bg-rose-600",
-          hover: "hover:bg-rose-100",
-        };
-      }
-
+      const { status, revoked_reason } = row.original;
       return (
-        <Badge
-          variant="outline"
-          className={cn(
-            "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
-            config.bg,
-            config.text,
-            config.hover,
+        <div className="flex flex-col items-start gap-1">
+          <Badge
+            className={cn(
+              "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5",
+              STATUS_STYLE[status] || "bg-slate-100 text-slate-500",
+            )}
+          >
+            {status}
+          </Badge>
+          {status === "Revoked" && revoked_reason && (
+            <span className="text-[10px] font-medium text-slate-400 pl-0.5">
+              {humanizeReason(revoked_reason)}
+            </span>
           )}
-        >
-          <span className={cn("w-1 h-1 rounded-full", config.dot)} />
-          {rawStatus}
-        </Badge>
+        </div>
       );
     },
   },

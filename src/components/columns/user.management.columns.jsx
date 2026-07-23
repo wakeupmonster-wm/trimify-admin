@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { STATUS_COLORS } from "@/config/theme.config";
 
 export const getUserManagementColumns = (onAction) => [
   {
@@ -209,31 +210,15 @@ export const getUserManagementColumns = (onAction) => [
     size: 80,
     minSize: 75,
     cell: ({ row }) => {
-      const rawStatus = String(row.original.status || "Active");
-      const isActive =
-        rawStatus.toLowerCase() === "active" ||
-        rawStatus === "1" ||
-        rawStatus.toLowerCase() === "true";
-      const displayStatus = isActive ? "Active" : "Inactive";
-
+      const status = row.original.status || "Active";
+      const bgColor = STATUS_COLORS[status.toLowerCase()] || STATUS_COLORS.active;
       return (
         <div className="flex justify-center">
-          <Badge
-            variant="outline"
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
-              isActive
-                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
-                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100"
-            )}
+          <Badge 
+            className="text-white font-bold text-[10px] uppercase rounded-md px-2 border-none transition-opacity hover:opacity-90"
+            style={{ backgroundColor: bgColor }}
           >
-            <span
-              className={cn(
-                "w-1 h-1 rounded-full",
-                isActive ? "bg-emerald-600" : "bg-rose-600"
-              )}
-            />
-            {displayStatus}
+            {status}
           </Badge>
         </div>
       );

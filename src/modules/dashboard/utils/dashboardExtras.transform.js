@@ -13,12 +13,25 @@ const titleCase = (str) =>
     .join(" ");
 
 /** Generic array -> [{label,value,color}] mapper, fixed categorical color order. */
-export const toCategoricalPie = (items = [], labelKey, valueKey) =>
-  items.map((item, i) => ({
-    label: titleCase(item[labelKey]),
-    value: Number(item[valueKey]) || 0,
-    color: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length],
-  }));
+export const toCategoricalPie = (items = [], labelKey, valueKey) => {
+  const grouped = {};
+  items.forEach((item) => {
+    let rawLabel = item[labelKey] || "Unspecified";
+    if (typeof rawLabel === "string") {
+      rawLabel = rawLabel.replace(/_/g, " ");
+    }
+    const label = titleCase(rawLabel);
+    grouped[label] = (grouped[label] || 0) + (Number(item[valueKey]) || 0);
+  });
+
+  return Object.entries(grouped)
+    .sort((a, b) => b[1] - a[1]) // sort descending
+    .map(([label, value], i) => ({
+      label,
+      value,
+      color: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length],
+    }));
+};
 
 /** transactionStatus is a {success,failed,pending} object, not an array. */
 export const toStatusPie = (statusObj = {}) =>
@@ -27,6 +40,19 @@ export const toStatusPie = (statusObj = {}) =>
     value: Number(value) || 0,
     color: STATUS_COLORS[label.toLowerCase()] || "hsl(215, 16%, 78%)",
   }));
+
+/**
+ * Transaction Health widget needs 5 states, but they come from two different
+ * endpoints: success/failed/pending live on revenue-charts' transactionStatus,
+ * while refunded/disputed were only just added to dashboard/summary. Merge
+ * them into one object so the widget has a single data source.
+ */
+export const toTransactionHealthPie = (statusObj = {}, refundedCount = 0, disputedCount = 0) =>
+  toStatusPie({
+    ...statusObj,
+    refunded: refundedCount || 0,
+    disputed: disputedCount || 0,
+  });
 
 /** vegetarianSplit already ships {label,total} — just normalize the value key & color. */
 export const toLabeledPie = (items = []) =>
@@ -82,4 +108,67 @@ export const buildSecondaryKpis = (summary) => {
     totalPublishedBlogs: summary.totalPublishedBlogs || 0,
     totalSubAdmins: summary.totalSubAdmins || 0,
   };
+};
+
+export const buildAlerts = (alerts = {}) => {
+  const result = [];
+
+  if (alerts.ghostingUsers?.needsAttention) {
+    result.push({
+      id: "ghosting",
+      label: "Ghosting Users",
+      value: `${alerts.ghostingUsers.count} users have been inactive for over ${alerts.ghostingUsers.thresholdDays} days`,
+      route: "/admin/users",
+      filterId: "ghosted"
+    });
+  }
+
+  if (alerts.newSignupsZeroEngagement?.needsAttention) {
+    result.push({
+      id: "reported",
+      label: "Zero Engagement",
+      value: `${alerts.newSignupsZeroEngagement.count} new signups have 0 activity in ${alerts.newSignupsZeroEngagement.thresholdDays} days`,
+      route: "/admin/users",
+      filterId: "zero_engagement"
+    });
+  }
+
+  if (alerts.incompleteProfiles?.needsAttention) {
+    result.push({
+      id: "kyc",
+      label: "Incomplete Profiles",
+      value: `${alerts.incompleteProfiles.incompleteCount} profiles are missing information`,
+      route: "/admin/users",
+      filterId: "incomplete"
+    });
+  }
+
+  if (alerts.contentStagnation?.needsAttention) {
+    const staleItems = [];
+    if (alerts.contentStagnation.programs?.stale) staleItems.push("programs");
+    if (alerts.contentStagnation.blogs?.stale) staleItems.push("blogs");
+    if (alerts.contentStagnation.fitzoneCategories?.stale) staleItems.push("fitzone sessions");
+
+    const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
+
+    // result.push({
+    //   id: "ghosting",
+    //   label: "Content Stagnation",
+    //   value: `No new ${itemString} published in over ${alerts.contentStagnation.thresholdDays} days`,
+    //   route: "/admin/manage-program",
+    //   filterId: "stale_content"
+    // });
+  }
+
+  if (alerts.zeroEnrollmentPrograms?.needsAttention) {
+    result.push({
+      id: "stalled",
+      label: "Zero Enrollment",
+      value: `${alerts.zeroEnrollmentPrograms.count} programs have 0 enrollments past grace period`,
+      route: "/admin/manage-program",
+      filterId: "zero_enrollment"
+    });
+  }
+
+  return result;
 };

@@ -17,6 +17,7 @@ import {
   Ban,
   Trash2,
   Edit,
+  Loader2,
 } from "lucide-react";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
@@ -329,8 +330,13 @@ export default function UserProfileView({ user, onBack, loading }) {
 
   if (loading || !user) {
     return (
-      <div className="py-5 w-full max-w-full">
-        <UserProfileSkeleton />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto max-w-[1180px]">
+        <Loader2 className="w-10 h-10 animate-spin text-[#007FC0]" />
+        <p className="text-sm text-slate-500 mt-4 font-medium animate-pulse">
+          Loading user profile...
+        </p>
+        {/* <div className="py-5 w-full max-w-full">
+        <UserProfileSkeleton /> */}
       </div>
     );
   }

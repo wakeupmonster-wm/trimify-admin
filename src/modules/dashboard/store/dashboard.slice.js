@@ -8,6 +8,7 @@ import {
   dashboardConversionFunnelAPI,
   dashboardDemographicsChartsAPI,
   dashboardFitzoneCompletionTrendAPI,
+  dashboardAlertsAPI,
 } from "../services/dashboard.services";
 import {
   getDailyPerformanceAPI,
@@ -20,6 +21,7 @@ import {
   toLabeledPie,
   buildFunnel,
   buildSecondaryKpis,
+  buildAlerts,
 } from "../utils/dashboardExtras.transform";
 // ─── Existing KPI thunk ────────────────────────────────────────────────────────
 
@@ -108,6 +110,7 @@ export const fetchDashboardExtras = createAsyncThunk(
         expiringSoonRes,
         abandonedRes,
         contentRes,
+        alertsRes,
       ] = await Promise.allSettled([
         dashboardSummaryAPI(dateRange),
         dashboardDemographicsChartsAPI(),
@@ -120,6 +123,7 @@ export const fetchDashboardExtras = createAsyncThunk(
         getExpiringSoonAPI({ limit: 10 }),
         getAbandonedCheckoutsAPI({ limit: 10 }),
         dashboardContentChartsAPI(dateRange),
+        dashboardAlertsAPI(),
       ]);
 
       const pick = (res) => (res.status === "fulfilled" && res.value?.success ? res.value.data : null);
@@ -135,6 +139,7 @@ export const fetchDashboardExtras = createAsyncThunk(
       const expiringSoon = pick(expiringSoonRes);
       const abandoned = pick(abandonedRes);
       const content = pick(contentRes);
+      const alerts = pick(alertsRes);
 
       return {
         secondaryKpis: buildSecondaryKpis(summary),
@@ -162,8 +167,10 @@ export const fetchDashboardExtras = createAsyncThunk(
           subAdminRoster: recentActivity?.subAdminRoster || [],
           unassignedUsers: recentActivity?.unassignedUsers ?? null,
           recentNotifications: recentActivity?.recentNotifications || [],
+          recentUsers: recentActivity?.recentUsers || [],
         },
         funnel: buildFunnel(funnelData),
+        alerts: buildAlerts(alerts),
       };
     } catch (err) {
       return rejectWithValue(err.message || "Server Error");

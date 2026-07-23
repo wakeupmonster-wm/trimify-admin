@@ -34,6 +34,7 @@ const ModuleKpiRow = ({ items, loading = false }) => {
           description={item.description}
           tone={item.tone}
           onClick={item.onClick}
+          isSelected={item.isSelected}
         />
       ))}
     </div>

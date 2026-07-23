@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import { ShieldCheck, AlertTriangle, Clock, ArrowRight } from "lucide-react";
+import { ShieldCheck, AlertTriangle, Clock, ArrowRight, Target } from "lucide-react";
 import { useNavigate } from "react-router";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 
 export function EcosystemAlerts({ data, selectedDate }) {
-  if (!data) return null;
+  if (!data?.alerts?.length) return null;
   const navigate = useNavigate();
 
   // Resolve preset-based date selections to actual from/to dates
@@ -67,6 +67,18 @@ export function EcosystemAlerts({ data, selectedDate }) {
       actionLabel: "Analyze",
       icon: Clock,
     },
+    stalled: {
+      bgColor: "bg-[#FFFCF0]",
+      borderColor: "border-[#FDE68A]",
+      iconBg: "bg-[#FEF3C7]",
+      iconColor: "text-[#D97706]",
+      badgeBg: "bg-[#FFFCF0]",
+      badgeText: "text-[#D97706]",
+      actionBg: "bg-[#FFFFFF]",
+      actionText: "text-[#D97706]",
+      actionLabel: "Manage",
+      icon: Target,
+    },
   };
 
   return (
@@ -95,6 +107,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
                     badge: alert.badge,
                     preset: selectedDate?.preset,
                     dateRange: resolvedDateRange,
+                    filterId: alert.filterId,
                   },
                 })
               }}
@@ -118,9 +131,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
                   </span>
                 </div>
                 <p className="text-[12px] text-muted-foreground font-semibold leading-tight line-clamp-2">
-                  {alert.id === "ghosting"
-                    ? `${alert.value?.match(/^[\d,.kKmM]+/)?.[0] || ""} users have been inactive for last 2 months`
-                    : alert.value}
+                  {alert.value}
                 </p>
               </div>
 

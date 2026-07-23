@@ -227,10 +227,9 @@ export function RecentUsersTable({ recentActivityData }) {
                         key={user._id}
                         onClick={() =>
                           navigate(
-                            "/admin/management/users-management/view-profile",
+                            `/admin/users/view-user/${user._id}`,
                             {
                               state: {
-                                userId: user._id,
                                 from: location.pathname || "/admin/dashboard",
                               },
                             },
@@ -376,10 +375,9 @@ export function RecentUsersTable({ recentActivityData }) {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   navigate(
-                                    "/admin/management/users-management/view-profile",
+                                    `/admin/users/view-user/${user._id}`,
                                     {
                                       state: {
-                                        userId: user._id,
                                         from:
                                           location.pathname ||
                                           "/admin/dashboard",
