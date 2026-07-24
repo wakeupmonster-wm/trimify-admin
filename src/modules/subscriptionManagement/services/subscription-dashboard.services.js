@@ -26,6 +26,10 @@ export const getTransactionsAPI = async (params = {}) => {
   return apiConnector("GET", SUBSCRIPTION_DASHBOARD.TRANSACTIONS, null, null, params);
 };
 
+export const revokeTransactionAPI = async (id, data) => {
+  return apiConnector("POST", `${SUBSCRIPTION_DASHBOARD.TRANSACTIONS}/${id}/refund`, data);
+};
+
 // Not JSON — streams a CSV file. Bypasses apiConnector's response.data unwrap
 // interceptor by requesting a blob directly so we get the raw file body.
 export const exportTransactionsAPI = async (params = {}) => {

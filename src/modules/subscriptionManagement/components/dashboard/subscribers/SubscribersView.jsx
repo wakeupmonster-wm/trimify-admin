@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getSubscriberColumns } from "./subscriber.columns";
 import UpgradeSubscriberDialog from "./UpgradeSubscriberDialog";
+import RevokeSubscriberDialog from "./RevokeSubscriberDialog";
 import {
   fetchSubscribers,
   manageSubscriber,
@@ -21,13 +22,7 @@ import { getSubscribersAPI } from "../../../services/subscription-dashboard.serv
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
 import { useDebounce } from "@/hooks/useDebounce";
 
-const STATUS_OPTIONS = [
-  "Active",
-  "Expired",
-  "Revoked",
-  "canceled",
-  "expiring_soon",
-];
+const STATUS_OPTIONS = ["Active", "Expired", "Revoked", "expiring_soon"];
 
 export default function SubscribersView() {
   const navigate = useNavigate();
@@ -115,7 +110,10 @@ export default function SubscribersView() {
     const result = await dispatch(manageSubscriber({ id, ...body }));
     if (manageSubscriber.fulfilled.match(result)) {
       toast.success("Subscriber updated successfully");
-      dispatch(fetchSubscribers(fetchParams));
+      const refetched = await dispatch(fetchSubscribers(fetchParams));
+      if (fetchSubscribers.fulfilled.match(refetched)) {
+        setPinnedCounts(refetched.payload.counts);
+      }
       return true;
     }
     const payload = result.payload;
@@ -126,11 +124,39 @@ export default function SubscribersView() {
     return false;
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (data = {}) => {
     if (!confirmAction) return;
-    const ok = await runManage(confirmAction.subscriber.id, {
-      action: confirmAction.action,
-    });
+    const { subscriber, action } = confirmAction;
+
+    if (action === "revoke") {
+      // Revoke is async: the backend proxies to the main backend's
+      // internal refund endpoint which returns 202. The webhook will
+      // set revoked_at/paid=0 after Stripe processes the refund.
+      const result = await dispatch(
+        manageSubscriber({ id: subscriber.id, action, ...data })
+      );
+      if (manageSubscriber.fulfilled.match(result)) {
+        setConfirmAction(null);
+        toast.loading("Processing revocation...", { id: "revoke-toast" });
+        setTimeout(async () => {
+          const refetched = await dispatch(fetchSubscribers(fetchParams));
+          toast.success("Subscriber revoked successfully", { id: "revoke-toast" });
+          if (fetchSubscribers.fulfilled.match(refetched)) {
+            setPinnedCounts(refetched.payload.counts);
+          }
+        }, 4000);
+      } else {
+        const payload = result.payload;
+        const message = payload?.errors
+          ? Object.values(payload.errors).flat().join(" ")
+          : payload?.message || "Failed to revoke subscriber";
+        toast.error(message);
+      }
+      return;
+    }
+
+    // Non-revoke actions (expire, etc.) — synchronous flow
+    const ok = await runManage(subscriber.id, { action, ...data });
     if (ok) setConfirmAction(null);
   };
 
@@ -152,12 +178,13 @@ export default function SubscribersView() {
         label: "Total Subscribers",
         value: kpiCounts.total || 0,
         icon: <Users size={22} />,
-        tone: "blue",
-        description: "All-time, unfiltered",
+        color: "blue",
+        description: "Tap to view all",
         onClick: () => {
           setStatusFilter("");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
+        isSelected: statusFilter === "",
       },
       {
         label: "Active",
@@ -199,43 +226,39 @@ export default function SubscribersView() {
     [kpiCounts, statusFilter],
   );
 
-  const filterConfig = useMemo(
-    () => [
-      {
-        type: "select",
-        id: "statusFilter",
-        label: "Status",
-        value: statusFilter,
-        onChange: (v) => {
-          setStatusFilter(v);
-          setPagination((p) => ({ ...p, pageIndex: 0 }));
-        },
-        options: [
-          { label: "Active", value: "Active" },
-          { label: "Expired", value: "Expired" },
-          { label: "Revoked", value: "Revoked" },
-        ],
-        placeholder: "All Statuses",
-      },
-      {
-        type: "select",
-        id: "planFilter",
-        label: "Plan",
-        value: planFilter,
-        onChange: (v) => {
-          setPlanFilter(v);
-          setPagination((p) => ({ ...p, pageIndex: 0 }));
-        },
-        options:
-          plans?.map((p) => ({ label: p.title, value: String(p.id) })) || [],
-        placeholder: "All Plans",
-      },
-    ],
-    [statusFilter, planFilter, plans],
-  );
-
   const columns = useMemo(() => getSubscriberColumns(handleAction), []);
+
   const isFirstLoad = subscribersLoading && subscribersPagination === null;
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: (v) => {
+        setStatusFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: STATUS_OPTIONS.map((s) => ({
+        label: s === "expiring_soon" ? "Expiring Soon" : s.charAt(0).toUpperCase() + s.slice(1),
+        value: s,
+      })),
+      placeholder: "All Status",
+    },
+    {
+      type: "select",
+      id: "planFilter",
+      label: "Plan",
+      value: planFilter,
+      onChange: (v) => {
+        setPlanFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
+      placeholder: "All Plans",
+    },
+  ];
 
   if (subscribersError && !subscribersPagination) {
     return (
@@ -287,24 +310,22 @@ export default function SubscribersView() {
       />
 
       <ConfirmModal
-        isOpen={!!confirmAction}
+        isOpen={confirmAction?.action === "expire"}
         onClose={() => setConfirmAction(null)}
+        onConfirm={() => handleConfirm()}
+        loading={manageLoading}
+        type="warning"
+        title="Mark as Expired"
+        message={`Mark ${confirmAction?.subscriber?.name}'s subscription as expired?`}
+        confirmText="Mark Expired"
+      />
+
+      <RevokeSubscriberDialog
+        open={confirmAction?.action === "revoke"}
+        onOpenChange={(open) => !open && setConfirmAction(null)}
+        subscriber={confirmAction?.subscriber}
         onConfirm={handleConfirm}
         loading={manageLoading}
-        type={confirmAction?.action === "revoke" ? "danger" : "warning"}
-        title={
-          confirmAction?.action === "revoke"
-            ? "Revoke Access"
-            : "Mark as Expired"
-        }
-        message={
-          confirmAction?.action === "revoke"
-            ? `Revoke ${confirmAction?.subscriber?.name}'s subscription access immediately?`
-            : `Mark ${confirmAction?.subscriber?.name}'s subscription as expired?`
-        }
-        confirmText={
-          confirmAction?.action === "revoke" ? "Revoke" : "Mark Expired"
-        }
       />
 
       <UpgradeSubscriberDialog

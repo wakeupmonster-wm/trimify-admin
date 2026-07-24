@@ -16,9 +16,11 @@ import { Button } from "@/components/ui/button";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { endOfDay, format, parseISO } from "date-fns";
 import { getTransactionColumns } from "./transaction.columns";
+import RevokeTransactionDialog from "./RevokeTransactionDialog";
 import {
   fetchTransactions,
   exportTransactions,
+  revokeTransaction,
 } from "../../../store/subscription-dashboard.slice";
 import { getTransactionsAPI } from "../../../services/subscription-dashboard.services";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
@@ -45,6 +47,8 @@ export default function TransactionsView() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
   const [planFilter, setPlanFilter] = useState("");
+
+  const [revokeTransactionData, setRevokeTransactionData] = useState(null);
 
   // Date range — initialise from navigation state if the user clicked a
   // date-scoped KPI on the subscription dashboard, otherwise null (= all time).
@@ -135,15 +139,27 @@ export default function TransactionsView() {
         label: "Gross Revenue",
         value: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
         icon: <DollarSign size={22} />,
-        tone: "blue",
-        description: "All-time, unfiltered",
+        color: "blue",
+        description: "Tap to clear filters",
+        onClick: () => {
+          setStatusFilter("");
+          setPlanFilter("");
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        isSelected: statusFilter === "" && planFilter === "",
       },
       {
         label: "Total Transactions",
         value: kpiSummary.totalTransactions || 0,
         icon: <Receipt size={22} />,
-        tone: "emerald",
-        description: "All-time, unfiltered",
+        color: "emerald",
+        description: "Tap to clear filters",
+        onClick: () => {
+          setStatusFilter("");
+          setPlanFilter("");
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        isSelected: statusFilter === "" && planFilter === "",
       },
       // {
       //   label: "Basic Plan",
@@ -170,7 +186,43 @@ export default function TransactionsView() {
     [kpiSummary, avgTransactionValue, statusFilter],
   );
 
-  const columns = useMemo(() => getTransactionColumns(), []);
+  const handleAction = (txn, action) => {
+    if (action === "revoke") {
+      setRevokeTransactionData(txn);
+    }
+  };
+
+  const handleRevokeConfirm = async (data) => {
+    if (!revokeTransactionData) return;
+    const result = await dispatch(revokeTransaction({ 
+      id: revokeTransactionData.id, 
+      ...data 
+    }));
+
+    if (revokeTransaction.fulfilled.match(result)) {
+      setRevokeTransactionData(null);
+      toast.loading("Processing refund...", { id: "refund-toast" });
+      
+      // Wait for 4 seconds to allow webhook to process before refreshing
+      setTimeout(() => {
+        dispatch(fetchTransactions(fetchParams)).then((refetched) => {
+          toast.success("Transaction refunded successfully", { id: "refund-toast" });
+          if (fetchTransactions.fulfilled.match(refetched)) {
+            setPinnedSummary({
+              grossRevenue: refetched.payload.grossRevenue || 0,
+              totalTransactions: refetched.payload.totalTransactions || 0,
+            });
+          }
+        });
+      }, 4000);
+    } else {
+      const payload = result.payload;
+      const message = payload?.message || "Failed to refund transaction";
+      toast.error(message);
+    }
+  };
+
+  const columns = useMemo(() => getTransactionColumns(handleAction), [handleAction]);
 
   const isFirstLoad = transactionsLoading && transactionsPagination === null;
 
@@ -188,7 +240,7 @@ export default function TransactionsView() {
         label: s.charAt(0).toUpperCase() + s.slice(1),
         value: s,
       })),
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
     {
       type: "select",
@@ -273,6 +325,14 @@ export default function TransactionsView() {
             }}
           />
         }
+      />
+
+      <RevokeTransactionDialog
+        open={!!revokeTransactionData}
+        onOpenChange={(open) => !open && setRevokeTransactionData(null)}
+        transaction={revokeTransactionData}
+        onConfirm={handleRevokeConfirm}
+        loading={transactionsLoading} // Or specific revoke loading state if added
       />
     </div>
   );

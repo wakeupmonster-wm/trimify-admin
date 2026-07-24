@@ -22,24 +22,17 @@ const formatDate = (value) => {
   }
 };
 
-// revoked_reason is derived server-side from the subscriber's latest
-// transaction: "auto_refund"/"auto_dispute" mean the revoke was a side-effect
-// of a payment refund/dispute, not an admin action; "manual_admin" means the
-// admin actually pressed Revoke. Falls back to a humanized raw value for any
-// future reason we don't know about yet.
-const REVOKE_REASON_LABEL = {
-  auto_refund: "Auto-revoked · Refund",
-  auto_dispute: "Auto-revoked · Dispute",
-  manual_admin: "Manually revoked",
+// revoked_reason is now a human-readable string from the backend
+// derived from transactions.refund_requested_by / refund_reason.
+// The backend returns values like 'Revoked by Admin', 'Disputed by Customer',
+// 'Refunded (Dashboard)', 'Inconsistent state'. We use them as-is,
+// with styling hints for the inconsistent state.
+const REVOKED_REASON_STYLE = {
+  "Inconsistent state": "text-amber-500",
 };
 
 const humanizeReason = (value) =>
-  REVOKE_REASON_LABEL[value] ||
-  String(value || "")
-    .replace(/_/g, " ")
-    .split(" ")
-    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
-    .join(" ");
+  value || "";
 
 export const getSubscriberColumns = (onAction) => [
   {
@@ -151,7 +144,7 @@ export const getSubscriberColumns = (onAction) => [
     size: 150,
     minSize: 150,
     cell: ({ row }) => {
-      const { status, revoked_reason } = row.original;
+      const { status, revoked_reason, revoked_detail } = row.original;
       return (
         <div className="flex flex-col items-start gap-1">
           <Badge
@@ -165,8 +158,16 @@ export const getSubscriberColumns = (onAction) => [
             {status}
           </Badge>
           {status === "Revoked" && revoked_reason && (
-            <span className="text-[10px] font-medium text-slate-400 pl-0.5">
+            <span className={cn(
+              "text-[10px] font-medium pl-0.5",
+              REVOKED_REASON_STYLE[revoked_reason] || "text-slate-400"
+            )}>
               {humanizeReason(revoked_reason)}
+            </span>
+          )}
+          {status === "Revoked" && revoked_detail && (
+            <span className="text-[9px] font-medium text-slate-400 pl-0.5 italic max-w-[140px] truncate" title={revoked_detail}>
+              "{revoked_detail}"
             </span>
           )}
         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE = {
@@ -11,7 +12,7 @@ const STATUS_STYLE = {
   disputed: "bg-orange-50 text-orange-600",
 };
 
-export const getTransactionColumns = () => [
+export const getTransactionColumns = (onAction) => [
   {
     id: "sno",
     header: () => <div className="text-[10px] font-bold uppercase tracking-wider text-left">SR.No</div>,
@@ -131,6 +132,27 @@ export const getTransactionColumns = () => [
           <span className={cn("w-1 h-1 rounded-full", config.dot)} />
           {rawStatus}
         </Badge>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: () => <div className="text-center text-[10px] font-bold uppercase tracking-wider">Action</div>,
+    size: 150,
+    minSize: 150,
+    cell: ({ row }) => {
+      const txn = row.original;
+      return (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            className="h-7 px-3 bg-red-50 hover:bg-red-100 text-red-600 border-red-200 rounded text-[10px] font-semibold shadow-none flex items-center gap-1.5 disabled:opacity-50"
+            disabled={txn.status === "refunded" || txn.status === "failed"}
+            onClick={() => onAction && onAction(txn, "revoke")}
+          >
+            Revoke
+          </Button>
+        </div>
       );
     },
   },

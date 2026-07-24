@@ -123,13 +123,13 @@ const FitzoneManagementPage = () => {
 
   // Local fallback filtering in case the backend ignores the `status` parameter
   const displayData = useMemo(() => {
-    if (!statusFilter) return fitzones || [];
+    if (isManual || !statusFilter) return fitzones || [];
     return (fitzones || []).filter(
       (fz) =>
         String(fz.status || "Active").toLowerCase() ===
         statusFilter.toLowerCase(),
     );
-  }, [fitzones, statusFilter]);
+  }, [fitzones, statusFilter, isManual]);
 
   const filterConfig = [
     {
@@ -142,7 +142,7 @@ const FitzoneManagementPage = () => {
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -168,7 +168,9 @@ const FitzoneManagementPage = () => {
       icon: Dumbbell,
       label: "Total Fitzones",
       value: localKpis?.totalFitzones?.toLocaleString() || "0",
-      description: "All workout zones",
+      description: "Tap to view all",
+      onClick: () => setStatusFilter(""),
+      isSelected: statusFilter === "",
     },
     {
       icon: CheckCircle2,
@@ -177,6 +179,7 @@ const FitzoneManagementPage = () => {
       description: "Tap to filter",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
+      isSelected: statusFilter === "Active",
     },
     {
       icon: XCircle,
@@ -185,6 +188,7 @@ const FitzoneManagementPage = () => {
       description: "Tap to filter",
       tone: "rose",
       onClick: () => setStatusFilter("Inactive"),
+      isSelected: statusFilter === "Inactive",
     },
     {
       icon: ListVideo,

@@ -6,6 +6,7 @@ import {
   getSubscribersAPI,
   manageSubscriberAPI,
   getTransactionsAPI,
+  revokeTransactionAPI,
   exportTransactionsAPI,
   getRetentionTrendAPI,
   getExpiringSoonAPI,
@@ -141,6 +142,21 @@ export const fetchTransactions = createAsyncThunk(
     try {
       const response = await getTransactionsAPI(params);
       if (response?.success) return response.data;
+      return rejectWithValue(response);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const revokeTransaction = createAsyncThunk(
+  "subscriptionDashboard/revokeTransaction",
+  async ({ id, ...body }, { rejectWithValue }) => {
+    try {
+      const response = await revokeTransactionAPI(id, body);
+      if (response?.success) {
+        return { id };
+      }
       return rejectWithValue(response);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -318,6 +334,16 @@ const subscriptionDashboardSlice = createSlice({
         if (action.meta.requestId !== state.transactionsRequestId) return;
         state.transactionsLoading = false;
         state.transactionsError = action.payload;
+      })
+      // Revoke Transaction
+      .addCase(revokeTransaction.pending, (state) => {
+        // You could use a specific revoke loading state if needed, but we rely on transactionsLoading or just local state.
+      })
+      .addCase(revokeTransaction.fulfilled, (state) => {
+        // Handled locally or refetched.
+      })
+      .addCase(revokeTransaction.rejected, (state, action) => {
+        // Handled via toast in component.
       })
       // Export
       .addCase(exportTransactions.pending, (state) => {
