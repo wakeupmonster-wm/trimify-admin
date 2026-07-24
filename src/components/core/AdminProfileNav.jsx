@@ -54,7 +54,7 @@ export function AdminProfileNav() {
           side="bottom"
           className="flex flex-col gap-1 p-3 bg-slate-50 border-slate-300/60 shadow-md"
         >
-          <p className="font-bold text-app-primary2">{displayName}</p>
+          <p className="font-bold text-slate-900">{displayName}</p>
           <p className="text-xs text-slate-500">{displayEmail}</p>
         </TooltipContent>
       </Tooltip>

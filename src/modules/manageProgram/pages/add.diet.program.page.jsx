@@ -14,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, CalendarCheck, ArrowLeft } from "lucide-react";
+import { Save, X, ArrowLeft } from "lucide-react";
+import { IoFastFoodOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import {
   getProgramDuration,
@@ -122,8 +123,8 @@ const AddDietProgramPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Add Diet Meal Plan"
-                icon={<CalendarCheck className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                icon={<IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Add a new diet meal to this plan."
               />
             </div>
@@ -141,7 +142,7 @@ const AddDietProgramPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}

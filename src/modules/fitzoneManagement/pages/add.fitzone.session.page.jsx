@@ -179,7 +179,7 @@ const AddFitzoneSessionPage = () => {
               <PageHeader
                 heading={isEdit ? "Edit Session" : "Add Session"}
                 icon={<PlayCircle className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading={
                   isEdit
                     ? "Edit existing workout session details and videos."
@@ -201,7 +201,7 @@ const AddFitzoneSessionPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"

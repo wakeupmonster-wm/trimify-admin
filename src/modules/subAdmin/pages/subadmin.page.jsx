@@ -277,7 +277,7 @@ const SubAdminManagementPage = () => {
                 icon={
                   <LuUserRoundCog className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-md shadow-blue-200/50"
+                variant="primary"
                 subheading="Manage sub-administrators and their access roles."
               />
             </div>

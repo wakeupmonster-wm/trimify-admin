@@ -122,10 +122,8 @@ const AiFoodUploadPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="AI Food Upload"
-                icon={
-                  <Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
-                }
-                color="bg-app-primary2 shadow-app-primary2"
+                icon={<Sparkles className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Generate nutrition data & images with AI, review, then save to the catalog."
               />
             </div>

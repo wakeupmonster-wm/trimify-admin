@@ -13,19 +13,7 @@ import {
 import { Kpi, Card, GoalTile, Pill, KV, EmptyState } from "./UserProfileView";
 
 export function TabOverview({ data }) {
-  const {
-    user,
-    es,
-    waterGoal,
-    caloriesGoal,
-    targetSteps,
-    macroTotal,
-    macros,
-    cap,
-    initials,
-    fmtDate,
-    timeAgo,
-  } = data;
+  const { user, es, waterGoal, caloriesGoal, targetSteps, macroTotal, macros, cap, initials, fmtDate, timeAgo } = data;
 
   return (
     <>
@@ -62,7 +50,7 @@ export function TabOverview({ data }) {
                 pct={Math.min(100, (targetSteps / 12000) * 100)}
               />
             </div>
-            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-400">
+            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
               Macro split
             </div>
             <div className="mb-2.5 flex h-2 overflow-hidden rounded-full border border-slate-100 bg-slate-100">
@@ -99,19 +87,19 @@ export function TabOverview({ data }) {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
-                    <Activity className="h-4 w-4" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
+                    <Activity className="h-5 w-5" />
                   </div>
                   <div>
-                    <div className="text-[12.5px] font-bold text-slate-900">
+                    <div className="text-[13px] font-bold text-slate-900">
                       {cap(user.most_used_feature?.feature)}
                     </div>
-                    <div className="text-[10.5px] font-medium text-slate-400">
+                    <div className="text-[11px] font-medium text-slate-500">
                       Last logged {timeAgo(es.last_active_at)}
                     </div>
                   </div>
                 </div>
-                <div className="text-xl font-bold tabular-nums text-slate-900">
+                <div className="text-base font-bold tabular-nums text-slate-900">
                   {user.most_used_feature?.count}
                 </div>
               </div>
@@ -120,25 +108,23 @@ export function TabOverview({ data }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Card
-            title="Managed By"
-            subtitle="Assigned sub-admin"
-            right={
-              <Pill
-                tone={
-                  user.sub_admin?.status === "Active" ||
-                  user.sub_admin?.status === "1"
-                    ? "success"
-                    : "neutral"
-                }
-              >
-                {user.sub_admin?.status === "1"
-                  ? "Active"
-                  : user.sub_admin?.status === "0"
-                    ? "Inactive"
-                    : user.sub_admin?.status}
-              </Pill>
-            }
+          <Card title="Managed By" subtitle="Assigned sub-admin"
+            // right={
+            //   <Pill
+            //     tone={
+            //       user.sub_admin?.status === "Active" ||
+            //       user.sub_admin?.status === "1"
+            //         ? "success"
+            //         : "neutral"
+            //     }
+            //   >
+            //     {user.sub_admin?.status === "1"
+            //       ? "Active"
+            //       : user.sub_admin?.status === "0"
+            //         ? "Inactive"
+            //         : user.sub_admin?.status}
+            //   </Pill>
+            // }
           >
             {user.sub_admin ? (
               <>
@@ -147,26 +133,19 @@ export function TabOverview({ data }) {
                     {initials(user.sub_admin?.name)}
                   </div>
                   <div>
-                    <div className="text-[12.5px] font-bold text-slate-900">
+                    <div className="text-[13px] font-bold text-slate-900">
                       {user.sub_admin?.name}
                     </div>
-                    <div className="text-[10.5px] font-medium text-slate-400">
+                    <div className="text-[11px] font-medium text-slate-500">
                       {user.sub_admin?.designation} · {user.sub_admin?.hospital}
                     </div>
                   </div>
                 </div>
-                <div className="mt-3">
+
+                <div className="mt-3 px-1">
                   <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
-                  <KV
-                    icon={Phone}
-                    label="Phone"
-                    value={user.sub_admin?.phone}
-                  />
-                  <KV
-                    icon={Globe}
-                    label="Location"
-                    value={user.sub_admin?.location}
-                  />
+                  <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
+                  <KV icon={Globe} label="Location" value={user.sub_admin?.location} />
                 </div>
               </>
             ) : (
@@ -179,26 +158,10 @@ export function TabOverview({ data }) {
           </Card>
 
           <Card title="Account" subtitle="User account details">
-            <KV
-              icon={CreditCard}
-              label="Payment"
-              value={user.paid ? "Paid" : "Unpaid"}
-            />
-            <KV
-              icon={ShieldCheck}
-              label="Plan"
-              value={user.plan ? cap(user.plan) : "No active plan"}
-            />
-            <KV
-              icon={Bell}
-              label="Notifications"
-              value={user.notification_status ? "Enabled" : "Disabled"}
-            />
-            <KV
-              icon={Calendar}
-              label="Updated"
-              value={fmtDate(user.updated_at)}
-            />
+            <KV icon={CreditCard} label="Payment" value={user.paid ? "Paid" : "Unpaid"} />
+            <KV icon={ShieldCheck} label="Plan" value={user.plan ? cap(user.plan) : "No active plan"} />
+            <KV icon={Bell} label="Notifications" value={user.notification_status ? "Enabled" : "Disabled"} />
+            <KV icon={Calendar} label="Updated" value={fmtDate(user.updated_at)} />
           </Card>
         </div>
       </div>

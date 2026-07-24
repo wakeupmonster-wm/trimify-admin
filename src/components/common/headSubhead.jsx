@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const PageHeader = React.forwardRef(
   (
-    { className, color, heading, subheading, align = "left", icon, ...props },
+    { className, color, variant = "default", heading, subheading, align = "left", icon, ...props },
     ref,
   ) => {
     // Minimalist animation variants
@@ -31,6 +31,11 @@ const PageHeader = React.forwardRef(
       },
     };
 
+    const variantStyles = {
+      default: "bg-white shadow-sm border border-slate-100 text-slate-700",
+      primary: "bg-app-primary2 text-white",
+    };
+
     return (
       <motion.div
         ref={ref}
@@ -45,42 +50,13 @@ const PageHeader = React.forwardRef(
         )}
         {...props}
       >
-        {/* <div className="flex items-center gap-3">
-          {icon && (
-            <motion.div
-              variants={itemVariants}
-              className={cn(
-                "flex p-2 size-10 items-center justify-center rounded-xl",
-                color || "bg-white",
-              )}
-            >
-              {icon}
-            </motion.div>
-          )}
-
-          <motion.h1
-            variants={itemVariants}
-            className="text-xl font-bold text-foreground tracking-tight sm:text-2xl"
-          >
-            {heading}
-          </motion.h1>
-        </div>
-        {subheading && (
-          <motion.p
-            variants={itemVariants}
-            className="text-[13px] leading-relaxed text-muted-foreground max-w-[600px] font-medium"
-          >
-            {subheading}
-          </motion.p>
-        )} */}
-
         <div className="flex items-center gap-3">
           {icon && (
             <motion.div
               variants={itemVariants}
               className={cn(
                 "flex p-2 size-10 items-center justify-center rounded-xl",
-                color || "bg-white",
+                color || variantStyles[variant],
               )}
             >
               {icon}

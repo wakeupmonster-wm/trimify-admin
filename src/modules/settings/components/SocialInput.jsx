@@ -9,7 +9,7 @@ export const SocialInput = ({
   icon,
 }) => (
   <div className="space-y-2">
-    <label className="text-[13px] font-bold text-slate-800 font-jakarta tracking-tight">
+    <label className="text-[13px] font-bold text-slate-800 font-sans tracking-tight">
       {label}
     </label>
     <div className="flex items-stretch w-full rounded-lg border border-slate-300/60 overflow-hidden group focus-within:border-app-primary2 focus-within:ring-4 focus-within:ring-app-primary2 transition-all duration-300">

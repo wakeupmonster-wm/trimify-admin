@@ -81,7 +81,7 @@ export function ActivityHeatmap({ data }) {
   }, [dataMap]);
 
   return (
-    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-jakarta overflow-hidden">
+    <Card className="flex flex-col h-full pb-0 bg-white gap-2 border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm font-sans overflow-hidden">
       <CardHeader className="px-0">
         <div className="flex items-start justify-between pb-4 px-5 border-b border-slate-300/60">
           <DashboardHead

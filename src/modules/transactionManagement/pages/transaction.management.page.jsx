@@ -53,31 +53,30 @@ const TransactionManagementPage = () => {
           <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="All Transactions"
-              icon={<Receipt className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />}
-              color="bg-app-primary2 shadow-md"
+              icon={<Receipt className="w-6 h-6 text-white shrink-0" />}
+              variant="primary"
               subheading="View and manage all user transactions and download invoices."
             />
           </div>
         </Header>
 
         <div className="w-full min-w-0 flex-1">
-
-        <DataTable
-          columns={columns}
-          data={displayData}
-          rowCount={
-            serverPagination ? serverPagination.total : displayData.length
-          }
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search by email..."
-          itemName="entries"
-          isLoading={loading}
-          manualPagination={!!serverPagination}
-          manualFiltering={!!serverPagination}
-        />
+          <DataTable
+            columns={columns}
+            data={displayData}
+            rowCount={
+              serverPagination ? serverPagination.total : displayData.length
+            }
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search by email..."
+            itemName="entries"
+            isLoading={loading}
+            manualPagination={!!serverPagination}
+            manualFiltering={!!serverPagination}
+          />
         </div>
       </div>
     </Container>

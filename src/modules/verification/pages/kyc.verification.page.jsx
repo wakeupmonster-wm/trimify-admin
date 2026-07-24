@@ -305,8 +305,8 @@ export default function KYCVerificationPage() {
           <div className="flex-1 min-w-0">
             <PageHeader
               heading="KYC Verifications"
-              icon={<ShieldCheck className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-app-primary2"
+              icon={<ShieldCheck className="w-6 h-6 text-white shrink-0" />}
+              variant="primary"
               subheading="Manage user identity documents."
             />
           </div>

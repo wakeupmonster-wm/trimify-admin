@@ -224,7 +224,7 @@ export default function Dashboard() {
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
   if (!dashboardExtras) {
     return (
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
       </div>
     );
@@ -232,7 +232,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] relative">
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
           {refreshing && dashboardExtras && (
             <motion.div
@@ -262,7 +262,7 @@ export default function Dashboard() {
                 icon={
                   <LayoutDashboard className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>
@@ -368,7 +368,10 @@ export default function Dashboard() {
             )}
 
             <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
-            <EcosystemAlerts data={{ alerts: dashboardExtras?.alerts || [] }} selectedDate={selectedDate} />
+            <EcosystemAlerts
+              data={{ alerts: dashboardExtras?.alerts || [] }}
+              selectedDate={selectedDate}
+            />
 
             {/* Composition — pie/donut breakdowns */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
@@ -494,15 +497,54 @@ export default function Dashboard() {
                     Icon={Users2}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={(dashboardExtras?.tables?.recentUsers || []).slice(0, 5)}
+                    rows={(dashboardExtras?.tables?.recentUsers || []).slice(
+                      0,
+                      5,
+                    )}
                     emptyMessage="No recent users found."
                     columns={[
-                      { key: "name", label: "User", render: (r) => <span className="block max-w-[100px] truncate font-semibold" title={r.name}>{r.name}</span> },
-                      { key: "email", label: "Email", render: (r) => <span className="block max-w-[120px] truncate text-slate-500" title={r.email}>{r.email || "-"}</span> },
-                      { key: "created_at", label: "Joined", render: (r) => <span className="whitespace-nowrap">{r.created_at ? format(new Date(r.created_at), "MMM dd") : "-"}</span> },
+                      {
+                        key: "name",
+                        label: "User",
+                        render: (r) => (
+                          <span
+                            className="block max-w-[100px] truncate font-semibold"
+                            title={r.name}
+                          >
+                            {r.name}
+                          </span>
+                        ),
+                      },
+                      {
+                        key: "email",
+                        label: "Email",
+                        render: (r) => (
+                          <span
+                            className="block max-w-[120px] truncate text-slate-500"
+                            title={r.email}
+                          >
+                            {r.email || "-"}
+                          </span>
+                        ),
+                      },
+                      {
+                        key: "created_at",
+                        label: "Joined",
+                        render: (r) => (
+                          <span className="whitespace-nowrap">
+                            {r.created_at
+                              ? format(new Date(r.created_at), "MMM dd")
+                              : "-"}
+                          </span>
+                        ),
+                      },
                     ]}
                     actionLabel={<Eye size={14} />}
-                    onAction={(row) => navigate(`/admin/users/view-user/${row.id}`, { state: { from: "/admin/dashboard" } })}
+                    onAction={(row) =>
+                      navigate(`/admin/users/view-user/${row.id}`, {
+                        state: { from: "/admin/dashboard" },
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -602,21 +644,25 @@ export default function Dashboard() {
                       )
                     }
                     columns={[
-                      { key: "name", label: "User" },
                       {
-                        key: "signed_up_at",
-                        label: "Signed Up",
-                        render: (r) =>
-                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                        key: "sr_no",
+                        label: "Sr. No.",
+                        width: "w-[10%]",
+                        align: "left",
+                        render: (_, idx) => (
+                          <span className="text-slate-500 px-2 font-medium">
+                            {idx + 1}
+                          </span>
+                        ),
                       },
-                      {
-                        key: "days_since_signup",
-                        label: "Days Since",
-                        render: (r) => `${r.days_since_signup}d`,
-                      },
+                      { key: "name", label: "User", width: "w-[20%]", align: "left" },
+                      { key: "signed_up_at", label: "Signed Up", width: "w-[15%]", align: "left", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm"), },
+                      { key: "days_since_signup", label: "Days Since", width: "w-[15%]", align: "left", render: (r) => `${r.days_since_signup}d` },
                       {
                         key: "main_goal",
                         label: "Goal",
+                        width: "w-[15%]",
+                        align: "left",
                         render: (r) => (
                           <span className="capitalize">{r.main_goal}</span>
                         ),
@@ -624,6 +670,8 @@ export default function Dashboard() {
                       {
                         key: "gender",
                         label: "Gender",
+                        width: "w-[15%]",
+                        align: "left",
                         render: (r) => (
                           <span className="capitalize">{r.gender}</span>
                         ),

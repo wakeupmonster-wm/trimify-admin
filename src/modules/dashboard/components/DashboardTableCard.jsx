@@ -42,21 +42,21 @@ const DashboardTableCard = ({
         />
       </div>
 
-      <div className="flex-1 w-full min-h-[200px] overflow-auto">
+      <div className="flex-1 w-full min-h-0 overflow-auto">
         <Table className="min-w-[520px]">
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-y border-slate-300/60 bg-slate-100/60 ">
+            <TableRow className="border-y border-slate-300/60 bg-app-primary2/5 hover:bg-app-primary2/5">
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
-                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                 >
                   {col.label}
                 </TableHead>
               ))}
               {actionLabel && (
                 <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6">
-                  <div className="flex justify-end w-full">Action</div>
+                  <div className="flex justify-start w-full">Action</div>
                 </TableHead>
               )}
             </TableRow>
@@ -86,14 +86,14 @@ const DashboardTableCard = ({
                     </TableCell>
                   ))}
                   {actionLabel && (
-                    <TableCell className="py-3.5 first:pl-6 last:pr-6">
-                      <div className="flex justify-end w-full">
+                    <TableCell className="py-3.5 first:pl-6 last:pr-6 w-1/12">
+                      <div className="flex justify-start w-full">
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={() => onAction?.(row)}
-                          className="h-8 text-[11px] px-2.5 rounded-full border-slate-200 text-slate-600 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                          className="h-8 text-[11px] px-2.5 rounded-full border border-app-primary2 text-app-primary2 shadow-sm hover:bg-app-primary2 hover:text-white transition-colors"
                         >
                           {actionLabel}
                         </Button>

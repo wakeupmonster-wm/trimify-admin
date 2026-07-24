@@ -37,7 +37,7 @@ const StatsGrid = ({ stats, colorMap, bgMap, onCardClick }) => {
           className={cn(
             "group relative p-6 rounded-xl border bg-white shadow-sm cursor-pointer transition-all duration-500 hover:shadow-md hover:shadow-slate-200/50 hover:-translate-y-1 active:scale-[0.98]",
             stat.isSelected &&
-              "border-brand-blue/60 shadow-brand-blue/10 shadow-md",
+              "border-app-primary2/60 shadow-app-primary2/10 shadow-md",
           )}
         >
           {/* Stat content remains the same */}

@@ -80,7 +80,7 @@ const ManageFitzoneSessionPage = () => {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
             search: debouncedSearch,
-          })
+          }),
         );
       } else {
         toast.error(resultAction.payload || "Failed to update status");
@@ -102,7 +102,7 @@ const ManageFitzoneSessionPage = () => {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
             search: debouncedSearch,
-          })
+          }),
         );
       } else {
         toast.error(resultAction.payload || "Failed to delete session");
@@ -129,7 +129,7 @@ const ManageFitzoneSessionPage = () => {
               <PageHeader
                 heading="Session Management"
                 icon={<Video className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading="Manage workout sessions and videos."
               />
             </div>

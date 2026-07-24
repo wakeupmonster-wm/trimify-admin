@@ -14,6 +14,7 @@ import {
   Pencil,
   Eye,
   ClipboardList,
+  Bot,
 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -30,6 +31,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import {
   updateAiFoodItem,
@@ -42,6 +56,8 @@ import {
 import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 import { getNutritionListAPI } from "@/modules/dataManagement/services/nutrition.services";
 import AiFoodImagePromptPanel from "../components/AiFoodImagePromptPanel";
+import AiFoodCustomRegenerateModal from "../components/AiFoodCustomRegenerateModal";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const STATUS_META = {
   draft: {
@@ -136,10 +152,13 @@ const AiFoodViewPage = () => {
   // for both. Kept local so the whole review form doesn't disappear behind
   // a blocking full-page spinner just because the photo is being redone.
   const [imageRegenerating, setImageRegenerating] = useState(false);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (item && item.status !== "processing") {
       setImageRegenerating(false);
+      setIsPromptModalOpen(false);
     }
   }, [item?.status]);
 
@@ -260,10 +279,14 @@ const AiFoodViewPage = () => {
     dispatch(deleteAiFoodItem(item.id))
       .unwrap()
       .then(() => {
+        setIsDeleteModalOpen(false);
         toast.success("Item removed.");
         navigate(BACK_TO_LIST);
       })
-      .catch((error) => toast.error(error || "Failed to remove item."));
+      .catch((error) => {
+        setIsDeleteModalOpen(false);
+        toast.error(error || "Failed to remove item.");
+      });
   };
 
   const startEditingName = () => {
@@ -327,10 +350,8 @@ const AiFoodViewPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={item.food_name}
-                icon={
-                  <Sparkles className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
-                }
-                color="bg-app-primary2 shadow-app-primary2"
+                icon={<Sparkles className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading={
                   <Badge
                     variant="outline"
@@ -386,7 +407,7 @@ const AiFoodViewPage = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={handleRemove}
+              onClick={() => setIsDeleteModalOpen(true)}
               disabled={isBusy}
               className="border-red-200 text-red-600 hover:bg-red-50"
             >
@@ -468,7 +489,7 @@ const AiFoodViewPage = () => {
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={handleRemove}
+                  onClick={() => setIsDeleteModalOpen(true)}
                   disabled={isBusy}
                   className="text-slate-400 hover:text-red-600 ml-auto"
                 >
@@ -503,92 +524,113 @@ const AiFoodViewPage = () => {
         {showReviewForm && (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
-              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="w-3.5 h-3.5 text-app-primary2" />
-                  <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                    Photo
-                  </h3>
-                </div>
-                <div className="aspect-square w-full rounded-md overflow-hidden bg-slate-100 border border-slate-200 relative group">
-                  {item.Meal_Image_url ? (
-                    <button
-                      type="button"
-                      onClick={() => setPreviewOpen(true)}
-                      className="w-full h-full block"
-                      title="View full image"
-                    >
-                      <img
-                        src={item.Meal_Image_url}
-                        alt={item.food_name}
-                        className={`w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 ${imageRegenerating ? "opacity-40" : ""}`}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
-                        <Eye className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </button>
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-300">
-                      <ImageIcon className="w-10 h-10" />
-                    </div>
-                  )}
-                  {imageRegenerating && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70">
-                      <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
-                      <p className="text-[11px] font-semibold text-slate-600">
-                        Regenerating…
-                      </p>
+              {/* Left Column - Image Card */}
+              <div className="flex flex-col gap-4">
+                <Card className="border-slate-200 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
+                  <div className="flex items-center gap-2 px-1">
+                    <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
+                    <h3 className="text-sm font-bold text-[#1d5284] uppercase tracking-wide">
+                      Photo
+                    </h3>
+                  </div>
+
+                  <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
+                    {item.Meal_Image_url ? (
                       <button
                         type="button"
-                        onClick={handleCancelRegenerate}
-                        className="text-[11px] font-semibold text-slate-500 underline hover:text-slate-800"
+                        onClick={() => setPreviewOpen(true)}
+                        className="w-full h-full block"
+                        title="View full image"
                       >
-                        Cancel
+                        <img
+                          src={item.Meal_Image_url}
+                          alt={item.food_name}
+                          className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${imageRegenerating ? "opacity-30 blur-sm" : ""}`}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
+                          <Eye className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
+                        </div>
                       </button>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300">
+                        <ImageIcon className="w-12 h-12 opacity-50" />
+                      </div>
+                    )}
+
+                    {/* Regenerate Action Menu */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center text-[#1d5284] hover:bg-slate-50 transition-colors z-10"
+                          disabled={isBusy || imageRegenerating}
+                        >
+                          <Bot className="w-5 h-5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuItem
+                          onClick={handleRegenerateImage}
+                          className="gap-2 text-sm font-medium"
+                        >
+                          <RefreshCcw className="w-4 h-4 text-slate-500" /> Auto
+                          Regenerate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setIsPromptModalOpen(true)}
+                          className="gap-2 text-sm font-medium"
+                        >
+                          <Sparkles className="w-4 h-4 text-app-primary2" />{" "}
+                          Custom Regenerate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setIsDeleteModalOpen(true)}
+                          className="gap-2 text-sm font-medium text-red-600 focus:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" /> Remove Entire Item
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {imageRegenerating && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/60 backdrop-blur-[2px] z-20">
+                        <div className="bg-white p-4 rounded-full shadow-lg">
+                          <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-700 bg-white/80 px-3 py-1 rounded-full">
+                          Regenerating image…
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleCancelRegenerate}
+                          className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 underline"
+                        >
+                          Cancel waiting
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {item.Meal_Image_url && item.image_attribution_name && (
+                    <div className="px-1 -mt-1">
+                      <p className="text-[11px] text-slate-400 text-center">
+                        Photo by{" "}
+                        <a
+                          href={item.image_attribution_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline font-medium hover:text-slate-600"
+                        >
+                          {item.image_attribution_name}
+                        </a>{" "}
+                        on Unsplash
+                      </p>
                     </div>
                   )}
-                  <button
-                    type="button"
-                    onClick={handleRegenerateImage}
-                    disabled={isBusy || imageRegenerating}
-                    title="Regenerate image"
-                    className="absolute bottom-2 right-2 bg-white/90 hover:bg-white rounded-full p-2 shadow border border-slate-200 disabled:opacity-50"
-                  >
-                    {isBusy ? (
-                      <Spinner className="w-3.5 h-3.5" />
-                    ) : (
-                      <RefreshCcw className="w-3.5 h-3.5 text-slate-600" />
-                    )}
-                  </button>
-                </div>
-
-                {item.Meal_Image_url && item.image_attribution_name && (
-                  <p className="text-[11px] text-slate-400">
-                    Photo by{" "}
-                    <a
-                      href={item.image_attribution_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline hover:text-slate-600"
-                    >
-                      {item.image_attribution_name}
-                    </a>{" "}
-                    on Unsplash
-                  </p>
-                )}
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleRemove}
-                  disabled={isBusy}
-                  className="w-full border-slate-300/60 text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Remove Item
-                </Button>
+                </Card>
               </div>
 
+              {/* Right Column - Form */}
               <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6">
                 <div className="flex items-center gap-2 -mb-2">
                   <ClipboardList className="w-3.5 h-3.5 text-app-primary2" />
@@ -703,13 +745,6 @@ const AiFoodViewPage = () => {
                 />
               </div>
             </div>
-
-            <AiFoodImagePromptPanel
-              onGenerateFromPrompt={handleGenerateFromPrompt}
-              onGenerateFromAudio={handleGenerateFromAudio}
-              onCancel={handleCancelRegenerate}
-              busy={isBusy || imageRegenerating}
-            />
           </>
         )}
       </div>
@@ -744,6 +779,32 @@ const AiFoodViewPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AiFoodCustomRegenerateModal
+        isOpen={isPromptModalOpen}
+        onClose={() => setIsPromptModalOpen(false)}
+        foodName={item.food_name}
+        onGenerateFromPrompt={(prompt) => {
+          handleGenerateFromPrompt(prompt);
+          setIsPromptModalOpen(false);
+        }}
+        onGenerateFromAudio={(audio) => {
+          handleGenerateFromAudio(audio);
+          setIsPromptModalOpen(false);
+        }}
+        busy={isBusy || imageRegenerating}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleRemove}
+        title="Remove Item"
+        message="Are you sure you want to completely remove this generated item? This action cannot be undone."
+        confirmText="Remove"
+        loading={isBusy}
+        type="danger"
+      />
     </Container>
   );
 };

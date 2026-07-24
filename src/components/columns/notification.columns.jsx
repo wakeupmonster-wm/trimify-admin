@@ -71,8 +71,8 @@ export const getNotificationColumns = ({
           className={cn(
             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
             channel.toLowerCase() === "email"
-              ? "bg-indigo-50 text-indigo-600"
-              : "bg-brand-aqua/10 text-brand-aqua",
+              ? "bg-indigo-50 text-app-primary2"
+              : "bg-app-primary/10 text-app-primary2",
           )}
         >
           {channel}
@@ -195,7 +195,7 @@ export const getNotificationColumns = ({
             className={cn(
               "w-2 h-2 rounded-full",
               status.toLowerCase() === "completed"
-                ? "bg-brand-aqua shadow-[0_0_8px_rgba(20,184,166,0.4)]"
+                ? "bg-app-primary2 shadow-[0_0_8px_rgba(20,184,166,0.4)]"
                 : "bg-amber-400",
             )}
           />
@@ -203,7 +203,7 @@ export const getNotificationColumns = ({
             className={cn(
               "text-[11px] font-bold uppercase tracking-wider",
               status.toLowerCase() === "completed"
-                ? "text-brand-aqua"
+                ? "text-app-primary2"
                 : "text-amber-600",
             )}
           >
@@ -231,8 +231,10 @@ export const getNotificationColumns = ({
             variant="outline"
             size="sm"
             disabled={item.status?.toLowerCase() !== "completed"}
-            className="h-7 px-2 text-[10px] font-bold uppercase border-slate-200 hover:bg-brand-aqua hover:text-white hover:border-brand-aqua transition-all disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-slate-900 disabled:hover:border-slate-200"
-            onClick={() => handleViewLogs && handleViewLogs(channel.toLowerCase(), item)}
+            className="h-7 px-2 text-[10px] font-bold uppercase border-slate-200 hover:bg-app-primary2 hover:text-white hover:border-app-primary2 transition-all disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-slate-900 disabled:hover:border-slate-200"
+            onClick={() =>
+              handleViewLogs && handleViewLogs(channel.toLowerCase(), item)
+            }
           >
             Logs
           </Button>

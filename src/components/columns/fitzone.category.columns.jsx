@@ -78,7 +78,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),
@@ -93,7 +93,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
       const displayStatus = isActive ? "Active" : "Inactive";
 
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-left">
           <Badge
             variant="outline"
             className={cn(
@@ -177,7 +177,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
+                className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
                 onClick={() => onAction && onAction(row.original, "edit")}
               >
                 <Edit className="w-3.5 h-3.5" />

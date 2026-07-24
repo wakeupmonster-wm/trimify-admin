@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Utensils, X, ArrowLeft } from "lucide-react";
+import { Send, X, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -28,6 +28,7 @@ import {
 } from "../store/food.slice";
 import { getManageFoodItemsColumns } from "@/components/columns/manage.food.items.columns";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { IoFastFoodOutline } from "react-icons/io5";
 
 const ManageFoodItemsPage = () => {
   const { programId, categoryId } = useParams();
@@ -231,14 +232,16 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-     <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEditing ? "Edit Food Item" : "Add Food Item"}
-                icon={<Utensils className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                icon={
+                  <IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />
+                }
+                variant="primary"
                 subheading={
                   isEditing
                     ? "Modify the selected food item's details."
@@ -260,7 +263,7 @@ const ManageFoodItemsPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             {/* Approval Status */}
             <div className="space-y-1.5">
@@ -363,8 +366,8 @@ const ManageFoodItemsPage = () => {
                                   item.food_name ||
                                   item.meal?.Meal_title ||
                                   formData.title,
-                                  food_id: item.id,
-                                  category_id:
+                                food_id: item.id,
+                                category_id:
                                   item.category_id || formData.category_id,
                                 quantity: item.quantity || formData.quantity,
                                 unit: item.unit || formData.unit,

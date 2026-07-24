@@ -33,3 +33,19 @@ export const STATUS_COLORS = {
   refunded: "hsl(258, 90%, 66%)", // Violet
   disputed: "hsl(24, 94%, 50%)",  // Orange
 };
+
+// ─── Semantic Status Badge Classes ───────────────────────────────────────────
+// Centralized mapping for status badges using soft tinted background and colored text.
+export const STATUS_BADGE_STYLE = {
+  success: "bg-emerald-100/70 text-emerald-700",
+  paid: "bg-emerald-100/70 text-emerald-700",
+  active: "bg-emerald-100/70 text-emerald-700",
+  failed: "bg-rose-100/70 text-rose-700",
+  expired: "bg-amber-100/70 text-amber-700",
+  churned: "bg-rose-100/70 text-rose-700",
+  pending: "bg-amber-100/70 text-amber-700",
+  revoked: "bg-rose-100/70 text-rose-700",
+  refunded: "bg-violet-100/70 text-violet-700",
+  disputed: "bg-orange-100/70 text-orange-700",
+  inactive: "bg-slate-100/70 text-slate-600",
+};

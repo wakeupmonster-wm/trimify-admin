@@ -2,7 +2,7 @@ import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import {
-  FileText,
+  Layers,
   Plus,
   FolderTree,
   CheckCircle,
@@ -28,6 +28,7 @@ import {
 } from "../store/blog.slice";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { TbCategory2 } from "react-icons/tb";
 
 const ManageCategoryPage = () => {
   const navigate = useNavigate();
@@ -124,7 +125,7 @@ const ManageCategoryPage = () => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       list = list.filter(
-        (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo
+        (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo,
       );
     }
     return list;
@@ -160,7 +161,7 @@ const ManageCategoryPage = () => {
     const active = list.filter((c) => c.status === "Active").length;
     const inactive = list.filter((c) => c.status !== "Active").length;
     const recent = list.filter(
-      (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo
+      (c) => c.created_at && new Date(c.created_at) >= thirtyDaysAgo,
     ).length;
 
     return [
@@ -176,25 +177,43 @@ const ManageCategoryPage = () => {
         label: "Active Categories",
         value: active,
         icon: CheckCircle,
-        tone: statusFilter === "Active" ? "emerald" : (statusFilter === "" ? "emerald" : "slate"),
+        tone:
+          statusFilter === "Active"
+            ? "emerald"
+            : statusFilter === ""
+              ? "emerald"
+              : "slate",
         description: "Currently visible",
-        onClick: () => setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
       },
       {
         label: "Inactive Categories",
         value: inactive,
         icon: EyeOff,
-        tone: statusFilter === "Inactive" ? "amber" : (statusFilter === "" ? "amber" : "slate"),
+        tone:
+          statusFilter === "Inactive"
+            ? "amber"
+            : statusFilter === ""
+              ? "amber"
+              : "slate",
         description: "Hidden from users",
-        onClick: () => setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
       },
       {
         label: "Recently Added",
         value: recent,
         icon: Sparkles,
-        tone: statusFilter === "Recent" ? "indigo" : (statusFilter === "" ? "indigo" : "slate"),
+        tone:
+          statusFilter === "Recent"
+            ? "indigo"
+            : statusFilter === ""
+              ? "indigo"
+              : "slate",
         description: "Added in last 30 days",
-        onClick: () => setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
       },
     ];
   }, [categories, categoriesPagination?.total, statusFilter]);
@@ -207,8 +226,8 @@ const ManageCategoryPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Category"
-                icon={<FileText className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-md"
+                icon={<TbCategory2 className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Manage blog categories for the platform."
               />
             </div>
@@ -226,7 +245,10 @@ const ManageCategoryPage = () => {
         </Header>
 
         {/* KPIs Row */}
-        <ModuleKpiRow items={kpiItems} loading={categoriesLoading && !categories?.length} />
+        <ModuleKpiRow
+          items={kpiItems}
+          loading={categoriesLoading && !categories?.length}
+        />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable

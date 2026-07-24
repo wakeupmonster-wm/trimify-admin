@@ -83,7 +83,7 @@ export default function AdminLayout() {
       <AppSidebar />
 
       {/* 2. The Inset area creates the "frame" for your content */}
-      <SidebarInset className="flex h-screen flex-1 flex-col min-w-0 bg-white overflow-hidden">
+      <SidebarInset className="flex h-dvh flex-1 flex-col min-w-0 bg-white overflow-hidden">
         <SiteHeader />
 
         {/* 3. The Main content area with proper max-width for readability */}

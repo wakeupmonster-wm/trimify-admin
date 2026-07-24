@@ -1,21 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Users, UserCheck, CalendarOff, ShieldOff } from "lucide-react";
-import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
-import StatsGrid from "@/components/common/stats.grid";
+import {
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import ErrorState from "@/components/shared/ErrorState";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useLocation } from "react-router-dom";
-import { colorMap, bgMap } from "@/constants/colors";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useLocation, useNavigate } from "react-router-dom";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getSubscriberColumns } from "./subscriber.columns";
 import UpgradeSubscriberDialog from "./UpgradeSubscriberDialog";
 import {
@@ -24,8 +19,15 @@ import {
 } from "../../../store/subscription-dashboard.slice";
 import { getSubscribersAPI } from "../../../services/subscription-dashboard.services";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
+import { useDebounce } from "@/hooks/useDebounce";
 
-const STATUS_OPTIONS = ["Active", "Expired", "Revoked", "canceled", "expiring_soon"];
+const STATUS_OPTIONS = [
+  "Active",
+  "Expired",
+  "Revoked",
+  "canceled",
+  "expiring_soon",
+];
 
 export default function SubscribersView() {
   const navigate = useNavigate();
@@ -44,8 +46,10 @@ export default function SubscribersView() {
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const debouncedSearch = useDebounce(search, 400);
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.filterId || "",
+  );
   const [planFilter, setPlanFilter] = useState("");
 
   const [confirmAction, setConfirmAction] = useState(null); // { subscriber, action: "expire"|"revoke" }
@@ -57,16 +61,18 @@ export default function SubscribersView() {
   useEffect(() => {
     // If we arrived with a filter, background fetch the true unfiltered stats
     if (!isUnfiltered && !pinnedCounts) {
-      getSubscribersAPI({ limit: 1 }).then((res) => {
-        if (res && res.success) {
-          setPinnedCounts({
-            total: res.data.counts?.total || 0,
-            active: res.data.counts?.active || 0,
-            expired: res.data.counts?.expired || 0,
-            revoked: res.data.counts?.revoked || 0,
-          });
-        }
-      }).catch(() => {});
+      getSubscribersAPI({ limit: 1 })
+        .then((res) => {
+          if (res && res.success) {
+            setPinnedCounts({
+              total: res.data.counts?.total || 0,
+              active: res.data.counts?.active || 0,
+              expired: res.data.counts?.expired || 0,
+              revoked: res.data.counts?.revoked || 0,
+            });
+          }
+        })
+        .catch(() => {});
     }
   }, [isUnfiltered, pinnedCounts]);
 
@@ -80,11 +86,6 @@ export default function SubscribersView() {
   useEffect(() => {
     if (!plans?.length) dispatch(fetchSubscriptionPlans({ limit: 100 }));
   }, [dispatch, plans]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 400);
-    return () => clearTimeout(timer);
-  }, [search]);
 
   const fetchParams = useMemo(
     () => ({
@@ -103,7 +104,10 @@ export default function SubscribersView() {
 
   const handleAction = (subscriber, action) => {
     if (action === "upgrade") setUpgradeSubscriber(subscriber);
-    else if (action === "view") navigate(`/admin/users/view-user/${subscriber.userId || subscriber.user_id || subscriber.id}`);
+    else if (action === "view")
+      navigate(
+        `/admin/users/view-user/${subscriber.userId || subscriber.user_id || subscriber.id}`,
+      );
     else setConfirmAction({ subscriber, action });
   };
 
@@ -139,15 +143,16 @@ export default function SubscribersView() {
     if (ok) setUpgradeSubscriber(null);
   };
 
-  const kpiCounts = pinnedCounts || subscribersCounts || { total: 0, active: 0, expired: 0, revoked: 0 };
+  const kpiCounts = pinnedCounts ||
+    subscribersCounts || { total: 0, active: 0, expired: 0, revoked: 0 };
 
-  const stats = useMemo(
+  const kpiItems = useMemo(
     () => [
       {
         label: "Total Subscribers",
-        val: kpiCounts.total || 0,
+        value: kpiCounts.total || 0,
         icon: <Users size={22} />,
-        color: "blue",
+        tone: "blue",
         description: "All-time, unfiltered",
         onClick: () => {
           setStatusFilter("");
@@ -156,9 +161,9 @@ export default function SubscribersView() {
       },
       {
         label: "Active",
-        val: kpiCounts.active || 0,
+        value: kpiCounts.active || 0,
         icon: <UserCheck size={22} />,
-        color: "emerald",
+        tone: "emerald",
         description: "Tap to filter",
         onClick: () => {
           setStatusFilter("Active");
@@ -168,9 +173,9 @@ export default function SubscribersView() {
       },
       {
         label: "Expired",
-        val: kpiCounts.expired || 0,
+        value: kpiCounts.expired || 0,
         icon: <CalendarOff size={22} />,
-        color: "amber",
+        tone: "amber",
         description: "Tap to filter",
         onClick: () => {
           setStatusFilter("Expired");
@@ -180,9 +185,9 @@ export default function SubscribersView() {
       },
       {
         label: "Revoked",
-        val: kpiCounts.revoked || 0,
+        value: kpiCounts.revoked || 0,
         icon: <ShieldOff size={22} />,
-        color: "rose",
+        tone: "rose",
         description: "Tap to filter",
         onClick: () => {
           setStatusFilter("Revoked");
@@ -194,70 +199,43 @@ export default function SubscribersView() {
     [kpiCounts, statusFilter],
   );
 
-  const filterConfig = useMemo(() => [
-    {
-      type: "select",
-      id: "statusFilter",
-      label: "Status",
-      value: statusFilter,
-      onChange: (v) => {
-        setStatusFilter(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
+  const filterConfig = useMemo(
+    () => [
+      {
+        type: "select",
+        id: "statusFilter",
+        label: "Status",
+        value: statusFilter,
+        onChange: (v) => {
+          setStatusFilter(v);
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        options: [
+          { label: "Active", value: "Active" },
+          { label: "Expired", value: "Expired" },
+          { label: "Revoked", value: "Revoked" },
+        ],
+        placeholder: "All Statuses",
       },
-      options: [
-        { label: "Active", value: "Active" },
-        { label: "Expired", value: "Expired" },
-        { label: "Revoked", value: "Revoked" },
-      ],
-      placeholder: "All Statuses",
-    },
-    {
-      type: "select",
-      id: "planFilter",
-      label: "Plan",
-      value: planFilter,
-      onChange: (v) => {
-        setPlanFilter(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      {
+        type: "select",
+        id: "planFilter",
+        label: "Plan",
+        value: planFilter,
+        onChange: (v) => {
+          setPlanFilter(v);
+          setPagination((p) => ({ ...p, pageIndex: 0 }));
+        },
+        options:
+          plans?.map((p) => ({ label: p.title, value: String(p.id) })) || [],
+        placeholder: "All Plans",
       },
-      options: plans?.map((p) => ({ label: p.title, value: String(p.id) })) || [],
-      placeholder: "All Plans",
-    },
-  ], [statusFilter, planFilter, plans]);
+    ],
+    [statusFilter, planFilter, plans],
+  );
 
   const columns = useMemo(() => getSubscriberColumns(handleAction), []);
-
   const isFirstLoad = subscribersLoading && subscribersPagination === null;
-
-  const filterConfig = [
-    {
-      type: "select",
-      id: "statusFilter",
-      label: "Status",
-      value: statusFilter,
-      onChange: (v) => {
-        setStatusFilter(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
-      },
-      options: STATUS_OPTIONS.map((s) => ({
-        label: s === "canceled" ? "Canceled" : s === "expiring_soon" ? "Expiring Soon" : s.charAt(0).toUpperCase() + s.slice(1),
-        value: s,
-      })),
-      placeholder: "All Statuses",
-    },
-    {
-      type: "select",
-      id: "planFilter",
-      label: "Plan",
-      value: planFilter,
-      onChange: (v) => {
-        setPlanFilter(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
-      },
-      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
-      placeholder: "All Plans",
-    },
-  ];
 
   if (subscribersError && !subscribersPagination) {
     return (
@@ -299,6 +277,13 @@ export default function SubscribersView() {
             }}
           />
         }
+        onRowClick={(row) => {
+          const id = row?.original?.userId || row?.original?.user_id || row?.original?.id;
+          console.log("row: ", row)
+          if (id) {
+            navigate(`/admin/users/view-user/${id}`);
+          }
+        }}
       />
 
       <ConfirmModal

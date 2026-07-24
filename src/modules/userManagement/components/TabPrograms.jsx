@@ -7,7 +7,7 @@ export function TabPrograms({ data }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.2fr_1fr]">
         <Card
           title="Enrolled Programs"
           subtitle="Active and past program enrollments"
@@ -21,13 +21,13 @@ export function TabPrograms({ data }) {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
                     Program
                   </th>
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
                     Duration
                   </th>
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
                     Status
                   </th>
                 </tr>
@@ -39,18 +39,18 @@ export function TabPrograms({ data }) {
                     className="border-b border-slate-50 last:border-b-0"
                   >
                     <td className="py-2.5 align-top">
-                      <div className="text-[11.5px] font-semibold text-slate-900">
+                      <div className="text-xs font-semibold text-slate-900">
                         {p.title}
                       </div>
-                      <div className="mt-0.5 text-[10.5px] text-slate-400">
+                      <div className="mt-0.5 text-[11px] text-slate-500">
                         Assigned {fmtDate(p.assigned_at)}
                       </div>
                     </td>
-                    <td className="py-2.5 align-top text-[11.5px]">
+                    <td className="py-2.5 align-top text-xs">
                       {p.start_date ? (
                         `${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}`
                       ) : (
-                        <span className="text-slate-400">Not scheduled</span>
+                        <span className="text-slate-500">Not scheduled</span>
                       )}
                     </td>
                     <td className="py-2.5 align-top">
@@ -87,13 +87,13 @@ export function TabPrograms({ data }) {
               {fitzoneStatus.map((f) => (
                 <div
                   key={f.category_id}
-                  className="flex items-center justify-between gap-2 rounded-lg border border-slate-100 px-2.5 py-2.5"
+                  className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-2.5 py-2.5"
                 >
                   <div>
-                    <div className="text-[11.5px] font-semibold text-slate-900">
+                    <div className="text-xs font-semibold text-slate-900">
                       {f.category_title}
                     </div>
-                    <div className="mt-0.5 text-[10px] text-slate-400">
+                    <div className="mt-0.5 text-[11px] text-slate-500">
                       Since {fmtDate(f.assigned_at)}
                     </div>
                   </div>

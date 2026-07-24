@@ -81,11 +81,6 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
-        brand: {
-          blue: "hsl(var(--brand-blue))",
-          hoverBlue: "hsl(var(--hover-blue))",
-          bg: "hsl(var(--bg-gray))",
-        },
 
         // --- System / States ---
         muted: {
@@ -143,7 +138,7 @@ export default {
           accent: "hsl(var(--sidebar-accent))",
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--brand-blue))",
+          ring: "#007FC0",
         },
 
         // --- Neutral Scales ---

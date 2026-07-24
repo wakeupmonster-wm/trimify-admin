@@ -75,7 +75,7 @@ const EditIntroProgramPage = () => {
               <PageHeader
                 heading="Introduction"
                 icon={<FileText className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading="Edit the introduction content for this program."
               />
             </div>
@@ -94,7 +94,7 @@ const EditIntroProgramPage = () => {
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">

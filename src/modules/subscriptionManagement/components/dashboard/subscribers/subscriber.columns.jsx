@@ -2,13 +2,8 @@ import React from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Ellipsis,
-  ArrowUpCircle,
-  CalendarOff,
-  ShieldOff,
-  Eye,
-} from "lucide-react";
+import { STATUS_BADGE_STYLE } from "@/config/theme.config";
+import { Ellipsis, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -161,10 +156,12 @@ export const getSubscriberColumns = (onAction) => [
         <div className="flex flex-col items-start gap-1">
           <Badge
             className={cn(
-              "text-[9px] font-black uppercase border-none shadow-none rounded-full px-2.5 py-0.5",
-              STATUS_STYLE[status] || "bg-slate-100 text-slate-500",
+              "font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 border-none shadow-none flex items-center gap-1.5 w-fit",
+              STATUS_BADGE_STYLE[status.toLowerCase()] ||
+                STATUS_BADGE_STYLE.active,
             )}
           >
+            <span className="w-1 h-1 rounded-full bg-current" />
             {status}
           </Badge>
           {status === "Revoked" && revoked_reason && (

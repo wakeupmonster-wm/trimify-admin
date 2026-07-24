@@ -91,7 +91,7 @@ export function LoginForm({ className, ...props }) {
                 type="email"
                 {...register("email")}
                 placeholder="info@trimify.com.au"
-                className={`w-full px-9 py-5 bg-gray-50 outline-none transition-all ${
+                className={`w-full h-10 pl-8 pr-3 py-2 bg-gray-50 outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-100"
                     : "focus:border-app-primary2 focus-visible:ring-app-primary2"
@@ -124,7 +124,7 @@ export function LoginForm({ className, ...props }) {
                 type={showPassword ? "text" : "password"}
                 {...register("password")}
                 placeholder="••••••••"
-                className={`w-full px-9 py-5 pr-12 bg-gray-50 border !outline-none transition-all ${
+                className={`w-full h-10 pl-8 pr-10 py-2 bg-gray-50 border !outline-none transition-all ${
                   errors.password
                     ? "border-red-500 focus-visible:ring-red-100"
                     : "focus:border-app-primary2 focus-visible:ring-app-primary2"

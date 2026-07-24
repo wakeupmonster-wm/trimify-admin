@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { UploadCloud, Layers, Send, Loader2, ArrowLeft } from "lucide-react";
+import { UploadCloud, Dumbbell, Send, Loader2, ArrowLeft } from "lucide-react";
 import {
   addFitzoneCategory,
   updateFitzoneCategory,
@@ -124,8 +124,8 @@ const AddFitzoneCategoryPage = () => {
                 heading={
                   isEdit ? "Edit Work-Out Session" : "Add Work-Out Session"
                 }
-                icon={<Layers className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                icon={<Dumbbell className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading={
                   isEdit
                     ? "Edit existing workout session category."
@@ -147,7 +147,7 @@ const AddFitzoneCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full min-w-0">
+        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full min-w-0">
           <form
             onSubmit={handleSubmit}
             className="space-y-5 sm:space-y-6 w-full min-w-0"

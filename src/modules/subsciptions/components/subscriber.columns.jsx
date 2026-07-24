@@ -361,7 +361,7 @@ export const getSubscriberColumns = (navigate) => [
                 Subscription Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-app-primary2 focus:text-app-primary2 text-slate-500 font-semibold text-xs"
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-slate-100 focus:text-slate-900 text-slate-500 font-semibold text-xs"
                 onClick={() => {
                   const targetId =
                     sub.user?._id || sub.userId?._id || sub.userId;
@@ -376,7 +376,7 @@ export const getSubscriberColumns = (navigate) => [
                 View Details
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-app-primary2 focus:text-app-primary2 text-slate-500 font-semibold text-xs"
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-slate-100 focus:text-slate-900 text-slate-500 font-semibold text-xs"
                 onClick={() => {
                   navigator.clipboard.writeText(sub._id);
                   toast.success("Subscription ID copied");

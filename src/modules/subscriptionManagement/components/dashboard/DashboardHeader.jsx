@@ -27,13 +27,8 @@ export default function DashboardHeader({
         <div className="flex-1 min-w-0 w-max md:w-auto">
           <PageHeader
             heading="Subscription Dashboard"
-            icon={
-              <LayoutDashboard
-                strokeWidth={2}
-                className="w-6 h-6 text-white shrink-0"
-              />
-            }
-            color="bg-app-primary2 shadow-blue-200"
+            icon={<LayoutDashboard className="w-6 h-6 text-white shrink-0" />}
+            variant="primary"
             subheading="Plans, subscribers and revenue at a glance."
           />
         </div>

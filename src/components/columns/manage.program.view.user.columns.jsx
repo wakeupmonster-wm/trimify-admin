@@ -152,11 +152,11 @@ export const getViewUserProgramColumns = (onAction) => [
             align="end"
             className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
-            <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

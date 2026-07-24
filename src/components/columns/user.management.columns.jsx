@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { STATUS_COLORS } from "@/config/theme.config";
+import { STATUS_BADGE_STYLE } from "@/config/theme.config";
 
 export const getUserManagementColumns = (onAction) => [
   {
@@ -114,7 +114,7 @@ export const getUserManagementColumns = (onAction) => [
         return (
           <Badge
             variant="outline"
-            className="bg-slate-100 text-slate-500 border-none font-semibold text-[10px] truncate max-w-full"
+            className="font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 bg-slate-100/70 text-slate-500 border-none shadow-none max-w-full w-fit"
           >
             <span className="truncate">No-Active Plan</span>
           </Badge>
@@ -123,7 +123,7 @@ export const getUserManagementColumns = (onAction) => [
       return (
         <Badge
           variant="outline"
-          className="bg-green-100 text-green-700 border-none font-semibold text-[10px] truncate max-w-full"
+          className="font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 bg-emerald-100/70 text-emerald-700 border-none shadow-none max-w-full w-fit"
         >
           <span className="truncate">{plan}</span>
         </Badge>
@@ -211,13 +211,16 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 75,
     cell: ({ row }) => {
       const status = row.original.status || "Active";
-      const bgColor = STATUS_COLORS[status.toLowerCase()] || STATUS_COLORS.active;
+      const style = STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (
         <div className="flex justify-center">
           <Badge 
-            className="text-white font-bold text-[10px] uppercase rounded-md px-2 border-none transition-opacity hover:opacity-90"
-            style={{ backgroundColor: bgColor }}
+            className={cn(
+              "font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 border-none shadow-none flex items-center gap-1.5 w-fit",
+              style
+            )}
           >
+            <span className="w-1 h-1 rounded-full bg-current" />
             {status}
           </Badge>
         </div>
@@ -252,7 +255,7 @@ export const getUserManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

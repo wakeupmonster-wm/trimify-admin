@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarCheck, Plus } from "lucide-react";
+import { CalendarCheck, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -94,7 +94,7 @@ const ManageDietProgramPage = () => {
               <PageHeader
                 heading="Manage Diet Meal plan"
                 icon={<CalendarCheck className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading="Manage day-by-day diet meals for this program."
               />
             </div>

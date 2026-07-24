@@ -879,7 +879,7 @@ export default function SubscriptionDashboard() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center font-jakarta">
+      <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -955,7 +955,7 @@ export default function SubscriptionDashboard() {
 
   return (
     <ShadTooltipProvider>
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] mb-10 relative">
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] mb-10 relative">
         <AnimatePresence>
           {statsLoading && subscriptionStats && (
             <motion.div
@@ -987,10 +987,8 @@ export default function SubscriptionDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
               <PageHeader
                 heading="Revenue Dashboard"
-                icon={
-                  <TrendingUp strokeWidth={2} className="w-8 h-8 text-white" />
-                }
-                color="bg-app-primary2 shadow-app-primary2"
+                icon={<TrendingUp className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>

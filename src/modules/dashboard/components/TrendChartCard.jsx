@@ -56,7 +56,7 @@ const TrendChartCard = ({
         />
       </div>
 
-      <div className="flex-1 flex flex-col px-4 py-4">
+      <div className="flex-1 flex flex-col p-4 pb-6">
         {hasData ? (
           <ChartContainer config={chartConfig} className={`w-full ${height}`}>
             <ComposedChart
@@ -215,13 +215,6 @@ const TrendChartCard = ({
             className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium`}
           >
             No data for this period.
-          </div>
-        )}
-
-        {note && (
-          <div className="mt-4 mx-2 flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-[11px] font-medium leading-relaxed">
-            <Info size={12} className="text-app-primary2 mt-0.5 shrink-0" />
-            {note}
           </div>
         )}
       </div>

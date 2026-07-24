@@ -89,7 +89,7 @@ const AboutUsPage = () => {
               <PageHeader
                 heading="About Us"
                 icon={<Info className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2"
+                variant="primary"
                 subheading="Edit the About Us page content here."
               />
             </div>
@@ -113,7 +113,9 @@ const AboutUsPage = () => {
                 ) : (
                   <Save className="w-4 h-4 mr-1 shrink-0" />
                 )}
-                <span className="whitespace-nowrap">{isSaving ? "Saving…" : "Save Changes"}</span>
+                <span className="whitespace-nowrap">
+                  {isSaving ? "Saving…" : "Save Changes"}
+                </span>
               </Button>
             </div>
           </div>

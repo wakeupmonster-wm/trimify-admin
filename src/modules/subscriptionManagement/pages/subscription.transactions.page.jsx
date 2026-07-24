@@ -15,7 +15,7 @@ export default function SubscriptionTransactionsPage() {
               <PageHeader
                 heading="Transactions"
                 icon={<Receipt className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading="Revenue tracking, transaction history and export."
               />
             </div>

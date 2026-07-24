@@ -87,7 +87,7 @@ export default function RouteErrorBoundary() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
           {isChunkError ? (
             <Button
-              className="bg-[#46C7CD] hover:bg-[#3bb1b6] text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105 flex items-center gap-2"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105 flex items-center gap-2"
               onClick={handleReload}
             >
               <RefreshCw className="h-4 w-4 animate-spin-slow" />
@@ -95,7 +95,7 @@ export default function RouteErrorBoundary() {
             </Button>
           ) : (
             <Button
-              className="bg-[#46C7CD] hover:bg-[#3bb1b6] text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105 flex items-center gap-2"
+              className="bg-app-primary2 hover:bg-app-primary5 text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105 flex items-center gap-2"
               onClick={handleReload}
             >
               <RefreshCw className="h-4 w-4" />
@@ -113,7 +113,7 @@ export default function RouteErrorBoundary() {
 
           <Button
             variant="outline"
-            className="border-[#46C7CD] text-app-primary2 hover:bg-[#46C7CD] hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
+            className="border-app-primary2 text-app-primary2 hover:bg-app-primary5 hover:text-white h-12 px-6 rounded-full font-bold transition-all flex items-center gap-2"
             onClick={handleGoHome}
           >
             <Home className="h-4 w-4" /> Back to Home

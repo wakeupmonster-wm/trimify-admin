@@ -21,10 +21,7 @@ export function TabAccount({ data }) {
     <>
       <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
         <div className="flex flex-col gap-3.5">
-          <Card
-            title="Account Status"
-            subtitle="Current status and security details"
-          >
+          <Card title="Account Status" subtitle="Current status and security details" >
             <KV
               icon={ShieldCheck}
               label="Status"
@@ -74,26 +71,10 @@ export function TabAccount({ data }) {
           </Card>
 
           <Card title="Billing" subtitle="Payment methods and history">
-            <KV
-              icon={CreditCard}
-              label="Payment Status"
-              value={user.paid ? "Paid" : "Unpaid"}
-            />
-            <KV
-              icon={ShieldCheck}
-              label="Plan"
-              value={user.plan ? cap(user.plan) : "No active plan"}
-            />
-            <KV
-              icon={Calendar}
-              label="Plan Expiry"
-              value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"}
-            />
-            <KV
-              icon={CreditCard}
-              label="Stripe ID"
-              value={user.stripe_id || "Not linked"}
-            />
+            <KV icon={CreditCard} label="Payment Status" value={user.paid ? "Paid" : "Unpaid"} />
+            <KV icon={ShieldCheck} label="Plan" value={user.plan ? cap(user.plan) : "No active plan"} />
+            <KV icon={Calendar} label="Plan Expiry" value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"} />
+            <KV icon={CreditCard} label="Stripe ID" value={user.stripe_id || "Not linked"} />
             {(!user.transactions || user.transactions.length === 0) && (
               <EmptyState icon={CreditCard} title="No transactions yet" />
             )}
@@ -101,23 +82,13 @@ export function TabAccount({ data }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Card
-            title="Device & Notifications"
-            subtitle="App settings and preferences"
-          >
-            <KV
-              icon={Bell}
-              label="Notifications"
-              value={user.notification_status ? "Enabled" : "Disabled"}
-            />
-            <KV
-              icon={Globe}
-              label="Timezone"
-              value={user.timezone || "Not set"}
-            />
+          <Card title="Device & Notifications" subtitle="App settings and preferences" >
+            <KV icon={Bell} label="Notifications" value={user.notification_status ? "Enabled" : "Disabled"} />
+            <KV icon={Globe} label="Timezone" value={user.timezone || "Not set"} />
+            
             <div className="flex items-center justify-between gap-2.5 py-2">
-              <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-400">
-                <Smartphone className="h-3 w-3 opacity-45" />
+              <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-500">
+                <Smartphone className="h-4 w-4" />
                 Device Token
               </span>
               <button
@@ -131,9 +102,7 @@ export function TabAccount({ data }) {
             </div>
           </Card>
 
-          <Card
-            title="Managed By"
-            subtitle="Assigned sub-admin details"
+          <Card title="Managed By" subtitle="Assigned sub-admin details"
             right={
               <Pill
                 tone={
@@ -161,12 +130,13 @@ export function TabAccount({ data }) {
                     <div className="text-[12.5px] font-bold text-slate-900">
                       {user.sub_admin?.name}
                     </div>
-                    <div className="text-[10.5px] font-medium text-slate-400">
+                    <div className="text-[10.5px] font-medium text-slate-500">
                       {user.sub_admin?.designation} · {user.sub_admin?.hospital}
                     </div>
                   </div>
                 </div>
-                <div className="mt-3">
+
+                <div className="mt-3 px-1">
                   <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
                   <KV
                     icon={Phone}

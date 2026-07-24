@@ -15,7 +15,7 @@ export default function PlatformSettingsLayout() {
 
   return (
     <Container>
-      <main className="flex-1 pb-20 w-full font-jakarta">
+      <main className="flex-1 pb-20 w-full font-sans">
         {/* --- COMMON HEADER: PLATFORM SETTINGS --- */}
         <header className="px-2 mb-3 pb-2">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">

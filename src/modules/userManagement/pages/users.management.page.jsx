@@ -30,7 +30,9 @@ const UsersManagementPage = () => {
   const navigate = useNavigate();
 
   const [globalFilter, setGlobalFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.filterId || "",
+  );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
@@ -67,17 +69,19 @@ const UsersManagementPage = () => {
   // Background fetch for true KPIs if we arrive with a filter applied
   useEffect(() => {
     if (!isUnfiltered && !pinnedKpis) {
-      getUserManagementAPI({ limit: 1 }).then((res) => {
-        if (res && res.status === "success") {
-          const fetchedKpis = res.kpis || {
-            totalUsers: res.pagination?.total || 0,
-            activeUsers: 0, // Fallback if backend doesn't provide
-            inactiveUsers: 0,
-            newSignupsToday: 0,
-          };
-          setPinnedKpis(fetchedKpis);
-        }
-      }).catch(() => {});
+      getUserManagementAPI({ limit: 1 })
+        .then((res) => {
+          if (res && res.status === "success") {
+            const fetchedKpis = res.kpis || {
+              totalUsers: res.pagination?.total || 0,
+              activeUsers: 0, // Fallback if backend doesn't provide
+              inactiveUsers: 0,
+              newSignupsToday: 0,
+            };
+            setPinnedKpis(fetchedKpis);
+          }
+        })
+        .catch(() => {});
     }
   }, [isUnfiltered, pinnedKpis]);
 
@@ -94,9 +98,9 @@ const UsersManagementPage = () => {
         (u) =>
           String(u.status || "Active").toLowerCase() === "active" ||
           u.status === "1" ||
-          u.status === "true"
+          u.status === "true",
       ).length;
-      
+
       const computedKpis = kpis || {
         totalUsers: serverPagination?.total || all.length,
         activeUsers: active,
@@ -107,7 +111,7 @@ const UsersManagementPage = () => {
           return String(u.created_at).startsWith(today);
         }).length,
       };
-      
+
       // Update the pinned state in the next tick to avoid render warnings
       setTimeout(() => setPinnedKpis(computedKpis), 0);
       return computedKpis;
@@ -233,7 +237,7 @@ const UsersManagementPage = () => {
               <PageHeader
                 heading="User Management"
                 icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading="Manage application users, view their active plans, and modify their statuses."
               />
             </div>

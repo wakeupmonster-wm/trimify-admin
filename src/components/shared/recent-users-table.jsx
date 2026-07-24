@@ -388,8 +388,8 @@ export function RecentUsersTable({ recentActivityData }) {
                                 className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary5 transition-colors group"
                               >
                                 <Eye
-                                  size={14}
-                                  strokeWidth={2.5}
+                                  size={16}
+                                  strokeWidth={2.0}
                                   className="text-slate-500 group-hover:text-app-primary2"
                                 />
                                 <span className="text-xs font-semibold text-slate-700 group-hover:text-app-primary2">

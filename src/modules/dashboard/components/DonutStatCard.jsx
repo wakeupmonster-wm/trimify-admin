@@ -66,7 +66,7 @@ const DonutStatCard = ({
         />
       </div>
 
-      <div className="flex-1 flex gap-8 items-center px-6 py-8">
+      <div className="flex-1 flex flex-col md:flex-row gap-8 items-center px-6 py-8">
         <div className="relative w-full aspect-square max-w-[200px] mx-auto flex items-center justify-center">
           <ChartContainer config={chartConfig} className="h-full w-full">
             <PieChart>
@@ -118,9 +118,7 @@ const DonutStatCard = ({
           </ChartContainer>
         </div>
 
-        <div
-          className="w-full my-auto max-h-[220px] overflow-y-auto pr-1"
-        >
+        <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
           <div className="divide-y divide-slate-100">
             {data.map((item, idx) => {
               const pct =
@@ -152,7 +150,6 @@ const DonutStatCard = ({
             })}
           </div>
         </div>
-
       </div>
     </div>
   );

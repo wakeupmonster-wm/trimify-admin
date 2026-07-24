@@ -86,7 +86,7 @@ export default function PrivacyAndPolicyPage() {
               <PageHeader
                 heading="Privacy & Policy"
                 icon={<ShieldCheck className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2"
+                variant="primary"
                 subheading="Update user data protection guidelines."
               />
             </div>
@@ -109,7 +109,9 @@ export default function PrivacyAndPolicyPage() {
                 ) : (
                   <Save className="w-4 h-4 mr-1 shrink-0" />
                 )}
-                <span className="whitespace-nowrap">{isSaving ? "Saving…" : "Save Changes"}</span>
+                <span className="whitespace-nowrap">
+                  {isSaving ? "Saving…" : "Save Changes"}
+                </span>
               </Button>
             </div>
           </div>

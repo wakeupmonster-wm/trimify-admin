@@ -318,7 +318,7 @@ export default function ProductsPage() {
               icon={
                 <GrCatalog strokeWidth={2} className="w-9 h-9 text-white" />
               }
-              color="bg-app-primary2 shadow-app-primary2"
+              variant="primary"
               subheading="Manage subscription plans & consumable packs."
             />
             <div className="flex items-center gap-2 w-full lg:w-auto">

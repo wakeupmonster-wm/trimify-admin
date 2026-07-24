@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 
 export const SubscriptionDashboardSkeleton = () => {
   return (
-    <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-6 w-full max-w-full mx-auto font-jakarta bg-slate-50 min-h-screen">
+    <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-6 w-full max-w-full mx-auto font-sans bg-slate-50 min-h-screen">
       {/* Top Header Skeleton */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full mb-4">
         <div className="space-y-2">

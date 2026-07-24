@@ -102,7 +102,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
   ];
 
   return (
-    <Card className="mx-auto border-none gap-4 shadow-none bg-transparent overflow-hidden font-jakarta w-full">
+    <Card className="mx-auto border-none gap-4 shadow-none bg-transparent overflow-hidden font-sans w-full">
       <CardHeader className="p-0">
         {/* <div className="flex items-center gap-5">
           <div className="p-4 bg-app-primary2 rounded-2xl text-app-primary2 ring-4 ring-app-primary2">

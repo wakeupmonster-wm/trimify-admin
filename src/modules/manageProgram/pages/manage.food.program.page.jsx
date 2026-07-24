@@ -90,7 +90,7 @@ const ManageFoodProgramPage = () => {
               <PageHeader
                 heading="Food Category"
                 icon={<Utensils className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading="Manage approved and non-approved foods and food categories for this program."
               />
             </div>

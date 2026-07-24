@@ -146,7 +146,7 @@ const NotificationManagePage = () => {
               <PageHeader
                 heading="Manage Notification"
                 icon={<Bell className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading="Create and manage notifications sent to users."
               />
             </div>
@@ -301,7 +301,7 @@ const NotificationManagePage = () => {
                     <Button
                       onClick={handlePreCheck}
                       disabled={isSending}
-                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-app-primary2 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {activeTab === "email"
@@ -331,7 +331,7 @@ const NotificationManagePage = () => {
                   </div>
 
                   {/* Preview Container */}
-                  <div className="flex-1 bg-[#F8FAFC] px-2 py-6 flex justify-center items-center overflow-hidden">
+                  <div className="flex-1 bg-white px-2 py-6 flex justify-center items-center overflow-hidden">
                     {activeTab === "push" ? (
                       <div className="w-full flex justify-center">
                         {/* Phone Mockup */}
@@ -380,7 +380,7 @@ const NotificationManagePage = () => {
                     ) : (
                       <div className="w-full flex justify-center items-start px-2 h-full">
                         {/* Email Mockup */}
-                        <div className="w-full max-w-[400px] bg-white border border-slate-300/60 rounded-xl shadow-lg overflow-hidden h-max">
+                        <div className="w-full max-w-[420px] bg-white border border-slate-300/60 rounded-xl shadow-lg overflow-hidden h-max">
                           {/* Window Topbar */}
                           <div className="bg-slate-100 px-4 py-3 border-b border-slate-300/60 flex items-center gap-1.5">
                             <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
@@ -394,7 +394,7 @@ const NotificationManagePage = () => {
                               {emailSubject || "(No Subject)"}
                             </h3>
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-brand-hoverBlue flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary3 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 T
                               </div>
                               <div className="leading-tight">
@@ -402,7 +402,7 @@ const NotificationManagePage = () => {
                                   Trimify Admin
                                 </p>
                                 <p className="text-[11px] text-slate-500">
-                                  noreply@trimify.com
+                                  info@trimify.com.au
                                 </p>
                               </div>
                             </div>
@@ -428,20 +428,18 @@ const NotificationManagePage = () => {
               </div>
             </div>
           ) : (
-            <div className="pt-2">
-              <CampaignHistory
-                history={campaignHistory || []}
-                pagination={campaignPagination || {}}
-                paginationState={pagination}
-                onPaginationChange={setPagination}
-                channelFilter={channelFilter}
-                setChannelFilter={setChannelFilter}
-                statusFilter={statusFilter}
-                setStatusFilter={setStatusFilter}
-                searchTerm={globalFilter}
-                setSearchTerm={setGlobalFilter}
-              />
-            </div>
+            <CampaignHistory
+              history={campaignHistory || []}
+              pagination={campaignPagination || {}}
+              paginationState={pagination}
+              onPaginationChange={setPagination}
+              channelFilter={channelFilter}
+              setChannelFilter={setChannelFilter}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              searchTerm={globalFilter}
+              setSearchTerm={setGlobalFilter}
+            />
           )}
         </div>
       </div>

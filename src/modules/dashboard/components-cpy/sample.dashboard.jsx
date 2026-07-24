@@ -235,7 +235,7 @@ export default function SampleDashboardPage() {
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
   if (!dashboardExtras) {
     return (
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
       </div>
     );
@@ -243,7 +243,7 @@ export default function SampleDashboardPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] relative">
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
           {refreshing && dashboardExtras && (
             <motion.div
@@ -276,7 +276,7 @@ export default function SampleDashboardPage() {
                     className="w-8 h-8 text-white"
                   />
                 }
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading={
                   <div className="flex items-center gap-1">
                     <span>Showing data for:</span>

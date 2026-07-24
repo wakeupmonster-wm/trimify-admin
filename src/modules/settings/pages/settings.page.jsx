@@ -110,7 +110,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen">
-      <Card className="max-w-6xl mx-auto mt-10 px-1 lg:px-2 py-6 border-none shadow-xl bg-white/80 backdrop-blur-md overflow-hidden font-jakarta">
+      <Card className="max-w-6xl mx-auto mt-10 px-1 lg:px-2 py-6 border-none shadow-xl bg-white/80 backdrop-blur-md overflow-hidden font-sans">
         {/* <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500" /> */}
         <CardHeader className="pb-2">
           <div className="flex items-center gap-4">

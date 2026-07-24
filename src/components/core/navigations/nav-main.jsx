@@ -89,7 +89,7 @@ export function NavMain({ items }) {
 
                   <span
                     className={cn(
-                      "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
+                      "flex-1 truncate text-sm tracking-tight transition-colors duration-300",
                       isActive
                         ? "text-app-primary2 font-bold"
                         : "text-slate-600 font-medium hover:text-slate-900",

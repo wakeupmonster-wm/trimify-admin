@@ -30,7 +30,7 @@ export const sendPushCampaign = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await sendPushCampaignAPI(data);
-      if (response && response.status === "success") {
+      if (response && (response.status === "success" || response.success)) {
         return response;
       }
       return rejectWithValue(response.message || "Failed to send push campaign");
@@ -45,7 +45,7 @@ export const sendEmailCampaign = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await sendEmailCampaignAPI(data);
-      if (response && response.status === "success") {
+      if (response && (response.status === "success" || response.success)) {
         return response;
       }
       return rejectWithValue(response.message || "Failed to send email campaign");

@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Info, Filter, ArrowDown, ArrowUp } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Filter, ArrowDown } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
+import { APP_COLORS } from "@/config/theme.config";
 
 export const ConversionFunnel = ({ data }) => {
   if (!data) return null;
@@ -32,7 +33,7 @@ export const ConversionFunnel = ({ data }) => {
         />
       </div>
 
-      <CardContent className="flex-1 flex flex-col pt-4 px-6">
+      <CardContent className="flex-1 flex flex-col py-3 px-6">
         <div className="flex-1 flex flex-col gap-2">
           {stages.map((stage, idx) => {
             // Calculate the top and bottom widths for this specific trapezoid
@@ -47,7 +48,7 @@ export const ConversionFunnel = ({ data }) => {
             const x4 = (100 - currentBottom) / 2;
 
             return (
-              <div key={idx} className="flex items-center gap-6 min-h-[60px]">
+              <div key={idx} className="flex items-center justify-center gap-16 min-h-[60px]">
                 {/* Funnel Segment — Rounded Clip-Path */}
                 <div className="flex-1 relative h-full flex items-center justify-center">
                   <svg width="0" height="0" className="absolute">
@@ -58,15 +59,10 @@ export const ConversionFunnel = ({ data }) => {
                       >
                         <path
                           d={`
-                          M ${(x1 + 4) / 100} 0 
-                          L ${(x2 - 4) / 100} 0 
-                          Q ${x2 / 100} 0 ${(x2 - 1) / 100} 0.15
-                          L ${(x3 + 3) / 100} 0.80
-                          Q ${x3 / 100} 1 ${(x3 - 4) / 100} 1
-                          L ${(x4 + 3) / 100} 1  
-                          Q ${x4 / 100} 1 ${(x4 - 1.5) / 105} 0.78
-                          L ${(x1 + 2) / 105} 0.2
-                          Q ${x1 / 100} 0 ${(x1 + 4) / 100} 0
+                          M ${x1 / 100} 0 
+                          L ${x2 / 100} 0 
+                          L ${x3 / 100} 1.1
+                          L ${x4 / 100} 1.1  
                           Z 
                         `}
                         />
@@ -77,7 +73,7 @@ export const ConversionFunnel = ({ data }) => {
                   <div
                     className="w-full h-full flex items-center justify-center transition-all duration-300 hover:opacity-90 cursor-pointer shadow-sm"
                     style={{
-                      backgroundColor: stage.color,
+                      backgroundColor: APP_COLORS[idx % APP_COLORS.length],
                       clipPath: `url(#funnel-clip-${idx})`,
                       WebkitClipPath: `url(#funnel-clip-${idx})`,
                     }}
@@ -148,14 +144,14 @@ export const ConversionFunnel = ({ data }) => {
         )}
       </CardContent>
       {/* Primary Highlight Insight Footnote Container */}
-      <CardFooter className="pt-1">
+      {/* <CardFooter className="pt-1">
         <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
           <div className="w-5 h-5 rounded-full flex items-center justify-center">
             <Info size={14} className="text-blue-400 shrink-0" />
           </div>
           <span>{data.insight}</span>
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };

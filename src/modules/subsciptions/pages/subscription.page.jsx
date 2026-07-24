@@ -203,8 +203,8 @@ export default function SubscriptionPage() {
           <PageHeader
             heading="Subscription Analytics"
             subheading="Unified intelligence for products, revenue, and subscribers."
-            icon={<CreditCard className="w-10 h-10 text-white" />}
-            color="bg-app-primary2 shadow-indigo-100"
+            icon={<CreditCard className="w-6 h-6 text-white shrink-0" />}
+            variant="primary"
           />
           <Button
             variant="ghost"

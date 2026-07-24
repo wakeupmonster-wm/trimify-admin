@@ -29,21 +29,6 @@ const UsersManagementPage = lazy(
 const ViewUserProfilePage = lazy(
   () => import("@/modules/userManagement/pages/view.user.profile.page"),
 );
-const SampleProfileLayoutPage = lazy(
-  () => import("@/modules/userManagement/pages/sample-profile-layout.page"),
-);
-const SampleProfileLayoutV2Page = lazy(
-  () => import("@/modules/userManagement/pages/sample-profile-layout-v2.page"),
-);
-const SampleProfileLayoutV3Page = lazy(
-  () => import("@/modules/userManagement/pages/sample-profile-layout-v3.page"),
-);
-const SampleProgramLayoutPage = lazy(
-  () => import("@/modules/userManagement/pages/sample-program-layout.page"),
-);
-const SampleFitzoneLayoutPage = lazy(
-  () => import("@/modules/userManagement/pages/sample-fitzone-layout.page"),
-);
 const AccountSettingsPage = lazy(
   () => import("@/modules/accountSettings/pages/account.settings.page"),
 );
@@ -55,10 +40,6 @@ const NotificationManagePage = lazy(
 );
 const CMSManagementPage = lazy(
   () => import("@/modules/cmsManagement/pages/cms.management.page"),
-);
-const TransactionManagementPage = lazy(
-  () =>
-    import("@/modules/transactionManagement/pages/transaction.management.page"),
 );
 const SubscriptionDashboardTabPage = lazy(
   () =>
@@ -321,47 +302,6 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <ViewUserProfilePage />
-              </Suspense>
-            ),
-          },
-          // Sample View profile HTML page.
-          {
-            path: "sample-profile-layout",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleProfileLayoutPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "sample-profile-layout-v2",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleProfileLayoutV2Page />
-              </Suspense>
-            ),
-          },
-          {
-            path: "sample-profile-layout-v3",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleProfileLayoutV3Page />
-              </Suspense>
-            ),
-          },
-          {
-            path: "sample-program-layout",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleProgramLayoutPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "sample-fitzone-layout",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleFitzoneLayoutPage />
               </Suspense>
             ),
           },
@@ -713,7 +653,7 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "config",
+            path: "products",
             element: (
               <Suspense fallback={<PreLoader />}>
                 <SubscriptionConfigTabPage />

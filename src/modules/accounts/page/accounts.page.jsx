@@ -76,7 +76,7 @@ export default function AccountsPage() {
 
   return (
     <>
-      <div className="min-h-screen pb-12 font-jakarta animate-fade-in relative">
+      <div className="min-h-screen pb-12 font-sans animate-fade-in relative">
         <div className="w-full p-4 space-y-4">
           {/* HERO SECTION */}
           <div className="relative bg-white rounded-lg shadow-sm shadow-gray-200 overflow-hidden border border-gray-200">

@@ -263,7 +263,7 @@ const FaqManagementPage = () => {
               <PageHeader
                 heading="FAQ"
                 icon={<HelpCircle className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-md"
+                variant="primary"
                 subheading="Manage Frequently Asked Questions for the platform."
               />
             </div>

@@ -347,12 +347,9 @@ export default function TransactionsPage() {
               <PageHeader
                 heading="Transactions"
                 icon={
-                  <TbTransactionDollar
-                    strokeWidth={2}
-                    className="w-9 h-9 text-white"
-                  />
+                  <TbTransactionDollar className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2"
+                variant="primary"
                 subheading="Revenue tracking, transaction history & export."
               />
             </div>

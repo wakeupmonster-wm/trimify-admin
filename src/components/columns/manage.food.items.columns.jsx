@@ -172,7 +172,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg hover:!bg-blue-50 focus:bg-app-primary2 focus:text-app-primary2 font-semibold text-xs "
+                className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
                 onClick={() =>
                   handleAction && handleAction(row.original, "edit")
                 }

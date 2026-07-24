@@ -86,7 +86,7 @@ export default function TermAndConditionsPage() {
               <PageHeader
                 heading="Terms & Conditions"
                 icon={<ReceiptText className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2"
+                variant="primary"
                 subheading="Manage legal policies and user agreements."
               />
             </div>
@@ -110,7 +110,9 @@ export default function TermAndConditionsPage() {
                 ) : (
                   <Save className="w-4 h-4 mr-1 shrink-0" />
                 )}
-                <span className="whitespace-nowrap">{isSaving ? "Saving…" : "Save Changes"}</span>
+                <span className="whitespace-nowrap">
+                  {isSaving ? "Saving…" : "Save Changes"}
+                </span>
               </Button>
             </div>
           </div>

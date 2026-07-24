@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
@@ -7,25 +7,14 @@ import {
   Calculator,
   Download,
   Loader2,
-  Star,
-  Crown,
 } from "lucide-react";
 import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
-import StatsGrid from "@/components/common/stats.grid";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import ErrorState from "@/components/shared/ErrorState";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { colorMap, bgMap } from "@/constants/colors";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
-import { subDays, startOfDay, endOfDay, format, parseISO } from "date-fns";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { endOfDay, format, parseISO } from "date-fns";
 import { getTransactionColumns } from "./transaction.columns";
 import {
   fetchTransactions,
@@ -144,16 +133,16 @@ export default function TransactionsView() {
     () => [
       {
         label: "Gross Revenue",
-        val: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+        value: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
         icon: <DollarSign size={22} />,
-        color: "blue",
+        tone: "blue",
         description: "All-time, unfiltered",
       },
       {
         label: "Total Transactions",
-        val: kpiSummary.totalTransactions || 0,
+        value: kpiSummary.totalTransactions || 0,
         icon: <Receipt size={22} />,
-        color: "emerald",
+        tone: "emerald",
         description: "All-time, unfiltered",
       },
       // {

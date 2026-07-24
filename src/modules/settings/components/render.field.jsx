@@ -36,7 +36,7 @@ export const RenderField = ({
       render={({ field }) => (
         <FormItem className="w-full">
           {label && (
-            <FormLabel className="text-gray-800 font-semibold font-jakarta tracking-wide text-xs mb-2 block">
+            <FormLabel className="text-gray-800 font-semibold font-sans tracking-wide text-xs mb-2 block">
               {label}
             </FormLabel>
           )}

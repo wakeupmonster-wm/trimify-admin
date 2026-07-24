@@ -259,13 +259,8 @@ export default function SubscriberManagementPage() {
             <div className="w-full">
               <PageHeader
                 heading="Subscriber Management"
-                icon={
-                  <LuUsersRound
-                    strokeWidth={2}
-                    className="w-8 h-8 text-white"
-                  />
-                }
-                color="bg-app-primary2 shadow-app-primary2"
+                icon={<LuUsersRound className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Monitor and manage all application subscribers."
               />
             </div>

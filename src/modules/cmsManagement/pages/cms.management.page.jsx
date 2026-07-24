@@ -68,30 +68,29 @@ const CMSManagementPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 w-full"> 
+          <div className="flex-1 min-w-0 w-full">
             <PageHeader
               heading="CMS"
               icon={<FileEdit className="w-6 h-6 text-white shrink-0" />}
-              color="bg-app-primary2 shadow-md"
+              variant="primary"
               subheading="Manage Content Management System pages like Privacy Policy and Terms & Conditions."
             />
           </div>
         </Header>
 
         <div className="w-full min-w-0 flex-1">
-
-        <DataTable
-          columns={columns}
-          data={displayData}
-          rowCount={displayData.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          searchPlaceholder="Search by page title..."
-          itemName="entries"
-          isLoading={loading}
-        />
+          <DataTable
+            columns={columns}
+            data={displayData}
+            rowCount={displayData.length}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            searchPlaceholder="Search by page title..."
+            itemName="entries"
+            isLoading={loading}
+          />
         </div>
       </div>
     </Container>

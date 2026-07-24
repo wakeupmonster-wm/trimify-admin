@@ -111,9 +111,12 @@ export default function DataTable({
           </AnimatePresence>
 
           <Table className="min-w-[900px]">
-            <TableHeader className="bg-slate-50/50">
+            <TableHeader className="">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  className="bg-app-primary2/5 hover:bg-app-primary2/5"
+                >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
@@ -123,7 +126,7 @@ export default function DataTable({
                             ? header.getSize()
                             : undefined,
                       }}
-                      className="text-foreground/80 px-3 font-bold uppercase h-10 bg-slate-200/40 text-[10px] text-left whitespace-nowrap"
+                      className="text-foreground/80 px-3 font-bold uppercase h-10 text-[10px] text-left whitespace-nowrap"
                     >
                       {flexRender(
                         header.column.columnDef.header,

@@ -258,8 +258,8 @@ export default function NotificationManagementPages() {
           <div className="flex md:items-center justify-between gap-3">
             <PageHeader
               heading="Campaign Manager"
-              icon={<Bell strokeWidth={2} className="w-9 h-9 text-white" />}
-              color="bg-app-primary2"
+              icon={<Bell className="w-6 h-6 text-white shrink-0" />}
+              variant="primary"
               subheading="Design and deploy multi-channel engagement."
             />
           </div>

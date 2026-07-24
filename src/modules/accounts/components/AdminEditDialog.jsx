@@ -118,7 +118,7 @@ export default function AdminEditDialog({ children, currentData }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto gap-0 p-0 border-none shadow-2xl rounded-2xl font-jakarta">
+      <DialogContent className="w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto gap-0 p-0 border-none shadow-2xl rounded-2xl font-sans">
         {/* ── Header ── */}
         <DialogHeader className="px-6 pt-5 pb-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-300/60">
           <div className="flex items-center gap-4">

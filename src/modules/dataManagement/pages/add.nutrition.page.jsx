@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Apple, Save, Loader2, ArrowLeft } from "lucide-react";
+import { Save, Loader2, ArrowLeft, Carrot } from "lucide-react";
 import Header from "@/components/common/header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -128,9 +128,9 @@ const AddNutritionPage = () => {
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
-                heading={isEdit ? "Edit Food" : "Add Food"}
-                icon={<Apple className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-app-primary2"
+                heading={isEdit ? "Edit Nutrition Food" : "Add Nutrition Food"}
+                icon={<Carrot className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading={
                   isEdit
                     ? "Update existing nutrition food details."
@@ -152,7 +152,7 @@ const AddNutritionPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"

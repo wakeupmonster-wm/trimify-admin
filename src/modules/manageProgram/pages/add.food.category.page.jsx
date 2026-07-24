@@ -123,7 +123,7 @@ const AddFoodCategoryPage = () => {
               <PageHeader
                 heading="Manage Food Category"
                 icon={<Layers className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-blue-200"
+                variant="primary"
                 subheading={
                   isEditMode
                     ? "Edit and configure food category."
@@ -145,7 +145,7 @@ const AddFoodCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="space-y-6">
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">

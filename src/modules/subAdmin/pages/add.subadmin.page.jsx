@@ -103,7 +103,7 @@ const AddSubAdminPage = () => {
                 icon={
                   <LuUserRoundPlus className="w-6 h-6 text-white shrink-0" />
                 }
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading="Create a new sub-administrator account."
               />
             </div>
@@ -121,7 +121,7 @@ const AddSubAdminPage = () => {
           </div>
         </Header>
 
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <form
             onSubmit={handleSubmit}
             className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-5 pb-5 sm:pb-6"

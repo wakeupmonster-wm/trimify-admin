@@ -3,18 +3,7 @@ import {
   ArrowLeft,
   Mail,
   Phone,
-  Globe,
-  Calendar,
-  ShieldCheck,
-  ShieldOff,
-  Bell,
-  Droplet,
-  Target,
   CreditCard,
-  User,
-  Smartphone,
-  Activity,
-  Ban,
   Trash2,
   Edit,
   Loader2,
@@ -32,7 +21,6 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { APP_COLORS } from "@/config/theme.config.js";
-import UserProfileSkeleton from "./profile/UserProfileSkeleton";
 import { LuUserRound } from "react-icons/lu";
 
 /* =========================================================================
@@ -148,7 +136,7 @@ export function Card({ title, subtitle, right, children, className }) {
       )}
     >
       {(title || right) && (
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3 bg-slate-50/20">
+        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
           <div>
             {title && (
               <div className="text-[13px] font-bold text-slate-900">
@@ -156,7 +144,7 @@ export function Card({ title, subtitle, right, children, className }) {
               </div>
             )}
             {subtitle && (
-              <div className="mt-0.5 text-[10.5px] font-medium text-slate-400">
+              <div className="mt-0.5 text-[11px] font-medium text-slate-500">
                 {subtitle}
               </div>
             )}
@@ -164,7 +152,7 @@ export function Card({ title, subtitle, right, children, className }) {
           {right}
         </div>
       )}
-      <div className="p-5">{children}</div>
+      <div className="px-5 py-4">{children}</div>
     </div>
   );
 }
@@ -172,8 +160,8 @@ export function Card({ title, subtitle, right, children, className }) {
 export function KV({ icon: Icon, label, value }) {
   return (
     <div className="flex items-center justify-between gap-2.5 border-b border-slate-50 py-2 last:border-b-0 last:pb-0">
-      <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-400">
-        {Icon && <Icon className="h-3.5 w-3.5 opacity-45" />}
+      <span className="flex items-center gap-2 text-[12px] font-medium text-slate-500">
+        {Icon && <Icon className="h-4 w-4" />}
         {label}
       </span>
       <span className="max-w-[60%] break-words text-right text-[11.5px] font-semibold text-slate-900">
@@ -189,7 +177,7 @@ export function Kpi({ label, value }) {
       <div className="text-xl font-black tracking-tight tabular-nums text-slate-900">
         {value}
       </div>
-      <div className="mt-1 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="mt-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/80">
         {label}
       </div>
     </div>
@@ -199,7 +187,7 @@ export function Kpi({ label, value }) {
 export function GoalTile({ label, value, pct }) {
   return (
     <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm transition-all duration-300 hover:border-blue-200">
-      <div className="mb-1.5 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
+      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
         {label}
       </div>
       <div className="text-base font-black tabular-nums text-slate-900">
@@ -239,7 +227,7 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-xl border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
+        "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
         variant === "primary" &&
           "border-[#007FC0] bg-[#007FC0] text-white hover:bg-[#006699] hover:border-[#006699]",
         variant === "danger" &&
@@ -389,8 +377,8 @@ export default function UserProfileView({ user, onBack, loading }) {
               <PageHeader
                 heading="View User Profile"
                 icon={<LuUserRound className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-md shadow-blue-200/50"
-                subheading="Manage and view detailed user information."
+                variant="primary"
+                subheading="View detailed user information and history."
               />
             </div>
 
@@ -420,33 +408,39 @@ export default function UserProfileView({ user, onBack, loading }) {
                 <img
                   src={user.avatar}
                   alt="Avatar"
-                  className="h-20 w-20 rounded-2xl object-cover ring-4 ring-white shadow-sm"
+                  className="h-20 w-20 rounded-full object-cover ring-4 ring-white shadow-sm"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-50 text-2xl font-bold text-blue-600 ring-4 ring-white shadow-sm">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-2xl font-bold text-app-primary2 ring-4 ring-white shadow-sm">
                   {initials(user.name)}
                 </div>
               )}
-              <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white shadow-sm">
+              {/* <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white shadow-sm">
                 <Pill tone={user.status === "Active" ? "success" : "neutral"}>
                   {user.status}
                 </Pill>
-              </div>
+              </div> */}
             </div>
             <div className="flex flex-col gap-1.5 text-center sm:text-left">
               <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
                 {user.name}
               </h1>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-sm font-medium text-slate-500">
-                <span className="flex items-center gap-1">
-                  <Mail className="h-3.5 w-3.5" />
-                  {user.email}
-                </span>
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
-                <span className="flex items-center gap-1">
-                  <Phone className="h-3.5 w-3.5" />
-                  {user.mobile}
-                </span>
+                {user.email && (
+                  <span className="flex items-center gap-1">
+                    <Mail className="h-3.5 w-3.5" />
+                    {user.email}
+                  </span>
+                )}
+                {user.email && user.mobile && (
+                  <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                )}
+                {user.mobile && (
+                  <span className="flex items-center gap-1">
+                    <Phone className="h-3.5 w-3.5" />
+                    {user.mobile}
+                  </span>
+                )}
               </div>
               <div className="mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
                 <Pill tone="info">UID: {user.id}</Pill>

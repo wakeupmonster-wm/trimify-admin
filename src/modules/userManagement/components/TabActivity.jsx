@@ -17,18 +17,18 @@ export function TabActivity({ data }) {
           ].map((c) => (
             <div
               key={c.l}
-              className="rounded-xl border border-slate-200 p-3.5 bg-white"
+              className="rounded-xl border border-slate-200 px-5 py-4 bg-white"
             >
-              <div className="text-[10.5px] font-medium text-slate-400">
+              <div className="text-xs font-medium text-slate-500">
                 {c.l}
               </div>
-              <div className="mt-1 text-[15px] font-bold tabular-nums text-slate-900">
+              <div className="mt-1 text-base font-bold tabular-nums text-slate-900">
                 {c.d.total_entries || 0}{" "}
-                <span className="text-[10.5px] font-medium text-slate-400">
+                <span className="text-[11px] font-medium text-slate-500">
                   entries
                 </span>
               </div>
-              <div className="mt-1 text-[10px] text-slate-400">
+              <div className="mt-1 text-[11px] text-slate-500">
                 {c.d.last_logged_at
                   ? `Last: ${fmtDate(c.d.last_logged_at)}`
                   : "No entries yet"}
@@ -41,7 +41,7 @@ export function TabActivity({ data }) {
           title="Step Log History"
           subtitle="Most recent entries, newest first"
           right={
-            <span className="text-[10.5px] font-semibold text-slate-400">
+            <span className="text-[10.5px] font-semibold text-slate-500">
               {parsedActivities.length} records
             </span>
           }
@@ -49,7 +49,7 @@ export function TabActivity({ data }) {
           {parsedActivities.length > 0 ? (
             parsedActivities.map((a, i) => (
               <div key={i} className="flex items-center gap-3 py-1.5">
-                <div className="w-[100px] shrink-0 text-[11px] font-medium text-slate-500">
+                <div className="w-[100px] shrink-0 text-[11px] font-medium text-slate-600">
                   {fmtDate(a.created_at)}
                 </div>
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
@@ -66,11 +66,7 @@ export function TabActivity({ data }) {
               </div>
             ))
           ) : (
-            <EmptyState
-              icon={Activity}
-              title="No Step Logs"
-              subtitle="User hasn't logged any steps."
-            />
+            <EmptyState icon={Activity} title="No Step Logs" subtitle="User hasn't logged any steps." />
           )}
         </Card>
       </>

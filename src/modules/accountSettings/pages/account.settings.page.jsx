@@ -20,8 +20,8 @@ const AccountSettingsPage = () => {
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <PageHeader
               heading="Account Settings"
-              icon={<Settings className="w-9 h-9 text-white" />}
-              color="bg-app-primary2 shadow-app-primary2"
+              icon={<Settings className="w-6 h-6 text-white shrink-0" />}
+              variant="primary"
               subheading="Manage your personal account settings and preferences."
             />
           </div>

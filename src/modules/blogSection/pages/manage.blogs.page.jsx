@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
+import { LuNewspaper } from "react-icons/lu";
 
 const ManageBlogsPage = () => {
   const navigate = useNavigate();
@@ -193,8 +194,8 @@ const ManageBlogsPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Blogs"
-                icon={<FileText className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-brand-hoverBlue"
+                icon={<LuNewspaper className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Manage blog posts for the platform."
               />
             </div>

@@ -89,7 +89,7 @@ export default function SubscriptionDashboardPage() {
     <TooltipProvider>
       <div
         className={cn(
-          "flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen w-full min-w-0",
+          "flex flex-1 flex-col font-sans bg-slate-50 min-h-screen w-full min-w-0",
           scrolled
             ? "backdrop-blur-md bg-white/95 border-b border-slate-300/60 shadow-sm shadow-slate-300/50"
             : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",

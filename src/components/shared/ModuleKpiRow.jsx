@@ -13,9 +13,18 @@ import { Skeleton } from "@/components/ui/skeleton";
  * `loading` to render placeholders instead of a wrong/zero count.
  */
 const ModuleKpiRow = ({ items, loading = false }) => {
+  const getGridColsClass = (length) => {
+    if (length === 1) return "lg:grid-cols-1";
+    if (length === 2) return "lg:grid-cols-2";
+    if (length === 3) return "lg:grid-cols-3";
+    return "lg:grid-cols-4";
+  };
+
+  const gridClass = getGridColsClass(items?.length || 0);
+
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridClass} gap-4`}>
         {items.map((item) => (
           <Skeleton key={item.label} className="h-[92px] rounded-2xl" />
         ))}
@@ -24,7 +33,7 @@ const ModuleKpiRow = ({ items, loading = false }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridClass} gap-4`}>
       {items.map((item) => (
         <KpiCard
           key={item.label}

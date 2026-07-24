@@ -72,7 +72,7 @@ const NutritionFoodPage = () => {
               <PageHeader
                 heading="Nutrition Food"
                 icon={<Apple className="w-6 h-6 text-white shrink-0" />}
-                color="bg-app-primary2 shadow-app-primary2"
+                variant="primary"
                 subheading="Manage all nutrition food items and recipes."
               />
             </div>

@@ -4,21 +4,9 @@ import { cn } from "@/lib/utils";
 import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileView";
 
 export function TabHealth({ data }) {
-  const {
-    user,
-    waterGoal,
-    caloriesGoal,
-    targetSteps,
-    height,
-    weight,
-    bmi,
-    bmiCat,
-    bmiPct,
-    macroTotal,
-    macros,
-    fitnessProfileSet,
-    fitnessProfileMissing,
-    fitnessProfileFields,
+  const { 
+    user, waterGoal, caloriesGoal, targetSteps, height, weight, bmi, bmiCat, bmiPct, macroTotal, 
+    macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields,
   } = data;
 
   return (
@@ -31,18 +19,18 @@ export function TabHealth({ data }) {
           >
             <div className="grid grid-cols-2 gap-x-5 gap-y-2">
               <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
-                <span className="text-[11px] font-medium text-slate-400">
+                <span className="text-xs font-medium text-slate-500">
                   Height
                 </span>
-                <span className="text-[11.5px] font-semibold text-slate-900">
+                <span className="text-xs font-semibold text-slate-900">
                   {height || "—"} cm
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
-                <span className="text-[11px] font-medium text-slate-400">
+                <span className="text-xs font-medium text-slate-500">
                   Weight
                 </span>
-                <span className="text-[11.5px] font-semibold text-slate-900">
+                <span className="text-xs font-semibold text-slate-900">
                   {weight || "—"} kg
                 </span>
               </div>
@@ -52,7 +40,7 @@ export function TabHealth({ data }) {
                 <div className="text-lg font-bold tabular-nums text-slate-900">
                   {bmi ? bmi.toFixed(1) : "—"}
                 </div>
-                <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                   BMI
                 </div>
               </div>
@@ -85,20 +73,12 @@ export function TabHealth({ data }) {
 
           <Card title="Daily Targets" subtitle="Nutrition & hydration">
             <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              <GoalTile
-                label="Water Goal"
-                value={`${waterGoal.toLocaleString()} ml`}
-              />
-              <GoalTile
-                label="Calories Goal"
-                value={`${caloriesGoal.toLocaleString()} kcal`}
-              />
-              <GoalTile
-                label="Step Target"
-                value={targetSteps.toLocaleString()}
-              />
+              <GoalTile label="Water Goal" value={`${waterGoal.toLocaleString()} ml`} />
+              <GoalTile label="Calories Goal" value={`${caloriesGoal.toLocaleString()} kcal`} />
+              <GoalTile label="Step Target" value={targetSteps.toLocaleString()} />
             </div>
-            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-400">
+
+            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
               Macro split (per meal)
             </div>
             <div className="mb-2.5 flex h-2 overflow-hidden rounded-full border border-slate-100 bg-slate-100">
@@ -126,7 +106,7 @@ export function TabHealth({ data }) {
                 </div>
               ))}
             </div>
-            <div className="mt-3.5">
+            <div className="mt-3.5 pb-3">
               <KV
                 icon={Droplet}
                 label="Fluid Restriction"

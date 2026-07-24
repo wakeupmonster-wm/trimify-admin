@@ -390,7 +390,7 @@ export default function ConfigPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col font-jakarta bg-slate-50 min-h-screen max-w-[100vw] relative">
+    <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
       <div
         ref={sentinelRef}
         className="h-px w-full absolute top-0 pointer-events-none"
@@ -417,8 +417,8 @@ export default function ConfigPage() {
             <PageHeader
               heading="Subscription Config"
               subheading="Control quotas, feature toggles, and milestone programs"
-              icon={<Settings className="w-10 h-10 text-white" />}
-              color="bg-app-primary2"
+              icon={<Settings className="w-6 h-6 text-white shrink-0" />}
+              variant="primary"
             />
             <div className="flex items-center gap-3 w-full lg:w-auto">
               {hasChanges && (

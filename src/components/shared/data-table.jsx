@@ -178,7 +178,7 @@ export function DataTable({ kpiData, loading, error }) {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 font-jakarta">
+            <h1 className="text-3xl font-bold text-gray-900 font-sans">
               KPI Overview
             </h1>
             <p className="text-gray-600 mt-2">

@@ -18,6 +18,7 @@ import {
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
+import { TbCategoryPlus } from "react-icons/tb";
 
 const AddCategoryPage = () => {
   const navigate = useNavigate();
@@ -129,10 +130,8 @@ const AddCategoryPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEdit ? "Edit Category" : "Add Category"}
-                icon={
-                  <Layers className="w-6 md:w-7 h-6 md:h-7 text-white shrink-0" />
-                }
-                color="bg-app-primary2 shadow-blue-200"
+                icon={<TbCategoryPlus className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading={
                   isEdit
                     ? "Update existing blog category."
@@ -155,7 +154,7 @@ const AddCategoryPage = () => {
         </Header>
 
         {/* Main Form Card */}
-        <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
             className="px-6 md:px-8 pt-5 pb-6 space-y-6"

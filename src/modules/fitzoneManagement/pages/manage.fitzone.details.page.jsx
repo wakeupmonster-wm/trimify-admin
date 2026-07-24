@@ -70,10 +70,8 @@ const ManageFitzoneDetailsPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Fitzone Modules"
-                icon={
-                  <Settings className="w-6 h-6 text-white shrink-0" />
-                }
-                color="bg-app-primary2 shadow-blue-200"
+                icon={<Settings className="w-6 h-6 text-white shrink-0" />}
+                variant="primary"
                 subheading="Manage Introduction, Workout Categories, and Sessions for this Fitzone."
               />
             </div>

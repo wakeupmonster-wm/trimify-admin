@@ -79,19 +79,19 @@ export default function CampaignDeliveryLogs({
               <Table className="border-separate border-spacing-0 table-fixed min-w-[600px] w-full relative">
                 <TableHeader className="z-20 shadow-sm">
                   <TableRow className="w-full">
-                    <TableHead className="sticky top-0 z-30 bg-slate-200/50 w-1/12 text-center text-[10px] font-bold uppercase px-2 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/12 text-center text-[10px] font-bold uppercase px-2 h-9">
                       Sr. No
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200/50 w-1/4 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/4 text-[10px] font-bold uppercase px-4 h-9">
                       Recipient
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200/50 w-1/6 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/6 text-[10px] font-bold uppercase px-4 h-9">
                       Status
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200/50 w-4/12 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-4/12 text-[10px] font-bold uppercase px-4 h-9">
                       Error Details
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200/50 w-1/6 text-[10px] font-bold uppercase px-4 h-9 text-center">
+                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/6 text-[10px] font-bold uppercase px-4 h-9 text-center">
                       Time
                     </TableHead>
                   </TableRow>
@@ -178,7 +178,7 @@ export default function CampaignDeliveryLogs({
             variant="outline"
             size="sm"
             onClick={onClose}
-            className="border-slate-200 bg-white text-slate-400 hover:text-white hover:bg-brand-aqua text-xs font-medium px-6 h-9 rounded-lg"
+            className="border-slate-200 bg-white text-slate-500 hover:text-white hover:bg-app-primary2 text-xs font-medium px-6 h-9 rounded-lg"
           >
             Close
           </Button>
