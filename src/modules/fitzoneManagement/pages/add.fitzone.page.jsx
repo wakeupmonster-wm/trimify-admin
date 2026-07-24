@@ -29,10 +29,12 @@ const AddFitzonePage = () => {
   });
 
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleDragOver = (e) => {
@@ -51,6 +53,8 @@ const AddFitzonePage = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      if (errors.bannerImage)
+        setErrors((prev) => ({ ...prev, bannerImage: null }));
     }
   };
 
@@ -58,11 +62,29 @@ const AddFitzonePage = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      if (errors.bannerImage)
+        setErrors((prev) => ({ ...prev, bannerImage: null }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.workoutHeading.trim())
+      newErrors.workoutHeading = "Workout Heading is required";
+    if (!formData.workoutDescription.trim())
+      newErrors.workoutDescription = "Workout Headline is required";
+    if (!isEditMode && !formData.bannerImage)
+      newErrors.bannerImage = "Banner Image is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setIsSubmitting(true);
 
     const payload = new FormData();
@@ -114,7 +136,7 @@ const AddFitzonePage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -126,9 +148,9 @@ const AddFitzonePage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
           >
-            <div className="grid grid-cols-1 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-6">
+            <div className="grid grid-cols-1 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-4">
               {/* Row 1: Title and Workout Heading */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-6">
                 <div className="space-y-1.5">
@@ -140,9 +162,13 @@ const AddFitzonePage = () => {
                     placeholder="Enter Title"
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
-                    required
+                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
                   />
+                  {errors.title && (
+                    <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                      {errors.title}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
@@ -154,9 +180,13 @@ const AddFitzonePage = () => {
                     placeholder="Enter Workout Heading"
                     value={formData.workoutHeading}
                     onChange={handleChange}
-                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
-                    required
+                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.workoutHeading ? "border-red-500" : "border-slate-300/60"}`}
                   />
+                  {errors.workoutHeading && (
+                    <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                      {errors.workoutHeading}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -170,9 +200,13 @@ const AddFitzonePage = () => {
                   placeholder="Enter Workout Description"
                   value={formData.workoutDescription}
                   onChange={handleChange}
-                  className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
-                  required
+                  className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.workoutDescription ? "border-red-500" : "border-slate-300/60"}`}
                 />
+                {errors.workoutDescription && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.workoutDescription}
+                  </p>
+                )}
               </div>
 
               {/* Row 3: Description */}
@@ -180,18 +214,24 @@ const AddFitzonePage = () => {
                 <Label className="text-xs font-bold text-slate-800">
                   Fitzone Description
                 </Label>
-                <Textarea
-                  name="description"
-                  placeholder="Enter Fitzone Description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  maxLength={500}
-                  className="w-full min-h-[120px] p-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium resize-none"
-                  required
-                />
-                <div className="text-xs text-slate-500 font-medium text-right">
-                  {formData.description.length} / 500 characters
+                <div className="relative">
+                  <Textarea
+                    name="description"
+                    placeholder="Enter Fitzone Description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    maxLength={500}
+                    className={`w-full min-h-[120px] p-4 pb-8 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium resize-none ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  />
+                  <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                    {formData.description.length} / 500
+                  </div>
                 </div>
+                {errors.description && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.description}
+                  </p>
+                )}
               </div>
 
               {/* Row 4: Banner Image Upload */}
@@ -229,6 +269,11 @@ const AddFitzonePage = () => {
                     SVG, PNG, JPG or GIF (max. 800x400px)
                   </p>
                 </div>
+                {errors.bannerImage && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.bannerImage}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -236,7 +281,7 @@ const AddFitzonePage = () => {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto rounded-md px-6 h-100 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
+                className="w-full sm:w-auto rounded-md px-5 h-100 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -244,7 +289,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {isSubmitting ? (
                   <>

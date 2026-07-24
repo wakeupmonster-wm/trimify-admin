@@ -126,14 +126,14 @@ export const getManageFoodItemsColumns = (handleAction) => [
     size: 80,
     minSize: 60,
     cell: ({ row }) => {
-      const isApproved =
-        row.original.approval_status === "Approved" ||
-        row.original.approval_status === 1 ||
-        row.original.is_approved;
+      const isActive =
+        row.original.status === "Active" ||
+        row.original.status === 1 ||
+        row.original.is_active;
       return (
         <div className="flex justify-center">
           <Switch
-            checked={isApproved}
+            checked={isActive}
             onCheckedChange={(val) =>
               handleAction && handleAction(row.original, "toggle", val)
             }

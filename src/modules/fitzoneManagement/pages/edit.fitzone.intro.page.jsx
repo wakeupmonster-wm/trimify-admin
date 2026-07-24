@@ -104,8 +104,6 @@ const EditFitzoneIntroPage = () => {
 
         {/* Editor Card */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
-          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0">
-            <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Heading
               </Label>
@@ -163,8 +161,6 @@ const EditFitzoneIntroPage = () => {
                 {loading ? "Updating..." : "Update"}
               </Button>
             </div>
-          </div>
-        </div>
       </div>
     </Container>
   );
