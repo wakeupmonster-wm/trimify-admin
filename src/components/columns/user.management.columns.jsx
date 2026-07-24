@@ -130,22 +130,22 @@ export const getUserManagementColumns = (onAction) => [
     },
   },
   {
-    accessorKey: "planBuy",
+    id: "boughtOn",
+    accessorFn: (row) => row.transactions?.[0]?.created_at || null,
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Plan Buy
+        Bought On
       </div>
     ),
     size: 90,
     minSize: 85,
     cell: ({ row }) => {
-      const dateValue = row.original.planBuy;
+      const dateValue = row.original.transactions?.[0]?.created_at;
       if (
         !dateValue ||
-        dateValue === "No" ||
         isNaN(new Date(dateValue).getTime())
       ) {
-        return <div className="text-center text-slate-500 text-[11px]">No</div>;
+        return <div className="text-center text-slate-500 text-[11px]">—</div>;
       }
       return (
         <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
@@ -209,7 +209,8 @@ export const getUserManagementColumns = (onAction) => [
     size: 80,
     minSize: 75,
     cell: ({ row }) => {
-      const status = row.original.status || "Active";
+      let status = row.original.status || "Active";
+      if (row.original.revoked_at) status = "Revoked";
       const bgColor = STATUS_COLORS[status.toLowerCase()] || STATUS_COLORS.active;
       return (
         <div className="flex justify-center">

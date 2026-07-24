@@ -127,7 +127,12 @@ const UsersManagementPage = () => {
       icon: Users,
       label: "Total Users",
       value: localKpis?.totalUsers?.toLocaleString() || "0",
-      description: "All-time platform total",
+      description: "Tap to view all",
+      onClick: () => {
+        setStatusFilter("");
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      isSelected: statusFilter === "",
     },
     {
       icon: UserCheck,
@@ -173,7 +178,7 @@ const UsersManagementPage = () => {
 
   // Local fallback filtering in case the backend ignores the `status` parameter
   const filteredUsers = useMemo(() => {
-    if (!statusFilter) return users || [];
+    if (isManual || !statusFilter) return users || [];
     return (users || []).filter((user) => {
       const userStatus = String(user.status || "Active").toLowerCase();
       if (userStatus === statusFilter.toLowerCase()) return true;
@@ -189,22 +194,29 @@ const UsersManagementPage = () => {
         return true;
       return false;
     });
-  }, [users, statusFilter]);
+  }, [users, statusFilter, isManual]);
+
+  // KPI-only filter values that should highlight the card but not
+  // appear as a selection in the Status dropdown (they're not real statuses)
+  const KPI_ONLY_FILTERS = ["new_today"];
 
   const filterConfig = [
     {
       type: "select",
       id: "statusFilter",
       label: "Status",
-      value: statusFilter,
-      onChange: setStatusFilter,
+      value: KPI_ONLY_FILTERS.includes(statusFilter) ? "" : statusFilter,
+      onChange: (v) => {
+        setStatusFilter(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
       options: [
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
         { label: "Ghosted", value: "ghosted" },
         { label: "Zero Engagement", value: "zero_engagement" },
       ],
-      placeholder: "Any Status",
+      placeholder: "All Status",
     },
   ];
 

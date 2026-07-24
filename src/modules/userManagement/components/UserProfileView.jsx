@@ -252,12 +252,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     ];
     const fitnessProfileSet = fitnessProfileFields.filter(([, v]) => v);
     const fitnessProfileMissing = fitnessProfileFields.filter(([, v]) => !v);
-    const parsedActivities = (user.recent_activities || []).map((a) => ({
-      ...a,
-      steps: parseInt(((a.title || "").match(/\d+/) || ["0"])[0], 10),
-    }));
-    const maxSteps = Math.max(1, ...parsedActivities.map((a) => a.steps));
-    return { height, weight, bmi, bmiCat, bmiPct, age, macroTotal, macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields, parsedActivities, maxSteps };
+    const parsedActivities = (user.recent_activities || [])
+      .filter((a) => a.type !== "program_assigned" && a.type !== "fitzone_assigned");
+    return { height, weight, bmi, bmiCat, bmiPct, age, macroTotal, macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields, parsedActivities };
   }, [user]);
 
   if (loading || !user) {
@@ -280,7 +277,7 @@ export default function UserProfileView({ user, onBack, loading }) {
     showToast(`${label} copied`);
   };
 
-  const { height, weight, bmi, bmiCat, bmiPct, age, macroTotal, macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields, parsedActivities, maxSteps } = derived;
+  const { height, weight, bmi, bmiCat, bmiPct, age, macroTotal, macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields, parsedActivities } = derived;
 
   const es = user.engagement_stats || {};
   const as = user.activity_summary || {};
@@ -310,7 +307,9 @@ export default function UserProfileView({ user, onBack, loading }) {
               </div>
             )}
             <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white shadow-sm">
-              <Pill tone={user.status === "Active" ? "success" : "neutral"}>{user.status}</Pill>
+              <Pill tone={user.revoked_at ? "danger" : (user.status === "Active" ? "success" : "neutral")}>
+                {user.revoked_at ? "Revoked" : user.status}
+              </Pill>
             </div>
           </div>
           <div className="flex flex-col gap-1.5 text-center sm:text-left">
@@ -611,25 +610,43 @@ export default function UserProfileView({ user, onBack, loading }) {
             </div>
 
             <Card
-              title="Step Log History"
-              subtitle="Most recent entries, newest first"
+              title="Recent Activity History"
+              subtitle="All recent logs and events, newest first"
               right={<span className="text-[10.5px] font-semibold text-slate-400">{parsedActivities.length} records</span>}
             >
-              {parsedActivities.length > 0 ? (
-                parsedActivities.map((a, i) => (
-                  <div key={i} className="flex items-center gap-3 py-1.5">
-                    <div className="w-[100px] shrink-0 text-[11px] font-medium text-slate-500">{fmtDate(a.created_at)}</div>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-                      <div className="h-full rounded-full bg-[#007fc0]" style={{ width: `${maxSteps ? ((a.steps / maxSteps) * 100).toFixed(0) : 0}%` }} />
-                    </div>
-                    <div className="w-16 shrink-0 text-right text-[11px] font-semibold tabular-nums text-slate-900">
-                      {a.steps.toLocaleString()} steps
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <EmptyState icon={Activity} title="No Step Logs" subtitle="User hasn't logged any steps." />
-              )}
+              <div className={cn("flex flex-col gap-3", parsedActivities.length > 0 ? "mt-2" : "")}>
+                {parsedActivities.length > 0 ? (
+                  parsedActivities.map((a, i) => {
+                    const isWater = a.type === "water_log";
+                    const isProgram = a.type === "program_assigned" || a.type === "fitzone_assigned";
+                    const Icon = isWater ? Droplet : isProgram ? Target : Activity;
+                    const gradient = isWater 
+                      ? "from-blue-400 to-blue-600" 
+                      : isProgram 
+                        ? "from-purple-500 to-purple-600" 
+                        : "from-emerald-400 to-emerald-600";
+                    return (
+                      <div key={i} className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all gap-4">
+                        <div className="flex items-center gap-3.5">
+                          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${gradient} text-white shadow-sm`}>
+                            <Icon className="h-5 w-5" />
+                          </div>
+                          <div className="flex flex-col">
+                            <div className="text-[14px] font-bold text-slate-900 tracking-tight">
+                              {a.title}
+                            </div>
+                            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">
+                              {fmtDate(a.created_at)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <EmptyState icon={Activity} title="No Activity Logs" subtitle="User hasn't recorded any recent activities." />
+                )}
+              </div>
             </Card>
           </>
         </TabsContent>
@@ -639,7 +656,7 @@ export default function UserProfileView({ user, onBack, loading }) {
           <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
             <div className="flex flex-col gap-3.5">
               <Card title="Account Status">
-                <KV icon={ShieldCheck} label="Status" value={<Pill tone={user.status === "Active" || user.status === "1" ? "success" : "neutral"}>{user.status === "1" ? "Active" : user.status === "0" ? "Inactive" : user.status}</Pill>} />
+                <KV icon={ShieldCheck} label="Status" value={<Pill tone={user.revoked_at ? "danger" : (user.status === "Active" || user.status === "1" ? "success" : "neutral")}>{user.revoked_at ? "Revoked" : (user.status === "1" ? "Active" : user.status === "0" ? "Inactive" : user.status)}</Pill>} />
                 <KV icon={ShieldOff} label="Admin Status" value={user.admin_status || "—"} />
                 <KV icon={Mail} label="Email Verified" value={user.email_verified_at ? fmtDate(user.email_verified_at) : "No"} />
                 <KV icon={Ban} label="Revoked" value={user.revoked_at ? fmtDate(user.revoked_at) : "No"} />
@@ -649,7 +666,7 @@ export default function UserProfileView({ user, onBack, loading }) {
 
               <Card title="Billing">
                 <KV icon={CreditCard} label="Payment Status" value={user.paid ? "Paid" : "Unpaid"} />
-                <KV icon={ShieldCheck} label="Plan" value={user.plan ? cap(user.plan) : "No active plan"} />
+                <KV icon={ShieldCheck} label="Plan" value={user.plan ? user.plan.title : "No active plan"} />
                 <KV icon={Calendar} label="Plan Expiry" value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"} />
                 <KV icon={CreditCard} label="Stripe ID" value={user.stripe_id || "Not linked"} />
                 {(!user.transactions || user.transactions.length === 0) && (

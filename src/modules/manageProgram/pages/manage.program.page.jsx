@@ -146,6 +146,7 @@ const ManageProgramPage = () => {
 
   // Local fallback filtering
   const displayData = useMemo(() => {
+    if (isManual) return programs || [];
     let data = programs || [];
     if (durationFilter) {
       data = data.filter((p) => String(p.duration) === String(durationFilter));
@@ -156,7 +157,7 @@ const ManageProgramPage = () => {
       );
     }
     return data;
-  }, [programs, durationFilter, statusFilter]);
+  }, [programs, durationFilter, statusFilter, isManual]);
 
   const filterConfig = [
     {
@@ -185,7 +186,7 @@ const ManageProgramPage = () => {
         { label: "Zero Enrollment", value: "zero_enrollment" },
         { label: "Stale Content", value: "stale_content" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -208,7 +209,9 @@ const ManageProgramPage = () => {
       icon: ClipboardCheck,
       label: "Total Programs",
       value: localKpis?.totalPrograms?.toLocaleString() || "0",
-      description: "Across all durations",
+      description: "Tap to view all",
+      onClick: () => setStatusFilter(""),
+      isSelected: statusFilter === "",
     },
     {
       icon: CheckCircle2,
@@ -217,6 +220,7 @@ const ManageProgramPage = () => {
       description: "Tap to filter",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
+      isSelected: statusFilter === "Active",
     },
     {
       icon: XCircle,
@@ -225,6 +229,7 @@ const ManageProgramPage = () => {
       description: "Tap to filter",
       tone: "rose",
       onClick: () => setStatusFilter("Inactive"),
+      isSelected: statusFilter === "Inactive",
     },
     {
       icon: Users2,
