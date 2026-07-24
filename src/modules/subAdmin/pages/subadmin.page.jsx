@@ -5,7 +5,6 @@ import { LuUserRoundCog } from "react-icons/lu";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
   Plus,
-  FileText,
   Users,
   UserCheck,
   Shield,
@@ -13,6 +12,7 @@ import {
   Download,
 } from "lucide-react";
 import Header from "@/components/common/header";
+import ExportLoadingModal from "@/components/shared/ExportLoadingModal";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -108,6 +108,36 @@ const SubAdminManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+
+  const handleExportCSV = () => {
+    setExportLoading(true);
+    setExportProgress(0);
+
+    const duration = 1500;
+    const intervalTime = 50;
+    const steps = duration / intervalTime;
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = Math.min(Math.round((currentStep / steps) * 100), 100);
+      setExportProgress(progress);
+
+      if (progress === 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          downloadCSV(subAdmins);
+          setTimeout(() => {
+            setExportLoading(false);
+            setExportProgress(0);
+          }, 2000);
+        }, 300);
+      }
+    }, intervalTime);
+  };
 
   // KPI Calculations
   const kpiStats = useMemo(() => {
@@ -286,15 +316,15 @@ const SubAdminManagementPage = () => {
             <div className="flex flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/sub-admin-management/add")}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3.5 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Sub Admin</span>
               </Button>
               <Button
                 variant="outline"
-                onClick={() => downloadCSV(subAdmins)}
-                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-4 flex items-center justify-center gap-1.5"
+                onClick={handleExportCSV}
+                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-3.5 flex items-center justify-center gap-1.5"
               >
                 <Download className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Export CSV</span>
@@ -334,6 +364,13 @@ const SubAdminManagementPage = () => {
           />
         </div>
       </div>
+
+      <ExportLoadingModal
+        exportLoading={exportLoading}
+        exportProgress={exportProgress}
+        setExportLoading={setExportLoading}
+        setExportProgress={setExportProgress}
+      />
 
       <ConfirmModal
         isOpen={deleteModal.open}

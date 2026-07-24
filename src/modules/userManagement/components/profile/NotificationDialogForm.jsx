@@ -120,7 +120,7 @@ const NotificationDialogForm = ({ type, userId, onClose }) => {
           <Button
             onClick={handleSend}
             disabled={isLoading}
-            className="flex-1 h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs shadow-sm shadow-app-primary2 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+            className="flex-1 h-11 bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg font-bold text-xs shadow-sm shadow-app-primary2 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

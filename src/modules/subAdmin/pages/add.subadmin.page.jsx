@@ -129,7 +129,7 @@ const AddSubAdminPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4">
               {/* Name */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Name
                 </Label>
                 <Input
@@ -148,7 +148,7 @@ const AddSubAdminPage = () => {
 
               {/* Email address */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Email address
                 </Label>
                 <Input
@@ -168,7 +168,7 @@ const AddSubAdminPage = () => {
 
               {/* Hospital/Clinic Name */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Hospital/Clinic Name
                 </Label>
                 <Input
@@ -187,7 +187,7 @@ const AddSubAdminPage = () => {
 
               {/* Country */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Country
                 </Label>
                 <Input
@@ -200,7 +200,7 @@ const AddSubAdminPage = () => {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Phone Number
                 </Label>
                 <Input
@@ -220,7 +220,7 @@ const AddSubAdminPage = () => {
 
               {/* Designation */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Designation
                 </Label>
                 <Input
@@ -239,7 +239,7 @@ const AddSubAdminPage = () => {
 
               {/* Password */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Password
                 </Label>
                 <div className="relative">
@@ -272,7 +272,7 @@ const AddSubAdminPage = () => {
 
               {/* Role */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Role
                 </Label>
                 <Select value={formData.role} onValueChange={handleRoleChange}>
@@ -310,7 +310,7 @@ const AddSubAdminPage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

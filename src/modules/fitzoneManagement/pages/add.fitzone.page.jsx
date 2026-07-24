@@ -148,13 +148,13 @@ const AddFitzonePage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="grid grid-cols-1 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-4">
               {/* Row 1: Title and Workout Heading */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-5 sm:gap-y-6">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-800">
+                  <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                     Fitzone Title
                   </Label>
                   <Input
@@ -172,7 +172,7 @@ const AddFitzonePage = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-800">
+                  <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                     Workout Session Heading
                   </Label>
                   <Input
@@ -192,7 +192,7 @@ const AddFitzonePage = () => {
 
               {/* Row 2: Workout Headline */}
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Workout Session Headline
                 </Label>
                 <Input
@@ -211,7 +211,7 @@ const AddFitzonePage = () => {
 
               {/* Row 3: Description */}
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Fitzone Description
                 </Label>
                 <div className="relative">
@@ -236,7 +236,7 @@ const AddFitzonePage = () => {
 
               {/* Row 4: Banner Image Upload */}
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Upload Banner Image
                 </Label>
                 <div
@@ -289,7 +289,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {isSubmitting ? (
                   <>

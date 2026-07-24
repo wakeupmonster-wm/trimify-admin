@@ -70,7 +70,7 @@ export const AdminResourceNotFound = ({
         <div className="pt-2 flex justify-center">
           <Button
             onClick={handleBack}
-            className="bg-app-primary2 hover:bg-app-primary5 text-white h-10 px-8 rounded-md font-bold shadow-sm shadow-app-primary2/50 transition-all flex items-center gap-2"
+            className="bg-app-primary2 hover:bg-app-primary3 text-white h-10 px-8 rounded-md font-bold shadow-sm shadow-app-primary2/50 transition-all flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             {backLabel}

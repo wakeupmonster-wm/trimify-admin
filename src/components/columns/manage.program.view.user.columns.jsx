@@ -106,7 +106,7 @@ export const getViewUserProgramColumns = (onAction) => [
       const status = row.original.status || "Inactive";
       const isActive = status === "Active";
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-start">
           <Badge
             variant="outline"
             className={cn(
@@ -152,7 +152,7 @@ export const getViewUserProgramColumns = (onAction) => [
             align="end"
             className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
-            <DropdownMenuLabel className="text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem

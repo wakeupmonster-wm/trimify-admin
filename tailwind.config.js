@@ -159,8 +159,8 @@ export default {
         app: {
           primary1: "#002538",
           primary2: "#007FC0",
-          primary3: "#5AA0C1",
-          primary4: "#B9E9FF",
+          primary3: "#006597",
+          primary4: "#5AA0C1",
           primary5: "#04365F",
           background: "#FAFAFA",
           darkGrey: "#2B2829",

@@ -176,7 +176,7 @@ export default function RevenueTrendChart({
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Select value={chartType} onValueChange={setChartType}>
-            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-app-primary5 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
+            <SelectTrigger className="h-9 rounded-lg bg-white hover:bg-app-primary3 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[140px]">
               <SelectValue placeholder="Revenue Type" />
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-none shadow-xl">

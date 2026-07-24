@@ -130,7 +130,7 @@ export default function AccountsPage() {
                 {/* Action */}
                 <div className="mb-2 shrink-0 w-full md:w-auto mt-4 md:mt-0">
                   <AdminEditDialog currentData={account}>
-                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary5 hover:border-app-primary2 font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
+                    <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary3 hover:border-app-primary2 font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
                       <Edit3 className="w-3.5 h-3.5" strokeWidth={2} />
                       Configure Profile
                     </Button>

@@ -85,7 +85,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start group text-left font-medium bg-white hover:bg-app-primary5 text-slate-500 border border-slate-300/60 hover:border-transparent transition-all duration-300 shadow-sm hover:text-white rounded-lg",
+              "w-full justify-start group text-left font-medium bg-white hover:bg-app-primary3 text-slate-500 border border-slate-300/60 hover:border-transparent transition-all duration-300 shadow-sm hover:text-white rounded-lg",
               compact
                 ? "w-auto h-8 text-[12px] px-2.5"
                 : "max-w-xs h-9 text-[13px]",

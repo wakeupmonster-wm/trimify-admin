@@ -84,9 +84,12 @@ const AddFitzoneCategoryPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-    if (!categoryName.trim()) newErrors.categoryName = "Category Title is required";
-    if (!categoryDetails.trim()) newErrors.categoryDetails = "Category Details are required";
-    if (!htmlContent.trim()) newErrors.htmlContent = "Category Description is required";
+    if (!categoryName.trim())
+      newErrors.categoryName = "Category Title is required";
+    if (!categoryDetails.trim())
+      newErrors.categoryDetails = "Category Details are required";
+    if (!htmlContent.trim())
+      newErrors.htmlContent = "Category Description is required";
     if (!isEdit && !iconFile) newErrors.iconFile = "Category Icon is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -163,7 +166,7 @@ const AddFitzoneCategoryPage = () => {
             className="space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category Title
               </Label>
               <Input
@@ -171,18 +174,21 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryName}
                 onChange={(e) => {
                   setCategoryName(e.target.value);
-                  if (errors.categoryName) setErrors({ ...errors, categoryName: null });
+                  if (errors.categoryName)
+                    setErrors({ ...errors, categoryName: null });
                 }}
                 placeholder="Enter Title Here"
                 className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.categoryName && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.categoryName}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.categoryName}
+                </p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category Details
               </Label>
               <Input
@@ -190,18 +196,21 @@ const AddFitzoneCategoryPage = () => {
                 value={categoryDetails}
                 onChange={(e) => {
                   setCategoryDetails(e.target.value);
-                  if (errors.categoryDetails) setErrors((prev) => ({ ...prev, categoryDetails: null }));
+                  if (errors.categoryDetails)
+                    setErrors((prev) => ({ ...prev, categoryDetails: null }));
                 }}
                 placeholder="e.g. 20 min , 182 kcal"
                 className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.categoryDetails && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.categoryDetails}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.categoryDetails}
+                </p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
 
@@ -225,8 +234,8 @@ const AddFitzoneCategoryPage = () => {
                   errors.iconFile
                     ? "border-red-500"
                     : isDragging
-                    ? "border-app-primary2 bg-blue-50"
-                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
+                      ? "border-app-primary2 bg-blue-50"
+                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -251,12 +260,14 @@ const AddFitzoneCategoryPage = () => {
                 onChange={handleIconChange}
               />
               {errors.iconFile && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.iconFile}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.iconFile}
+                </p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category Description
               </Label>
               <div className="relative">
@@ -264,7 +275,8 @@ const AddFitzoneCategoryPage = () => {
                   value={htmlContent}
                   onChange={(e) => {
                     setHtmlContent(e.target.value);
-                    if (errors.htmlContent) setErrors((prev) => ({ ...prev, htmlContent: null }));
+                    if (errors.htmlContent)
+                      setErrors((prev) => ({ ...prev, htmlContent: null }));
                   }}
                   placeholder="Enter Description"
                   maxLength={500}
@@ -275,7 +287,9 @@ const AddFitzoneCategoryPage = () => {
                 </div>
               </div>
               {errors.htmlContent && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.htmlContent}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.htmlContent}
+                </p>
               )}
             </div>
 
@@ -291,7 +305,7 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {loading ? (
                   <>

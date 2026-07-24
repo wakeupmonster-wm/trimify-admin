@@ -136,7 +136,7 @@ export function RecentUsersTable({ recentActivityData }) {
               size="sm"
               onClick={() => navigate("/admin/management/users-management")}
               className={cn(
-                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-300/60 hover:bg-app-primary5 transition-all duration-300 group overflow-hidden",
+                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-300/60 hover:bg-app-primary3 transition-all duration-300 group overflow-hidden",
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -226,14 +226,11 @@ export function RecentUsersTable({ recentActivityData }) {
                       <TableRow
                         key={user._id}
                         onClick={() =>
-                          navigate(
-                            `/admin/users/view-user/${user._id}`,
-                            {
-                              state: {
-                                from: location.pathname || "/admin/dashboard",
-                              },
+                          navigate(`/admin/users/view-user/${user._id}`, {
+                            state: {
+                              from: location.pathname || "/admin/dashboard",
                             },
-                          )
+                          })
                         }
                         className="even:bg-slate-50/30 hover:bg-slate-50/80 transition-colors cursor-pointer group border-slate-300/60 last:border-0"
                       >
@@ -385,7 +382,7 @@ export function RecentUsersTable({ recentActivityData }) {
                                     },
                                   );
                                 }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary5 transition-colors group"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary3 transition-colors group"
                               >
                                 <Eye
                                   size={16}

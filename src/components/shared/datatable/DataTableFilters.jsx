@@ -38,7 +38,8 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
+                      isActive &&
+                        "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
                   >
                     <span className="text-xs">
@@ -120,7 +121,8 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant={"outline"}
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
+                      isActive &&
+                        "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
                   >
                     <div className="flex items-center gap-2">
@@ -164,7 +166,8 @@ export function DataTableFilters({ filterConfig = [] }) {
                     variant="outline"
                     className={cn(
                       "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
-                      isActive && "border-app-primary2 text-app-primary2 hover:text-app-primary5",
+                      isActive &&
+                        "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
                   >
                     <span className="text-xs">

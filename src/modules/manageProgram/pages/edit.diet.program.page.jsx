@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save, X, ArrowLeft } from "lucide-react";
+import { Save, Loader2, X, ArrowLeft } from "lucide-react";
 import { IoFastFoodOutline } from "react-icons/io5";
 import { toast } from "sonner";
 import {
@@ -40,7 +40,8 @@ const EditDietProgramPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { dietMeals, programDuration, foodSearchResults, loading } = useSelector((state) => state.manageDiet);
+  const { dietMeals, programDuration, foodSearchResults, loading } =
+    useSelector((state) => state.manageDiet);
   // console.log("dietMeals: ", dietMeals);
 
   const [selectedWeek, setSelectedWeek] = useState("");
@@ -67,10 +68,10 @@ const EditDietProgramPage = () => {
 
   // Pre-fill data
   useEffect(() => {
-    if (dietMeals.length > 0 && dietId && !dataLoaded) {
+    if (dietMeals && dietMeals.length > 0 && dietId && !dataLoaded) {
       const existing = dietMeals.find((m) => m.id.toString() === dietId);
       if (existing) {
-        setSelectedWeek(existing.week ? existing.week.toString() : "");
+        setSelectedWeek(existing.week ? String(existing.week) : "");
         setSelectedDay(existing.day || "");
         setSelectedMealType(existing.meal || "");
         if (existing.diet_meal_data) {
@@ -108,7 +109,8 @@ const EditDietProgramPage = () => {
   const handleSelectMeal = (meal) => {
     if (!selectedMeals.some((m) => m.id === meal.id)) {
       setSelectedMeals([...selectedMeals, meal]);
-      if (errors.selectedMeals) setErrors((prev) => ({ ...prev, selectedMeals: "" }));
+      if (errors.selectedMeals)
+        setErrors((prev) => ({ ...prev, selectedMeals: "" }));
     }
     setSearchQuery("");
     setIsDropdownOpen(false);
@@ -122,8 +124,10 @@ const EditDietProgramPage = () => {
     const newErrors = {};
     if (!selectedWeek) newErrors.selectedWeek = "Please select a week.";
     if (!selectedDay) newErrors.selectedDay = "Please select a day.";
-    if (!selectedMealType) newErrors.selectedMealType = "Please select a meal type.";
-    if (selectedMeals.length === 0) newErrors.selectedMeals = "Please select at least one food.";
+    if (!selectedMealType)
+      newErrors.selectedMealType = "Please select a meal type.";
+    if (selectedMeals.length === 0)
+      newErrors.selectedMeals = "Please select at least one food.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -151,8 +155,14 @@ const EditDietProgramPage = () => {
   };
 
   const maxWeeks = programDuration ? parseInt(programDuration, 10) : 8;
-  const computedMaxWeeks = Math.max(maxWeeks, selectedWeek ? parseInt(selectedWeek, 10) : 0);
-  const weeksOptions = Array.from({ length: computedMaxWeeks }, (_, i) => i + 1);
+  const computedMaxWeeks = Math.max(
+    maxWeeks,
+    selectedWeek ? parseInt(selectedWeek, 10) : 0,
+  );
+  const weeksOptions = Array.from(
+    { length: computedMaxWeeks },
+    (_, i) => i + 1,
+  );
 
   return (
     <Container>
@@ -162,9 +172,11 @@ const EditDietProgramPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Edit Diet Meal Plan"
-                icon={<IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />}
+                icon={
+                  <IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />
+                }
                 variant="primary"
-                subheading="Modify the diet meal details for this plan."
+                subheading="Edit the diet meal details for this plan."
               />
             </div>
 
@@ -182,18 +194,19 @@ const EditDietProgramPage = () => {
         </Header>
 
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
-          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
+          <div className="px-4 sm:px-6 pt-5 pb-6 space-y-4 w-full min-w-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}
               <div className="space-y-1.5">
                 <Label className="text-xs font-bold text-slate-800">
                   Choose Week
                 </Label>
-                <Select 
-                  value={selectedWeek} 
+                <Select
+                  value={selectedWeek}
                   onValueChange={(val) => {
                     setSelectedWeek(val);
-                    if (errors.selectedWeek) setErrors((prev) => ({ ...prev, selectedWeek: "" }));
+                    if (errors.selectedWeek)
+                      setErrors((prev) => ({ ...prev, selectedWeek: "" }));
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
@@ -207,7 +220,11 @@ const EditDietProgramPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.selectedWeek && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.selectedWeek}</p>}
+                {errors.selectedWeek && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.selectedWeek}
+                  </p>
+                )}
               </div>
 
               {/* Choose Day */}
@@ -215,11 +232,12 @@ const EditDietProgramPage = () => {
                 <Label className="text-xs font-bold text-slate-800">
                   Choose Day
                 </Label>
-                <Select 
-                  value={selectedDay} 
+                <Select
+                  value={selectedDay}
                   onValueChange={(val) => {
                     setSelectedDay(val);
-                    if (errors.selectedDay) setErrors((prev) => ({ ...prev, selectedDay: "" }));
+                    if (errors.selectedDay)
+                      setErrors((prev) => ({ ...prev, selectedDay: "" }));
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
@@ -233,7 +251,11 @@ const EditDietProgramPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.selectedDay && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.selectedDay}</p>}
+                {errors.selectedDay && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.selectedDay}
+                  </p>
+                )}
               </div>
 
               {/* Choose Meal Type */}
@@ -245,7 +267,8 @@ const EditDietProgramPage = () => {
                   value={selectedMealType}
                   onValueChange={(val) => {
                     setSelectedMealType(val);
-                    if (errors.selectedMealType) setErrors((prev) => ({ ...prev, selectedMealType: "" }));
+                    if (errors.selectedMealType)
+                      setErrors((prev) => ({ ...prev, selectedMealType: "" }));
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
@@ -259,7 +282,11 @@ const EditDietProgramPage = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.selectedMealType && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.selectedMealType}</p>}
+                {errors.selectedMealType && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.selectedMealType}
+                  </p>
+                )}
               </div>
 
               {/* Search Food / Selected Food */}
@@ -324,21 +351,25 @@ const EditDietProgramPage = () => {
                       )}
                     </div>
                   )}
-                  {errors.selectedMeals && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.selectedMeals}</p>}
+                  {errors.selectedMeals && (
+                    <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                      {errors.selectedMeals}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
 
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 variant="outline"
-                className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-md px-5 h-10 text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
               </Button>
               <Button
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
                 onClick={handleUpdateDietMeal}
                 disabled={loading}
               >

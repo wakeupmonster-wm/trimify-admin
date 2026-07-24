@@ -128,11 +128,15 @@ const AddFitzoneSessionPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-    if (!sessionTitle.trim()) newErrors.sessionTitle = "Session Heading is required";
-    if (!sessionDetails.trim()) newErrors.sessionDetails = "Session Sub-Heading is required";
-    if (!sessionCategoryId) newErrors.sessionCategoryId = "Category is required";
+    if (!sessionTitle.trim())
+      newErrors.sessionTitle = "Session Heading is required";
+    if (!sessionDetails.trim())
+      newErrors.sessionDetails = "Session Sub-Heading is required";
+    if (!sessionCategoryId)
+      newErrors.sessionCategoryId = "Category is required";
     if (!duration.trim()) newErrors.duration = "Duration is required";
-    if (!stepDescription.trim()) newErrors.stepDescription = "Description is required";
+    if (!stepDescription.trim())
+      newErrors.stepDescription = "Description is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -218,7 +222,7 @@ const AddFitzoneSessionPage = () => {
             className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Session Heading
               </Label>
               <Input
@@ -226,18 +230,21 @@ const AddFitzoneSessionPage = () => {
                 value={sessionTitle}
                 onChange={(e) => {
                   setSessionTitle(e.target.value);
-                  if (errors.sessionTitle) setErrors((prev) => ({ ...prev, sessionTitle: null }));
+                  if (errors.sessionTitle)
+                    setErrors((prev) => ({ ...prev, sessionTitle: null }));
                 }}
                 placeholder="Enter Title Here"
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionTitle ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.sessionTitle && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionTitle}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.sessionTitle}
+                </p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Session Sub-Heading (Details)
               </Label>
               <Input
@@ -245,19 +252,22 @@ const AddFitzoneSessionPage = () => {
                 value={sessionDetails}
                 onChange={(e) => {
                   setSessionDetails(e.target.value);
-                  if (errors.sessionDetails) setErrors((prev) => ({ ...prev, sessionDetails: null }));
+                  if (errors.sessionDetails)
+                    setErrors((prev) => ({ ...prev, sessionDetails: null }));
                 }}
                 placeholder="Enter Details Here"
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.sessionDetails && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionDetails}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.sessionDetails}
+                </p>
               )}
             </div>
 
             {isEdit && editData?.video && !videoFile && (
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Current Uploaded Video
                 </Label>
                 <div className="flex items-center gap-2 text-sm font-medium">
@@ -274,7 +284,7 @@ const AddFitzoneSessionPage = () => {
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 {isEdit ? "Upload New Video (optional)" : "Upload Video"}
               </Label>
               <div
@@ -308,7 +318,7 @@ const AddFitzoneSessionPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 {isEdit ? "New Video URL (optional)" : "Video URL"}
               </Label>
               <Input
@@ -321,7 +331,7 @@ const AddFitzoneSessionPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Duration
               </Label>
               <Input
@@ -329,18 +339,21 @@ const AddFitzoneSessionPage = () => {
                 value={duration}
                 onChange={(e) => {
                   setDuration(e.target.value);
-                  if (errors.duration) setErrors((prev) => ({ ...prev, duration: null }));
+                  if (errors.duration)
+                    setErrors((prev) => ({ ...prev, duration: null }));
                 }}
                 placeholder="Enter Video Duration"
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.duration ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.duration && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.duration}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.duration}
+                </p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category
               </Label>
               <Select
@@ -349,10 +362,13 @@ const AddFitzoneSessionPage = () => {
                 }
                 onValueChange={(val) => {
                   setSessionCategoryId(val);
-                  if (errors.sessionCategoryId) setErrors((prev) => ({ ...prev, sessionCategoryId: null }));
+                  if (errors.sessionCategoryId)
+                    setErrors((prev) => ({ ...prev, sessionCategoryId: null }));
                 }}
               >
-                <SelectTrigger className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}>
+                <SelectTrigger
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}
+                >
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -365,7 +381,9 @@ const AddFitzoneSessionPage = () => {
                 </SelectContent>
               </Select>
               {errors.sessionCategoryId && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionCategoryId}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.sessionCategoryId}
+                </p>
               )}
             </div>
 
@@ -374,10 +392,17 @@ const AddFitzoneSessionPage = () => {
                 Description
                 <TooltipProvider delayDuration={300}>
                   <Tooltip>
-                    <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
+                    <TooltipTrigger
+                      type="button"
+                      className="cursor-help"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5">
+                    <TooltipContent
+                      side="right"
+                      className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5"
+                    >
                       Note: Please enter each step on a new line.
                     </TooltipContent>
                   </Tooltip>
@@ -388,7 +413,8 @@ const AddFitzoneSessionPage = () => {
                   value={stepDescription}
                   onChange={(e) => {
                     setStepDescription(e.target.value);
-                    if (errors.stepDescription) setErrors((prev) => ({ ...prev, stepDescription: null }));
+                    if (errors.stepDescription)
+                      setErrors((prev) => ({ ...prev, stepDescription: null }));
                   }}
                   placeholder="Enter description"
                   maxLength={500}
@@ -399,7 +425,9 @@ const AddFitzoneSessionPage = () => {
                 </div>
               </div>
               {errors.stepDescription && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.stepDescription}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.stepDescription}
+                </p>
               )}
             </div>
 
@@ -415,7 +443,7 @@ const AddFitzoneSessionPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {loading ? (
                   <>

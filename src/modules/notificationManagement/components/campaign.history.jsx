@@ -479,7 +479,7 @@ export default function CampaignHistory({
                           variant="outline"
                           size="sm"
                           disabled={item.channel !== "email"}
-                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-300/60 hover:bg-app-primary5 hover:text-white hover:border-app-primary2 transition-all"
+                          className="h-7 px-2 text-[10px] font-bold uppercase border-slate-300/60 hover:bg-app-primary3 hover:text-white hover:border-app-primary2 transition-all"
                           onClick={() => handleViewLogs(item)}
                         >
                           Logs
@@ -753,7 +753,7 @@ export default function CampaignHistory({
               variant="outline"
               size="sm"
               onClick={closeLogsModal}
-              className="border-slate-300/60 bg-white text-slate-400 hover:text-white hover:bg-app-primary5 text-xs font-medium px-6 h-9 rounded-lg"
+              className="border-slate-300/60 bg-white text-slate-400 hover:text-white hover:bg-app-primary3 text-xs font-medium px-6 h-9 rounded-lg"
             >
               Close
             </Button>

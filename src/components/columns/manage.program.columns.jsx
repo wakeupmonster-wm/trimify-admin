@@ -76,7 +76,7 @@ export const getManageProgramColumns = (onAction) => [
       <div className="flex justify-center">
         <Button
           onClick={() => onAction && onAction(row.original, "view-user")}
-          className="bg-app-primary2 hover:bg-app-primary5 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-[#006597] text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
         >
           View User
         </Button>
@@ -96,7 +96,7 @@ export const getManageProgramColumns = (onAction) => [
       <div className="flex justify-center">
         <Button
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-app-primary2 hover:bg-app-primary5 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
+          className="bg-app-primary2 hover:bg-app-primary3 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
         >
           Open Program
         </Button>
@@ -180,7 +180,7 @@ export const getManageProgramColumns = (onAction) => [
             align="end"
             className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
-            <DropdownMenuLabel className="text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem

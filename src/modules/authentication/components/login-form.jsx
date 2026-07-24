@@ -175,7 +175,7 @@ export function LoginForm({ className, ...props }) {
             type="submit"
             disabled={isSubmitting}
             className={
-              "py-5 mb-5 rounded-md bg-slate-50 hover:bg-app-primary5 hover:shadow-md border border-slate-300/60 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
+              "py-5 mb-5 rounded-md bg-slate-50 hover:bg-app-primary3 hover:shadow-md border border-slate-300/60 text-muted-foreground hover:text-white font-medium hover:font-semibold transition-all duration-300"
             }
           >
             {isSubmitting ? (

@@ -136,7 +136,7 @@ export function RecentUsersTable({ recentActivityData }) {
               size="sm"
               onClick={() => navigate("/admin/management/users-management")}
               className={cn(
-                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-300/60 hover:bg-app-primary5 transition-all duration-300 group overflow-hidden",
+                "relative h-9 p-3 rounded-md shadow-sm text-slate-400 hover:text-white border border-slate-300/60 hover:bg-app-primary3 transition-all duration-300 group overflow-hidden",
               )}
             >
               <div className="relative flex items-center justify-center">
@@ -387,7 +387,7 @@ export function RecentUsersTable({ recentActivityData }) {
                                     },
                                   );
                                 }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary5 transition-colors group"
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary3 transition-colors group"
                               >
                                 <Eye
                                   size={14}

@@ -1159,7 +1159,7 @@ const KPICard = ({ label, value, subtext, color, onGrant, hasPulse }) => (
     {onGrant && (
       <button
         onClick={onGrant}
-        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-300/60 flex items-center justify-center text-slate-400 transition-all hover:bg-app-primary5 hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
+        className="absolute top-4 right-4 h-8 w-8 rounded-lg bg-slate-50 border border-slate-300/60 flex items-center justify-center text-slate-400 transition-all hover:bg-app-primary3 hover:text-white hover:border-transparent active:scale-95 z-10 shadow-sm"
       >
         <Plus className="h-4 w-4" strokeWidth={3} />
       </button>

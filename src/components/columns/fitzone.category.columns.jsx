@@ -105,7 +105,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
           >
             <span
               className={cn(
-                "w-1.5 h-1.5 rounded-full",
+                "w-1 h-1 rounded-full",
                 isActive ? "bg-emerald-600" : "bg-rose-600",
               )}
             />
@@ -173,7 +173,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
               align="end"
               className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
             >
-              <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+              <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
                 Actions
               </DropdownMenuLabel>
               <DropdownMenuItem

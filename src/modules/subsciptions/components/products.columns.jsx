@@ -294,7 +294,7 @@ export const getProductsColumns = (onEdit, handleSort, sortCol, sortDir) => [
           variant="ghost"
           size="icon"
           onClick={() => onEdit(row.original)}
-          className="h-8 w-8 text-slate-400 hover:text-app-primary2 hover:bg-app-primary5 transition-all duration-300 rounded-lg"
+          className="h-8 w-8 text-slate-400 hover:text-app-primary2 hover:bg-app-primary3 transition-all duration-300 rounded-lg"
         >
           <Eye size={14} />
         </Button>

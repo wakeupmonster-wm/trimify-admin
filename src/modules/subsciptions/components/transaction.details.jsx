@@ -474,7 +474,7 @@ export default function TransactionDetails({ transaction, onBack }) {
                   },
                 })
               }
-              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-white rounded-lg border-slate-300/60 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
+              className="group w-full text-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary3 hover:text-white rounded-lg border-slate-300/60 hover:border-transparent transition-all duration-300 ease-in-out mt-6 shadow-sm"
             >
               <IconUserCircle className="w-4 h-4 text-slate-400 group-hover:text-white transition-all duration-300 ease-in-out" />
               View Full Profile

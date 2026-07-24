@@ -554,7 +554,7 @@ export const ProductDialog = ({
                 ))}
                 <button
                   onClick={addFeature}
-                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-app-primary2 bg-app-primary2 hover:bg-app-primary5 rounded-md transition-colors border border-app-primary2"
+                  className="flex items-center justify-center w-full h-10 gap-1.5 text-xs font-bold text-app-primary2 bg-app-primary2 hover:bg-app-primary3 rounded-md transition-colors border border-app-primary2"
                 >
                   <Plus className="w-4 h-4" /> Add Feature
                 </button>

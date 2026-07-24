@@ -148,7 +148,7 @@ const AddFoodCategoryPage = () => {
         <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category Name
               </Label>
               <Input
@@ -169,7 +169,7 @@ const AddFoodCategoryPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Description
               </Label>
               <div className="relative">
@@ -197,7 +197,7 @@ const AddFoodCategoryPage = () => {
 
             {isEditMode && editData?.image && (
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Current Uploaded Banner Image
                 </Label>
                 <div className="flex flex-col items-center justify-center py-4">
@@ -211,7 +211,7 @@ const AddFoodCategoryPage = () => {
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
               </Label>
               <div
@@ -267,7 +267,7 @@ const AddFoodCategoryPage = () => {
               Cancel
             </Button>
             <Button
-              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >

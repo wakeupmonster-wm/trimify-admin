@@ -128,6 +128,7 @@ const ManageFitzoneCategoryPage = () => {
             manualPagination={true}
             manualFiltering={true}
             pageCount={serverPagination?.totalPages || 1}
+            rowCount={serverPagination?.total || (categories || []).length}
           />
         </div>
       </div>

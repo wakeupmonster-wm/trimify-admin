@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Save, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Save, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -57,13 +57,15 @@ const EditSubAdminPage = () => {
       role:
         editData.role === 1 ||
         editData.role === "1" ||
-        editData.role === "WhiteListing User"
+        editData.role === "WhiteListing User" ||
+        editData.role_name === "WhiteListing User"
           ? "WhiteListing User"
           : editData.role === 0 ||
               editData.role === "0" ||
-              editData.role === "Sub-Admin User"
+              editData.role === "Sub-Admin User" ||
+              editData.role_name === "Sub-Admin User"
             ? "Sub-Admin User"
-            : String(editData.role || ""),
+            : String(editData.role || editData.role_name || ""),
     });
   }, [editData, navigate]);
 
@@ -144,7 +146,7 @@ const EditSubAdminPage = () => {
                   <LuUserRoundPen className="w-6 h-6 text-white shrink-0" />
                 }
                 variant="primary"
-                subheading="Update sub-administrator details."
+                subheading="Edit sub-administrator details."
               />
             </div>
 
@@ -169,7 +171,7 @@ const EditSubAdminPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4">
               {/* Name */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Name
                 </Label>
                 <Input
@@ -188,7 +190,7 @@ const EditSubAdminPage = () => {
 
               {/* Email address */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Email address
                 </Label>
                 <Input
@@ -208,7 +210,7 @@ const EditSubAdminPage = () => {
 
               {/* Hospital/Clinic Name */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Hospital/Clinic Name
                 </Label>
                 <Input
@@ -227,7 +229,7 @@ const EditSubAdminPage = () => {
 
               {/* Country */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Country
                 </Label>
                 <Input
@@ -240,7 +242,7 @@ const EditSubAdminPage = () => {
 
               {/* Phone Number */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Phone Number
                 </Label>
                 <Input
@@ -260,7 +262,7 @@ const EditSubAdminPage = () => {
 
               {/* Designation */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Designation
                 </Label>
                 <Input
@@ -279,7 +281,7 @@ const EditSubAdminPage = () => {
 
               {/* Password */}
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Password
                 </Label>
                 <div className="relative">
@@ -306,10 +308,11 @@ const EditSubAdminPage = () => {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs sm:text-sm font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Role
                 </Label>
                 <Select
+                  key={formData.role || "role-placeholder"}
                   value={formData.role || undefined}
                   onValueChange={handleRoleChange}
                 >
@@ -347,7 +350,7 @@ const EditSubAdminPage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

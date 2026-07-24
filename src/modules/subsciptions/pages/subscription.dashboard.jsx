@@ -929,7 +929,7 @@ export default function SubscriptionDashboard() {
         >
           <Button
             onClick={handleRefresh}
-            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-app-primary5 text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-app-primary2 transition-all duration-300 active:scale-95 overflow-hidden"
+            className="group relative h-14 px-10 border hover:border-transparent bg-slate-100 hover:bg-app-primary3 text-slate-400 hover:text-white rounded-lg font-bold shadow-sm shadow-slate-200 hover:shadow-app-primary2 transition-all duration-300 active:scale-95 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-3">
               <RefreshCcw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
