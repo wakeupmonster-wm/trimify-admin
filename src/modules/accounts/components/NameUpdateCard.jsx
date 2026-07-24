@@ -41,7 +41,7 @@ export const NameUpdateCard = ({ currentName }) => {
             <div className="flex-1">
               <Input {...register("fullName")} placeholder="Full Name" />
               {errors.fullName && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.fullName.message}
                 </p>
               )}

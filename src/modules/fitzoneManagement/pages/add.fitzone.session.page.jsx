@@ -11,6 +11,7 @@ import {
   PlayCircle,
   UploadCloud,
   ArrowLeft,
+  Info,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   addFitzoneSession,
   updateFitzoneSession,
@@ -50,6 +57,7 @@ const AddFitzoneSessionPage = () => {
   const [duration, setDuration] = useState("");
   const [stepDescription, setStepDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const fileInputRef = useRef(null);
 
@@ -119,12 +127,15 @@ const AddFitzoneSessionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!sessionTitle.trim()) {
-      toast.error("Session Heading is required");
-      return;
-    }
-    if (!sessionCategoryId) {
-      toast.error("Category is required");
+    const newErrors = {};
+    if (!sessionTitle.trim()) newErrors.sessionTitle = "Session Heading is required";
+    if (!sessionDetails.trim()) newErrors.sessionDetails = "Session Sub-Heading is required";
+    if (!sessionCategoryId) newErrors.sessionCategoryId = "Category is required";
+    if (!duration.trim()) newErrors.duration = "Duration is required";
+    if (!stepDescription.trim()) newErrors.stepDescription = "Description is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -192,7 +203,7 @@ const AddFitzoneSessionPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -204,7 +215,7 @@ const AddFitzoneSessionPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
@@ -213,11 +224,16 @@ const AddFitzoneSessionPage = () => {
               <Input
                 type="text"
                 value={sessionTitle}
-                onChange={(e) => setSessionTitle(e.target.value)}
+                onChange={(e) => {
+                  setSessionTitle(e.target.value);
+                  if (errors.sessionTitle) setErrors((prev) => ({ ...prev, sessionTitle: null }));
+                }}
                 placeholder="Enter Title Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
-                required
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionTitle ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.sessionTitle && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionTitle}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -227,10 +243,16 @@ const AddFitzoneSessionPage = () => {
               <Input
                 type="text"
                 value={sessionDetails}
-                onChange={(e) => setSessionDetails(e.target.value)}
+                onChange={(e) => {
+                  setSessionDetails(e.target.value);
+                  if (errors.sessionDetails) setErrors((prev) => ({ ...prev, sessionDetails: null }));
+                }}
                 placeholder="Enter Details Here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.sessionDetails && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionDetails}</p>
+              )}
             </div>
 
             {isEdit && editData?.video && !videoFile && (
@@ -305,10 +327,16 @@ const AddFitzoneSessionPage = () => {
               <Input
                 type="text"
                 value={duration}
-                onChange={(e) => setDuration(e.target.value)}
+                onChange={(e) => {
+                  setDuration(e.target.value);
+                  if (errors.duration) setErrors((prev) => ({ ...prev, duration: null }));
+                }}
                 placeholder="Enter Video Duration"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.duration ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.duration && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.duration}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -319,10 +347,12 @@ const AddFitzoneSessionPage = () => {
                 value={
                   sessionCategoryId ? sessionCategoryId.toString() : undefined
                 }
-                onValueChange={(val) => setSessionCategoryId(val)}
-                required
+                onValueChange={(val) => {
+                  setSessionCategoryId(val);
+                  if (errors.sessionCategoryId) setErrors((prev) => ({ ...prev, sessionCategoryId: null }));
+                }}
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
+                <SelectTrigger className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}>
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -334,21 +364,43 @@ const AddFitzoneSessionPage = () => {
                     ))}
                 </SelectContent>
               </Select>
+              {errors.sessionCategoryId && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.sessionCategoryId}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center gap-1.5 w-max">
                 Description
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
+                      <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5">
+                      Note: Please enter each step on a new line.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </Label>
-              <Textarea
-                value={stepDescription}
-                onChange={(e) => setStepDescription(e.target.value)}
-                placeholder="Enter description"
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
-              />
-              <div className="text-[10px] text-slate-500 font-medium">
-                Note: Please enter each step on a new line.
+              <div className="relative">
+                <Textarea
+                  value={stepDescription}
+                  onChange={(e) => {
+                    setStepDescription(e.target.value);
+                    if (errors.stepDescription) setErrors((prev) => ({ ...prev, stepDescription: null }));
+                  }}
+                  placeholder="Enter description"
+                  maxLength={500}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.stepDescription ? "border-red-500" : "border-slate-300/60"}`}
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                  {stepDescription.length} / 500
+                </div>
               </div>
+              {errors.stepDescription && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.stepDescription}</p>
+              )}
             </div>
 
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">

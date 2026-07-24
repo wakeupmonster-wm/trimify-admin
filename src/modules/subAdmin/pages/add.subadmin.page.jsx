@@ -140,7 +140,7 @@ const AddSubAdminPage = () => {
                   className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.name}
                   </p>
                 )}
@@ -160,7 +160,7 @@ const AddSubAdminPage = () => {
                   className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.email}
                   </p>
                 )}
@@ -179,7 +179,7 @@ const AddSubAdminPage = () => {
                   className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.hospital && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.hospital}
                   </p>
                 )}
@@ -212,7 +212,7 @@ const AddSubAdminPage = () => {
                   className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.phone && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.phone}
                   </p>
                 )}
@@ -231,7 +231,7 @@ const AddSubAdminPage = () => {
                   className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.designation && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.designation}
                   </p>
                 )}
@@ -264,7 +264,7 @@ const AddSubAdminPage = () => {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.password}
                   </p>
                 )}
@@ -291,7 +291,7 @@ const AddSubAdminPage = () => {
                   </SelectContent>
                 </Select>
                 {errors.role && (
-                  <p className="text-red-500 text-[10px] sm:text-xs mt-1">
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.role}
                   </p>
                 )}

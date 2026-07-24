@@ -136,7 +136,7 @@ const AddFoodCategoryPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -145,8 +145,8 @@ const AddFoodCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
-          <div className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
+          <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
                 Category Name
@@ -162,7 +162,7 @@ const AddFoodCategoryPage = () => {
                 }}
               />
               {errors.categoryName && (
-                <p className="text-red-500 text-[10px] mt-1">
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.categoryName}
                 </p>
               )}
@@ -172,18 +172,24 @@ const AddFoodCategoryPage = () => {
               <Label className="text-xs font-bold text-slate-800">
                 Description
               </Label>
-              <Textarea
-                placeholder="Enter Category Description"
-                className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  if (errors.description)
-                    setErrors({ ...errors, description: null });
-                }}
-              />
+              <div className="relative">
+                <Textarea
+                  placeholder="Enter Category Description"
+                  maxLength={500}
+                  className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                    if (errors.description)
+                      setErrors({ ...errors, description: null });
+                  }}
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                  {description.length} / 500
+                </div>
+              </div>
               {errors.description && (
-                <p className="text-red-500 text-[10px] mt-1">
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.description}
                 </p>
               )}
@@ -191,9 +197,9 @@ const AddFoodCategoryPage = () => {
 
             {isEditMode && editData?.image && (
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs font-bold text-slate-800">
                   Current Uploaded Banner Image
-                </label>
+                </Label>
                 <div className="flex flex-col items-center justify-center py-4">
                   <img
                     src={`${BASE_URL.replace("/api", "")}/${editData.image}`}

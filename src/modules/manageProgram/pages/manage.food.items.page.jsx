@@ -47,6 +47,7 @@ const ManageFoodItemsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingFoodId, setEditingFoodId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toggleTarget, setToggleTarget] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     food_id: "",
@@ -59,6 +60,7 @@ const ManageFoodItemsPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isFoodSelected, setIsFoodSelected] = useState(false);
+  const [errors, setErrors] = useState({});
   const searchTimeout = useRef(null);
 
   const standardUnits = [
@@ -106,6 +108,7 @@ const ManageFoodItemsPage = () => {
 
   const handleSearchFood = (val) => {
     setFormData({ ...formData, title: val });
+    if (errors.title) setErrors({ ...errors, title: null });
 
     if (isEditing) return;
 
@@ -124,16 +127,15 @@ const ManageFoodItemsPage = () => {
   };
 
   const handleAddOrUpdateFood = async () => {
-    if (!formData.title.trim()) {
-      toast.error("Please enter a food name.");
-      return;
-    }
-    if (!formData.food_id) {
-      toast.error("Please select a food from the suggestions.");
-      return;
-    }
-    if (!formData.category_id) {
-      toast.error("Please select a food category.");
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Please enter a food name.";
+    else if (!formData.food_id)
+      newErrors.title = "Please select a food from the suggestions.";
+    if (!formData.category_id)
+      newErrors.category_id = "Please select a food category.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -146,7 +148,7 @@ const ManageFoodItemsPage = () => {
         unit: formData.unit,
       };
 
-      // console.log("payload: ", payload);
+      console.log("payload: ", payload);
       const resultAction = await dispatch(
         updateFood({ id: editingFoodId, data: payload }),
       );
@@ -180,16 +182,8 @@ const ManageFoodItemsPage = () => {
 
   const handleAction = async (row, action, val) => {
     if (action === "toggle") {
-      const newStatus = val ? "Approved" : "Non Approved";
-      const resultAction = await dispatch(
-        toggleFoodStatus({ id: row.id, status: newStatus }),
-      );
-      if (toggleFoodStatus.fulfilled.match(resultAction)) {
-        toast.success("Status updated successfully!");
-        dispatch(getFoodList({ programId, categoryId }));
-      } else {
-        toast.error(resultAction.payload || "Failed to update status.");
-      }
+      const newStatus = val ? "Active" : "Inactive";
+      setToggleTarget({ row, newStatus });
     } else if (action === "edit") {
       setIsEditing(true);
       setEditingFoodId(row.id);
@@ -197,13 +191,34 @@ const ManageFoodItemsPage = () => {
         row.approval_status === "Approved" ||
         row.approval_status === 1 ||
         row.is_approved;
+
+      const rawUnit =
+        row.unit ||
+        row.food_unit ||
+        row.meal?.unit ||
+        row.meal_unit ||
+        row.Meal_unit ||
+        "";
+      const matchedUnit =
+        standardUnits.find(
+          (u) => u.toLowerCase() === String(rawUnit).toLowerCase(),
+        ) || rawUnit;
+
       setFormData({
         title: row.name || row.title || row.meal?.Meal_title || "",
         food_id: row.food_id || row.meal_id || row.meal?.id || row.id || "",
         type: isApproved ? "Approved" : "Non Approved",
         category_id: row.category_id || row.foodcategory_id || categoryId || "",
-        quantity: row.quantity || row.meal?.quantity || row.meal_quantity || "",
-        unit: row.unit || row.meal?.unit || row.meal_unit || "",
+        quantity:
+          row.quantity ||
+          row.qty ||
+          row.food_quantity ||
+          row.meal?.quantity ||
+          row.meal_quantity ||
+          row.Meal_Serving ||
+          row.meal?.Meal_Serving ||
+          "",
+        unit: matchedUnit,
       });
       setIsFoodSelected(true); // Treat as selected so the pill shows if needed (or just keep normal input depending on logic)
       // Scroll to top where the form is
@@ -223,6 +238,21 @@ const ManageFoodItemsPage = () => {
       toast.error(resultAction.payload || "Failed to delete food.");
     }
     setDeleteTarget(null);
+  };
+
+  const handleConfirmToggle = async () => {
+    if (!toggleTarget) return;
+    const { row, newStatus } = toggleTarget;
+    const resultAction = await dispatch(
+      toggleFoodStatus({ id: row.id, status: newStatus }),
+    );
+    if (toggleFoodStatus.fulfilled.match(resultAction)) {
+      toast.success("Status updated successfully!");
+      dispatch(getFoodList({ programId, categoryId }));
+    } else {
+      toast.error(resultAction.payload || "Failed to update status.");
+    }
+    setToggleTarget(null);
   };
 
   const columns = useMemo(
@@ -254,7 +284,7 @@ const ManageFoodItemsPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -271,7 +301,7 @@ const ManageFoodItemsPage = () => {
                 Approval Status
               </Label>
               <div className="flex items-center gap-6 mt-2">
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <Label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer font-normal">
                   <input
                     type="radio"
                     name="approvalStatus"
@@ -283,8 +313,8 @@ const ManageFoodItemsPage = () => {
                     className="w-4 h-4 text-app-primary2 border-slate-300/60 focus:ring-app-primary2"
                   />
                   Approved
-                </label>
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                </Label>
+                <Label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer font-normal">
                   <input
                     type="radio"
                     name="approvalStatus"
@@ -296,7 +326,7 @@ const ManageFoodItemsPage = () => {
                     className="w-4 h-4 text-app-primary2 border-slate-300/60 focus:ring-app-primary2"
                   />
                   Non Approved
-                </label>
+                </Label>
               </div>
             </div>
 
@@ -308,15 +338,18 @@ const ManageFoodItemsPage = () => {
                 </Label>
                 <div className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md flex items-center justify-between bg-white font-medium">
                   <span className="truncate">{formData.title}</span>
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
                     onClick={() => {
                       setIsFoodSelected(false);
                       setFormData({ ...formData, title: "", food_id: "" });
                     }}
-                    className="text-slate-400 hover:text-red-500 shrink-0 ml-2"
+                    className="text-slate-400 hover:text-red-500 hover:bg-transparent shrink-0 ml-2 h-6 w-6"
                   >
                     <X className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -394,6 +427,11 @@ const ManageFoodItemsPage = () => {
                     )}
                   </div>
                 )}
+                {errors.title && (
+                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                    {errors.title}
+                  </p>
+                )}
               </div>
             )}
 
@@ -403,9 +441,11 @@ const ManageFoodItemsPage = () => {
               </Label>
               <Select
                 value={formData.category_id}
-                onValueChange={(val) =>
-                  setFormData({ ...formData, category_id: val })
-                }
+                onValueChange={(val) => {
+                  setFormData({ ...formData, category_id: val });
+                  if (errors.category_id)
+                    setErrors({ ...errors, category_id: null });
+                }}
                 disabled={isEditing}
               >
                 <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium disabled:bg-slate-50 disabled:opacity-70 disabled:cursor-not-allowed">
@@ -419,6 +459,11 @@ const ManageFoodItemsPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.category_id && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.category_id}
+                </p>
+              )}
             </div>
 
             {/* Optional Fields based on Approved status */}
@@ -513,6 +558,16 @@ const ManageFoodItemsPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
+      />
+
+      <ConfirmModal
+        isOpen={!!toggleTarget}
+        onClose={() => setToggleTarget(null)}
+        onConfirm={handleConfirmToggle}
+        title="Confirm Status Change"
+        message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}
+        type="brand"
+        confirmText="Update"
       />
     </Container>
   );

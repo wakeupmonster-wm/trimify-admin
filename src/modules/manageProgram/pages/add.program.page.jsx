@@ -178,7 +178,7 @@ const AddProgramPage = () => {
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
               />
               {errors.title && (
-                <p className="text-red-500 text-xs mt-1">{errors.title}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.title}</p>
               )}
             </div>
 
@@ -201,7 +201,7 @@ const AddProgramPage = () => {
                 </div>
               </div>
               {errors.description && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.description}
                 </p>
               )}
@@ -256,7 +256,7 @@ const AddProgramPage = () => {
                 </p>
               </div>
               {errors.bannerImage && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.bannerImage}
                 </p>
               )}
@@ -282,7 +282,7 @@ const AddProgramPage = () => {
                 </SelectContent>
               </Select>
               {errors.duration && (
-                <p className="text-red-500 text-xs mt-1">{errors.duration}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.duration}</p>
               )}
             </div>
 

@@ -23,11 +23,26 @@ export const getManageProgramDetailsColumns = (handleAction) => [
         Manage
       </div>
     ),
-    size: 250,
+    size: 200,
     minSize: 150,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.title}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Description
+      </div>
+    ),
+    size: 350,
+    minSize: 200,
+    cell: ({ row }) => (
+      <span className="font-medium text-slate-500 text-[11px] tracking-tight">
+        {row.original.description}
       </span>
     ),
   },

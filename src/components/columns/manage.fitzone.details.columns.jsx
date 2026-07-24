@@ -8,8 +8,8 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
         SR.No
       </div>
     ),
-    size: 80,
-    minSize: 60,
+    size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="w-10 px-1 text-left font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -23,7 +23,7 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
         Manage
       </div>
     ),
-    size: 250,
+    size: 200,
     minSize: 150,
     cell: ({ row }) => (
       <span className="font-bold text-slate-700 text-[11px] tracking-tight">
@@ -38,7 +38,7 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
         Description
       </div>
     ),
-    size: 400,
+    size: 350,
     minSize: 200,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px] tracking-tight">
@@ -53,8 +53,8 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 150,
-    minSize: 100,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button

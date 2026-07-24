@@ -5,6 +5,9 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { UploadCloud, Dumbbell, Send, Loader2, ArrowLeft } from "lucide-react";
 import {
   addFitzoneCategory,
@@ -32,6 +35,7 @@ const AddFitzoneCategoryPage = () => {
   const [iconPreview, setIconPreview] = useState(editData?.image || null);
   const [htmlContent, setHtmlContent] = useState(editData?.description || "");
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const fileInputRef = useRef(null);
 
@@ -44,11 +48,11 @@ const AddFitzoneCategoryPage = () => {
     }
   }, [isEdit, editData]);
 
-  // Helper logic for upload image
   const handleIconLogic = (file) => {
     setIconFile(file);
     const objectUrl = URL.createObjectURL(file);
     setIconPreview(objectUrl);
+    if (errors.iconFile) setErrors((prev) => ({ ...prev, iconFile: null }));
   };
 
   const handleIconChange = (e) => {
@@ -79,8 +83,14 @@ const AddFitzoneCategoryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!categoryName.trim()) {
-      toast.error("Category Title is required");
+    const newErrors = {};
+    if (!categoryName.trim()) newErrors.categoryName = "Category Title is required";
+    if (!categoryDetails.trim()) newErrors.categoryDetails = "Category Details are required";
+    if (!htmlContent.trim()) newErrors.htmlContent = "Category Description is required";
+    if (!isEdit && !iconFile) newErrors.iconFile = "Category Icon is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -138,7 +148,7 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -147,47 +157,59 @@ const AddFitzoneCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 md:px-8 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full min-w-0">
+        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full min-w-0">
           <form
             onSubmit={handleSubmit}
-            className="space-y-5 sm:space-y-6 w-full min-w-0"
+            className="space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Title
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
+                onChange={(e) => {
+                  setCategoryName(e.target.value);
+                  if (errors.categoryName) setErrors({ ...errors, categoryName: null });
+                }}
                 placeholder="Enter Title Here"
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium"
+                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.categoryName && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.categoryName}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Details
-              </label>
-              <input
+              </Label>
+              <Input
                 type="text"
                 value={categoryDetails}
-                onChange={(e) => setCategoryDetails(e.target.value)}
+                onChange={(e) => {
+                  setCategoryDetails(e.target.value);
+                  if (errors.categoryDetails) setErrors((prev) => ({ ...prev, categoryDetails: null }));
+                }}
                 placeholder="e.g. 20 min , 182 kcal"
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium"
+                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.categoryDetails && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.categoryDetails}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
-              </label>
+              </Label>
 
               {isEdit && iconPreview && !iconFile && (
                 <div className="mb-4">
-                  <label className="text-xs font-bold text-slate-800 block mb-2">
+                  <Label className="text-xs font-bold text-slate-800 block mb-2">
                     Current Uploaded Icon
-                  </label>
+                  </Label>
                   <div className="w-16 h-16 rounded-md bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
                     <img
                       src={iconPreview}
@@ -200,7 +222,9 @@ const AddFitzoneCategoryPage = () => {
 
               <div
                 className={`w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
-                  isDragging
+                  errors.iconFile
+                    ? "border-red-500"
+                    : isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
                 }`}
@@ -226,28 +250,40 @@ const AddFitzoneCategoryPage = () => {
                 ref={fileInputRef}
                 onChange={handleIconChange}
               />
+              {errors.iconFile && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.iconFile}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800">
                 Category Description
-              </label>
-              <textarea
-                value={htmlContent}
-                onChange={(e) => setHtmlContent(e.target.value)}
-                placeholder="Enter Description"
-                className="w-full px-4 py-3 text-sm border border-slate-300/60 rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium resize-y min-h-[100px]"
-              />
-              <div className="text-[11px] text-slate-500 font-medium">
-                Character Count: {htmlContent.length}
+              </Label>
+              <div className="relative">
+                <Textarea
+                  value={htmlContent}
+                  onChange={(e) => {
+                    setHtmlContent(e.target.value);
+                    if (errors.htmlContent) setErrors((prev) => ({ ...prev, htmlContent: null }));
+                  }}
+                  placeholder="Enter Description"
+                  maxLength={500}
+                  className={`w-full px-4 py-3 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium resize-y min-h-[100px] pb-8 ${errors.htmlContent ? "border-red-500" : "border-slate-300/60"}`}
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                  {htmlContent.length} / 500
+                </div>
               </div>
+              {errors.htmlContent && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.htmlContent}</p>
+              )}
             </div>
 
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 variant="outline"
                 type="button"
-                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
+                className="w-full sm:w-auto rounded-md px-5 h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -255,7 +291,7 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 {loading ? (
                   <>
