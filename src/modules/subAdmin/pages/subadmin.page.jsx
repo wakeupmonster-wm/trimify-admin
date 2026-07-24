@@ -10,6 +10,7 @@ import {
   UserCheck,
   Shield,
   ShieldAlert,
+  Download,
 } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
@@ -291,11 +292,12 @@ const SubAdminManagementPage = () => {
                 <span className="whitespace-nowrap">Add Sub Admin</span>
               </Button>
               <Button
+                variant="outline"
                 onClick={() => downloadCSV(subAdmins)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-4 flex items-center justify-center gap-1.5"
               >
-                <FileText className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Download CSV</span>
+                <Download className="w-4 h-4 shrink-0" />
+                <span className="whitespace-nowrap">Export CSV</span>
               </Button>
             </div>
           </div>

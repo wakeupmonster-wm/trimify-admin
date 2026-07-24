@@ -124,9 +124,9 @@ const AddSubAdminPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <form
             onSubmit={handleSubmit}
-            className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-5 pb-5 sm:pb-6"
+            className="px-4 sm:px-6 pt-4 sm:pt-5 pb-5 sm:pb-6"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4 sm:gap-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 md:gap-x-8 gap-y-4">
               {/* Name */}
               <div className="space-y-1.5">
                 <Label className="text-xs sm:text-sm font-bold text-slate-800">
@@ -303,14 +303,14 @@ const AddSubAdminPage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate("/admin/sub-admin-management")}
-                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
