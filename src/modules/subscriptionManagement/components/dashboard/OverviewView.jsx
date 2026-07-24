@@ -11,7 +11,28 @@ import TrendChartCard from "@/modules/dashboard/components/TrendChartCard";
 import DashboardTableCard from "@/modules/dashboard/components/DashboardTableCard";
 import StatusPill from "@/modules/dashboard/components/StatusPill";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
+import { APP_COLORS } from "@/config/theme.config";
+
+const DUMMY_EXPIRING_USERS = [
+  {
+    "id": 1765,
+    "name": "Priya Sharma",
+    "email": "demo.completeuser@trimify.com.au",
+    "plan": {
+        "id": 1,
+        "title": "Premium",
+        "price": "30.00",
+        "duration": "2",
+    },
+    "plan_expiry": "2026-10-23 17:56:49",
+    "paid": 1,
+    "status": "Active",
+    "sub_admin": {
+        "name": "Self Registration",
+    }
+  }
+];
 
 export default function OverviewView({
   overview,
@@ -145,17 +166,18 @@ export default function OverviewView({
               {
                 key: "activeUsers",
                 label: "Active",
-                color: "#15B097",
-                type: "line",
+                color: APP_COLORS[0],
+                type: "area",
               },
               {
                 key: "churnedUsers",
                 label: "Churned",
-                color: "#FF5252",
-                type: "line",
+                color: APP_COLORS[1],
+                type: "area",
               },
             ]}
           />
+
           <TrendChartCard
             title="Plan-wise Revenue"
             subtitle="Revenue contribution per plan"
@@ -206,18 +228,18 @@ export default function OverviewView({
 
           <DashboardTableCard
             title="Recent Transactions"
-            subtitle="Latest 10"
+            subtitle="Latest transactions"
             Icon={Receipt}
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
             rows={dashboardExtras?.tables?.recentTransactions || []}
             emptyMessage="No transactions yet."
             columns={[
-              { key: "user_name", label: "User" },
-              { key: "plan_title", label: "Plan", render: (r) => r.plan_title || "Unknown Plan" },
-              { key: "amount", label: "Amount", render: (r) => `$${Number(r.amount).toLocaleString()}` },
-              { key: "status", label: "Status", render: (r) => <StatusPill status={r.status} /> },
-              { key: "created_at", label: "Date", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
+              { key: "user_name", label: "User", width: "w-[26%]" },
+              { key: "plan_title", label: "Plan", width: "w-[18%]", render: (r) => r.plan_title || "Unknown Plan" },
+              { key: "amount", label: "Amount", width: "w-[10%]", render: (r) => `$${Number(r.amount).toLocaleString()}` },
+              { key: "status", label: "Status", width: "w-[20%]", render: (r) => <StatusPill status={r.status} /> },
+              { key: "created_at", label: "Date", width: "w-[18%]", align: "center", render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm") },
             ]}
           />
 
@@ -229,7 +251,7 @@ export default function OverviewView({
             Icon={TrendingUp}
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
-            rows={dashboardExtras?.tables?.expiringSoon || []}
+            rows={dashboardExtras?.tables?.expiringSoon?.length ? dashboardExtras.tables.expiringSoon : DUMMY_EXPIRING_USERS}
             emptyMessage="No plans expiring soon."
             actionLabel="Renew"
             onAction={(row) =>
@@ -249,25 +271,31 @@ export default function OverviewView({
                 ),
               },
               { key: "name", label: "User", width: "w-[30%]" },
-              { key: "plan_title", label: "Plan", width: "w-[25%]", render: (r) => r.plan_title || "Unknown Plan" },
+              { key: "plan_title", label: "Plan", width: "w-[25%]", render: (r) => r.plan?.title || r.plan_title || "Unknown Plan" },
               {
                 key: "expires_at",
                 label: "Expiry",
                 width: "w-[20%]",
-                render: (r) =>
-                  format(new Date(r.expires_at), "MMM dd, yyyy"),
+                render: (r) => {
+                  const expiryDate = r.expires_at || r.plan_expiry;
+                  return expiryDate ? format(new Date(expiryDate), "MMM dd, yyyy") : "N/A";
+                }
               },
               {
                 key: "days_left",
                 label: "Days Left",
                 width: "w-[15%]",
-                render: (r) => (
-                  <span
-                    className={`font-bold ${r.days_left <= 3 ? "text-red-600" : "text-amber-600"}`}
-                  >
-                    {r.days_left}d
-                  </span>
-                ),
+                render: (r) => {
+                  const expiryDate = r.expires_at || r.plan_expiry;
+                  const daysLeft = r.days_left !== undefined ? r.days_left : (expiryDate ? differenceInDays(new Date(expiryDate), new Date()) : 0);
+                  return (
+                    <span
+                      className={`font-bold ${daysLeft <= 3 ? "text-red-600" : "text-amber-600"}`}
+                    >
+                      {daysLeft}d
+                    </span>
+                  );
+                },
               },
             ]}
           />

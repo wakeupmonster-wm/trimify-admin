@@ -27,6 +27,7 @@ const AddProgramPage = () => {
   const editData = location.state?.editData;
   const isEditMode = !!editData;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     title: editData?.title || "",
@@ -40,10 +41,12 @@ const AddProgramPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleDurationChange = (value) => {
     setFormData((prev) => ({ ...prev, duration: value }));
+    if (errors.duration) setErrors((prev) => ({ ...prev, duration: "" }));
   };
 
   const handleDragOver = (e) => {
@@ -62,6 +65,8 @@ const AddProgramPage = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      if (errors.bannerImage)
+        setErrors((prev) => ({ ...prev, bannerImage: "" }));
     }
   };
 
@@ -69,11 +74,27 @@ const AddProgramPage = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      if (errors.bannerImage)
+        setErrors((prev) => ({ ...prev, bannerImage: "" }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Program Title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Program Description is required";
+    if (!formData.duration) newErrors.duration = "Program Duration is required";
+    if (!isEditMode && !formData.bannerImage)
+      newErrors.bannerImage = "Banner Image is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setIsSubmitting(true);
 
     const durationStr = formData.duration
@@ -131,7 +152,7 @@ const AddProgramPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -143,7 +164,7 @@ const AddProgramPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <form
             onSubmit={handleSubmit}
-            className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-4"
           >
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
@@ -155,8 +176,10 @@ const AddProgramPage = () => {
                 value={formData.title}
                 onChange={handleChange}
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
-                required
               />
+              {errors.title && (
+                <p className="text-red-500 text-xs mt-1">{errors.title}</p>
+              )}
             </div>
 
             {/* Program Description */}
@@ -164,18 +187,24 @@ const AddProgramPage = () => {
               <Label className="text-xs font-bold text-slate-800">
                 Program Description
               </Label>
-              <Textarea
-                name="description"
-                placeholder="Enter description"
-                value={formData.description}
-                onChange={handleChange}
-                maxLength={500}
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
-                required
-              />
-              <div className="text-xs text-slate-500 font-medium">
-                Character Count: {formData.description.length} / 500
+              <div className="relative">
+                <Textarea
+                  name="description"
+                  placeholder="Enter description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  maxLength={500}
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3 pb-8"
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                  {formData.description.length} / 500
+                </div>
               </div>
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             {isEditMode && editData?.image && (
@@ -226,6 +255,11 @@ const AddProgramPage = () => {
                   SVG, PNG, JPG or GIF (max. 800x400px)
                 </p>
               </div>
+              {errors.bannerImage && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.bannerImage}
+                </p>
+              )}
             </div>
 
             {/* Program Duration */}
@@ -236,7 +270,6 @@ const AddProgramPage = () => {
               <Select
                 value={formData.duration}
                 onValueChange={handleDurationChange}
-                required
               >
                 <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
                   <SelectValue placeholder="Select..." />
@@ -248,6 +281,9 @@ const AddProgramPage = () => {
                   <SelectItem value="12 Week">12 Week</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.duration && (
+                <p className="text-red-500 text-xs mt-1">{errors.duration}</p>
+              )}
             </div>
 
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">

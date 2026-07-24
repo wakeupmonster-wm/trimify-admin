@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
-import { Ellipsis, Eye } from "lucide-react";
+import { Ellipsis, Eye, ShieldOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -210,8 +210,8 @@ export const getSubscriberColumns = (onAction) => [
                 <Eye className="w-3.5 h-3.5" />
                 View User
               </DropdownMenuItem>
-              {/* 
-              <DropdownMenuItem
+              
+              {/* <DropdownMenuItem
                 className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-app-primary2/10 focus:text-app-primary2 font-semibold text-xs"
                 onClick={() => onAction(sub, "upgrade")}
               >
@@ -225,7 +225,7 @@ export const getSubscriberColumns = (onAction) => [
               >
                 <CalendarOff className="w-3.5 h-3.5" />
                 Mark Expired
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 disabled={sub.status === "Revoked"}
                 className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs disabled:opacity-40"
@@ -234,7 +234,7 @@ export const getSubscriberColumns = (onAction) => [
                 <ShieldOff className="w-3.5 h-3.5" />
                 Revoke Access
               </DropdownMenuItem>
-              */}
+             
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

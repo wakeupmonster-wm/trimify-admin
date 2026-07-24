@@ -123,7 +123,9 @@ const AddDietProgramPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Add Diet Meal Plan"
-                icon={<IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />}
+                icon={
+                  <IoFastFoodOutline className="w-6 h-6 text-white shrink-0" />
+                }
                 variant="primary"
                 subheading="Add a new diet meal to this plan."
               />
@@ -133,7 +135,7 @@ const AddDietProgramPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>

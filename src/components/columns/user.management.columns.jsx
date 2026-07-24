@@ -212,7 +212,7 @@ export const getUserManagementColumns = (onAction) => [
     cell: ({ row }) => {
       let status = row.original.status || "Active";
       if (row.original.revoked_at) status = "Revoked";
-      const bgColor = STATUS_COLORS[status.toLowerCase()] || STATUS_COLORS.active;
+      const style = STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (
         <div className="flex justify-center">
           <Badge 
