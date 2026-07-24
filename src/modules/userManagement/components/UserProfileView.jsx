@@ -14,6 +14,8 @@ import { TabPrograms } from "./TabPrograms";
 import { TabActivity } from "./TabActivity";
 import { TabAccount } from "./TabAccount";
 import { TabSettings } from "./TabSettings";
+import { TabTransactions } from "./TabTransactions";
+
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
@@ -22,6 +24,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { APP_COLORS } from "@/config/theme.config.js";
 import { LuUserRound } from "react-icons/lu";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 /* =========================================================================
    Helpers
@@ -248,6 +251,7 @@ const TABS = [
   { key: "programs", label: "Programs & Fitzone" },
   { key: "activity", label: "Activity" },
   { key: "account", label: "Account" },
+  { key: "transactions", label: "Transactions" },
   { key: "settings", label: "Settings" },
 ];
 
@@ -258,6 +262,8 @@ export default function UserProfileView({ user, onBack, loading }) {
   const [tab, setTab] = useState("overview");
   const [toastMsg, setToastMsg] = useState(null);
   const toastTimer = useRef(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const derived = useMemo(() => {
     if (!user) return {};
@@ -338,6 +344,24 @@ export default function UserProfileView({ user, onBack, loading }) {
   const handleCopy = (value, label) => {
     navigator.clipboard?.writeText(String(value)).catch(() => {});
     showToast(`${label} copied`);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      setIsDeleting(true);
+      const { deleteUserAPI } = await import("../services/user.services");
+      const res = await deleteUserAPI(user.id);
+      if (res?.data?.success || res?.status === 200 || res?.status === 204) {
+        showToast("User deleted successfully.");
+        setTimeout(() => onBack(), 1000);
+      } else {
+        showToast(res?.data?.message || "Failed to delete user.");
+      }
+    } catch (error) {
+      showToast(error?.response?.data?.message || "Failed to delete user.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const { age } = derived;
@@ -453,11 +477,23 @@ export default function UserProfileView({ user, onBack, loading }) {
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
-            <ActionButton icon={CreditCard} label="Transactions" />
-            <ActionButton icon={Trash2} label="Delete" variant="danger" />
-            <ActionButton icon={Edit} label="Edit User" variant="primary" />
+            <ActionButton 
+              icon={isDeleting ? Loader2 : Trash2} 
+              label={isDeleting ? "Deleting..." : "Delete User"} 
+              variant="danger" 
+              onClick={() => setIsDeleteModalOpen(true)} 
+            />
           </div>
         </div>
+
+        <ConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteUser}
+          title="Confirm User Deletion"
+          message="Are you sure you want to delete this user? This action can be reversed by an admin."
+          confirmText="Delete User"
+        />
 
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <TabsList className="mb-6 w-full justify-start overflow-x-auto border-b border-slate-200 bg-transparent p-0 h-10 rounded-none flex-nowrap">
@@ -486,6 +522,9 @@ export default function UserProfileView({ user, onBack, loading }) {
           </TabsContent>
           <TabsContent value="account">
             <TabAccount data={tabData} />
+          </TabsContent>
+          <TabsContent value="transactions">
+            <TabTransactions data={tabData} />
           </TabsContent>
           <TabsContent value="settings">
             <TabSettings data={tabData} />
