@@ -373,7 +373,7 @@ const AiFoodViewPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(BACK_TO_LIST)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back </span>
@@ -809,7 +809,14 @@ const AiFoodViewPage = () => {
   );
 };
 
-const NumberField = ({ label, name, fields, onChange, onBlurSave, original }) => (
+const NumberField = ({
+  label,
+  name,
+  fields,
+  onChange,
+  onBlurSave,
+  original,
+}) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Input
@@ -824,7 +831,15 @@ const NumberField = ({ label, name, fields, onChange, onBlurSave, original }) =>
   </div>
 );
 
-const TextField = ({ label, name, fields, onChange, onBlurSave, original, rows }) => (
+const TextField = ({
+  label,
+  name,
+  fields,
+  onChange,
+  onBlurSave,
+  original,
+  rows,
+}) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Textarea

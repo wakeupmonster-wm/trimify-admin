@@ -8,7 +8,6 @@ import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
 import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
-import SampleDashboardPage from "@/modules/dashboard/pages/sample.dashboard";
 
 // ======== New trimify imports ===========//
 const AccountsPage = lazy(
@@ -240,14 +239,6 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <Dashboard />
-              </Suspense>
-            ),
-          },
-          {
-            path: "sample-dashboard",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <SampleDashboardPage />
               </Suspense>
             ),
           },

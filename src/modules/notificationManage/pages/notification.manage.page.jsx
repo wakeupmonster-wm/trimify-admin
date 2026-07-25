@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Send, Bell } from "lucide-react";
+import { Send, Bell, Loader2 } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -303,11 +303,15 @@ const NotificationManagePage = () => {
                       disabled={isSending}
                       className="w-full h-11 bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
-                      <Send size={18} />
-                      {activeTab === "email"
-                        ? "Send Email"
-                        : isSending
-                          ? "Sending..."
+                      {isSending ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Send size={18} />
+                      )}
+                      {isSending
+                        ? "Sending..."
+                        : activeTab === "email"
+                          ? "Send Email"
                           : "Send Push Notification"}
                     </Button>
                   </div>
@@ -462,7 +466,7 @@ const NotificationManagePage = () => {
               </strong>{" "}
               campaign?
             </p>
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+            {/* <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
               <p className="flex justify-between items-center">
                 <strong className="text-slate-800">Name:</strong>
                 <span className="font-medium">{campaignName}</span>
@@ -475,7 +479,7 @@ const NotificationManagePage = () => {
             <p className="text-red-500 font-medium text-[11.5px] pt-2">
               This action cannot be undone. Notifications will be queued
               immediately.
-            </p>
+            </p> */}
           </div>
         }
       />

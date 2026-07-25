@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { apiConnector } from "@/services/axios/axios.connector";
 import { BASE_URL } from "@/services/api-endpoints/base.url";
+import AiRobotImg from "@/assets/web/ai-robot.png";
 
 const MAX_NAMES = 50;
 
 const AiFoodNameInput = ({ onGenerate, loading }) => {
+  const [names, setNames] = useState([]);
   const [draft, setDraft] = useState("");
   const [debouncedDraft, setDebouncedDraft] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -123,7 +124,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     .filter(Boolean).length;
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-6 py-5 flex flex-col md:flex-row items-stretch gap-8 overflow-hidden">
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-6 flex flex-col md:flex-row items-stretch gap-8 overflow-hidden">
       
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
@@ -241,7 +242,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       </div>
 
       {/* Right Section: AI Robot Image */}
-      <div className="hidden md:flex shrink-0 w-56 lg:w-80 items-center justify-center z-10">
+      <div className="hidden md:flex shrink-0 w-56 lg:w-64 items-center justify-center z-10">
         <img
           src={AiRobotImg}
           alt="AI Assistant"
