@@ -57,7 +57,7 @@ export default function CampaignDeliveryLogs({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[85vh] gap-0 overflow-hidden flex flex-col bg-white rounded-2xl border-none shadow-2xl p-0">
+      <DialogContent className="max-w-sm md:max-w-2xl lg:max-w-4xl max-h-[85vh] gap-0 overflow-hidden flex flex-col bg-white rounded-2xl border-none shadow-2xl p-0">
         <DialogHeader className="px-6 py-4 border-b border-slate-200 flex flex-row items-center justify-between">
           <div className="space-y-0.5">
             <DialogTitle className="text-xl font-bold text-slate-900 tracking-tight">
@@ -76,7 +76,7 @@ export default function CampaignDeliveryLogs({
             <TableLoader text="Fetching granular logs..." />
           ) : logs && logs.length > 0 ? (
             <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-auto max-h-[460px] relative">
-              <Table className="border-separate border-spacing-0 table-fixed min-w-[600px] w-full relative">
+              <Table className="border-separate border-spacing-0 table-fixed min-w-[650px] w-full relative">
                 <TableHeader className="z-20 shadow-sm">
                   <TableRow className="w-full">
                     <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/12 text-center text-[10px] font-bold uppercase px-2 h-9">

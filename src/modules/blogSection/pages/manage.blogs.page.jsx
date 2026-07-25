@@ -40,6 +40,7 @@ const ManageBlogsPage = () => {
     open: false,
     rowData: null,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -79,10 +80,10 @@ const ManageBlogsPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
+    setIsDeleting(true);
     try {
       await dispatch(deleteBlogPost(deleteModal.rowData.id)).unwrap();
       toast.success("Post deleted successfully!");
-      setDeleteModal({ open: false, rowData: null });
       dispatch(
         fetchBlogPosts({
           page: postPage.pageIndex + 1,
@@ -92,6 +93,9 @@ const ManageBlogsPage = () => {
       );
     } catch (error) {
       toast.error(error || "Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
     }
   };
 
@@ -212,7 +216,7 @@ const ManageBlogsPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Blogs"
@@ -221,7 +225,7 @@ const ManageBlogsPage = () => {
                 subheading="Manage blog posts for the platform."
               />
             </div>
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/blog-section/add-post")}
                 className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -272,6 +276,7 @@ const ManageBlogsPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this blog post? This action cannot be undone."
+        loading={isDeleting}
       />
     </Container>
   );

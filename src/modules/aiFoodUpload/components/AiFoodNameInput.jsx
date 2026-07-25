@@ -124,7 +124,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     .filter(Boolean).length;
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-6 flex flex-col md:flex-row items-stretch gap-8 overflow-hidden">
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-5 sm:py-6 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 overflow-hidden">
       
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
@@ -221,7 +221,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
         )}
       </div>
 
-        <div className="flex items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
           <p className="text-[11px] text-slate-400 font-medium">
             * Comma also works to separate names.
           </p>

@@ -50,6 +50,8 @@ const ManageFoodItemsPage = () => {
   const [editingFoodId, setEditingFoodId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     food_id: "",
@@ -231,29 +233,39 @@ const ManageFoodItemsPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    const resultAction = await dispatch(deleteFood(deleteTarget.id));
-    if (deleteFood.fulfilled.match(resultAction)) {
-      toast.success("Food deleted successfully!");
-      dispatch(getFoodList({ programId, categoryId }));
-    } else {
-      toast.error(resultAction.payload || "Failed to delete food.");
+    setIsDeleting(true);
+    try {
+      const resultAction = await dispatch(deleteFood(deleteTarget.id));
+      if (deleteFood.fulfilled.match(resultAction)) {
+        toast.success("Food deleted successfully!");
+        dispatch(getFoodList({ programId, categoryId }));
+      } else {
+        toast.error(resultAction.payload || "Failed to delete food.");
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
-    setDeleteTarget(null);
   };
 
   const handleConfirmToggle = async () => {
     if (!toggleTarget) return;
     const { row, newStatus } = toggleTarget;
-    const resultAction = await dispatch(
-      toggleFoodStatus({ id: row.id, status: newStatus }),
-    );
-    if (toggleFoodStatus.fulfilled.match(resultAction)) {
-      toast.success("Status updated successfully!");
-      dispatch(getFoodList({ programId, categoryId }));
-    } else {
-      toast.error(resultAction.payload || "Failed to update status.");
+    setIsUpdating(true);
+    try {
+      const resultAction = await dispatch(
+        toggleFoodStatus({ id: row.id, status: newStatus }),
+      );
+      if (toggleFoodStatus.fulfilled.match(resultAction)) {
+        toast.success("Status updated successfully!");
+        dispatch(getFoodList({ programId, categoryId }));
+      } else {
+        toast.error(resultAction.payload || "Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
+      setToggleTarget(null);
     }
-    setToggleTarget(null);
   };
 
   const columns = useMemo(
@@ -564,6 +576,7 @@ const ManageFoodItemsPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -574,6 +587,7 @@ const ManageFoodItemsPage = () => {
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

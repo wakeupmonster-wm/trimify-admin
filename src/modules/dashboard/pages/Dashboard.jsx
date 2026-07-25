@@ -287,7 +287,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
+          <div className="flex flex-col gap-6 py-5 px-4 lg:px-6 w-full">
             {/* ─────────────────────────────────────────────────────────────
                 Previous dashboard widgets — temporarily disabled while the
                 new dashboard (extras-driven) is being built out. Nothing
@@ -374,7 +374,7 @@ export default function Dashboard() {
             />
 
             {/* Composition — pie/donut breakdowns */}
-            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+            <div className="flex flex-col items-start gap-6">
               <div className="flex flex-col items-start gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Composition
@@ -426,7 +426,7 @@ export default function Dashboard() {
             </div>
 
             {/* Trends — everything not already covered by Signups/Revenue/Heatmap above */}
-            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+            <div className="flex flex-col items-start gap-6">
               <div className="flex flex-col items-start gap-1">
                 <h2 className="text-base font-bold text-slate-900">Trends</h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
@@ -508,7 +508,7 @@ export default function Dashboard() {
                         label: "User",
                         render: (r) => (
                           <span
-                            className="block max-w-[100px] truncate font-semibold"
+                            className="block max-w-[150px] truncate font-semibold"
                             title={r.name}
                           >
                             {r.name}
@@ -520,7 +520,7 @@ export default function Dashboard() {
                         label: "Email",
                         render: (r) => (
                           <span
-                            className="block max-w-[120px] truncate text-slate-500"
+                            className="block max-w-[180px] truncate text-slate-500"
                             title={r.email}
                           >
                             {r.email || "-"}
@@ -533,7 +533,7 @@ export default function Dashboard() {
                         render: (r) => (
                           <span className="whitespace-nowrap">
                             {r.created_at
-                              ? format(new Date(r.created_at), "MMM dd")
+                              ? format(new Date(r.created_at), "MMM, dd yyyy")
                               : "-"}
                           </span>
                         ),
@@ -573,7 +573,7 @@ export default function Dashboard() {
             )}
 
             {/* Drill-down lists */}
-            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+            <div className="flex flex-col items-start gap-6">
               <div className="flex flex-col items-start gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Follow-ups & Roster
@@ -585,49 +585,6 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                {/* MOVED TO SUBSCRIPTION DASHBOARD: Recent Transactions */}
-
-                {/* 
-                <DashboardTableCard
-                  title="Sub-Admin Roster"
-                  subtitle="Managers & how many users they cover"
-                  Icon={ShieldCheck}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                  rows={dashboardExtras?.tables?.subAdminRoster || []}
-                  emptyMessage="No sub-admins yet."
-                  columns={[
-                    { key: "name", label: "Name" },
-                    {
-                      key: "role",
-                      label: "Role",
-                      render: (r) => (
-                        <span className="capitalize">{r.role}</span>
-                      ),
-                    },
-                    {
-                      key: "managed_users",
-                      label: "Users Managed",
-                      align: "right",
-                    },
-                    {
-                      key: "status",
-                      label: "Status",
-                      render: (r) => <StatusPill status={r.status} />,
-                    },
-                  ]}
-                  footerStat={
-                    dashboardExtras?.tables?.unassignedUsers != null
-                      ? {
-                          label: "Unassigned Users",
-                          value:
-                            dashboardExtras.tables.unassignedUsers.toLocaleString(),
-                        }
-                      : undefined
-                  }
-                />
-                */}
-
                 <div className="w-full">
                   <DashboardTableCard
                     title="Pending / Abandoned Checkouts"
@@ -655,7 +612,20 @@ export default function Dashboard() {
                           </span>
                         ),
                       },
-                      { key: "name", label: "User", width: "w-[20%]", align: "left" },
+                      {
+                        key: "name",
+                        label: "User",
+                        width: "w-[20%]",
+                        align: "left",
+                        render: (r) => (
+                          <span
+                            className="block max-w-[120px] xl:max-w-max truncate font-semibold"
+                            title={r.name}
+                          >
+                            {r.name}
+                          </span>
+                        ),
+                      },
                       { key: "signed_up_at", label: "Signed Up", width: "w-[15%]", align: "left", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm"), },
                       { key: "days_since_signup", label: "Days Since", width: "w-[15%]", align: "left", render: (r) => `${r.days_since_signup}d` },
                       {
@@ -679,63 +649,6 @@ export default function Dashboard() {
                     ]}
                   />
                 </div>
-
-                {/* MOVED TO SUBSCRIPTION DASHBOARD: Users Nearing Plan Expiry */}
-
-                {/* 
-                <DashboardTableCard
-                  title="Recent Notifications Sent"
-                  subtitle="Latest broadcast/push activity"
-                  Icon={Bell}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                  rows={dashboardExtras?.tables?.recentNotifications || []}
-                  emptyMessage="No notifications sent yet."
-                  columns={[
-                    { key: "title", label: "Title" },
-                    {
-                      key: "channel",
-                      label: "Channel",
-                      render: (r) => (
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${r.channel === "Push"
-                              ? "bg-blue-50 text-blue-600 border-blue-100"
-                              : "bg-violet-50 text-violet-600 border-violet-100"
-                            }`}
-                        >
-                          {r.channel}
-                        </span>
-                      ),
-                    },
-                    {
-                      key: "total_recipients",
-                      label: "Recipients",
-                      align: "right",
-                      render: (r) => r.total_recipients ?? "–",
-                    },
-                    {
-                      key: "success_count",
-                      label: "Success",
-                      align: "right",
-                      render: (r) => r.success_count ?? "–",
-                    },
-                    {
-                      key: "failed_count",
-                      label: "Failed",
-                      align: "right",
-                      render: (r) => r.failed_count ?? "–",
-                    },
-                    {
-                      key: "created_at",
-                      label: "Sent",
-                      render: (r) =>
-                        formatDistanceToNow(new Date(r.created_at), {
-                          addSuffix: true,
-                        }),
-                    },
-                  ]}
-                />
-                */}
               </div>
             </div>
           </div>

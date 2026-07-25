@@ -45,11 +45,15 @@ const ManageProgramPage = () => {
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.filterId || "",
+  );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -113,35 +117,44 @@ const ManageProgramPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    const result = await dispatch(deleteProgram(deleteTarget.id));
-    if (deleteProgram.fulfilled.match(result)) {
-      dispatch(
-        fetchProgramList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          duration: durationFilter,
-          status: statusFilter,
-        }),
-      );
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteProgram(deleteTarget.id));
+      if (deleteProgram.fulfilled.match(result)) {
+        dispatch(
+          fetchProgramList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            duration: durationFilter,
+            status: statusFilter,
+          }),
+        );
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
-    setDeleteTarget(null);
   };
 
-  const handleConfirmToggle = () => {
+  const handleConfirmToggle = async () => {
     if (!toggleConfirm) return;
     const { row, action, value } = toggleConfirm;
+    setIsUpdating(true);
 
-    if (action === "toggle-status") {
-      const status = value ? "Active" : "Inactive";
-      dispatch(toggleProgramStatus({ id: row.id, status }));
-      toast.success("Status updated successfully!");
-    } else if (action === "toggle-food-visibility") {
-      dispatch(toggleFoodVisibility(row.id));
-      toast.success("Food visibility updated successfully!");
+    try {
+      if (action === "toggle-status") {
+        const status = value ? "Active" : "Inactive";
+        await dispatch(toggleProgramStatus({ id: row.id, status }));
+        toast.success("Status updated successfully!");
+      } else if (action === "toggle-food-visibility") {
+        await dispatch(toggleFoodVisibility(row.id));
+        toast.success("Food visibility updated successfully!");
+      }
+    } finally {
+      setIsUpdating(false);
+      setToggleConfirm(null);
     }
-
-    setToggleConfirm(null);
   };
 
   const columns = useMemo(() => getManageProgramColumns(handleAction), []);
@@ -156,7 +169,10 @@ const ManageProgramPage = () => {
     if (durationFilter) {
       data = data.filter((p) => String(p.duration) === String(durationFilter));
     }
-    if (statusFilter && ["active", "inactive"].includes(statusFilter.toLowerCase())) {
+    if (
+      statusFilter &&
+      ["active", "inactive"].includes(statusFilter.toLowerCase())
+    ) {
       data = data.filter(
         (p) =>
           String(p.status || "Active").toLowerCase() ===
@@ -259,7 +275,7 @@ const ManageProgramPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Program"
@@ -271,7 +287,7 @@ const ManageProgramPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("add-program")}
                 className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -321,6 +337,7 @@ const ManageProgramPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Program"
         message="Are you sure you want to delete this program? This action cannot be undone."
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -331,6 +348,7 @@ const ManageProgramPage = () => {
         message={toggleConfirm?.message || ""}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

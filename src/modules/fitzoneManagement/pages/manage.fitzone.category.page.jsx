@@ -31,6 +31,7 @@ const ManageFitzoneCategoryPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -64,6 +65,7 @@ const ManageFitzoneCategoryPage = () => {
 
   const handleConfirmDelete = () => {
     if (deleteTarget) {
+      setIsDeleting(true);
       dispatch(deleteFitzoneCategory(deleteTarget.id))
         .unwrap()
         .then((res) => {
@@ -81,6 +83,7 @@ const ManageFitzoneCategoryPage = () => {
           toast.error(err || "Failed to delete category");
         })
         .finally(() => {
+          setIsDeleting(false);
           setDeleteTarget(null);
         });
     }
@@ -146,6 +149,7 @@ const ManageFitzoneCategoryPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.title}"? This action cannot be undone.`}
+        loading={isDeleting}
       />
     </Container>
   );

@@ -45,6 +45,8 @@ const FitzoneManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -79,40 +81,50 @@ const FitzoneManagementPage = () => {
     if (!toggleModal.rowData) return;
     const rowId = toggleModal.rowData.id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
-    const result = await dispatch(toggleFitzoneStatus({ id: rowId, status }));
-    if (toggleFitzoneStatus.fulfilled.match(result)) {
-      toast.success("Fitzone status updated successfully.");
-      dispatch(
-        fetchFitzoneList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to update status.");
+    setIsUpdating(true);
+    try {
+      const result = await dispatch(toggleFitzoneStatus({ id: rowId, status }));
+      if (toggleFitzoneStatus.fulfilled.match(result)) {
+        toast.success("Fitzone status updated successfully.");
+        dispatch(
+          fetchFitzoneList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            status: statusFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
-    if (deleteFitzone.fulfilled.match(result)) {
-      toast.success("Fitzone deleted successfully.");
-      dispatch(
-        fetchFitzoneList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to delete fitzone.");
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
+      if (deleteFitzone.fulfilled.match(result)) {
+        toast.success("Fitzone deleted successfully.");
+        dispatch(
+          fetchFitzoneList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            status: statusFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to delete fitzone.");
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
     }
-    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getFitzoneManagementColumns(handleAction), []);
@@ -203,7 +215,7 @@ const FitzoneManagementPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Fitzone Management"
@@ -212,7 +224,7 @@ const FitzoneManagementPage = () => {
                 subheading="Create, configure, and monitor Fitzone workouts and sessions."
               />
             </div>
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("add-fitzone")}
                 className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -259,6 +271,7 @@ const FitzoneManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this fitzone? This action cannot be undone."
+        loading={isDeleting}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
@@ -270,6 +283,7 @@ const FitzoneManagementPage = () => {
         message={`Are you sure you want to change the status of this fitzone to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

@@ -83,14 +83,14 @@ export function EcosystemAlerts({ data, selectedDate }) {
 
   return (
     <div className="mb-1">
-      <div className="mb-4 flex flex-col items-start gap-1">
+      <div className="mb-6 flex flex-col items-start gap-1">
         <h2 className="text-base font-bold text-slate-900 group">Alerts</h2>
         <p className="text-[11px] font-medium text-slate-500 leading-none">
           Needs your attention
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {Array.isArray(data.alerts) && data.alerts.map((alert, idx) => {
           const alertConfig = config[alert.id] || config.kyc;
           const AlertIcon = alertConfig.icon;

@@ -51,19 +51,19 @@ const DashboardTableCard = ({
       </div>
 
       <div className="flex-1 w-full min-h-0 overflow-auto">
-        <Table className="min-w-[520px]">
+        <Table className="min-w-[700px] xl:min-w-full">
           <TableHeader>
             <TableRow className="border-y border-slate-300/60 bg-app-primary2/5 hover:bg-app-primary2/5">
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
-                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                 >
                   {col.label}
                 </TableHead>
               ))}
               {actionLabel && (
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6 whitespace-nowrap">
                   <div className="flex justify-start w-full">Action</div>
                 </TableHead>
               )}
@@ -88,7 +88,7 @@ const DashboardTableCard = ({
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}
-                      className={`py-2.5 text-xs font-medium text-slate-700 first:pl-6 last:pr-6 ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                      className={`py-2.5 text-xs font-medium text-slate-700 first:pl-6 last:pr-6 whitespace-nowrap ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                     >
                       {col.render ? col.render(row, idx) : row[col.key]}
                     </TableCell>

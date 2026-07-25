@@ -103,22 +103,22 @@ export function TabAccount({ data }) {
           </Card>
 
           <Card title="Managed By" subtitle="Assigned sub-admin details"
-            right={
-              <Pill
-                tone={
-                  user.sub_admin?.status === "Active" ||
-                  user.sub_admin?.status === "1"
-                    ? "success"
-                    : "neutral"
-                }
-              >
-                {user.sub_admin?.status === "1"
-                  ? "Active"
-                  : user.sub_admin?.status === "0"
-                    ? "Inactive"
-                    : user.sub_admin?.status}
-              </Pill>
-            }
+            // right={
+            //   <Pill
+            //     tone={
+            //       user.sub_admin?.status === "Active" ||
+            //       user.sub_admin?.status === "1"
+            //         ? "success"
+            //         : "neutral"
+            //     }
+            //   >
+            //     {user.sub_admin?.status === "1"
+            //       ? "Active"
+            //       : user.sub_admin?.status === "0"
+            //         ? "Inactive"
+            //         : user.sub_admin?.status}
+            //   </Pill>
+            // }
           >
             {user.sub_admin ? (
               <>

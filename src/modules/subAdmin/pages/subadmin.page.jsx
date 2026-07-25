@@ -108,6 +108,8 @@ const SubAdminManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [exportLoading, setExportLoading] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
@@ -221,41 +223,51 @@ const SubAdminManagementPage = () => {
     if (!toggleModal.rowData) return;
     const rowId = toggleModal.rowData.id || toggleModal.rowData._id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
-    const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
-    if (toggleSubAdminStatus.fulfilled.match(result)) {
-      toast.success("Sub-admin status updated successfully.");
-      dispatch(
-        fetchSubAdminList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          role: roleFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to update status.");
+    setIsUpdating(true);
+    try {
+      const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+      if (toggleSubAdminStatus.fulfilled.match(result)) {
+        toast.success("Sub-admin status updated successfully.");
+        dispatch(
+          fetchSubAdminList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            role: roleFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
     const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
-    const result = await dispatch(deleteSubAdmin(rowId));
-    if (deleteSubAdmin.fulfilled.match(result)) {
-      toast.success("Sub-admin deleted successfully.");
-      dispatch(
-        fetchSubAdminList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          role: roleFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to delete sub-admin.");
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteSubAdmin(rowId));
+      if (deleteSubAdmin.fulfilled.match(result)) {
+        toast.success("Sub-admin deleted successfully.");
+        dispatch(
+          fetchSubAdminList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            role: roleFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to delete sub-admin.");
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
     }
-    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getSubAdminColumns(handleAction), []);
@@ -378,6 +390,7 @@ const SubAdminManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -390,6 +403,7 @@ const SubAdminManagementPage = () => {
         message={`Are you sure you want to change the status of this sub-admin to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

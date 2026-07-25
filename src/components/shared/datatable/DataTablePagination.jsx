@@ -19,7 +19,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
   const endRow = Math.min(currentPage * pageSize, rowCount || 0);
 
   return (
-    <div className="flex flex-col items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-5 sm:flex-row sm:gap-4">
+    <div className="flex flex-col items-center lg:items-start justify-between p-4 sm:p-6 border-t border-slate-300/60 gap-5 sm:flex-row sm:gap-4">
       {/* Left Side: Showing results count */}
       <div className="text-xs font-medium text-slate-400 text-left w-full xl:w-max">
         Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount || 0}{" "}
@@ -27,7 +27,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
       </div>
 
       {/* Right Side: Pagination Controls */}
-      <div className="flex flex-wrap items-center justify-between sm:justify-end gap-4 sm:gap-6 lg:gap-10 w-full xl:w-max">
+      <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 lg:gap-10 w-full xl:w-max">
         {/* Row Select Bar */}
         <div className="flex items-center justify-center gap-2">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
@@ -54,7 +54,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           </Select>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+        <div className="flex items-center justify-center gap-1 sm:gap-1.5">
           {/* Previous Button */}
           <Button
             variant="outline"
@@ -67,7 +67,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           </Button>
 
           {/* Page Numbers */}
-          <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+          <div className="flex items-center justify-center gap-1 sm:gap-1.5">
             {(() => {
               const pages = [];
 
@@ -75,7 +75,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
                 for (let i = 1; i <= totalPages; i++) pages.push(i);
               } else {
                 if (currentPage <= 3) {
-                  pages.push(1, 2, 3, 4, "...", totalPages);
+                  pages.push(1, 2, 3, "...", totalPages);
                 } else if (currentPage >= totalPages - 2) {
                   pages.push(
                     1,
@@ -87,8 +87,8 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
                   );
                 } else {
                   pages.push(
-                    1,
-                    "...",
+                    // 1,
+                    // "...",
                     currentPage - 1,
                     currentPage,
                     currentPage + 1,

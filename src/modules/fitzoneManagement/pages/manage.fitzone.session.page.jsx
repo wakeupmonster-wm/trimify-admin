@@ -28,8 +28,10 @@ const ManageFitzoneSessionPage = () => {
     pagination: serverPagination,
   } = useSelector((state) => state.fitzoneSession);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
@@ -69,45 +71,55 @@ const ManageFitzoneSessionPage = () => {
     if (toggleTarget) {
       const { row, value } = toggleTarget;
       const statusStr = value ? "Active" : "Inactive";
-      const resultAction = await dispatch(
-        toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
-      );
-      if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
-        toast.success("Status updated successfully!");
-        dispatch(
-          getFitzoneSessions({
-            id,
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearch,
-          }),
+      setIsUpdating(true);
+      try {
+        const resultAction = await dispatch(
+          toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
         );
-      } else {
-        toast.error(resultAction.payload || "Failed to update status");
+        if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
+          toast.success("Status updated successfully!");
+          dispatch(
+            getFitzoneSessions({
+              id,
+              page: pagination.pageIndex + 1,
+              limit: pagination.pageSize,
+              search: debouncedSearch,
+            }),
+          );
+        } else {
+          toast.error(resultAction.payload || "Failed to update status");
+        }
+      } finally {
+        setIsUpdating(false);
+        setToggleTarget(null);
       }
-      setToggleTarget(null);
     }
   };
 
   const handleConfirmDelete = async () => {
     if (deleteTarget) {
-      const resultAction = await dispatch(
-        deleteFitzoneSession(deleteTarget.id),
-      );
-      if (deleteFitzoneSession.fulfilled.match(resultAction)) {
-        toast.success("Session deleted successfully!");
-        dispatch(
-          getFitzoneSessions({
-            id,
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearch,
-          }),
+      setIsDeleting(true);
+      try {
+        const resultAction = await dispatch(
+          deleteFitzoneSession(deleteTarget.id),
         );
-      } else {
-        toast.error(resultAction.payload || "Failed to delete session");
+        if (deleteFitzoneSession.fulfilled.match(resultAction)) {
+          toast.success("Session deleted successfully!");
+          dispatch(
+            getFitzoneSessions({
+              id,
+              page: pagination.pageIndex + 1,
+              limit: pagination.pageSize,
+              search: debouncedSearch,
+            }),
+          );
+        } else {
+          toast.error(resultAction.payload || "Failed to delete session");
+        }
+      } finally {
+        setIsDeleting(false);
+        setDeleteTarget(null);
       }
-      setDeleteTarget(null);
     }
   };
 
@@ -171,6 +183,7 @@ const ManageFitzoneSessionPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Session"
         message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -181,6 +194,7 @@ const ManageFitzoneSessionPage = () => {
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.title || "this session"}" to ${toggleTarget?.value ? "Active" : "Inactive"}?`}
         confirmText="Update"
         type="brand"
+        loading={isUpdating}
       />
     </Container>
   );

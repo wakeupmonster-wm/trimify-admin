@@ -28,6 +28,7 @@ const NutritionFoodPage = () => {
     open: false,
     rowData: null,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -56,9 +57,15 @@ const NutritionFoodPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    console.log("Delete nutrition food", deleteModal.rowData);
-    // Add dispatch for delete action here when API is ready
-    setDeleteModal({ open: false, rowData: null });
+    setIsDeleting(true);
+    try {
+      console.log("Delete nutrition food", deleteModal.rowData);
+      // Add dispatch for delete action here when API is ready
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
+    }
   };
 
   const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
@@ -122,6 +129,7 @@ const NutritionFoodPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this nutrition food? This action cannot be undone."
+        loading={isDeleting}
       />
     </Container>
   );

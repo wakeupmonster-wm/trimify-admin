@@ -28,6 +28,7 @@ const ManageFoodProgramPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -60,20 +61,25 @@ const ManageFoodProgramPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    const result = await dispatch(deleteFoodCategory(deleteTarget.id));
-    if (deleteFoodCategory.fulfilled.match(result)) {
-      toast.success(result.payload?.message || "Food Category deleted successfully");
-      dispatch(
-        getFoodCategories({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-        }),
-      );
-    } else {
-      toast.error(result.payload || "Failed to delete food category.");
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteFoodCategory(deleteTarget.id));
+      if (deleteFoodCategory.fulfilled.match(result)) {
+        toast.success(result.payload?.message || "Food Category deleted successfully");
+        dispatch(
+          getFoodCategories({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+          }),
+        );
+      } else {
+        toast.error(result.payload || "Failed to delete food category.");
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
-    setDeleteTarget(null);
   };
 
   const columns = useMemo(
@@ -133,6 +139,7 @@ const ManageFoodProgramPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Food Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}
+        loading={isDeleting}
       />
     </Container>
   );

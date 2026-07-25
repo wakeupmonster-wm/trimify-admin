@@ -77,7 +77,7 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 120,
     cell: ({ row }) => (
       <div
-        className="text-[11px] font-medium text-slate-600 tracking-tight truncate min-w-0"
+        className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-36"
         title={row.original.email}
       >
         {row.original.email || "-"}

@@ -29,6 +29,8 @@ const ManageDietProgramPage = () => {
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleModal, setToggleModal] = useState({ open: false, rowData: null, targetStatus: false });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const fetchDietMeals = () => {
     if (id) {
@@ -66,28 +68,38 @@ const ManageDietProgramPage = () => {
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
     const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
-    const resultAction = await dispatch(
-      toggleDietMealStatus({ id: toggleModal.rowData.id, status: newStatus }),
-    );
-    if (toggleDietMealStatus.fulfilled.match(resultAction)) {
-      toast.success("Status updated successfully!");
-      fetchDietMeals();
-    } else {
-      toast.error(resultAction.payload || "Failed to update status.");
+    setIsUpdating(true);
+    try {
+      const resultAction = await dispatch(
+        toggleDietMealStatus({ id: toggleModal.rowData.id, status: newStatus }),
+      );
+      if (toggleDietMealStatus.fulfilled.match(resultAction)) {
+        toast.success("Status updated successfully!");
+        fetchDietMeals();
+      } else {
+        toast.error(resultAction.payload || "Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    const resultAction = await dispatch(deleteDietMeal(deleteTarget.id));
-    if (deleteDietMeal.fulfilled.match(resultAction)) {
-      toast.success("Diet meal deleted successfully!");
-      fetchDietMeals();
-    } else {
-      toast.error(resultAction.payload || "Failed to delete diet meal.");
+    setIsDeleting(true);
+    try {
+      const resultAction = await dispatch(deleteDietMeal(deleteTarget.id));
+      if (deleteDietMeal.fulfilled.match(resultAction)) {
+        toast.success("Diet meal deleted successfully!");
+        fetchDietMeals();
+      } else {
+        toast.error(resultAction.payload || "Failed to delete diet meal.");
+      }
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
-    setDeleteTarget(null);
   };
 
   const columns = useMemo(() => getManageDietProgramColumns(handleAction), []);
@@ -141,6 +153,7 @@ const ManageDietProgramPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Diet Meal"
         message={`Are you sure you want to delete the diet meal "${deleteTarget?.diet_meal_data?.Meal_title || deleteTarget?.meal}"? This action cannot be undone.`}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -151,6 +164,7 @@ const ManageDietProgramPage = () => {
         message={`Are you sure you want to change the status of "${toggleModal.rowData?.diet_meal_data?.Meal_title || toggleModal.rowData?.meal || "this diet meal"}" to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

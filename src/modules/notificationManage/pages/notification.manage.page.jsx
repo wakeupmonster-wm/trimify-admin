@@ -155,10 +155,10 @@ const NotificationManagePage = () => {
 
         <div className="max-w-full">
           {/* TABS */}
-          <div className="w-max flex flex-wrap items-center gap-6 border-b border-slate-300/60 mb-6">
+          <div className="w-full flex flex-row items-center gap-6 border-b border-slate-300/60 mb-6 overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab("push")}
-              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
+              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative whitespace-nowrap shrink-0 ${
                 activeTab === "push"
                   ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
@@ -168,7 +168,7 @@ const NotificationManagePage = () => {
             </button>
             <button
               onClick={() => setActiveTab("email")}
-              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
+              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative whitespace-nowrap shrink-0 ${
                 activeTab === "email"
                   ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
@@ -178,7 +178,7 @@ const NotificationManagePage = () => {
             </button>
             <button
               onClick={() => setActiveTab("history")}
-              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative ${
+              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative whitespace-nowrap shrink-0 ${
                 activeTab === "history"
                   ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
