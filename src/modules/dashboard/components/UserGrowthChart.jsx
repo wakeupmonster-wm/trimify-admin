@@ -72,7 +72,7 @@ export function UserGrowthChart({ data, selectedDate }) {
         />
         {/* <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-app-primary5 border-slate-300/60 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
+            className="w-[110px] h-8 text-xs font-semibold text-slate-500 hover:text-white bg-slate-50 hover:bg-app-primary3 border-slate-300/60 hover:border-transparent rounded-md transition-all duration-300 focus:ring-0 focus:ring-offset-0"
             aria-label="Select time range"
           >
             <SelectValue placeholder="7 Days" />

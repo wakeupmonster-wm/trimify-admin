@@ -312,7 +312,7 @@ export default function KYCVerificationPage() {
           </div>
           <Badge
             variant="outline"
-            className="cursor-pointer bg-white hover:bg-app-primary5 text-slate-400 hover:text-white border border-slate-300/60 hover:border-app-primary2 transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
+            className="cursor-pointer bg-white hover:bg-app-primary3 text-slate-400 hover:text-white border border-slate-300/60 hover:border-app-primary2 transition-all duration-300 gap-2 h-10 px-4 w-full md:w-auto justify-center md:justify-start shrink-0 shadow-sm rounded-lg font-semibold text-[11px] uppercase tracking-wider"
           >
             <Users className="h-4 w-4" strokeWidth={2} />
             <span className="whitespace-nowrap">

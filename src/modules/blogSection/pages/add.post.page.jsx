@@ -33,6 +33,7 @@ const AddPostPage = () => {
   const editData = location.state?.editData || null;
 
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -114,13 +115,20 @@ const AddPostPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title.trim()) {
-      return toast.error("Post Title is required");
-    }
-    if (!formData.category) {
-      return toast.error("Please select a category");
-    }
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Post Title is required";
+    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.description.trim() || formData.description === "<p><br></p>")
+      newErrors.description = "Post Content is required";
+    if (!isEdit && !formData.bannerImage)
+      newErrors.bannerImage = "Featured Image is required";
+    if (!formData.status) newErrors.status = "Status is required";
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
     setLoading(true);
     try {
       const payload = new FormData();
@@ -170,7 +178,7 @@ const AddPostPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -183,11 +191,11 @@ const AddPostPage = () => {
         <div className="mx-auto w-full bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-4 w-full min-w-0"
           >
             {/* Post Title */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Post Title
               </Label>
               <Input
@@ -195,23 +203,28 @@ const AddPostPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
-                required
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.title && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.title}
+                </p>
+              )}
             </div>
 
             {/* Category */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Category
               </Label>
               <Select
                 key={`cat-${categories.length}-${formData.category}`}
                 value={formData.category}
                 onValueChange={(val) => handleSelectChange("category", val)}
-                required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
+                <SelectTrigger
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.category ? "border-red-500" : "border-slate-300/60"}`}
+                >
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -222,26 +235,42 @@ const AddPostPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.category && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.category}
+                </p>
+              )}
             </div>
 
             {/* Post Content/Description */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Content / Description
               </Label>
-              <RichTextEditor
-                value={formData.description}
-                onChange={(content) =>
-                  setFormData((prev) => ({ ...prev, description: content }))
-                }
-                placeholder="Enter content"
-                height={300}
-              />
+              <div
+                className={`${errors.description ? "rounded-md border border-red-500" : ""}`}
+              >
+                <RichTextEditor
+                  value={formData.description}
+                  onChange={(content) => {
+                    setFormData((prev) => ({ ...prev, description: content }));
+                    if (errors.description)
+                      setErrors((prev) => ({ ...prev, description: "" }));
+                  }}
+                  placeholder="Enter content"
+                  height={300}
+                />
+              </div>
+              {errors.description && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Featured Image" : "Upload Featured Image"}
               </Label>
               {isEdit && editData?.image && !formData.bannerImage && (
@@ -286,17 +315,25 @@ const AddPostPage = () => {
                   SVG, PNG, JPG or GIF (max. 800x400px)
                 </p>
               </div>
+              {errors.bannerImage && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.bannerImage}
+                </p>
+              )}
             </div>
 
             {/* Post Status */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Status</Label>
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
+                Status
+              </Label>
               <Select
                 value={formData.status}
                 onValueChange={(val) => handleSelectChange("status", val)}
-                required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
+                <SelectTrigger
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.status ? "border-red-500" : "border-slate-300/60"}`}
+                >
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -304,14 +341,19 @@ const AddPostPage = () => {
                   <SelectItem value="Inactive">Private</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.status && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.status}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto rounded-md px-4 py-2.5 h-10 text-sm font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -319,7 +361,7 @@ const AddPostPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 py-2.5 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
               >
                 {loading ? (
                   <>
@@ -328,7 +370,7 @@ const AddPostPage = () => {
                   </>
                 ) : (
                   <>
-                    {isEdit ? "Update Post" : "Save Post"}
+                    {isEdit ? "Update" : "Save"}
                     <Save size={16} className="shrink-0" />
                   </>
                 )}

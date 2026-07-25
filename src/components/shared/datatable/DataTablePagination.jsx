@@ -117,7 +117,7 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
                     className={cn(
                       "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
                       isActive
-                        ? "bg-app-primary2 text-white hover:bg-app-primary5 shadow-md shadow-blue-100 border-none"
+                        ? "bg-app-primary2 text-white hover:bg-app-primary3 shadow-md shadow-blue-100 border-none"
                         : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
                     )}
                   >

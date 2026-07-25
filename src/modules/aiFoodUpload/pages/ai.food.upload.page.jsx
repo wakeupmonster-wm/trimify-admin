@@ -142,7 +142,7 @@ const AiFoodUploadPage = () => {
               <Button
                 onClick={() => setConfirmOpen(true)}
                 disabled={selectedIds.length === 0 || saveLoading}
-                className="flex-1 bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 {saveLoading ? (
                   <Spinner className="w-4 h-4 shrink-0" />
@@ -207,7 +207,7 @@ const AiFoodUploadPage = () => {
             </Button>
             <Button
               onClick={handleConfirmSave}
-              className="bg-app-primary2 hover:bg-app-primary5 text-white"
+              className="bg-app-primary2 hover:bg-app-primary3 text-white"
             >
               Confirm & Save
             </Button>

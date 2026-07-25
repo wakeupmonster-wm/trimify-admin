@@ -151,7 +151,7 @@ export function SubscriptionEditDialog({
             <Button
               type="submit"
               disabled={loading}
-              className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 py-2 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+              className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 py-2 h-auto text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
             >
               {loading ? (
                 <>

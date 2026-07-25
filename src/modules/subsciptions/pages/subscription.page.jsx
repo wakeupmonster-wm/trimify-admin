@@ -274,7 +274,7 @@ export default function SubscriptionPage() {
 
               <div className="flex items-center">
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-app-primary5 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-app-primary3 border border-slate-300/60 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -647,7 +647,7 @@ export default function SubscriptionPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.08 }}
                         className={cn(
-                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-app-primary5",
+                          "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-app-primary3",
                           idx % 2 === 0 ? "bg-slate-50/60" : "bg-transparent",
                         )}
                       >

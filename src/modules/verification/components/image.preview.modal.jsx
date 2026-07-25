@@ -80,7 +80,7 @@ export function ImagePreviewModal({ config, onClose }) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDownload(img.src, img.label)}
-                  className="h-7 text-[10px] gap-1 hover:bg-app-primary5 hover:text-app-primary2"
+                  className="h-7 text-[10px] gap-1 hover:bg-app-primary3 hover:text-app-primary2"
                 >
                   <Download className="w-3 h-3" /> Download
                 </Button>

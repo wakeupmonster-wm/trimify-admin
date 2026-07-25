@@ -61,7 +61,7 @@ export function NavMain({ items }) {
                 className={cn(
                   "relative h-11 w-full transition-all duration-300 px-4 rounded-none border-none",
                   "hover:bg-slate-100/50 active:scale-[0.98]",
-                  isActive && "!bg-app-primary2 !hover:bg-app-primary5",
+                  isActive && "!bg-app-primary2 !hover:bg-app-primary3",
                 )}
               >
                 <Link to={item.url} className="flex items-center gap-3 w-full">

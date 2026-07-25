@@ -138,7 +138,7 @@ const AccountSettingsPage = () => {
                   >
                     Clear
                   </Button>
-                  <Button className="bg-app-primary2 hover:bg-app-primary5 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
+                  <Button className="bg-app-primary2 hover:bg-app-primary3 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
                     Update Password
                   </Button>
                 </div>
@@ -165,7 +165,7 @@ const AccountSettingsPage = () => {
                   >
                     Clear
                   </Button>
-                  <Button className="bg-app-primary2 hover:bg-app-primary5 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
+                  <Button className="bg-app-primary2 hover:bg-app-primary3 text-white px-8 font-bold text-xs h-10 rounded-md transition-all active:scale-[0.99]">
                     Update Email
                   </Button>
                 </div>

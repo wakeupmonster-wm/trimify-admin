@@ -255,7 +255,7 @@ export default function SettingsPage() {
                 form.newPassword !== form.confirmPassword ||
                 !form.newPassword
               }
-              className="h-14 bg-app-primary2 hover:bg-app-primary5 border border-app-primary2 text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-14 bg-app-primary2 hover:bg-app-primary3 border border-app-primary2 text-slate-800 shadow-sm shadow-neutral-400 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

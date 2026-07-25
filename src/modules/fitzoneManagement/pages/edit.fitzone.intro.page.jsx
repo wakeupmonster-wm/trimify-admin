@@ -93,7 +93,7 @@ const EditFitzoneIntroPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -103,7 +103,9 @@ const EditFitzoneIntroPage = () => {
         </Header>
 
         {/* Editor Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
+          <div className="px-4 sm:px-6 pt-5 pb-6 space-y-6">
+            <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Heading
               </Label>
@@ -115,7 +117,6 @@ const EditFitzoneIntroPage = () => {
                 className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
               />
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Subheading
@@ -155,12 +156,14 @@ const EditFitzoneIntroPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
               >
                 <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                 {loading ? "Updating..." : "Update"}
               </Button>
             </div>
+          </div>
+        </div>
       </div>
     </Container>
   );

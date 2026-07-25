@@ -102,7 +102,7 @@ export default function PrivacyAndPolicyPage() {
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary5 text-white font-semibold text-sm sm:text-xs gap-2 h-10 px-4 shadow-sm rounded-md transition-all border-none flex items-center justify-center"
+                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary3 text-white font-semibold text-sm sm:text-xs gap-2 h-10 px-4 shadow-sm rounded-md transition-all border-none flex items-center justify-center"
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 mr-1 animate-spin shrink-0" />

@@ -143,7 +143,7 @@ const AddFoodCategoryPage = () => {
         <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Category Name
               </Label>
               <Input
@@ -164,7 +164,7 @@ const AddFoodCategoryPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Description
               </Label>
               <div className="relative">
@@ -192,7 +192,7 @@ const AddFoodCategoryPage = () => {
 
             {isEditMode && editData?.image && (
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Current Uploaded Banner Image
                 </Label>
                 <div className="flex flex-col items-center justify-center py-4">
@@ -206,15 +206,14 @@ const AddFoodCategoryPage = () => {
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                  }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -262,7 +261,7 @@ const AddFoodCategoryPage = () => {
               Cancel
             </Button>
             <Button
-              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >

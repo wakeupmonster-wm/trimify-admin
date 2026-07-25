@@ -339,7 +339,7 @@ const FaqManagementPage = () => {
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+                  className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

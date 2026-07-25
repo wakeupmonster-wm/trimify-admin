@@ -301,7 +301,7 @@ const NotificationManagePage = () => {
                     <Button
                       onClick={handlePreCheck}
                       disabled={isSending}
-                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary5 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                      className="w-full h-11 bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
                       <Send size={18} />
                       {activeTab === "email"
@@ -394,7 +394,7 @@ const NotificationManagePage = () => {
                               {emailSubject || "(No Subject)"}
                             </h3>
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary3 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary4 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 T
                               </div>
                               <div className="leading-tight">

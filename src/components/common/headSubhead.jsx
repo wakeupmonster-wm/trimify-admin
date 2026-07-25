@@ -73,7 +73,7 @@ const PageHeader = React.forwardRef(
             {subheading && (
               <motion.div
                 variants={itemVariants}
-                className="text-xs leading-relaxed text-muted-foreground max-w-[600px] font-medium"
+                className="pl-0.5 text-xs leading-relaxed text-muted-foreground max-w-[600px] font-medium"
               >
                 {subheading}
               </motion.div>

@@ -17,6 +17,7 @@ import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { endOfDay, format, parseISO } from "date-fns";
 import { getTransactionColumns } from "./transaction.columns";
 import RevokeTransactionDialog from "./RevokeTransactionDialog";
+import ExportLoadingModal from "@/components/shared/ExportLoadingModal";
 import {
   fetchTransactions,
   exportTransactions,
@@ -36,11 +37,13 @@ export default function TransactionsView() {
     transactionsPagination,
     transactionsLoading,
     transactionsError,
-    exportLoading,
   } = useSelector((state) => state.subscriptionDashboard);
   const { plans } = useSelector((state) => state.subscriptionManagement);
 
   const location = useLocation();
+
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
@@ -113,15 +116,40 @@ export default function TransactionsView() {
   }, [dispatch, fetchParams]);
 
   const handleExport = async () => {
+    setExportLoading(true);
+    setExportProgress(0);
+
+    let currentStep = 0;
+    const intervalTime = 50;
+    const maxFakeProgress = 90;
+    const steps = 1500 / intervalTime;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = Math.min(Math.round((currentStep / steps) * maxFakeProgress), maxFakeProgress);
+      setExportProgress(progress);
+    }, intervalTime);
+
     const { page, limit, ...exportParams } = fetchParams;
     const result = await dispatch(exportTransactions(exportParams));
+
+    clearInterval(interval);
+
     if (exportTransactions.fulfilled.match(result)) {
-      downloadCsvBlob(
-        result.payload,
-        `transactions_${new Date().toISOString().split("T")[0]}.csv`,
-      );
-      toast.success("CSV exported successfully");
+      setExportProgress(100);
+      setTimeout(() => {
+        downloadCsvBlob(
+          result.payload,
+          `transactions_${new Date().toISOString().split("T")[0]}.csv`,
+        );
+        setTimeout(() => {
+          setExportLoading(false);
+          setExportProgress(0);
+        }, 2000);
+      }, 500);
     } else {
+      setExportLoading(false);
+      setExportProgress(0);
       toast.error("Failed to export transactions");
     }
   };
@@ -333,6 +361,13 @@ export default function TransactionsView() {
         transaction={revokeTransactionData}
         onConfirm={handleRevokeConfirm}
         loading={transactionsLoading} // Or specific revoke loading state if added
+      />
+
+      <ExportLoadingModal
+        exportLoading={exportLoading}
+        exportProgress={exportProgress}
+        setExportLoading={setExportLoading}
+        setExportProgress={setExportProgress}
       />
     </div>
   );

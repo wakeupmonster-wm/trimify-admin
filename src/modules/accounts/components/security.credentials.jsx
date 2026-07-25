@@ -270,7 +270,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               form.newPassword !== form.confirmPassword ||
               !form.newPassword
             }
-            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary5 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-app-primary2 transition-all duration-300"
+            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary3 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-app-primary2 transition-all duration-300"
           >
             {loading ? (
               <div className="flex items-center gap-2">

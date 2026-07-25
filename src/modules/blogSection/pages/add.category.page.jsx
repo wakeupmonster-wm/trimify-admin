@@ -30,6 +30,7 @@ const AddCategoryPage = () => {
   const editData = location.state?.editData || null;
 
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     title: "",
@@ -88,10 +89,19 @@ const AddCategoryPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title.trim()) {
-      return toast.error("Category Title is required");
-    }
+    const newErrors = {};
+    if (!formData.title.trim()) newErrors.title = "Category Title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Category Description is required";
+    if (!isEdit && !formData.iconImage)
+      newErrors.iconImage = "Category Icon is required";
+    if (!formData.status) newErrors.status = "Status is required";
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
     setLoading(true);
     try {
       const payload = new FormData();
@@ -107,10 +117,6 @@ const AddCategoryPage = () => {
         await dispatch(updateBlogCategory({ id, data: payload })).unwrap();
         toast.success("Category updated successfully!");
       } else {
-        if (!formData.iconImage) {
-          setLoading(false);
-          return toast.error("Category icon is required");
-        }
         await dispatch(addBlogCategory(payload)).unwrap();
         toast.success("Category added successfully!");
       }
@@ -130,7 +136,9 @@ const AddCategoryPage = () => {
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEdit ? "Edit Category" : "Add Category"}
-                icon={<TbCategoryPlus className="w-6 h-6 text-white shrink-0" />}
+                icon={
+                  <TbCategoryPlus className="w-6 h-6 text-white shrink-0" />
+                }
                 variant="primary"
                 subheading={
                   isEdit
@@ -144,7 +152,7 @@ const AddCategoryPage = () => {
               <Button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -157,11 +165,11 @@ const AddCategoryPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <form
             onSubmit={handleSubmit}
-            className="px-6 md:px-8 pt-5 pb-6 space-y-6"
+            className="px-4 sm:px-6 pt-5 pb-6 space-y-4 w-full min-w-0"
           >
             {/* Category Title */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Category Title
               </Label>
               <Input
@@ -169,33 +177,43 @@ const AddCategoryPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
-                required
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
               />
+              {errors.title && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.title}
+                </p>
+              )}
             </div>
 
             {/* Category Description */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Category Description
               </Label>
-              <Textarea
-                name="description"
-                placeholder="Enter description"
-                value={formData.description}
-                onChange={handleChange}
-                maxLength={500}
-                className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3"
-                required
-              />
-              <div className="text-xs text-slate-500 font-medium">
-                Character Count: {formData.description.length} / 500
+              <div className="relative">
+                <Textarea
+                  name="description"
+                  placeholder="Enter description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  maxLength={500}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                  {formData.description.length} / 500
+                </div>
               </div>
+              {errors.description && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
 
             {/* Upload Icon Image */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
               {isEdit && editData?.icon && !formData.iconImage && (
@@ -240,17 +258,25 @@ const AddCategoryPage = () => {
                   SVG, PNG, JPG or GIF (max. 6144 KB)
                 </p>
               </div>
+              {errors.iconImage && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.iconImage}
+                </p>
+              )}
             </div>
 
             {/* Category Status */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">Status</Label>
+              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
+                Status
+              </Label>
               <Select
                 value={formData.status}
                 onValueChange={handleStatusChange}
-                required
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
+                <SelectTrigger
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.status ? "border-red-500" : "border-slate-300/60"}`}
+                >
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -258,14 +284,19 @@ const AddCategoryPage = () => {
                   <SelectItem value="Inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.status && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.status}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-auto rounded-md px-4 py-2.5 h-10 text-xs font-semibold border-slate-300/60"
+                className="w-full sm:w-auto rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold border-slate-300/60 hover:bg-slate-50"
                 onClick={() => navigate(-1)}
               >
                 Cancel
@@ -273,7 +304,7 @@ const AddCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 py-2.5 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
               >
                 {loading ? (
                   <>
@@ -282,7 +313,7 @@ const AddCategoryPage = () => {
                   </>
                 ) : (
                   <>
-                    {isEdit ? "Update Category" : "Save Category"}
+                    {isEdit ? "Update" : "Save"}
                     <Save size={16} className="shrink-0" />
                   </>
                 )}

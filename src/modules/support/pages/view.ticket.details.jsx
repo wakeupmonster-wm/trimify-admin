@@ -746,7 +746,7 @@ export default function ViewTicketDetails() {
                         },
                       )
                     }
-                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary5 hover:text-app-primary2 hover:border-app-primary2 rounded-md transition-all group"
+                    className="w-full justify-center gap-3 h-10 text-[11px] font-bold text-slate-600 hover:bg-app-primary3 hover:text-app-primary2 hover:border-app-primary2 rounded-md transition-all group"
                   >
                     <User className="w-4 h-4 text-slate-400 group-hover:text-app-primary2 transition-colors" />
                     View User Profile

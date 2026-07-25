@@ -169,7 +169,7 @@ const AddProgramPage = () => {
             className="px-4 sm:px-6 pt-5 pb-6 space-y-4"
           >
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Program Title
               </Label>
               <Input
@@ -180,13 +180,15 @@ const AddProgramPage = () => {
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
               />
               {errors.title && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.title}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.title}
+                </p>
               )}
             </div>
 
             {/* Program Description */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Program Description
               </Label>
               <div className="relative">
@@ -215,11 +217,10 @@ const AddProgramPage = () => {
                 {isEditMode ? "Replace Uploaded Banner Image" : "Upload Banner Image"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/80 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                  }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -266,7 +267,7 @@ const AddProgramPage = () => {
 
             {/* Program Duration */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Program Duration
               </Label>
               <Select
@@ -284,7 +285,9 @@ const AddProgramPage = () => {
                 </SelectContent>
               </Select>
               {errors.duration && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.duration}</p>
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.duration}
+                </p>
               )}
             </div>
 
@@ -300,7 +303,7 @@ const AddProgramPage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {isSubmitting ? (
                   <>

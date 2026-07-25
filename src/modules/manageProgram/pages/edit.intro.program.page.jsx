@@ -95,7 +95,7 @@ const EditIntroProgramPage = () => {
 
         {/* Editor Card */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
-          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
+          <div className="px-4 sm:px-6 pt-5 pb-6 space-y-6">
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Introduction Content
@@ -121,7 +121,7 @@ const EditIntroProgramPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 <Save size={16} />
                 {loading ? "Updating..." : "Update"}

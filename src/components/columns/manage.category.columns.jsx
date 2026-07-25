@@ -112,7 +112,7 @@ export const getManageCategoryColumns = (onAction) => [
             align="end"
             className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
           >
-            <DropdownMenuLabel className="text-[10px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem

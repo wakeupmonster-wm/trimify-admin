@@ -327,7 +327,7 @@ export default function ProductsPage() {
                 size="sm"
                 onClick={() => dispatch(fetchProducts({ page: 1, limit: 100 }))}
                 disabled={productsLoading}
-                className="h-9 flex-1 lg:flex-none border border-slate-300/60 hover:bg-app-primary5 text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-300/60 hover:bg-app-primary3 text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn(
@@ -340,7 +340,7 @@ export default function ProductsPage() {
               <Button
                 size="sm"
                 onClick={handleOpenCreate}
-                className="h-9 flex-1 lg:flex-none border border-slate-300/60 shadow-sm bg-slate-50 hover:bg-app-primary5 text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 lg:flex-none border border-slate-300/60 shadow-sm bg-slate-50 hover:bg-app-primary3 text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <Plus className="mr-1.5 h-4 w-4" />
                 Add Product

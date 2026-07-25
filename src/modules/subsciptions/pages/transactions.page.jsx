@@ -363,7 +363,7 @@ export default function TransactionsPage() {
                   fetchTransactions();
                 }}
                 disabled={loading}
-                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary5 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary3 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
@@ -376,7 +376,7 @@ export default function TransactionsPage() {
                 size="sm"
                 onClick={handleExport}
                 disabled={exportLoading}
-                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary5 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
+                className="h-9 flex-1 md:flex-none border-slate-300/60 bg-slate-50 hover:bg-app-primary3 shadow-sm text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 {exportLoading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
@@ -970,7 +970,7 @@ export default function TransactionsPage() {
                                     },
                                   )
                                 }
-                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-app-primary5 hover:text-app-primary2 transition-colors"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 rounded-xl hover:bg-app-primary3 hover:text-app-primary2 transition-colors"
                               >
                                 <Eye size={16} />
                                 <span>View Transaction</span>

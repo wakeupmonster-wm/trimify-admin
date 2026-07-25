@@ -51,17 +51,17 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           null
         );
         if (controller.signal.aborted) return;
-        
+
         let list = [];
         if (Array.isArray(res)) {
           list = res;
         } else if (res && typeof res === 'object') {
           list = res.suggestions || res.data?.suggestions || res.data?.data?.suggestions || [];
           if (!Array.isArray(list)) {
-             list = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []);
+            list = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []);
           }
         }
-        
+
         if (!controller.signal.aborted && Array.isArray(list)) {
           setSuggestions(list);
           setShowSuggestions(list.length > 0);
@@ -125,8 +125,12 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
             <UtensilsCrossed className="w-4 h-4 text-app-primary2" />
           </div>
           <div>
-            <label className="text-sm font-bold text-slate-800">Food Names</label>
-            <p className="text-[11px] text-slate-400">Type a name and press Enter to add it to the batch</p>
+            <label className="text-sm font-bold text-slate-800">
+              Food Names
+            </label>
+            <p className="text-[11px] text-slate-400">
+              Type a name and press Enter to add it to the batch
+            </p>
           </div>
         </div>
         <span className="text-[11px] font-bold text-slate-400 shrink-0">
@@ -206,23 +210,14 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-4">
-          <p className="text-[10px] text-slate-400">Comma also works to separate names.</p>
-          <label className="flex items-center gap-1.5 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={creativeMode} 
-              onChange={(e) => setCreativeMode(e.target.checked)} 
-              className="rounded text-app-primary2 focus:ring-app-primary2 w-3.5 h-3.5 border-slate-300 shadow-sm"
-            />
-            <span className="text-[11px] font-semibold text-slate-600">Include AI suggestions</span>
-          </label>
-        </div>
+        <p className="text-[10px] text-slate-400">
+          Comma also works to separate names.
+        </p>
         <Button
           type="button"
           onClick={handleSubmit}
           disabled={loading || pendingCount === 0}
-          className="bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all shrink-0"
+          className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all shrink-0"
         >
           {loading ? (
             <Spinner className="w-4 h-4" />

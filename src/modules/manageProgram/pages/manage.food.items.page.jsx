@@ -293,10 +293,10 @@ const ManageFoodItemsPage = () => {
         </Header>
 
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
-          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6">
+          <div className="px-4 sm:px-6 pt-5 pb-6 space-y-5">
             {/* Approval Status */}
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Approval Status
               </Label>
               <div className="flex items-center gap-6 mt-2">
@@ -332,7 +332,7 @@ const ManageFoodItemsPage = () => {
             {/* Search / Food Name */}
             {isFoodSelected && !isEditing ? (
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Selected Food
                 </Label>
                 <div className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md flex items-center justify-between bg-white font-medium">
@@ -353,7 +353,7 @@ const ManageFoodItemsPage = () => {
               </div>
             ) : (
               <div className="space-y-1.5 relative">
-                <Label className="text-xs font-bold text-slate-800">
+                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   {isEditing ? "Food Name" : "Search Food Name"}
                 </Label>
                 <Input
@@ -435,7 +435,7 @@ const ManageFoodItemsPage = () => {
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
+              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Food Category
               </Label>
               <Select
@@ -469,7 +469,7 @@ const ManageFoodItemsPage = () => {
             {formData.type === "Approved" && (
               <>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-800">
+                  <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                     Food Quantity
                   </Label>
                   <Input
@@ -483,7 +483,7 @@ const ManageFoodItemsPage = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-800">
+                  <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                     Select Unit
                   </Label>
                   <Select
@@ -519,7 +519,7 @@ const ManageFoodItemsPage = () => {
                 </Button>
               )}
               <Button
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >
