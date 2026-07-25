@@ -11,6 +11,9 @@ dist
 dist-ssr
 *.local
 
+# Regenerated from node_modules/tinymce by scripts/copy-tinymce.cjs (postinstall)
+public/tinymce
+
 .env
 
 # Editor directories and files

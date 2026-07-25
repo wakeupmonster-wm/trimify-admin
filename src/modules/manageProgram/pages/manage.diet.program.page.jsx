@@ -99,7 +99,7 @@ const ManageDietProgramPage = () => {
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full md:w-auto">
               <PageHeader
-                heading="Manage Diet Meal plan"
+                heading="Manage Diet Meal Plan"
                 icon={<CalendarCheck className="w-6 h-6 text-white shrink-0" />}
                 variant="primary"
                 subheading="Manage day-by-day diet meals for this program."
@@ -127,7 +127,7 @@ const ManageDietProgramPage = () => {
             data={dietMeals || []}
             rowCount={(dietMeals || []).length}
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             loading={loading}

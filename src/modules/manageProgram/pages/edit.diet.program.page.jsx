@@ -40,9 +40,7 @@ const EditDietProgramPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { dietMeals, programDuration, foodSearchResults, loading } =
-    useSelector((state) => state.manageDiet);
-  // console.log("dietMeals: ", dietMeals);
+  const { dietMeals, programDuration, foodSearchResults, loading } = useSelector((state) => state.manageDiet);
 
   const [selectedWeek, setSelectedWeek] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
@@ -293,7 +291,7 @@ const EditDietProgramPage = () => {
               {selectedMeals.length > 0 ? (
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-800">
-                    Update New Food
+                    Selected Food
                   </Label>
                   <div className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md flex items-center justify-between bg-white font-medium">
                     <span className="truncate">

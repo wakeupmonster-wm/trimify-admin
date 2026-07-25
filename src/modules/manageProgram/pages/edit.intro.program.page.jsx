@@ -113,7 +113,7 @@ const EditIntroProgramPage = () => {
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               <Button
                 variant="outline"
-                className="w-full sm:w-auto rounded-md px-4 h-10 text-xs font-semibold"
+                className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
                 onClick={() => navigate(-1)}
               >
                 Cancel

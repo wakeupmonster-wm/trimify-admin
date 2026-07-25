@@ -71,11 +71,23 @@ export function TabHealth({ data }) {
             </div>
           </Card>
 
-          <Card title="Daily Targets" subtitle="Nutrition & hydration">
+          <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals">
             <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              <GoalTile label="Water Goal" value={`${waterGoal.toLocaleString()} ml`} />
-              <GoalTile label="Calories Goal" value={`${caloriesGoal.toLocaleString()} kcal`} />
-              <GoalTile label="Step Target" value={targetSteps.toLocaleString()} />
+              <GoalTile
+                label="Water Goal"
+                value={`${waterGoal.toLocaleString()} ml`}
+                pct={Math.min(100, (waterGoal / 4000) * 100)}
+              />
+              <GoalTile
+                label="Calories Goal"
+                value={`${caloriesGoal.toLocaleString()} kcal`}
+                pct={Math.min(100, (caloriesGoal / 3500) * 100)}
+              />
+              <GoalTile
+                label="Step Target"
+                value={targetSteps.toLocaleString()}
+                pct={Math.min(100, (targetSteps / 12000) * 100)}
+              />
             </div>
 
             <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">

@@ -96,7 +96,6 @@ const ManageProgramPage = () => {
     } else if (action === "delete") {
       setDeleteTarget(row);
     } else if (action === "replicate") {
-      console.log("Replicate program:", row.id);
       const result = await dispatch(replicateProgram(row.id));
       if (replicateProgram.fulfilled.match(result)) {
         dispatch(
@@ -208,10 +207,12 @@ const ManageProgramPage = () => {
       totalPrograms: serverPagination?.total || all.length,
       activePrograms: active,
       inactivePrograms: all.length - active,
-      totalAssignedUsers: all.reduce(
-        (sum, p) => sum + (p.assigned_users_count || 0),
-        0,
-      ),
+      // The list API doesn't return a per-program `assigned_users_count`,
+      // and there's no cross-program aggregate endpoint yet (see the
+      // Backend TODO in program.slice.js) — so there's no real number to
+      // fall back to here. Leave it null so ModuleKpiRow shows "—"
+      // instead of a fake 0 until the backend ships `kpis.totalAssignedUsers`.
+      totalAssignedUsers: null,
     };
   }, [kpis, programs, serverPagination]);
 
@@ -245,7 +246,10 @@ const ManageProgramPage = () => {
     {
       icon: Users2,
       label: "Assigned Users",
-      value: localKpis?.totalAssignedUsers?.toLocaleString() || "0",
+      value:
+        localKpis?.totalAssignedUsers != null
+          ? localKpis.totalAssignedUsers.toLocaleString()
+          : undefined,
       description: "Across all programs",
       tone: "violet",
     },

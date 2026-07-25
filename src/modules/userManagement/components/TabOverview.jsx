@@ -1,19 +1,19 @@
 import React from "react";
 import {
-  Mail,
-  Phone,
-  Globe,
-  Calendar,
-  ShieldCheck,
-  Bell,
-  CreditCard,
-  User,
   Activity,
+  ShieldCheck,
+  CreditCard,
+  Calendar,
+  Target,
+  User,
 } from "lucide-react";
-import { Kpi, Card, GoalTile, Pill, KV, EmptyState } from "./UserProfileView";
+import { cn } from "@/lib/utils";
+import { Kpi, Card, Pill, KV, EmptyState } from "./UserProfileView";
+import { activityMeta } from "./activity.utils";
 
 export function TabOverview({ data }) {
-  const { user, es, waterGoal, caloriesGoal, targetSteps, macroTotal, macros, cap, initials, fmtDate, timeAgo } = data;
+  const { user, es, cap, fmtDate, timeAgo, bmi, bmiCat, activeProgram } = data;
+  const recentActivities = user.recent_activities || [];
 
   return (
     <>
@@ -32,52 +32,46 @@ export function TabOverview({ data }) {
             />
           </div>
 
-          <Card title="Daily Targets" subtitle="Nutrition & step goals">
-            <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              <GoalTile
-                label="Water Goal"
-                value={`${waterGoal.toLocaleString()} ml`}
-                pct={Math.min(100, (waterGoal / 4000) * 100)}
+          <Card
+            title="Recent Activity"
+            subtitle="Latest actions across the account"
+          >
+            {recentActivities.length > 0 ? (
+              <div className="flex flex-col">
+                {recentActivities.slice(0, 6).map((a, i) => {
+                  const { icon: Icon, className } = activityMeta(a.type);
+                  return (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 border-b border-slate-50 py-2.5 last:border-b-0 last:pb-0"
+                    >
+                      <div
+                        className={cn(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                          className,
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-[12px] font-semibold text-slate-900">
+                          {a.title}
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-[10.5px] font-medium text-slate-400">
+                        {timeAgo(a.created_at)}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState
+                icon={Activity}
+                title="No Recent Activity"
+                subtitle="This user hasn't performed any tracked actions yet."
               />
-              <GoalTile
-                label="Calories Goal"
-                value={`${caloriesGoal.toLocaleString()} kcal`}
-                pct={Math.min(100, (caloriesGoal / 3500) * 100)}
-              />
-              <GoalTile
-                label="Step Target"
-                value={targetSteps.toLocaleString()}
-                pct={Math.min(100, (targetSteps / 12000) * 100)}
-              />
-            </div>
-            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
-              Macro split
-            </div>
-            <div className="mb-2.5 flex h-2 overflow-hidden rounded-full border border-slate-100 bg-slate-100">
-              {macros.map((m) => (
-                <div
-                  key={m.label}
-                  style={{
-                    width: `${macroTotal ? ((m.v / macroTotal) * 100).toFixed(1) : 0}%`,
-                    background: m.color,
-                  }}
-                />
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-3.5">
-              {macros.map((m) => (
-                <div
-                  key={m.label}
-                  className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500"
-                >
-                  <span
-                    className="h-1.5 w-1.5 rounded-sm"
-                    style={{ background: m.color }}
-                  />
-                  {m.label} · {m.v}g
-                </div>
-              ))}
-            </div>
+            )}
           </Card>
 
           {user.most_used_feature && (
@@ -108,60 +102,65 @@ export function TabOverview({ data }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Card title="Managed By" subtitle="Assigned sub-admin"
-            // right={
-            //   <Pill
-            //     tone={
-            //       user.sub_admin?.status === "Active" ||
-            //       user.sub_admin?.status === "1"
-            //         ? "success"
-            //         : "neutral"
-            //     }
-            //   >
-            //     {user.sub_admin?.status === "1"
-            //       ? "Active"
-            //       : user.sub_admin?.status === "0"
-            //         ? "Inactive"
-            //         : user.sub_admin?.status}
-            //   </Pill>
-            // }
-          >
+          <Card title="Snapshot" subtitle="Quick summary across all areas">
+            <KV
+              icon={CreditCard}
+              label="Plan"
+              value={
+                user.plan ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    {user.plan.title}
+                    <Pill tone={user.paid ? "success" : "neutral"}>
+                      {user.paid ? "Paid" : "Unpaid"}
+                    </Pill>
+                  </span>
+                ) : (
+                  "No active plan"
+                )
+              }
+            />
+            <KV
+              icon={Calendar}
+              label="Plan Expiry"
+              value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"}
+            />
+            <KV
+              icon={Target}
+              label="Active Program"
+              value={
+                activeProgram ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    {activeProgram.title}
+                    <Pill tone={activeProgram.status === "Active" ? "success" : "neutral"}>
+                      {activeProgram.status}
+                    </Pill>
+                  </span>
+                ) : (
+                  "None assigned"
+                )
+              }
+            />
+            <KV
+              icon={ShieldCheck}
+              label="BMI"
+              value={
+                bmi ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    {bmi.toFixed(1)}
+                    <span className={cn("text-[11px] font-semibold", bmiCat.color)}>
+                      {bmiCat.label}
+                    </span>
+                  </span>
+                ) : (
+                  "—"
+                )
+              }
+            />
             {user.sub_admin ? (
-              <>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-500">
-                    {initials(user.sub_admin?.name)}
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-bold text-slate-900">
-                      {user.sub_admin?.name}
-                    </div>
-                    <div className="text-[11px] font-medium text-slate-500">
-                      {user.sub_admin?.designation} · {user.sub_admin?.hospital}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3 px-1">
-                  <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
-                  <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
-                  <KV icon={Globe} label="Location" value={user.sub_admin?.location} />
-                </div>
-              </>
+              <KV icon={User} label="Managed By" value={user.sub_admin?.name} />
             ) : (
-              <EmptyState
-                icon={User}
-                title="No Sub-Admin Assigned"
-                subtitle="This user is not managed by a specific sub-admin."
-              />
+              <KV icon={User} label="Managed By" value="No Sub-Admin Assigned" />
             )}
-          </Card>
-
-          <Card title="Account" subtitle="User account details">
-            <KV icon={CreditCard} label="Payment" value={user.paid ? "Paid" : "Unpaid"} />
-            <KV icon={ShieldCheck} label="Plan" value={user.plan ? cap(user.plan) : "No active plan"} />
-            <KV icon={Bell} label="Notifications" value={user.notification_status ? "Enabled" : "Disabled"} />
-            <KV icon={Calendar} label="Updated" value={fmtDate(user.updated_at)} />
           </Card>
         </div>
       </div>

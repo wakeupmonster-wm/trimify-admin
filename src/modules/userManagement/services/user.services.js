@@ -8,3 +8,11 @@ export const getUserManagementAPI = async (params = {}) => {
 export const getSingleUserProfileAPI = async (id) => {
   return apiConnector("GET", USER.VIEW_USER_PROFILE(id));
 };
+
+export const getUserTransactionsAPI = async (id, params = {}) => {
+  return apiConnector("GET", USER.USER_TRANSACTIONS(id), null, null, params);
+};
+
+export const deleteUserAPI = async (id) => {
+  return apiConnector("DELETE", USER.DELETE_USER(id));
+};

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Save, UploadCloud, Layers, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
-import { BASE_URL } from "@/services/api-endpoints/base.url";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,11 +28,7 @@ const AddFoodCategoryPage = () => {
   );
   const [description, setDescription] = useState(editData?.description || "");
   const [iconFile, setIconFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(
-    editData?.image
-      ? `${BASE_URL.replace("/api", "")}/${editData.image}`
-      : null,
-  );
+  const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -202,7 +197,7 @@ const AddFoodCategoryPage = () => {
                 </Label>
                 <div className="flex flex-col items-center justify-center py-4">
                   <img
-                    src={`${BASE_URL.replace("/api", "")}/${editData.image}`}
+                    src={editData.image}
                     alt="Current Category"
                     className="w-16 h-16 object-contain rounded-md"
                   />
@@ -215,11 +210,10 @@ const AddFoodCategoryPage = () => {
                 {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                  }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -261,7 +255,7 @@ const AddFoodCategoryPage = () => {
           <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
+              className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
               onClick={() => navigate(-1)}
             >
               Cancel

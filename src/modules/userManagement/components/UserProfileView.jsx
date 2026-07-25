@@ -14,6 +14,9 @@ import { TabPrograms } from "./TabPrograms";
 import { TabActivity } from "./TabActivity";
 import { TabAccount } from "./TabAccount";
 import { TabSettings } from "./TabSettings";
+import { TabTransactions } from "./TabTransactions";
+import { getUserTransactionsAPI } from "../services/user.services";
+
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
@@ -22,6 +25,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { APP_COLORS } from "@/config/theme.config.js";
 import { LuUserRound } from "react-icons/lu";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 /* =========================================================================
    Helpers
@@ -95,6 +99,7 @@ function bmiCategory(bmi) {
   if (bmi < 30) return { label: "Overweight", color: "text-amber-600" };
   return { label: "Obese", color: "text-rose-600" };
 }
+
 
 /* =========================================================================
    Small UI primitives
@@ -229,7 +234,7 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
       className={cn(
         "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
         variant === "primary" &&
-          "border-[#007FC0] bg-[#007FC0] text-white hover:bg-[#006699] hover:border-[#006699]",
+          "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
         variant === "danger" &&
           "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
         variant === "outline" &&
@@ -248,6 +253,7 @@ const TABS = [
   { key: "programs", label: "Programs & Fitzone" },
   { key: "activity", label: "Activity" },
   { key: "account", label: "Account" },
+  { key: "transactions", label: "Transactions" },
   { key: "settings", label: "Settings" },
 ];
 
@@ -258,6 +264,8 @@ export default function UserProfileView({ user, onBack, loading }) {
   const [tab, setTab] = useState("overview");
   const [toastMsg, setToastMsg] = useState(null);
   const toastTimer = useRef(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const derived = useMemo(() => {
     if (!user) return {};
@@ -294,11 +302,24 @@ export default function UserProfileView({ user, onBack, loading }) {
     ];
     const fitnessProfileSet = fitnessProfileFields.filter(([, v]) => v);
     const fitnessProfileMissing = fitnessProfileFields.filter(([, v]) => !v);
-    const parsedActivities = (user.recent_activities || []).map((a) => ({
-      ...a,
-      steps: parseInt(((a.title || "").match(/\d+/) || ["0"])[0], 10),
-    }));
-    const maxSteps = Math.max(1, ...parsedActivities.map((a) => a.steps));
+    const LOG_TYPES = ["step_log", "water_log", "food_log", "weight_log"];
+    const logActivities = (user.recent_activities || [])
+      .filter((a) => LOG_TYPES.includes(a.type))
+      .map((a) => ({
+        ...a,
+        steps:
+          a.type === "step_log"
+            ? parseInt(((a.title || "").match(/\d+/) || ["0"])[0], 10)
+            : 0,
+      }));
+    const maxSteps = Math.max(
+      1,
+      ...logActivities.filter((a) => a.type === "step_log").map((a) => a.steps),
+    );
+    const activeProgram =
+      (user.programs || []).find((p) => p.status === "Active") ||
+      (user.programs || [])[0] ||
+      null;
     return {
       height,
       weight,
@@ -311,15 +332,59 @@ export default function UserProfileView({ user, onBack, loading }) {
       fitnessProfileSet,
       fitnessProfileMissing,
       fitnessProfileFields,
-      parsedActivities,
+      logActivities,
       maxSteps,
+      activeProgram,
     };
   }, [user]);
+
+  const [txState, setTxState] = useState({
+    loaded: false,
+    loading: false,
+    transactions: [],
+    summary: {},
+    page: 1,
+    totalPages: 1,
+    status: "all",
+  });
+
+  const loadTransactions = async (page, status) => {
+    if (!user?.id) return;
+    setTxState((s) => ({ ...s, loading: true }));
+    try {
+      const params = { page };
+      if (status !== "all") params.status = status;
+      const response = await getUserTransactionsAPI(user.id, params);
+      if (response?.success) {
+        setTxState({
+          loaded: true,
+          loading: false,
+          transactions: response.data?.transactions || [],
+          summary: response.data?.summary || {},
+          page,
+          totalPages: response.data?.pagination?.last_page || 1,
+          status,
+        });
+      } else {
+        setTxState((s) => ({ ...s, loading: false }));
+      }
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      setTxState((s) => ({ ...s, loading: false }));
+    }
+  };
+
+  const handleTabChange = (value) => {
+    setTab(value);
+    if (value === "transactions" && !txState.loaded && !txState.loading) {
+      loadTransactions(1, "all");
+    }
+  };
 
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto max-w-[1180px]">
-        <Loader2 className="w-10 h-10 animate-spin text-[#007FC0]" />
+        <Loader2 className="w-10 h-10 animate-spin text-app-primary2" />
         <p className="text-sm text-slate-500 mt-4 font-medium animate-pulse">
           Loading user profile...
         </p>
@@ -338,6 +403,24 @@ export default function UserProfileView({ user, onBack, loading }) {
   const handleCopy = (value, label) => {
     navigator.clipboard?.writeText(String(value)).catch(() => {});
     showToast(`${label} copied`);
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      setIsDeleting(true);
+      const { deleteUserAPI } = await import("../services/user.services");
+      const res = await deleteUserAPI(user.id);
+      if (res?.data?.success || res?.status === 200 || res?.status === 204) {
+        showToast("User deleted successfully.");
+        setTimeout(() => onBack(), 1000);
+      } else {
+        showToast(res?.data?.message || "Failed to delete user.");
+      }
+    } catch (error) {
+      showToast(error?.response?.data?.message || "Failed to delete user.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const { age } = derived;
@@ -366,6 +449,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     fmtDate,
     truncMid,
     timeAgo,
+    transactionsState: txState,
+    onTransactionsPageChange: (page) => loadTransactions(page, txState.status),
+    onTransactionsStatusChange: (status) => loadTransactions(1, status),
   };
 
   return (
@@ -453,19 +539,31 @@ export default function UserProfileView({ user, onBack, loading }) {
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
-            <ActionButton icon={CreditCard} label="Transactions" />
-            <ActionButton icon={Trash2} label="Delete" variant="danger" />
-            <ActionButton icon={Edit} label="Edit User" variant="primary" />
+            <ActionButton 
+              icon={isDeleting ? Loader2 : Trash2} 
+              label={isDeleting ? "Deleting..." : "Delete User"} 
+              variant="danger" 
+              onClick={() => setIsDeleteModalOpen(true)} 
+            />
           </div>
         </div>
 
-        <Tabs value={tab} onValueChange={setTab} className="w-full">
+        <ConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleDeleteUser}
+          title="Confirm User Deletion"
+          message="Are you sure you want to delete this user? This action can be reversed by an admin."
+          confirmText="Delete User"
+        />
+
+        <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="mb-6 w-full justify-start overflow-x-auto border-b border-slate-200 bg-transparent p-0 h-10 rounded-none flex-nowrap">
             {TABS.map((t) => (
               <TabsTrigger
                 key={t.key}
                 value={t.key}
-                className="relative h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:border-[#007FC0] data-[state=active]:text-[#007FC0] data-[state=active]:shadow-none whitespace-nowrap"
+                className="relative h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:border-app-primary2 data-[state=active]:text-app-primary2 data-[state=active]:shadow-none whitespace-nowrap"
               >
                 {t.label}
               </TabsTrigger>
@@ -486,6 +584,9 @@ export default function UserProfileView({ user, onBack, loading }) {
           </TabsContent>
           <TabsContent value="account">
             <TabAccount data={tabData} />
+          </TabsContent>
+          <TabsContent value="transactions">
+            <TabTransactions data={tabData} />
           </TabsContent>
           <TabsContent value="settings">
             <TabSettings data={tabData} />

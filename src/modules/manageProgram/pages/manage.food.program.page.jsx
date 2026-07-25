@@ -117,7 +117,7 @@ const ManageFoodProgramPage = () => {
             rowCount={serverPagination.total || categories.length}
             searchPlaceholder="Search by category name..."
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             isLoading={loading}

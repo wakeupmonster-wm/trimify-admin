@@ -96,7 +96,7 @@ const ViewUserProgramPage = () => {
             }
             searchPlaceholder="Search by username..."
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             loading={loading}

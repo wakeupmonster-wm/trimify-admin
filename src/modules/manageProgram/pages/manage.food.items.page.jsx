@@ -150,7 +150,6 @@ const ManageFoodItemsPage = () => {
         unit: formData.unit,
       };
 
-      console.log("payload: ", payload);
       const resultAction = await dispatch(
         updateFood({ id: editingFoodId, data: payload }),
       );
@@ -551,7 +550,7 @@ const ManageFoodItemsPage = () => {
             data={foods}
             rowCount={foods.length}
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             loading={loading}
