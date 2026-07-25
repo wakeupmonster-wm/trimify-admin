@@ -33,6 +33,8 @@ const EditFitzoneIntroPage = () => {
     }
   }, [dispatch, id]);
 
+  console.log("intro: ", intro);
+
   useEffect(() => {
     if (intro) {
       setHeading(intro.heading || "");
@@ -46,15 +48,15 @@ const EditFitzoneIntroPage = () => {
       const payload = {
         fitzone_id: id,
         heading,
-        subheading,
-        intro: content, // sending as 'intro' or 'content' based on your API expectation
+        sub_heading: subheading,
+        content: content,
       };
       let resultAction;
 
       // If we got some intro previously, we update it, otherwise add it.
-      if (intro) {
+      if (intro && intro.id) {
         resultAction = await dispatch(
-          updateFitzoneIntro({ id: intro.id || id, data: payload }),
+          updateFitzoneIntro({ id: intro.id, data: payload }),
         );
       } else {
         resultAction = await dispatch(addFitzoneIntro(payload));

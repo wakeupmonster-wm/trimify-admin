@@ -175,6 +175,54 @@ const manageDietSlice = createSlice({
       // search food
       .addCase(searchFood.fulfilled, (state, action) => {
         state.foodSearchResults = action.payload || [];
+      })
+      // addDietMeal
+      .addCase(addDietMeal.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addDietMeal.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addDietMeal.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // updateDietMeal
+      .addCase(updateDietMeal.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateDietMeal.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateDietMeal.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // deleteDietMeal
+      .addCase(deleteDietMeal.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteDietMeal.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteDietMeal.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // toggleDietMealStatus
+      .addCase(toggleDietMealStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleDietMealStatus.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(toggleDietMealStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

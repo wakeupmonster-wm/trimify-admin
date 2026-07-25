@@ -139,12 +139,22 @@ const faqSlice = createSlice({
         state.error = action.payload;
       })
       // Toggle FAQ status
+      .addCase(toggleFaqStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(toggleFaqStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
         const { id, updated_status } = action.payload;
         const index = state.faqs.findIndex(faq => faq.id === id);
         if (index !== -1 && updated_status) {
           state.faqs[index].status = updated_status;
         }
+      })
+      .addCase(toggleFaqStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       // Delete FAQ
       .addCase(deleteFaq.pending, (state) => {
@@ -156,7 +166,7 @@ const faqSlice = createSlice({
       .addCase(deleteFaq.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
   },
 });
 

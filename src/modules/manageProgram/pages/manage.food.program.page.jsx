@@ -62,7 +62,7 @@ const ManageFoodProgramPage = () => {
     if (!deleteTarget) return;
     const result = await dispatch(deleteFoodCategory(deleteTarget.id));
     if (deleteFoodCategory.fulfilled.match(result)) {
-      toast.success("Food Category deleted successfully");
+      toast.success(result.payload?.message || "Food Category deleted successfully");
       dispatch(
         getFoodCategories({
           page: pagination.pageIndex + 1,

@@ -27,8 +27,8 @@ export const updateBlogCategoryAPI = async (id, data) => {
   return apiConnector("POST", BLOG_CATEGORIES.BLOG_CATEGORY_UPDATE(id), data);
 };
 
-export const toggleBlogCategoryStatusAPI = async (id) => {
-  return apiConnector("PATCH", BLOG_CATEGORIES.BLOG_CATEGORY_TOGGLE_STATUS(id));
+export const toggleBlogCategoryStatusAPI = async (id, data) => {
+  return apiConnector("PATCH", BLOG_CATEGORIES.BLOG_CATEGORY_TOGGLE_STATUS(id), data);
 };
 
 export const deleteBlogCategoryAPI = async (id) => {
@@ -45,8 +45,8 @@ export const updateBlogPostAPI = async (id, data) => {
   return apiConnector("POST", BLOG_POSTS.BLOG_POST_UPDATE(id), data);
 };
 
-export const toggleBlogPostStatusAPI = async (id) => {
-  return apiConnector("PATCH", BLOG_POSTS.BLOG_POST_TOGGLE_STATUS(id));
+export const toggleBlogPostStatusAPI = async (id, data) => {
+  return apiConnector("PATCH", BLOG_POSTS.BLOG_POST_TOGGLE_STATUS(id), data);
 };
 
 export const toggleBlogPostVisibilityAPI = async (id, data) => {

@@ -136,8 +136,6 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 className="w-5 h-5 object-contain"
                 onError={(e) => {
                   e.target.style.display = "none";
-                  e.target.parentElement.innerHTML =
-                    '<span class="text-[10px] text-slate-400">N/A</span>';
                 }}
               />
             </div>

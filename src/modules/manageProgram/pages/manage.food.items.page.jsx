@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, X, ArrowLeft } from "lucide-react";
+import { Send, X, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -38,6 +38,8 @@ const ManageFoodItemsPage = () => {
   const { foods, dropdownCategories, foodSearchResults, loading } = useSelector(
     (state) => state.manageFood,
   );
+
+  console.log("foodSearchResults: ", foodSearchResults);
 
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -367,7 +369,7 @@ const ManageFoodItemsPage = () => {
                     if (
                       !isEditing &&
                       formData.title.trim().length >= 2 &&
-                      searchSuggestions.length > 0
+                      foodSearchResults && foodSearchResults.length > 0
                     ) {
                       setShowSuggestions(true);
                     }
@@ -389,7 +391,8 @@ const ManageFoodItemsPage = () => {
                           <li
                             key={index}
                             className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm flex items-center justify-between"
-                            onClick={() => {
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Prevents input onBlur from firing first
                               setFormData({
                                 ...formData,
                                 title:
@@ -401,7 +404,7 @@ const ManageFoodItemsPage = () => {
                                   formData.title,
                                 food_id: item.id,
                                 category_id:
-                                  item.category_id || formData.category_id,
+                                  item.category_id?.toString() || formData.category_id,
                                 quantity: item.quantity || formData.quantity,
                                 unit: item.unit || formData.unit,
                                 type: item.type || formData.type,
@@ -524,7 +527,11 @@ const ManageFoodItemsPage = () => {
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >
-                {!isEditing && <Send size={16} />}
+                {loading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  !isEditing && <Send size={16} />
+                )}
                 {loading
                   ? isEditing
                     ? "Updating..."

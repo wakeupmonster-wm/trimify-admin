@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Layers, ArrowLeft } from "lucide-react";
+import { Save, UploadCloud, Layers, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
 import { BASE_URL } from "@/services/api-endpoints/base.url";
@@ -98,7 +98,7 @@ const AddFoodCategoryPage = () => {
         updateFoodCategory({ id: categoryId, data: formData }),
       );
       if (updateFoodCategory.fulfilled.match(resultAction)) {
-        toast.success("Food category updated successfully!");
+        toast.success(resultAction.payload?.message || "Food category updated successfully!");
         navigate(-1);
       } else {
         toast.error(resultAction.payload || "Failed to update food category.");
@@ -106,7 +106,7 @@ const AddFoodCategoryPage = () => {
     } else {
       const resultAction = await dispatch(addFoodCategory(formData));
       if (addFoodCategory.fulfilled.match(resultAction)) {
-        toast.success("Food category added successfully!");
+        toast.success(resultAction.payload?.message || "Food category added successfully!");
         navigate(-1);
       } else {
         toast.error(resultAction.payload || "Failed to add food category.");
@@ -271,14 +271,17 @@ const AddFoodCategoryPage = () => {
               onClick={handleSubmit}
               disabled={loading}
             >
-              <Save size={16} />
-              {loading
-                ? isEditMode
-                  ? "Updating..."
-                  : "Saving..."
-                : isEditMode
-                  ? "Update"
-                  : "Save"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  {isEditMode ? "Updating..." : "Saving..."}
+                </>
+              ) : (
+                <>
+                  {isEditMode ? "Update" : "Save"}
+                  <Save className="w-4 h-4 shrink-0" />
+                </>
+              )}
             </Button>
           </div>
         </div>

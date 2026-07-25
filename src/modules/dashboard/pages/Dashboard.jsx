@@ -539,7 +539,7 @@ export default function Dashboard() {
                         ),
                       },
                     ]}
-                    actionLabel={<Eye size={14} />}
+                    actionLabel={"View"}
                     onAction={(row) =>
                       navigate(`/admin/users/view-user/${row.id}`, {
                         state: { from: "/admin/dashboard" },

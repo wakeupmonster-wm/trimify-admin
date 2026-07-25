@@ -295,14 +295,14 @@ const AddProgramPage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate(-1)}
-                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {isSubmitting ? (
                   <>

@@ -119,9 +119,9 @@ export const updateBlogCategory = createAsyncThunk(
 
 export const toggleBlogCategoryStatus = createAsyncThunk(
   "blogSection/toggleCategoryStatus",
-  async (id, { rejectWithValue }) => {
+  async ({ id, status }, { rejectWithValue }) => {
     try {
-      const response = await toggleBlogCategoryStatusAPI(id);
+      const response = await toggleBlogCategoryStatusAPI(id, { status });
       if (response && (response.success || response.status === "success")) return { id, ...response };
       return rejectWithValue(response.message || "Failed to toggle status");
     } catch (error) {
@@ -184,9 +184,9 @@ export const toggleBlogPostStatus = createAsyncThunk(
 
 export const toggleBlogPostVisibility = createAsyncThunk(
   "blogSection/togglePostVisibility",
-  async ({ id, visibility_status }, { rejectWithValue }) => {
+  async ({ id, status }, { rejectWithValue }) => {
     try {
-      const response = await toggleBlogPostVisibilityAPI(id, { visibility_status });
+      const response = await toggleBlogPostVisibilityAPI(id, { status });
       if (response && (response.success || response.status === "success")) return { id, ...response };
       return rejectWithValue(response.message || "Failed to toggle post visibility");
     } catch (error) {
@@ -262,6 +262,141 @@ const blogSectionSlice = createSlice({
         state.postsPagination = action.payload.pagination;
       })
       .addCase(fetchBlogPosts.rejected, (state, action) => {
+        state.postsLoading = false;
+        state.postsError = action.payload;
+      })
+      // Category mutations
+      // addBlogCategory
+      .addCase(addBlogCategory.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(addBlogCategory.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(addBlogCategory.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload;
+      })
+      // updateBlogCategory
+      .addCase(updateBlogCategory.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(updateBlogCategory.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(updateBlogCategory.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload;
+      })
+      // toggleBlogCategoryStatus
+      .addCase(toggleBlogCategoryStatus.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(toggleBlogCategoryStatus.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(toggleBlogCategoryStatus.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload;
+      })
+      // deleteBlogCategory
+      .addCase(deleteBlogCategory.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(deleteBlogCategory.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(deleteBlogCategory.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload;
+      })
+      // getBlogCategoryById
+      .addCase(getBlogCategoryById.pending, (state) => {
+      state.categoriesLoading = true;
+      state.categoriesError = null;
+      })
+      .addCase(getBlogCategoryById.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(getBlogCategoryById.rejected, (state, action) => {
+        state.categoriesLoading = false;
+      state.categoriesError = action.payload;
+      })
+      // fetchBlogCategoryDropdown
+      .addCase(fetchBlogCategoryDropdown.pending, (state) => {
+        state.categoriesLoading = true;
+        state.categoriesError = null;
+      })
+      .addCase(fetchBlogCategoryDropdown.fulfilled, (state) => {
+        state.categoriesLoading = false;
+      })
+      .addCase(fetchBlogCategoryDropdown.rejected, (state, action) => {
+        state.categoriesLoading = false;
+        state.categoriesError = action.payload;
+      })
+
+      // Post mutations
+      // addBlogPost
+      .addCase(addBlogPost.pending, (state) => {
+        state.postsLoading = true;
+        state.postsError = null;
+      })
+      .addCase(addBlogPost.fulfilled, (state) => {
+        state.postsLoading = false;
+      })
+      .addCase(addBlogPost.rejected, (state, action) => {
+        state.postsLoading = false;
+        state.postsError = action.payload;
+      })
+      // updateBlogPost
+      .addCase(updateBlogPost.pending, (state) => {
+        state.postsLoading = true;
+        state.postsError = null;
+      })
+      .addCase(updateBlogPost.fulfilled, (state) => {
+        state.postsLoading = false;
+      })
+      .addCase(updateBlogPost.rejected, (state, action) => {
+        state.postsLoading = false;
+        state.postsError = action.payload;
+      })
+    // toggleBlogPostStatus
+      .addCase(toggleBlogPostStatus.pending, (state) => {
+        state.postsLoading = true;
+        state.postsError = null;
+      })
+      .addCase(toggleBlogPostStatus.fulfilled, (state) => {
+        state.postsLoading = false;
+      })
+      .addCase(toggleBlogPostStatus.rejected, (state, action) => {
+        state.postsLoading = false;
+        state.postsError = action.payload;
+      })
+      // toggleBlogPostVisibility
+      .addCase(toggleBlogPostVisibility.pending, (state) => {
+        state.postsLoading = true;
+        state.postsError = null;
+      })
+      .addCase(toggleBlogPostVisibility.fulfilled, (state) => {
+        state.postsLoading = false;
+      })
+      .addCase(toggleBlogPostVisibility.rejected, (state, action) => {
+        state.postsLoading = false;
+        state.postsError = action.payload;
+      })
+      // deleteBlogPost
+      .addCase(deleteBlogPost.pending, (state) => {
+        state.postsLoading = true;
+        state.postsError = null;
+      })
+      .addCase(deleteBlogPost.fulfilled, (state) => {
+        state.postsLoading = false;
+      })
+      .addCase(deleteBlogPost.rejected, (state, action) => {
         state.postsLoading = false;
         state.postsError = action.payload;
       });

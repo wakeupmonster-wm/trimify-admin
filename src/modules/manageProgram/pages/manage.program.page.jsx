@@ -153,12 +153,11 @@ const ManageProgramPage = () => {
 
   // Local fallback filtering
   const displayData = useMemo(() => {
-    if (isManual) return programs || [];
     let data = programs || [];
     if (durationFilter) {
       data = data.filter((p) => String(p.duration) === String(durationFilter));
     }
-    if (statusFilter) {
+    if (statusFilter && ["active", "inactive"].includes(statusFilter.toLowerCase())) {
       data = data.filter(
         (p) =>
           String(p.status || "Active").toLowerCase() ===
@@ -166,7 +165,7 @@ const ManageProgramPage = () => {
       );
     }
     return data;
-  }, [programs, durationFilter, statusFilter, isManual]);
+  }, [programs, durationFilter, statusFilter]);
 
   const filterConfig = [
     {

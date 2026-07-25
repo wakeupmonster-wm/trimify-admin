@@ -78,7 +78,8 @@ const ManageCategoryPage = () => {
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
     try {
-      await dispatch(toggleBlogCategoryStatus(toggleModal.rowData.id)).unwrap();
+      const statusStr = toggleModal.targetStatus ? "Active" : "Inactive";
+      await dispatch(toggleBlogCategoryStatus({ id: toggleModal.rowData.id, status: statusStr })).unwrap();
       toast.success("Category status updated successfully!");
       dispatch(
         fetchBlogCategories({

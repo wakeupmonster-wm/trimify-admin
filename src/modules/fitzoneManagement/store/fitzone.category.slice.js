@@ -15,10 +15,10 @@ export const getFitzoneCategories = createAsyncThunk(
          return {
           category: response.category || [],
           pagination: {
-            page: response.pagination?.current_page || 1,
-            limit: response.pagination?.per_page || 10,
-            total: response.pagination?.total || 0,
-            totalPages: response.pagination?.last_page || 1,
+            page: response.pagination?.current_page || response.current_page || 1,
+            limit: response.pagination?.per_page || response.per_page || 10,
+            total: response.pagination?.total || response.total || 0,
+            totalPages: response.pagination?.last_page || response.totalPage || response.last_page || 1,
           },
         }
       }
@@ -104,7 +104,19 @@ const fitzoneCategorySlice = createSlice({
       .addCase(getFitzoneCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // addFitzoneCategory
+      .addCase(addFitzoneCategory.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(addFitzoneCategory.fulfilled, (state) => { state.loading = false; })
+      .addCase(addFitzoneCategory.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // updateFitzoneCategory
+      .addCase(updateFitzoneCategory.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(updateFitzoneCategory.fulfilled, (state) => { state.loading = false; })
+      .addCase(updateFitzoneCategory.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // deleteFitzoneCategory
+      .addCase(deleteFitzoneCategory.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(deleteFitzoneCategory.fulfilled, (state) => { state.loading = false; })
+      .addCase(deleteFitzoneCategory.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
   },
 });
 

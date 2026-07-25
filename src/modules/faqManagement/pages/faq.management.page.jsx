@@ -183,7 +183,7 @@ const FaqManagementPage = () => {
         { label: "Inactive", value: "Inactive" },
         { label: "Recent", value: "Recent" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 

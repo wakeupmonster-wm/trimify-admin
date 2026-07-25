@@ -241,8 +241,90 @@ const manageFoodSlice = createSlice({
       .addCase(searchFoodItems.fulfilled, (state, action) => {
         state.foodSearchResults = action.payload || [];
       })
-      // ... Add/Update/Delete cases just set loading true/false/error in typical patterns
-      // but to save boilerplate we rely on refetching lists after successful mutations.
+      // addFoodCategory
+      .addCase(addFoodCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addFoodCategory.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addFoodCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // updateFoodCategory
+      .addCase(updateFoodCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateFoodCategory.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateFoodCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // deleteFoodCategory
+      .addCase(deleteFoodCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFoodCategory.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteFoodCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // addFood
+      .addCase(addFood.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addFood.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(addFood.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // updateFood
+      .addCase(updateFood.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateFood.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateFood.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // deleteFood
+      .addCase(deleteFood.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFood.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteFood.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // toggleFoodStatus
+      .addCase(toggleFoodStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleFoodStatus.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(toggleFoodStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

@@ -809,14 +809,7 @@ const AiFoodViewPage = () => {
   );
 };
 
-const NumberField = ({
-  label,
-  name,
-  fields,
-  onChange,
-  onBlurSave,
-  original,
-}) => (
+const NumberField = ({ label, name, fields, onChange, onBlurSave, original }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Input
@@ -831,15 +824,7 @@ const NumberField = ({
   </div>
 );
 
-const TextField = ({
-  label,
-  name,
-  fields,
-  onChange,
-  onBlurSave,
-  original,
-  rows,
-}) => (
+const TextField = ({ label, name, fields, onChange, onBlurSave, original, rows }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Textarea

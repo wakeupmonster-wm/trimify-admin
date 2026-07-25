@@ -150,7 +150,7 @@ export const getCmsManagementColumns = (onAction) => [
               config.hover,
             )}
           >
-            <span className={cn("w-1.5 h-1.5 rounded-full", config.dot)} />
+            <span className={cn("w-1 h-1 rounded-full", config.dot)} />
             {displayStatus}
           </Badge>
         </div>

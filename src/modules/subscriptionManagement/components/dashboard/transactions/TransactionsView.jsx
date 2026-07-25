@@ -1,19 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import { DollarSign, Receipt, Calculator } from "lucide-react";
 import {
-  DollarSign,
-  Receipt,
-  Calculator,
-  Download,
-  Loader2,
-} from "lucide-react";
-import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
+  DataTable,
+  DataTableFilters,
+  DataTableActiveChips,
+} from "@/components/shared/datatable";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import ErrorState from "@/components/shared/ErrorState";
 import { useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { endOfDay, format, parseISO } from "date-fns";
 import { getTransactionColumns } from "./transaction.columns";
 import RevokeTransactionDialog from "./RevokeTransactionDialog";
@@ -29,7 +25,7 @@ import { downloadCsvBlob } from "../../../utils/downloadCsvBlob";
 
 const STATUS_OPTIONS = ["success", "failed", "pending", "refunded", "disputed"];
 
-export default function TransactionsView() {
+export default function TransactionsView({ exportRef, onExportLoadingChange }) {
   const dispatch = useDispatch();
   const {
     transactions,
@@ -48,7 +44,9 @@ export default function TransactionsView() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.filterId || "",
+  );
   const [planFilter, setPlanFilter] = useState("");
 
   const [revokeTransactionData, setRevokeTransactionData] = useState(null);
@@ -66,26 +64,33 @@ export default function TransactionsView() {
     return null; // null = no date filter (all time)
   });
 
-  const isUnfiltered = !statusFilter && !planFilter && !debouncedSearch && !dateRange;
+  const isUnfiltered =
+    !statusFilter && !planFilter && !debouncedSearch && !dateRange;
   const [pinnedSummary, setPinnedSummary] = useState(null);
 
   useEffect(() => {
     // If we arrived with a filter, background fetch the true unfiltered stats
     if (!isUnfiltered && !pinnedSummary) {
-      getTransactionsAPI({ limit: 1 }).then((res) => {
-        if (res && res.success) {
-          setPinnedSummary({
-            grossRevenue: res.data.grossRevenue || 0,
-            totalTransactions: res.data.totalTransactions || 0,
-          });
-        }
-      }).catch(() => {});
+      getTransactionsAPI({ limit: 1 })
+        .then((res) => {
+          if (res && res.success) {
+            setPinnedSummary({
+              grossRevenue: res.data.grossRevenue || 0,
+              totalTransactions: res.data.totalTransactions || 0,
+            });
+          }
+        })
+        .catch(() => {});
     }
   }, [isUnfiltered, pinnedSummary]);
 
   // Capture unfiltered when the main list loads unfiltered
   useEffect(() => {
-    if (isUnfiltered && transactionsSummary.totalTransactions > 0 && !pinnedSummary) {
+    if (
+      isUnfiltered &&
+      transactionsSummary.totalTransactions > 0 &&
+      !pinnedSummary
+    ) {
       setPinnedSummary({ ...transactionsSummary });
     }
   }, [isUnfiltered, transactionsSummary, pinnedSummary]);
@@ -106,7 +111,12 @@ export default function TransactionsView() {
       search: debouncedSearch,
       status: statusFilter,
       plan_id: planFilter,
-      ...(dateRange ? { from: format(dateRange.from, "yyyy-MM-dd"), to: format(dateRange.to, "yyyy-MM-dd") } : {}),
+      ...(dateRange
+        ? {
+            from: format(dateRange.from, "yyyy-MM-dd"),
+            to: format(dateRange.to, "yyyy-MM-dd"),
+          }
+        : {}),
     }),
     [pagination, debouncedSearch, statusFilter, planFilter, dateRange],
   );
@@ -117,6 +127,7 @@ export default function TransactionsView() {
 
   const handleExport = async () => {
     setExportLoading(true);
+    if (onExportLoadingChange) onExportLoadingChange(true);
     setExportProgress(0);
 
     let currentStep = 0;
@@ -126,7 +137,10 @@ export default function TransactionsView() {
 
     const interval = setInterval(() => {
       currentStep++;
-      const progress = Math.min(Math.round((currentStep / steps) * maxFakeProgress), maxFakeProgress);
+      const progress = Math.min(
+        Math.round((currentStep / steps) * maxFakeProgress),
+        maxFakeProgress,
+      );
       setExportProgress(progress);
     }, intervalTime);
 
@@ -144,17 +158,26 @@ export default function TransactionsView() {
         );
         setTimeout(() => {
           setExportLoading(false);
+          if (onExportLoadingChange) onExportLoadingChange(false);
           setExportProgress(0);
         }, 2000);
       }, 500);
     } else {
       setExportLoading(false);
+      if (onExportLoadingChange) onExportLoadingChange(false);
       setExportProgress(0);
       toast.error("Failed to export transactions");
     }
   };
 
-  const kpiSummary = pinnedSummary || transactionsSummary || { grossRevenue: 0, totalTransactions: 0 };
+  useEffect(() => {
+    if (exportRef) {
+      exportRef.current = handleExport;
+    }
+  }, [exportRef, handleExport]);
+
+  const kpiSummary = pinnedSummary ||
+    transactionsSummary || { grossRevenue: 0, totalTransactions: 0 };
 
   const avgTransactionValue =
     kpiSummary.totalTransactions > 0
@@ -222,19 +245,23 @@ export default function TransactionsView() {
 
   const handleRevokeConfirm = async (data) => {
     if (!revokeTransactionData) return;
-    const result = await dispatch(revokeTransaction({ 
-      id: revokeTransactionData.id, 
-      ...data 
-    }));
+    const result = await dispatch(
+      revokeTransaction({
+        id: revokeTransactionData.id,
+        ...data,
+      }),
+    );
 
     if (revokeTransaction.fulfilled.match(result)) {
       setRevokeTransactionData(null);
       toast.loading("Processing refund...", { id: "refund-toast" });
-      
+
       // Wait for 4 seconds to allow webhook to process before refreshing
       setTimeout(() => {
         dispatch(fetchTransactions(fetchParams)).then((refetched) => {
-          toast.success("Transaction refunded successfully", { id: "refund-toast" });
+          toast.success("Transaction refunded successfully", {
+            id: "refund-toast",
+          });
           if (fetchTransactions.fulfilled.match(refetched)) {
             setPinnedSummary({
               grossRevenue: refetched.payload.grossRevenue || 0,
@@ -250,7 +277,10 @@ export default function TransactionsView() {
     }
   };
 
-  const columns = useMemo(() => getTransactionColumns(handleAction), [handleAction]);
+  const columns = useMemo(
+    () => getTransactionColumns(handleAction),
+    [handleAction],
+  );
 
   const isFirstLoad = transactionsLoading && transactionsPagination === null;
 
@@ -279,7 +309,9 @@ export default function TransactionsView() {
         setPlanFilter(v);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
+      options:
+        plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) ||
+        [],
       placeholder: "All Plans",
     },
   ];
@@ -318,33 +350,13 @@ export default function TransactionsView() {
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />
-            <CalendarDateRangePicker
-              value={dateRange}
-              onDateChange={setDateRange}
-              className="h-9 3xl:h-10"
-              compact
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleExport}
-              disabled={exportLoading}
-              className="h-9 3xl:h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white text-xs font-medium transition-all active:scale-95"
-            >
-              {exportLoading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-              ) : (
-                <Download className="w-3.5 h-3.5 mr-1.5" />
-              )}
-              Export CSV
-            </Button>
           </>
         }
         activeFiltersChildren={
           <DataTableActiveChips
             filterConfig={[
               ...filterConfig,
-              ...(dateRange ? [{ id: "dateRange", label: "Date Range", value: dateRangeLabel, onChange: () => {} }] : []),
+              // ...(dateRange ? [{ id: "dateRange", label: "Date Range", value: dateRangeLabel, onChange: () => {} }] : []),
             ]}
             onClearAll={() => {
               setStatusFilter("");

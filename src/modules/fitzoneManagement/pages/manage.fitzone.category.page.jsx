@@ -66,9 +66,16 @@ const ManageFitzoneCategoryPage = () => {
     if (deleteTarget) {
       dispatch(deleteFitzoneCategory(deleteTarget.id))
         .unwrap()
-        .then(() => {
-          toast.success("Category deleted successfully!");
-          dispatch(getFitzoneCategories(id));
+        .then((res) => {
+          toast.success(res?.message || "Category deleted successfully!");
+          dispatch(
+            getFitzoneCategories({
+              id,
+              page: pagination.pageIndex + 1,
+              limit: pagination.pageSize,
+              search: debouncedSearch,
+            })
+          );
         })
         .catch((err) => {
           toast.error(err || "Failed to delete category");

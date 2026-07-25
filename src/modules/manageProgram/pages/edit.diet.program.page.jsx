@@ -373,8 +373,17 @@ const EditDietProgramPage = () => {
                 onClick={handleUpdateDietMeal}
                 disabled={loading}
               >
-                <Save size={16} />
-                {loading ? "Updating..." : "Update"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    Update
+                    <Save className="w-4 h-4 shrink-0" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

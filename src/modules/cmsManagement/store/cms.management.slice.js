@@ -83,24 +83,42 @@ const cmsManagementSlice = createSlice({
     builder.addCase(fetchCmsPages.pending, (state) => {
       state.loading = true;
       state.error = null;
-    });
-    builder.addCase(fetchCmsPages.fulfilled, (state, action) => {
+    }).addCase(fetchCmsPages.fulfilled, (state, action) => {
       state.loading = false;
       state.data = action.payload.Cms || [];
       state.pagination = action.payload.pagination || initialState.pagination;
-    });
-    builder.addCase(fetchCmsPages.rejected, (state, action) => {
+    }).addCase(fetchCmsPages.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    });
-
+    })
     // ── Toggle CMS Status
-    builder.addCase(toggleCmsStatus.fulfilled, (state, action) => {
+    .addCase(toggleCmsStatus.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(toggleCmsStatus.fulfilled, (state, action) => {
+      state.loading = false;
       const index = state.data.findIndex((page) => page.id === action.payload.id);
       if (index !== -1 && action.payload.updated_status) {
         state.data[index].status = action.payload.updated_status;
       }
-    });
+    })
+    .addCase(toggleCmsStatus.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    // ── Update CMS Content
+    .addCase(updateCmsContent.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(updateCmsContent.fulfilled, (state) => {
+      state.loading = false;
+    })
+    .addCase(updateCmsContent.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
   },
 });
 

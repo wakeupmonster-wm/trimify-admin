@@ -55,7 +55,7 @@ const ManageBlogsPage = () => {
     if (action === "change-status") {
       try {
         await dispatch(
-          toggleBlogPostVisibility({ id: row.id, visibility_status: value }),
+          toggleBlogPostVisibility({ id: row.id, status: value }),
         ).unwrap();
         toast.success(`Post visibility changed to ${value}!`);
         dispatch(
@@ -102,14 +102,18 @@ const ManageBlogsPage = () => {
   const displayPosts = useMemo(() => {
     let list = posts && posts.length > 0 ? posts : [];
     if (statusFilter === "Publish") {
-      list = list.filter((p) => String(p.visibility_status).toLowerCase() === "publish");
+      list = list.filter(
+        (p) => String(p.visibility_status).toLowerCase() === "publish",
+      );
     } else if (statusFilter === "Draft") {
-      list = list.filter((p) => String(p.visibility_status).toLowerCase() !== "publish");
+      list = list.filter(
+        (p) => String(p.visibility_status).toLowerCase() !== "publish",
+      );
     } else if (statusFilter === "Recent") {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       list = list.filter(
-        (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo
+        (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
       );
     }
     return list;
@@ -127,7 +131,7 @@ const ManageBlogsPage = () => {
         { label: "Draft / Hidden", value: "Draft" },
         { label: "Recent", value: "Recent" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -141,13 +145,13 @@ const ManageBlogsPage = () => {
 
     const total = postsPagination?.total || list.length;
     const published = list.filter(
-      (p) => String(p.visibility_status).toLowerCase() === "publish"
+      (p) => String(p.visibility_status).toLowerCase() === "publish",
     ).length;
     const drafts = list.filter(
-      (p) => String(p.visibility_status).toLowerCase() !== "publish"
+      (p) => String(p.visibility_status).toLowerCase() !== "publish",
     ).length;
     const recent = list.filter(
-      (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo
+      (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
     ).length;
 
     return [
@@ -163,25 +167,43 @@ const ManageBlogsPage = () => {
         label: "Published Blogs",
         value: published,
         icon: CheckCircle,
-        tone: statusFilter === "Publish" ? "emerald" : (statusFilter === "" ? "emerald" : "slate"),
+        tone:
+          statusFilter === "Publish"
+            ? "emerald"
+            : statusFilter === ""
+              ? "emerald"
+              : "slate",
         description: "Live on app",
-        onClick: () => setStatusFilter((prev) => (prev === "Publish" ? "" : "Publish")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Publish" ? "" : "Publish")),
       },
       {
         label: "Draft / Hidden",
         value: drafts,
         icon: EyeOff,
-        tone: statusFilter === "Draft" ? "amber" : (statusFilter === "" ? "amber" : "slate"),
+        tone:
+          statusFilter === "Draft"
+            ? "amber"
+            : statusFilter === ""
+              ? "amber"
+              : "slate",
         description: "Not visible to users",
-        onClick: () => setStatusFilter((prev) => (prev === "Draft" ? "" : "Draft")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Draft" ? "" : "Draft")),
       },
       {
         label: "Recently Updated",
         value: recent,
         icon: Flame,
-        tone: statusFilter === "Recent" ? "rose" : (statusFilter === "" ? "rose" : "slate"),
+        tone:
+          statusFilter === "Recent"
+            ? "rose"
+            : statusFilter === ""
+              ? "rose"
+              : "slate",
         description: "Modified in last 30 days",
-        onClick: () => setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        onClick: () =>
+          setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
       },
     ];
   }, [posts, postsPagination?.total, statusFilter]);
@@ -212,7 +234,10 @@ const ManageBlogsPage = () => {
         </Header>
 
         {/* KPIs Row */}
-        <ModuleKpiRow items={kpiItems} loading={postsLoading && !posts?.length} />
+        <ModuleKpiRow
+          items={kpiItems}
+          loading={postsLoading && !posts?.length}
+        />
 
         <div className="w-full min-w-0 flex-1">
           <DataTable
