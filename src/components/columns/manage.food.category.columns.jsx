@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
-import { BASE_URL } from "@/services/api-endpoints/base.url";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +52,7 @@ export const getManageFoodCategoryColumns = (handleAction) => [
       <div className="flex justify-center items-center">
         {row.original.image ? (
           <img
-            src={`${BASE_URL.replace("/api", "")}/${row.original.image}`}
+            src={row.original.image}
             alt={row.original.name}
             className="w-8 h-8 object-contain rounded-md bg-slate-50 border border-slate-100"
           />

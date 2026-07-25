@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Save, UploadCloud, Layers, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
-import { BASE_URL } from "@/services/api-endpoints/base.url";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,11 +28,7 @@ const AddFoodCategoryPage = () => {
   );
   const [description, setDescription] = useState(editData?.description || "");
   const [iconFile, setIconFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(
-    editData?.image
-      ? `${BASE_URL.replace("/api", "")}/${editData.image}`
-      : null,
-  );
+  const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -202,7 +197,7 @@ const AddFoodCategoryPage = () => {
                 </Label>
                 <div className="flex flex-col items-center justify-center py-4">
                   <img
-                    src={`${BASE_URL.replace("/api", "")}/${editData.image}`}
+                    src={editData.image}
                     alt="Current Category"
                     className="w-16 h-16 object-contain rounded-md"
                   />
@@ -261,13 +256,13 @@ const AddFoodCategoryPage = () => {
           <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
             <Button
               variant="outline"
-              className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
+              className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
               onClick={() => navigate(-1)}
             >
               Cancel
             </Button>
             <Button
-              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
               onClick={handleSubmit}
               disabled={loading}
             >

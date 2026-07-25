@@ -13,9 +13,6 @@ export const RichTextEditor = ({
 }) => {
   const editorRef = useRef(null);
 
-  // Use VITE_TINYMCE_API_KEY from env if available, otherwise empty string triggers warning
-  const apiKey = import.meta.env.VITE_TINYMCE_API_KEY || "no-api-key";
-
   return (
     <div className="w-full flex flex-col">
       {label && (
@@ -29,7 +26,8 @@ export const RichTextEditor = ({
         } shadow-sm transition-all`}
       >
         <Editor
-          apiKey={apiKey}
+          tinymceScriptSrc="/tinymce/tinymce.min.js"
+          licenseKey="gpl"
           onInit={(_evt, editor) => (editorRef.current = editor)}
           value={value}
           disabled={disabled || readOnly}

@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BASE_URL } from "@/services/api-endpoints/base.url";
 
 const AddProgramPage = () => {
   const navigate = useNavigate();
@@ -32,10 +31,11 @@ const AddProgramPage = () => {
   const [formData, setFormData] = useState({
     title: editData?.title || "",
     description: editData?.description || "",
-    duration: editData?.duration ? `${editData.duration} Week` : "",
+    duration: editData?.duration ? `${editData.duration} Weeks` : "",
     bannerImage: null,
   });
 
+  const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleChange = (e) => {
@@ -65,6 +65,7 @@ const AddProgramPage = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      setPreviewUrl(URL.createObjectURL(file));
       if (errors.bannerImage)
         setErrors((prev) => ({ ...prev, bannerImage: "" }));
     }
@@ -74,6 +75,7 @@ const AddProgramPage = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      setPreviewUrl(URL.createObjectURL(file));
       if (errors.bannerImage)
         setErrors((prev) => ({ ...prev, bannerImage: "" }));
     }
@@ -207,30 +209,15 @@ const AddProgramPage = () => {
               )}
             </div>
 
-            {isEditMode && editData?.image && (
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
-                  Current Uploaded Banner Image
-                </Label>
-                <div className="flex flex-col items-center justify-center py-4">
-                  <img
-                    src={`${BASE_URL.replace("/api", "")}/${editData.image}`}
-                    alt="Current Program Banner"
-                    className="w-32 h-32 object-contain rounded-md border border-slate-300/60 p-2"
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                Upload Banner Image
+                {isEditMode ? "Replace Uploaded Banner Image" : "Upload Banner Image"}
               </Label>
               <div
                 className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
-                    ? "border-app-primary2 bg-app-primary2/20"
+                    ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/80 bg-slate-50 hover:bg-slate-50/80"
                 }`}
                 onDragOver={handleDragOver}
@@ -245,12 +232,27 @@ const AddProgramPage = () => {
                   accept="image/*"
                   onChange={handleFileSelect}
                 />
-                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                <p className="text-sm font-semibold text-slate-700">
-                  {formData.bannerImage
-                    ? formData.bannerImage.name
-                    : "Click or drag and drop to upload"}
-                </p>
+                {previewUrl ? (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={previewUrl}
+                      alt="Banner preview"
+                      className="w-32 h-32 object-contain rounded-md border border-slate-300/60 p-2 mb-3"
+                    />
+                    <span className="text-sm font-semibold text-slate-700 text-center">
+                      {formData.bannerImage
+                        ? formData.bannerImage.name
+                        : "Current banner. Click or drag to replace."}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                    <p className="text-sm font-semibold text-slate-700">
+                      Click or drag and drop to upload
+                    </p>
+                  </>
+                )}
                 <p className="text-xs text-slate-500 mt-1">
                   SVG, PNG, JPG or GIF (max. 800x400px)
                 </p>
@@ -275,10 +277,10 @@ const AddProgramPage = () => {
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="4 Week">4 Week</SelectItem>
-                  <SelectItem value="6 Week">6 Week</SelectItem>
-                  <SelectItem value="8 Week">8 Week</SelectItem>
-                  <SelectItem value="12 Week">12 Week</SelectItem>
+                  <SelectItem value="4 Weeks">4 Weeks</SelectItem>
+                  <SelectItem value="6 Weeks">6 Weeks</SelectItem>
+                  <SelectItem value="8 Weeks">8 Weeks</SelectItem>
+                  <SelectItem value="12 Weeks">12 Weeks</SelectItem>
                 </SelectContent>
               </Select>
               {errors.duration && (
@@ -291,14 +293,14 @@ const AddProgramPage = () => {
                 type="button"
                 variant="outline"
                 onClick={() => navigate(-1)}
-                className="w-full sm:w-auto rounded-md px-6 h-10 text-sm font-semibold"
+                className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary5 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
                 {isSubmitting ? (
                   <>

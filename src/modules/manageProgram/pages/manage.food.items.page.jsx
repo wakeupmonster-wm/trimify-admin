@@ -148,7 +148,6 @@ const ManageFoodItemsPage = () => {
         unit: formData.unit,
       };
 
-      console.log("payload: ", payload);
       const resultAction = await dispatch(
         updateFood({ id: editingFoodId, data: payload }),
       );
@@ -367,7 +366,7 @@ const ManageFoodItemsPage = () => {
                     if (
                       !isEditing &&
                       formData.title.trim().length >= 2 &&
-                      searchSuggestions.length > 0
+                      foodSearchResults.length > 0
                     ) {
                       setShowSuggestions(true);
                     }
@@ -544,7 +543,7 @@ const ManageFoodItemsPage = () => {
             data={foods}
             rowCount={foods.length}
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             loading={loading}

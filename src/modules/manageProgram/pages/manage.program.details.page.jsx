@@ -85,7 +85,7 @@ const ManageProgramDetailsPage = () => {
                 heading="Manage Program Modules"
                 icon={<Settings className="w-6 h-6 text-white shrink-0" />}
                 variant="primary"
-                subheading="Manage program details like Introduction,   Foods, and Diet Plan."
+                subheading="Manage program details like Introduction, Foods, and Diet Plan."
               />
             </div>
 
@@ -110,7 +110,7 @@ const ManageProgramDetailsPage = () => {
             loading={false}
             manualPagination={false}
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             searchable={true}

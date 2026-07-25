@@ -15,7 +15,7 @@ import {
 import { Card, Pill, KV, EmptyState } from "./UserProfileView";
 
 export function TabAccount({ data }) {
-  const { user, handleCopy, cap, initials, fmtDate, truncMid } = data;
+  const { user, handleCopy, initials, fmtDate, truncMid } = data;
 
   return (
     <>
@@ -72,7 +72,7 @@ export function TabAccount({ data }) {
 
           <Card title="Billing" subtitle="Payment methods and history">
             <KV icon={CreditCard} label="Payment Status" value={user.paid ? "Paid" : "Unpaid"} />
-            <KV icon={ShieldCheck} label="Plan" value={user.plan ? cap(user.plan) : "No active plan"} />
+            <KV icon={ShieldCheck} label="Plan" value={user.plan ? user.plan.title : "No active plan"} />
             <KV icon={Calendar} label="Plan Expiry" value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"} />
             <KV icon={CreditCard} label="Stripe ID" value={user.stripe_id || "Not linked"} />
             {(!user.transactions || user.transactions.length === 0) && (
@@ -95,7 +95,7 @@ export function TabAccount({ data }) {
                 type="button"
                 title={user.device_token}
                 onClick={() => handleCopy(user.device_token, "Device token")}
-                className="font-mono text-[10.5px] font-semibold text-slate-900 transition-colors hover:text-[#007fc0]"
+                className="font-mono text-[10.5px] font-semibold text-slate-900 transition-colors hover:text-app-primary2"
               >
                 {truncMid(user.device_token, 10, 6)}
               </button>

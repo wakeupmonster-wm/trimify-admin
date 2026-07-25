@@ -63,7 +63,7 @@ const PageHeader = React.forwardRef(
             </motion.div>
           )}
 
-          <div>
+          <div className="flex flex-col text-left">
             <motion.h1
               variants={itemVariants}
               className="font-bold text-foreground tracking-tight text-lg sm:text-xl"

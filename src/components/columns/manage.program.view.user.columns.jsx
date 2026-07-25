@@ -64,6 +64,21 @@ export const getViewUserProgramColumns = (onAction) => [
     ),
   },
   {
+    accessorKey: "email",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Email
+      </div>
+    ),
+    size: 250,
+    minSize: 150,
+    cell: ({ row }) => (
+      <span className="font-medium text-slate-700 text-[11px] tracking-tight">
+        {row.original.user?.email || "-"}
+      </span>
+    ),
+  },
+  {
     accessorKey: "start_date",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
@@ -106,7 +121,7 @@ export const getViewUserProgramColumns = (onAction) => [
       const status = row.original.status || "Inactive";
       const isActive = status === "Active";
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-start">
           <Badge
             variant="outline"
             className={cn(
