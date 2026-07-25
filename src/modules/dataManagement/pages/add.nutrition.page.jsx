@@ -83,7 +83,7 @@ const AddNutritionPage = () => {
         calories: editData.Meal_Calories_In_gm || editData.calories || "",
         fats: editData.Meal_Fats_In_gm || editData.fats || "",
         description: editData.Meal_Description || editData.description || "",
-        Meal_Type: editData.Meal_Type || editData.meal_type,
+        Meal_Type: editData.Meal_Type || editData.meal_type || "",
         meal_description:
           parseArrayToString(editData.Meal_instructions) ||
           editData.meal_description ||
@@ -143,7 +143,7 @@ const AddNutritionPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
         <Header>
-           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEdit ? "Edit Nutrition Food" : "Add Nutrition Food"}
@@ -374,7 +374,9 @@ const AddNutritionPage = () => {
                 Meal Type
               </Label>
               <Select
-                value={formData.Meal_Type}
+                // Dynamic key lagane se state change hote hi UI sync ho jayega
+                key={`meal-type-${formData.Meal_Type}`}
+                value={formData.Meal_Type || undefined}
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
               >
                 <SelectTrigger

@@ -65,45 +65,36 @@ export function NavManagements({ items }) {
       return true;
 
     if (
-      lastSegment === "transactions" &&
-      (currentPath.includes("/transactions/view") ||
-        (currentPath.includes("/view-profile") &&
-          location.state?.source === "transactions"))
+      lastSegment === "transactions" && (currentPath.includes("/transactions/view") ||
+      (currentPath.includes("/view-profile") && location.state?.source === "transactions"))
     )
       return true;
 
     if (
-      lastSegment === "manage-subscribers" &&
-      currentPath.includes("/view-subscription")
+      lastSegment === "manage-subscribers" && currentPath.includes("/view-subscription")
     )
       return true;
     if (
       lastSegment === "users-management" &&
-      currentPath.includes("users-management/view-profile") &&
-      location.state?.from !== "/admin/dashboard"
+      currentPath.includes("users-management/view-profile") && location.state?.from !== "/admin/dashboard"
     )
       return true;
     if (
-      lastSegment === "nutrition-food" &&
-      (currentPath.includes("/add-nutrition") ||
-        currentPath.includes("/edit-nutrition"))
+      lastSegment === "nutrition-food" && (currentPath.includes("/add-nutrition") || currentPath.includes("/edit-nutrition"))
     )
       return true;
     if (
-      lastSegment === "ai-food-upload" &&
-      currentPath.includes("/ai-food-upload")
+      lastSegment === "ai-food-upload" && currentPath.includes("/ai-food-upload")
     ) {
       return true;
     }
     if (
-      lastSegment === "manage-category" &&
-      (currentPath.includes("/add-category") ||
-        currentPath.includes("/edit-category"))
+      lastSegment === "manage-category" && currentPath.includes("/blog-section") &&
+      (currentPath.includes("/add-category") || currentPath.includes("/edit-category"))
     )
       return true;
     if (
-      lastSegment === "manage-blogs" &&
-      (currentPath.includes("/add-post") || currentPath.includes("/edit-post"))
+      lastSegment === "manage-blogs" && (currentPath.includes("/add-post") || currentPath.includes("/edit-post"))
     )
       return true;
 
