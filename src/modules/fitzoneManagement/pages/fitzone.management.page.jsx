@@ -45,6 +45,8 @@ const FitzoneManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -79,9 +81,12 @@ const FitzoneManagementPage = () => {
     if (!toggleModal.rowData) return;
     const rowId = toggleModal.rowData.id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
+    setToggleLoading(true);
     const result = await dispatch(toggleFitzoneStatus({ id: rowId, status }));
+    setToggleLoading(false);
     if (toggleFitzoneStatus.fulfilled.match(result)) {
       toast.success("Fitzone status updated successfully.");
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
       dispatch(
         fetchFitzoneList({
           page: pagination.pageIndex + 1,
@@ -93,14 +98,16 @@ const FitzoneManagementPage = () => {
     } else {
       toast.error("Failed to update status.");
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
+    setDeleteLoading(true);
     const result = await dispatch(deleteFitzone(deleteModal.rowData.id));
+    setDeleteLoading(false);
     if (deleteFitzone.fulfilled.match(result)) {
       toast.success("Fitzone deleted successfully.");
+      setDeleteModal({ open: false, rowData: null });
       dispatch(
         fetchFitzoneList({
           page: pagination.pageIndex + 1,
@@ -112,7 +119,6 @@ const FitzoneManagementPage = () => {
     } else {
       toast.error("Failed to delete fitzone.");
     }
-    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getFitzoneManagementColumns(handleAction), []);
@@ -255,14 +261,18 @@ const FitzoneManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this fitzone? This action cannot be undone."
+        loading={deleteLoading}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}
@@ -270,6 +280,7 @@ const FitzoneManagementPage = () => {
         message={`Are you sure you want to change the status of this fitzone to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={toggleLoading}
       />
     </Container>
   );

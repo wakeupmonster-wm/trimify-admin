@@ -339,8 +339,17 @@ const AddDietProgramPage = () => {
                 onClick={handleAddDietMeal}
                 disabled={loading}
               >
-                <Save size={16} />
-                {loading ? "Saving..." : "Save"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    Save
+                    <Save className="w-4 h-4 shrink-0" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

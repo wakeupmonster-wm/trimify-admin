@@ -42,6 +42,7 @@ const FaqManagementPage = () => {
   const {
     faqs,
     loading,
+    error,
     pagination: serverPagination,
   } = useSelector((state) => state.faqManagement);
 
@@ -63,8 +64,10 @@ const FaqManagementPage = () => {
     targetStatus: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
-  useEffect(() => {
+  const refetchFaqs = () =>
     dispatch(
       fetchFaqList({
         page: pagination.pageIndex + 1,
@@ -72,12 +75,19 @@ const FaqManagementPage = () => {
         search: debouncedSearchTerm,
       }),
     );
+
+  useEffect(() => {
+    refetchFaqs();
   }, [
     dispatch,
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
   ]);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -103,6 +113,7 @@ const FaqManagementPage = () => {
       setFormData({ question: "", answer: "" }); // Reset form
       setEditMode(false);
       setCurrentFaqId(null);
+      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "An error occurred");
     } finally {
@@ -126,6 +137,7 @@ const FaqManagementPage = () => {
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
     const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
+    setToggleLoading(true);
     try {
       // Assuming unwrap() is available or handle success properly
       const res = await dispatch(
@@ -133,23 +145,29 @@ const FaqManagementPage = () => {
       );
       if (toggleFaqStatus.fulfilled.match(res)) {
         toast.success(`FAQ marked as ${newStatus}`);
+        setToggleModal({ open: false, rowData: null, targetStatus: false });
       } else {
         toast.error("Failed to update FAQ status");
       }
     } catch (error) {
       toast.error(error?.message || error || "Failed to update FAQ status");
+    } finally {
+      setToggleLoading(false);
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
+    setDeleteLoading(true);
     try {
       const res = await dispatch(deleteFaq(deleteModal.rowData.id)).unwrap();
       toast.success(res?.message || "FAQ deleted successfully");
       setDeleteModal({ open: false, rowData: null });
+      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "Failed to delete FAQ");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -183,7 +201,7 @@ const FaqManagementPage = () => {
         { label: "Inactive", value: "Inactive" },
         { label: "Recent", value: "Recent" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -208,6 +226,7 @@ const FaqManagementPage = () => {
         tone: statusFilter === "" ? "blue" : "slate",
         description: "All questions & answers",
         onClick: () => setStatusFilter(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Active FAQs",
@@ -222,6 +241,7 @@ const FaqManagementPage = () => {
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Inactive FAQs",
@@ -236,6 +256,7 @@ const FaqManagementPage = () => {
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+        isSelected: statusFilter === "Inactive",
       },
       {
         label: "Recently Updated",
@@ -250,6 +271,7 @@ const FaqManagementPage = () => {
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        isSelected: statusFilter === "Recent",
       },
     ];
   }, [faqs, serverPagination?.total, statusFilter]);
@@ -276,7 +298,7 @@ const FaqManagementPage = () => {
                   setCurrentFaqId(null);
                   setIsDialogOpen(true);
                 }}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add FAQ</span>
@@ -344,13 +366,13 @@ const FaqManagementPage = () => {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       {editMode ? "Updating..." : "Saving..."}
                     </>
                   ) : (
                     <>
                       {editMode ? "Update FAQ" : "Save FAQ"}
-                      <Send className="w-4 h-4 ml-1" />
+                      <Send className="w-4 h-4" />
                     </>
                   )}
                 </Button>
@@ -394,14 +416,18 @@ const FaqManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this FAQ? This action cannot be undone."
+        loading={deleteLoading}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}
@@ -409,6 +435,7 @@ const FaqManagementPage = () => {
         message={`Are you sure you want to change the status of this FAQ to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={toggleLoading}
       />
     </Container>
   );

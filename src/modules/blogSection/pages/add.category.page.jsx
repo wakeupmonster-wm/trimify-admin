@@ -19,6 +19,17 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
 import { TbCategoryPlus } from "react-icons/tb";
+import { BASE_URL } from "@/services/api-endpoints/base.url";
+
+// Backend returns the icon as a relative storage path (e.g.
+// "images/blogcategory/icon.png"), not a full URL — resolve it against
+// the API's origin so the "Current Icon" preview actually loads.
+const ASSET_BASE_URL = BASE_URL.replace(/\/api\/?$/, "");
+const resolveIconUrl = (icon) => {
+  if (!icon) return "";
+  if (/^https?:\/\//i.test(icon)) return icon;
+  return `${ASSET_BASE_URL}/${icon.replace(/^\/+/, "")}`;
+};
 
 const AddCategoryPage = () => {
   const navigate = useNavigate();
@@ -223,9 +234,12 @@ const AddCategoryPage = () => {
                   </Label>
                   <div className="w-24 h-24 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
                     <img
-                      src={editData.icon}
+                      src={resolveIconUrl(editData.icon)}
                       alt="Current Icon"
                       className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   </div>
                 </div>

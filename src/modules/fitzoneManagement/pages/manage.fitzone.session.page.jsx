@@ -30,6 +30,8 @@ const ManageFitzoneSessionPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
@@ -69,11 +71,14 @@ const ManageFitzoneSessionPage = () => {
     if (toggleTarget) {
       const { row, value } = toggleTarget;
       const statusStr = value ? "Active" : "Inactive";
+      setToggleLoading(true);
       const resultAction = await dispatch(
         toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
       );
+      setToggleLoading(false);
       if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
         toast.success("Status updated successfully!");
+        setToggleTarget(null);
         dispatch(
           getFitzoneSessions({
             id,
@@ -85,17 +90,19 @@ const ManageFitzoneSessionPage = () => {
       } else {
         toast.error(resultAction.payload || "Failed to update status");
       }
-      setToggleTarget(null);
     }
   };
 
   const handleConfirmDelete = async () => {
     if (deleteTarget) {
+      setDeleteLoading(true);
       const resultAction = await dispatch(
         deleteFitzoneSession(deleteTarget.id),
       );
+      setDeleteLoading(false);
       if (deleteFitzoneSession.fulfilled.match(resultAction)) {
         toast.success("Session deleted successfully!");
+        setDeleteTarget(null);
         dispatch(
           getFitzoneSessions({
             id,
@@ -107,7 +114,6 @@ const ManageFitzoneSessionPage = () => {
       } else {
         toast.error(resultAction.payload || "Failed to delete session");
       }
-      setDeleteTarget(null);
     }
   };
 
@@ -159,6 +165,7 @@ const ManageFitzoneSessionPage = () => {
             manualPagination={true}
             manualFiltering={true}
             pageCount={serverPagination?.totalPages || 1}
+            rowCount={serverPagination?.total || (sessions || []).length}
             itemName="sessions"
           />
         </div>
@@ -166,20 +173,22 @@ const ManageFitzoneSessionPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Session"
         message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
+        loading={deleteLoading}
       />
 
       <ConfirmModal
         isOpen={!!toggleTarget}
-        onClose={() => setToggleTarget(null)}
+        onClose={() => !toggleLoading && setToggleTarget(null)}
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.title || "this session"}" to ${toggleTarget?.value ? "Active" : "Inactive"}?`}
         confirmText="Update"
         type="brand"
+        loading={toggleLoading}
       />
     </Container>
   );

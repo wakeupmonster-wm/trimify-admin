@@ -16,10 +16,10 @@ export const getFitzoneSessions = createAsyncThunk(
          return {
           fitzone: response.fitzone || [],
           pagination: {
-            page: response.pagination?.current_page || 1,
-            limit: response.pagination?.per_page || 10,
-            total: response.pagination?.total || 0,
-            totalPages: response.pagination?.last_page || 1,
+            page: response.pagination?.current_page || response.current_page || 1,
+            limit: response.pagination?.per_page || response.per_page || 10,
+            total: response.pagination?.total || response.total || 0,
+            totalPages: response.pagination?.last_page || response.totalPage || response.last_page || 1,
           },
         }
       }
@@ -122,7 +122,23 @@ const fitzoneSessionSlice = createSlice({
       .addCase(getFitzoneSessions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // addFitzoneSession
+      .addCase(addFitzoneSession.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(addFitzoneSession.fulfilled, (state) => { state.loading = false; })
+      .addCase(addFitzoneSession.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // updateFitzoneSession
+      .addCase(updateFitzoneSession.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(updateFitzoneSession.fulfilled, (state) => { state.loading = false; })
+      .addCase(updateFitzoneSession.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // toggleFitzoneSessionStatus
+      .addCase(toggleFitzoneSessionStatus.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(toggleFitzoneSessionStatus.fulfilled, (state) => { state.loading = false; })
+      .addCase(toggleFitzoneSessionStatus.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // deleteFitzoneSession
+      .addCase(deleteFitzoneSession.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(deleteFitzoneSession.fulfilled, (state) => { state.loading = false; })
+      .addCase(deleteFitzoneSession.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
   },
 });
 

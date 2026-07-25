@@ -16,7 +16,7 @@ const SecondaryKpiRow = ({ data }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <KpiCard
           label="Total Revenue"
           value={fmtMoney(data.totalRevenueAllTime)}
@@ -45,7 +45,7 @@ const SecondaryKpiRow = ({ data }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <KpiCard
           label="Total Programs"
           value={data.totalPrograms.toLocaleString()}

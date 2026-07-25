@@ -275,16 +275,31 @@ const manageProgramSlice = createSlice({
       })
       
       // Toggle Status
+      // Toggle Program Status
+      .addCase(toggleProgramStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(toggleProgramStatus.fulfilled, (state, action) => {
+        state.loading = false;
         const { id, status } = action.payload;
         const index = state.programs.findIndex(prog => prog.id === id);
         if (index !== -1) {
           state.programs[index].status = status;
         }
       })
+      .addCase(toggleProgramStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // Toggle Food Visibility
+      .addCase(toggleFoodVisibility.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(toggleFoodVisibility.fulfilled, (state, action) => {
+        state.loading = false;
         const { id, newStatus } = action.payload;
         const index = state.programs.findIndex(prog => prog.id === id);
         if (index !== -1) {
@@ -295,11 +310,24 @@ const manageProgramSlice = createSlice({
            state.programFoodVisibility[id] = newStatus ? 1 : 0;
         }
       })
+      .addCase(toggleFoodVisibility.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // Get Food Visibility
+      .addCase(getProgramFoodVisibility.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(getProgramFoodVisibility.fulfilled, (state, action) => {
+        state.loading = false;
         const { id, isVisible } = action.payload;
         state.programFoodVisibility[id] = isVisible;
+      })
+      .addCase(getProgramFoodVisibility.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
       // Replicate Program
@@ -315,10 +343,19 @@ const manageProgramSlice = createSlice({
       })
 
       // Delete
+      .addCase(deleteProgram.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(deleteProgram.fulfilled, (state, action) => {
+        state.loading = false;
         const id = action.payload;
         state.programs = state.programs.filter(prog => prog.id !== id);
         if (state.pagination.total > 0) state.pagination.total -= 1;
+      })
+      .addCase(deleteProgram.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
 
       // Fetch Assigned Users

@@ -17,41 +17,37 @@ export const fetchFaqList = createAsyncThunk(
           },
         };
       }
-      return response;
+      return rejectWithValue(response?.message || "Failed to fetch FAQs");
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || error.message || "Failed to fetch FAQs");
     }
   }
 );
 
+// Note: unlike the list/toggle/delete endpoints, POST /admin/add-faqs and
+// PUT /admin/update-faqs/{id} do NOT return a `status` field on success —
+// just `{ message, data }`. Axios already rejects on non-2xx responses
+// (caught below), so reaching this line always means success here.
 export const addFaq = createAsyncThunk(
   "faq/addFaq",
-  async (data, { rejectWithValue, dispatch }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await addFaqAPI(data);
-      if (response && response.status === "success") {
-        dispatch(fetchFaqList());
-        return response;
-      }
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || error.message || "Failed to add FAQ");
     }
   }
 );
 
 export const updateFaq = createAsyncThunk(
   "faq/updateFaq",
-  async ({ id, data }, { rejectWithValue, dispatch }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
       const response = await updateFaqAPI(id, data);
-      if (response && response.status === "success") {
-        dispatch(fetchFaqList());
-        return response;
-      }
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || error.message || "Failed to update FAQ");
     }
   }
 );
@@ -70,16 +66,15 @@ export const toggleFaqStatus = createAsyncThunk(
 
 export const deleteFaq = createAsyncThunk(
   "faq/deleteFaq",
-  async (id, { rejectWithValue, dispatch }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const response = await deleteFaqAPI(id);
       if (response && response.status === "success") {
-        dispatch(fetchFaqList());
         return response;
       }
-      return response;
+      return rejectWithValue(response?.message || "Failed to delete FAQ");
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.message || error.message || "Failed to delete FAQ");
     }
   }
 );
@@ -139,12 +134,22 @@ const faqSlice = createSlice({
         state.error = action.payload;
       })
       // Toggle FAQ status
+      .addCase(toggleFaqStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(toggleFaqStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
         const { id, updated_status } = action.payload;
         const index = state.faqs.findIndex(faq => faq.id === id);
         if (index !== -1 && updated_status) {
           state.faqs[index].status = updated_status;
         }
+      })
+      .addCase(toggleFaqStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       })
       // Delete FAQ
       .addCase(deleteFaq.pending, (state) => {
@@ -156,7 +161,7 @@ const faqSlice = createSlice({
       .addCase(deleteFaq.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
   },
 });
 

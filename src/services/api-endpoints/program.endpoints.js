@@ -36,7 +36,7 @@ export const PROGRAM = {
   PROGRAM_GET_FOOD_VISIBILITY: (id) => `${ADMIN}/program-food-visibility/${id}`,
 
   /** POST — Replicate (clone) an existing program */
-  PROGRAM_REPLICATE: (id) => `${ADMIN}/replicate-program/${id}`,
+  PROGRAM_REPLICATE: (id) => `${ADMIN}/replicate/${id}`,
 
   /** GET — Retrieve list of users assigned to a program */
   PROGRAM_VIEW_ASSIGNED_USERS: (id) => `${ADMIN}/view-programassigneduser/${id}`,

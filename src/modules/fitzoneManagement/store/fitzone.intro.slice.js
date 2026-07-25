@@ -90,7 +90,15 @@ const fitzoneIntroSlice = createSlice({
       .addCase(getFitzoneIntro.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // addFitzoneIntro
+      .addCase(addFitzoneIntro.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(addFitzoneIntro.fulfilled, (state) => { state.loading = false; })
+      .addCase(addFitzoneIntro.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      // updateFitzoneIntro
+      .addCase(updateFitzoneIntro.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(updateFitzoneIntro.fulfilled, (state) => { state.loading = false; })
+      .addCase(updateFitzoneIntro.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
   },
 });
 

@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, X, ArrowLeft } from "lucide-react";
+import { Send, X, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
 import {
@@ -39,6 +39,8 @@ const ManageFoodItemsPage = () => {
     (state) => state.manageFood,
   );
 
+  console.log("foodSearchResults: ", foodSearchResults);
+
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
@@ -48,6 +50,8 @@ const ManageFoodItemsPage = () => {
   const [editingFoodId, setEditingFoodId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     food_id: "",
@@ -244,29 +248,33 @@ const ManageFoodItemsPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    setDeleteLoading(true);
     const resultAction = await dispatch(deleteFood(deleteTarget.id));
+    setDeleteLoading(false);
     if (deleteFood.fulfilled.match(resultAction)) {
       toast.success("Food deleted successfully!");
+      setDeleteTarget(null);
       dispatch(getFoodList({ programId, categoryId }));
     } else {
       toast.error(resultAction.payload || "Failed to delete food.");
     }
-    setDeleteTarget(null);
   };
 
   const handleConfirmToggle = async () => {
     if (!toggleTarget) return;
     const { row, newStatus } = toggleTarget;
+    setToggleLoading(true);
     const resultAction = await dispatch(
       toggleFoodStatus({ id: row.id, status: newStatus }),
     );
+    setToggleLoading(false);
     if (toggleFoodStatus.fulfilled.match(resultAction)) {
       toast.success("Status updated successfully!");
+      setToggleTarget(null);
       dispatch(getFoodList({ programId, categoryId }));
     } else {
       toast.error(resultAction.payload || "Failed to update status.");
     }
-    setToggleTarget(null);
   };
 
   const columns = useMemo(
@@ -381,7 +389,7 @@ const ManageFoodItemsPage = () => {
                     if (
                       !isEditing &&
                       formData.title.trim().length >= 2 &&
-                      foodSearchResults.length > 0
+                      foodSearchResults && foodSearchResults.length > 0
                     ) {
                       setShowSuggestions(true);
                     }
@@ -403,7 +411,8 @@ const ManageFoodItemsPage = () => {
                           <li
                             key={index}
                             className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm flex items-center justify-between"
-                            onClick={() => {
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Prevents input onBlur from firing first
                               setFormData({
                                 ...formData,
                                 title:
@@ -415,7 +424,7 @@ const ManageFoodItemsPage = () => {
                                   formData.title,
                                 food_id: item.id,
                                 category_id:
-                                  item.category_id || formData.category_id,
+                                  item.category_id?.toString() || formData.category_id,
                                 quantity: item.quantity || formData.quantity,
                                 unit: item.unit || formData.unit,
                                 type: item.type || formData.type,
@@ -538,7 +547,11 @@ const ManageFoodItemsPage = () => {
                 onClick={handleAddOrUpdateFood}
                 disabled={loading}
               >
-                {!isEditing && <Send size={16} />}
+                {loading ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  !isEditing && <Send size={16} />
+                )}
                 {loading
                   ? isEditing
                     ? "Updating..."
@@ -569,20 +582,22 @@ const ManageFoodItemsPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
+        loading={deleteLoading}
       />
 
       <ConfirmModal
         isOpen={!!toggleTarget}
-        onClose={() => setToggleTarget(null)}
+        onClose={() => !toggleLoading && setToggleTarget(null)}
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}
         type="brand"
         confirmText="Update"
+        loading={toggleLoading}
       />
     </Container>
   );

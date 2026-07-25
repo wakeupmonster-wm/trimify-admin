@@ -9,6 +9,14 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Ellipsis, Eye } from "lucide-react";
 
 /**
  * Reusable drill-down table widget for the dashboard's list/table row —
@@ -86,17 +94,33 @@ const DashboardTableCard = ({
                     </TableCell>
                   ))}
                   {actionLabel && (
-                    <TableCell className="py-3.5 first:pl-6 last:pr-6 w-1/12">
-                      <div className="flex justify-start w-full">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onAction?.(row)}
-                          className="h-8 text-[11px] px-2.5 rounded-full border border-app-primary2 text-app-primary2 shadow-sm hover:bg-app-primary2 hover:text-white transition-colors"
-                        >
-                          {actionLabel}
-                        </Button>
+                    <TableCell className="py-3 first:pl-6 last:pr-9 w-1/12">
+                      <div className="flex items-center justify-center w-full">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+                            >
+                              <Ellipsis className="h-4 w-4 text-foreground/90" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm bg-white"
+                          >
+                            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                              Actions
+                            </DropdownMenuLabel>
+                            <DropdownMenuItem
+                              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
+                              onClick={() => onAction?.(row)}
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                              {actionLabel}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   )}

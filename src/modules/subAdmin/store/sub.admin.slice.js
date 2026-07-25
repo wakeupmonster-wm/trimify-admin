@@ -18,9 +18,10 @@ export const fetchSubAdminList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           subAdmins: response.subAdmins || [],
+          kpis: response.kpis || null,
           pagination: {
             page: response.pagination?.current_page || response.pagination?.page || 1,
-            limit: response.pagination?.per_page || 10, 
+            limit: response.pagination?.per_page || 10,
             total: response.pagination?.total || 0,
             totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
@@ -111,6 +112,7 @@ const subAdminSlice = createSlice({
   name: "subAdmin",
   initialState: {
     subAdmins: [],
+    kpis: null,
     loading: false,
     error: null,
     pagination: {
@@ -139,13 +141,13 @@ const subAdminSlice = createSlice({
       .addCase(fetchSubAdminList.fulfilled, (state, action) => {
         state.loading = false;
         state.subAdmins = action.payload.subAdmins;
+        state.kpis = action.payload.kpis;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchSubAdminList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      
       // Handle Add
       .addCase(addSubAdmin.pending, (state) => {
         state.loading = true;
@@ -158,7 +160,6 @@ const subAdminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      
       // Handle Update
       .addCase(updateSubAdmin.pending, (state) => {
         state.loading = true;
@@ -170,21 +171,35 @@ const subAdminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // Handle Toggle Status
+      .addCase(toggleSubAdminStatus.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(toggleSubAdminStatus.fulfilled, (state, action) => {
+        state.loading = false;
         const { id, status } = action.payload;
         const index = state.subAdmins.findIndex(admin => admin.id === id || admin._id === id);
         if (index !== -1) {
           state.subAdmins[index].status = status;
         }
       })
-
+      .addCase(toggleSubAdminStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       // Handle Delete
+      .addCase(deleteSubAdmin.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(deleteSubAdmin.fulfilled, (state, action) => {
+        state.loading = false;
         const id = action.payload;
         state.subAdmins = state.subAdmins.filter(admin => admin.id !== id && admin._id !== id);
         if (state.pagination.total > 0) state.pagination.total -= 1;
+      })
+      .addCase(deleteSubAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

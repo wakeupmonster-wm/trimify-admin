@@ -4,7 +4,6 @@ import { useNavigate } from "react-router";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 
 export function EcosystemAlerts({ data, selectedDate }) {
-  if (!data?.alerts?.length) return null;
   const navigate = useNavigate();
 
   // Resolve preset-based date selections to actual from/to dates
@@ -29,6 +28,8 @@ export function EcosystemAlerts({ data, selectedDate }) {
         return { from: null, to: null };
     }
   }, [selectedDate]);
+
+  if (!data?.alerts?.length) return null;
 
   const config = {
     kyc: {
@@ -90,7 +91,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {Array.isArray(data.alerts) && data.alerts.map((alert, idx) => {
           const alertConfig = config[alert.id] || config.kyc;
           const AlertIcon = alertConfig.icon;
@@ -137,7 +138,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
 
               {/* Action Button */}
               <div
-                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg ${alertConfig.actionBg} ${alertConfig.actionText} font-semibold text-[12px] shadow-sm hover:shadow transition-all whitespace-nowrap`}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg ${alertConfig.actionBg} ${alertConfig.actionText} font-semibold text-[12px] shadow-sm hover:shadow transition-all whitespace-nowrap shrink-0`}
               >
                 {alertConfig.actionLabel}
                 <ArrowRight size={13} className="ml-0.5" strokeWidth={3} />

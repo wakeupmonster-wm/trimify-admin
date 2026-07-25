@@ -63,8 +63,15 @@ const AddNutritionPage = () => {
     }
   };
 
+  console.log("editData: ", editData);
+
   useEffect(() => {
     if (isEdit && editData) {
+      // const rawMealType = editData.Meal_Type || editData.meal_type || editData.type || "";
+      // let formattedMealType = rawMealType;
+      // if (rawMealType.toLowerCase().includes("ingredients")) formattedMealType = "Ingredients";
+      // if (rawMealType.toLowerCase().includes("recipes")) formattedMealType = "Recipes";
+
       setFormData({
         title: editData.Meal_title || editData.title || "",
         image:
@@ -76,7 +83,7 @@ const AddNutritionPage = () => {
         calories: editData.Meal_Calories_In_gm || editData.calories || "",
         fats: editData.Meal_Fats_In_gm || editData.fats || "",
         description: editData.Meal_Description || editData.description || "",
-        Meal_Type: editData.Meal_Type || "",
+        Meal_Type: editData.Meal_Type || editData.meal_type,
         meal_description:
           parseArrayToString(editData.Meal_instructions) ||
           editData.meal_description ||
@@ -110,6 +117,10 @@ const AddNutritionPage = () => {
       fats: Number(formData.fats),
       Meal_Serving: Number(formData.Meal_Serving),
     };
+
+    if (!payloadData.image) {
+      delete payloadData.image;
+    }
 
     const action = isEdit
       ? updateNutrition({ id, data: payloadData })
@@ -372,8 +383,8 @@ const AddNutritionPage = () => {
                   <SelectValue placeholder="Select Meal Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Ingredients">Ingredients</SelectItem>
-                  <SelectItem value="Recipes">Recipes</SelectItem>
+                  <SelectItem value="ingredients">Ingredients</SelectItem>
+                  <SelectItem value="recipes">Recipes</SelectItem>
                 </SelectContent>
               </Select>
               {errors.Meal_Type && (

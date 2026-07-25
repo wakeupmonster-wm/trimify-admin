@@ -260,8 +260,8 @@ const TABS = [
 /* =========================================================================
    Main component
 ========================================================================= */
-export default function UserProfileView({ user, onBack, loading }) {
-  const [tab, setTab] = useState("overview");
+export default function UserProfileView({ user, onBack, loading, initialTab }) {
+  const [tab, setTab] = useState(initialTab || "overview");
   const [toastMsg, setToastMsg] = useState(null);
   const toastTimer = useRef(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -471,7 +471,7 @@ export default function UserProfileView({ user, onBack, loading }) {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <button
                 onClick={onBack}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back</span>
@@ -550,11 +550,12 @@ export default function UserProfileView({ user, onBack, loading }) {
 
         <ConfirmModal
           isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
+          onClose={() => !isDeleting && setIsDeleteModalOpen(false)}
           onConfirm={handleDeleteUser}
           title="Confirm User Deletion"
           message="Are you sure you want to delete this user? This action can be reversed by an admin."
           confirmText="Delete User"
+          loading={isDeleting}
         />
 
         <Tabs value={tab} onValueChange={handleTabChange} className="w-full">

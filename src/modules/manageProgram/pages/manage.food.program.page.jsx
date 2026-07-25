@@ -28,6 +28,7 @@ const ManageFoodProgramPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -60,9 +61,12 @@ const ManageFoodProgramPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    setDeleteLoading(true);
     const result = await dispatch(deleteFoodCategory(deleteTarget.id));
+    setDeleteLoading(false);
     if (deleteFoodCategory.fulfilled.match(result)) {
-      toast.success("Food Category deleted successfully");
+      toast.success(result.payload?.message || "Food Category deleted successfully");
+      setDeleteTarget(null);
       dispatch(
         getFoodCategories({
           page: pagination.pageIndex + 1,
@@ -73,7 +77,6 @@ const ManageFoodProgramPage = () => {
     } else {
       toast.error(result.payload || "Failed to delete food category.");
     }
-    setDeleteTarget(null);
   };
 
   const columns = useMemo(
@@ -129,10 +132,11 @@ const ManageFoodProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}
+        loading={deleteLoading}
       />
     </Container>
   );

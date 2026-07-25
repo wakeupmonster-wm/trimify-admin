@@ -311,7 +311,7 @@ export default function SubscribersView() {
 
       <ConfirmModal
         isOpen={confirmAction?.action === "expire"}
-        onClose={() => setConfirmAction(null)}
+        onClose={() => !manageLoading && setConfirmAction(null)}
         onConfirm={() => handleConfirm()}
         loading={manageLoading}
         type="warning"

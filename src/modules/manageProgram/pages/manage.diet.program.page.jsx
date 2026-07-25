@@ -29,6 +29,8 @@ const ManageDietProgramPage = () => {
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleModal, setToggleModal] = useState({ open: false, rowData: null, targetStatus: false });
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
   const fetchDietMeals = () => {
     if (id) {
@@ -66,28 +68,32 @@ const ManageDietProgramPage = () => {
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
     const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
+    setToggleLoading(true);
     const resultAction = await dispatch(
       toggleDietMealStatus({ id: toggleModal.rowData.id, status: newStatus }),
     );
+    setToggleLoading(false);
     if (toggleDietMealStatus.fulfilled.match(resultAction)) {
       toast.success("Status updated successfully!");
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
       fetchDietMeals();
     } else {
       toast.error(resultAction.payload || "Failed to update status.");
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    setDeleteLoading(true);
     const resultAction = await dispatch(deleteDietMeal(deleteTarget.id));
+    setDeleteLoading(false);
     if (deleteDietMeal.fulfilled.match(resultAction)) {
       toast.success("Diet meal deleted successfully!");
+      setDeleteTarget(null);
       fetchDietMeals();
     } else {
       toast.error(resultAction.payload || "Failed to delete diet meal.");
     }
-    setDeleteTarget(null);
   };
 
   const columns = useMemo(() => getManageDietProgramColumns(handleAction), []);
@@ -137,18 +143,23 @@ const ManageDietProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Diet Meal"
         message={`Are you sure you want to delete the diet meal "${deleteTarget?.diet_meal_data?.Meal_title || deleteTarget?.meal}"? This action cannot be undone.`}
+        loading={deleteLoading}
       />
 
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          !toggleLoading &&
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleModal.rowData?.diet_meal_data?.Meal_title || toggleModal.rowData?.meal || "this diet meal"}" to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
+        loading={toggleLoading}
         type="brand"
         confirmText="Update"
       />

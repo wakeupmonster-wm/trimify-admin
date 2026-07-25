@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Send, Bell } from "lucide-react";
+import { Send, Bell, Loader2 } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,9 +45,18 @@ const NotificationManagePage = () => {
   const [pushTitle, setPushTitle] = useState("");
   const [target, setTarget] = useState("all");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  // `campaignPagination.total` is scoped to whatever channel/status/search
+  // filters are currently applied (it's the matching row count, not a
+  // grand total), so using it directly for "Total Campaigns" makes that
+  // number shift every time the Email/Push KPI is clicked. This is set
+  // below only when no filters/search are applied, and stays frozen at
+  // that value while a filter is active.
+  const [pinnedTotalCampaigns, setPinnedTotalCampaigns] = useState(null);
 
   useEffect(() => {
     if (activeTab === "history") {
+      const noFiltersApplied =
+        channelFilter === "all" && statusFilter === "all" && !debouncedSearchTerm;
       const params = {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
@@ -55,7 +64,12 @@ const NotificationManagePage = () => {
       };
       if (channelFilter !== "all") params.channel = channelFilter;
       if (statusFilter !== "all") params.status = statusFilter;
-      dispatch(fetchCampaignHistory(params));
+      dispatch(fetchCampaignHistory(params)).then((result) => {
+        const total = result?.payload?.pagination?.total;
+        if (noFiltersApplied && total != null) {
+          setPinnedTotalCampaigns(total);
+        }
+      });
     }
   }, [
     dispatch,
@@ -303,11 +317,15 @@ const NotificationManagePage = () => {
                       disabled={isSending}
                       className="w-full h-11 bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
                     >
-                      <Send size={18} />
-                      {activeTab === "email"
-                        ? "Send Email"
-                        : isSending
-                          ? "Sending..."
+                      {isSending ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Send size={18} />
+                      )}
+                      {isSending
+                        ? "Sending..."
+                        : activeTab === "email"
+                          ? "Send Email"
                           : "Send Push Notification"}
                     </Button>
                   </div>
@@ -439,6 +457,7 @@ const NotificationManagePage = () => {
               setStatusFilter={setStatusFilter}
               searchTerm={globalFilter}
               setSearchTerm={setGlobalFilter}
+              pinnedTotalCampaigns={pinnedTotalCampaigns}
             />
           )}
         </div>
@@ -462,7 +481,7 @@ const NotificationManagePage = () => {
               </strong>{" "}
               campaign?
             </p>
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+            {/* <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
               <p className="flex justify-between items-center">
                 <strong className="text-slate-800">Name:</strong>
                 <span className="font-medium">{campaignName}</span>
@@ -475,7 +494,7 @@ const NotificationManagePage = () => {
             <p className="text-red-500 font-medium text-[11.5px] pt-2">
               This action cannot be undone. Notifications will be queued
               immediately.
-            </p>
+            </p> */}
           </div>
         }
       />

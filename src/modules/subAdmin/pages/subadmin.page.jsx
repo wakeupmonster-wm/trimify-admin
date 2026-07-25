@@ -70,9 +70,21 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     ];
   });
 
+  // Excel auto-detects quoted date-like strings and converts them to real
+  // dates, which then render as "####" when the column is too narrow. Wrap
+  // the "Created At" column in an Excel text-literal formula so it's kept
+  // as plain text instead of being reinterpreted.
+  const escapeCsvField = (value, forceText = false) => {
+    const str = String(value ?? "");
+    const raw = forceText && str !== "-" ? `="${str}"` : str;
+    return `"${raw.replace(/"/g, '""')}"`;
+  };
+
   const csvContent = [
     headers.join(","),
-    ...rows.map((row) => row.map((str) => `"${str}"`).join(",")),
+    ...rows.map((row) =>
+      row.map((value, i) => escapeCsvField(value, i === 1)).join(",")
+    ),
   ].join("\n");
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -90,12 +102,14 @@ const SubAdminManagementPage = () => {
   const dispatch = useDispatch();
   const {
     subAdmins,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.subAdmin);
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const navigate = useNavigate();
@@ -108,6 +122,8 @@ const SubAdminManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
   const [exportLoading, setExportLoading] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
@@ -139,51 +155,48 @@ const SubAdminManagementPage = () => {
     }, intervalTime);
   };
 
-  // KPI Calculations
-  const kpiStats = useMemo(() => {
-    const list = subAdmins || [];
-    return {
-      total: pagination?.total || list.length,
-      active: list.filter((s) => s.status === "Active").length,
-      subAdmins: list.filter(
-        (s) => s.role === 0 || s.role_name === "Sub-Admin User",
-      ).length,
-      whiteListing: list.filter(
-        (s) => s.role === 1 || s.role_name === "WhiteListing User",
-      ).length,
-    };
-  }, [subAdmins, pagination]);
-
+  // KPIs come straight from the backend (`response.kpis`) — they're computed
+  // over the full sub_admins table regardless of search/role/status/page, so
+  // they must NOT be recalculated from the currently-loaded page of `subAdmins`.
   const kpiItems = [
     {
       icon: Users,
-      label: "Total Admins",
-      value: kpiStats.total.toLocaleString(),
-      description: "Total registered users",
+      label: "Total Sub-Admins",
+      value: (kpis?.total ?? 0).toLocaleString(),
+      description: "Tap to view all",
       tone: "blue",
+      onClick: () => {
+        setRoleFilter("");
+        setStatusFilter("");
+      },
+      isSelected: !roleFilter && !statusFilter,
     },
     {
       icon: UserCheck,
       label: "Active Accounts",
-      value: kpiStats.active.toLocaleString(),
-      description: "Currently active",
+      value: (kpis?.active ?? 0).toLocaleString(),
+      description: "Tap to filter",
       tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+      isSelected: statusFilter === "Active",
     },
     {
       icon: Shield,
       label: "Sub-Admin Users",
-      value: kpiStats.subAdmins.toLocaleString(),
+      value: (kpis?.subAdminUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "indigo",
       onClick: () => setRoleFilter("0"),
+      isSelected: roleFilter === "0",
     },
     {
       icon: ShieldAlert,
       label: "WhiteListing Users",
-      value: kpiStats.whiteListing.toLocaleString(),
+      value: (kpis?.whiteListingUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "rose",
       onClick: () => setRoleFilter("1"),
+      isSelected: roleFilter === "1",
     },
   ];
 
@@ -194,6 +207,7 @@ const SubAdminManagementPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         role: roleFilter,
+        status: statusFilter,
       }),
     );
   }, [
@@ -202,6 +216,7 @@ const SubAdminManagementPage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
     roleFilter,
+    statusFilter,
   ]);
 
   const handleAction = async (row, action, checked) => {
@@ -221,41 +236,47 @@ const SubAdminManagementPage = () => {
     if (!toggleModal.rowData) return;
     const rowId = toggleModal.rowData.id || toggleModal.rowData._id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
+    setToggleLoading(true);
     const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+    setToggleLoading(false);
     if (toggleSubAdminStatus.fulfilled.match(result)) {
       toast.success("Sub-admin status updated successfully.");
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
       dispatch(
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
           role: roleFilter,
+          status: statusFilter,
         }),
       );
     } else {
       toast.error("Failed to update status.");
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
     const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
+    setDeleteLoading(true);
     const result = await dispatch(deleteSubAdmin(rowId));
+    setDeleteLoading(false);
     if (deleteSubAdmin.fulfilled.match(result)) {
       toast.success("Sub-admin deleted successfully.");
+      setDeleteModal({ open: false, rowData: null });
       dispatch(
         fetchSubAdminList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearchTerm,
           role: roleFilter,
+          status: statusFilter,
         }),
       );
     } else {
       toast.error("Failed to delete sub-admin.");
     }
-    setDeleteModal({ open: false, rowData: null });
   };
 
   const columns = useMemo(() => getSubAdminColumns(handleAction), []);
@@ -264,17 +285,26 @@ const SubAdminManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
-  // Local fallback filtering in case the backend ignores the `role` parameter
+  // Local fallback filtering in case the backend ignores the `role`/`status` parameters
   const filteredSubAdmins = useMemo(() => {
-    if (!roleFilter) return subAdmins || [];
-    return (subAdmins || []).filter((admin) => {
-      // Handle both string and integer matching
-      if (String(admin.role) === String(roleFilter)) return true;
-      if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
-      if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
-      return false;
-    });
-  }, [subAdmins, roleFilter]);
+    let list = subAdmins || [];
+    if (roleFilter) {
+      list = list.filter((admin) => {
+        // Handle both string and integer matching
+        if (String(admin.role) === String(roleFilter)) return true;
+        if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
+        if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
+        return false;
+      });
+    }
+    if (statusFilter) {
+      list = list.filter(
+        (admin) =>
+          String(admin.status).toLowerCase() === statusFilter.toLowerCase(),
+      );
+    }
+    return list;
+  }, [subAdmins, roleFilter, statusFilter]);
 
   const filterConfig = [
     {
@@ -294,6 +324,18 @@ const SubAdminManagementPage = () => {
           : val === "1"
             ? "WhiteListing User"
             : "All Roles",
+    },
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+      ],
+      placeholder: "All Status",
     },
   ];
 
@@ -358,7 +400,10 @@ const SubAdminManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setRoleFilter("")}
+                onClearAll={() => {
+                  setRoleFilter("");
+                  setStatusFilter("");
+                }}
               />
             }
           />
@@ -374,15 +419,19 @@ const SubAdminManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
+        loading={deleteLoading}
       />
 
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}
@@ -390,6 +439,7 @@ const SubAdminManagementPage = () => {
         message={`Are you sure you want to change the status of this sub-admin to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={toggleLoading}
       />
     </Container>
   );

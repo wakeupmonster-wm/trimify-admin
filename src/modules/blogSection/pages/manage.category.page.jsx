@@ -52,6 +52,8 @@ const ManageCategoryPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -77,9 +79,12 @@ const ManageCategoryPage = () => {
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
+    setToggleLoading(true);
     try {
-      await dispatch(toggleBlogCategoryStatus(toggleModal.rowData.id)).unwrap();
+      const statusStr = toggleModal.targetStatus ? "Active" : "Inactive";
+      await dispatch(toggleBlogCategoryStatus({ id: toggleModal.rowData.id, status: statusStr })).unwrap();
       toast.success("Category status updated successfully!");
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
       dispatch(
         fetchBlogCategories({
           page: categoryPage.pageIndex + 1,
@@ -89,12 +94,14 @@ const ManageCategoryPage = () => {
       );
     } catch (error) {
       toast.error(error || "Failed to update category status");
+    } finally {
+      setToggleLoading(false);
     }
-    setToggleModal({ open: false, rowData: null, targetStatus: false });
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
+    setDeleteLoading(true);
     try {
       await dispatch(deleteBlogCategory(deleteModal.rowData.id)).unwrap();
       toast.success("Category deleted successfully!");
@@ -108,6 +115,8 @@ const ManageCategoryPage = () => {
       );
     } catch (error) {
       toast.error(error || "Failed to delete category");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -143,7 +152,7 @@ const ManageCategoryPage = () => {
         { label: "Inactive", value: "Inactive" },
         { label: "Recent", value: "Recent" },
       ],
-      placeholder: "All Statuses",
+      placeholder: "All Status",
     },
   ];
 
@@ -172,6 +181,7 @@ const ManageCategoryPage = () => {
         tone: statusFilter === "" ? "blue" : "slate",
         description: "All blog categories",
         onClick: () => setStatusFilter(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Active Categories",
@@ -186,6 +196,7 @@ const ManageCategoryPage = () => {
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Inactive Categories",
@@ -200,6 +211,7 @@ const ManageCategoryPage = () => {
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+        isSelected: statusFilter === "Inactive",
       },
       {
         label: "Recently Added",
@@ -214,6 +226,7 @@ const ManageCategoryPage = () => {
         description: "Added in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        isSelected: statusFilter === "Recent",
       },
     ];
   }, [categories, categoriesPagination?.total, statusFilter]);
@@ -281,14 +294,18 @@ const ManageCategoryPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this category? This action cannot be undone."
+        loading={deleteLoading}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}
@@ -296,6 +313,7 @@ const ManageCategoryPage = () => {
         message={`Are you sure you want to change the status of this category to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
+        loading={toggleLoading}
       />
     </Container>
   );

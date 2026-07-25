@@ -97,7 +97,7 @@ const ManageFitzoneDetailsPage = () => {
             loading={false}
             manualPagination={false}
             pagination={pagination}
-            setPagination={setPagination}
+            onPaginationChange={setPagination}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             searchable={true}

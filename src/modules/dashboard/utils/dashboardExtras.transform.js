@@ -113,35 +113,40 @@ export const buildSecondaryKpis = (summary) => {
 export const buildAlerts = (alerts = {}) => {
   const result = [];
 
-  if (alerts.ghostingUsers?.needsAttention) {
-    result.push({
-      id: "ghosting",
-      label: "Ghosting Users",
-      value: `${alerts.ghostingUsers.count} users have been inactive for over ${alerts.ghostingUsers.thresholdDays} days`,
-      route: "/admin/users",
-      filterId: "ghosted"
-    });
-  }
+  // These tiles are always shown — even at a count of 0 — so the alerts
+  // section doesn't reflow/jump as counts change. `needsAttention` (when
+  // present) no longer gates visibility, only the live count does.
+  result.push({
+    id: "ghosting",
+    label: "Ghosting Users",
+    value: `${alerts.ghostingUsers?.count || 0} users have been inactive for over ${alerts.ghostingUsers?.thresholdDays || 30} days`,
+    route: "/admin/users",
+    filterId: "ghosted"
+  });
 
-  if (alerts.newSignupsZeroEngagement?.needsAttention) {
-    result.push({
-      id: "reported",
-      label: "Zero Engagement",
-      value: `${alerts.newSignupsZeroEngagement.count} new signups have 0 activity in ${alerts.newSignupsZeroEngagement.thresholdDays} days`,
-      route: "/admin/users",
-      filterId: "zero_engagement"
-    });
-  }
+  result.push({
+    id: "reported",
+    label: "Zero Engagement",
+    value: `${alerts.newSignupsZeroEngagement?.count || 0} new signups have 0 activity in ${alerts.newSignupsZeroEngagement?.thresholdDays || 7} days`,
+    route: "/admin/users",
+    filterId: "zero_engagement"
+  });
 
-  if (alerts.incompleteProfiles?.needsAttention) {
-    result.push({
-      id: "kyc",
-      label: "Incomplete Profiles",
-      value: `${alerts.incompleteProfiles.incompleteCount} profiles are missing information`,
-      route: "/admin/users",
-      filterId: "incomplete"
-    });
-  }
+  // result.push({
+  //   id: "kyc",
+  //   label: "Incomplete Profiles",
+  //   value: `${alerts.incompleteProfiles?.incompleteCount || 0} profiles are missing information`,
+  //   route: "/admin/users",
+  //   filterId: "incomplete"
+  // });
+
+  result.push({
+    id: "stalled",
+    label: "Zero Enrollment",
+    value: `${alerts.zeroEnrollmentPrograms?.count || 0} programs have 0 enrollments past grace period`,
+    route: "/admin/manage-program",
+    filterId: "zero_enrollment"
+  });
 
   if (alerts.contentStagnation?.needsAttention) {
     const staleItems = [];
@@ -158,16 +163,6 @@ export const buildAlerts = (alerts = {}) => {
     //   route: "/admin/manage-program",
     //   filterId: "stale_content"
     // });
-  }
-
-  if (alerts.zeroEnrollmentPrograms?.needsAttention) {
-    result.push({
-      id: "stalled",
-      label: "Zero Enrollment",
-      value: `${alerts.zeroEnrollmentPrograms.count} programs have 0 enrollments past grace period`,
-      route: "/admin/manage-program",
-      filterId: "zero_enrollment"
-    });
   }
 
   return result;

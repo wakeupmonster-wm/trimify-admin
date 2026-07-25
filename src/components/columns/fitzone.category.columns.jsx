@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import dayjs from "dayjs";
 
@@ -136,8 +135,6 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 className="w-5 h-5 object-contain"
                 onError={(e) => {
                   e.target.style.display = "none";
-                  e.target.parentElement.innerHTML =
-                    '<span class="text-[10px] text-slate-400">N/A</span>';
                 }}
               />
             </div>
@@ -184,7 +181,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-red-50 focus:text-red-600 font-semibold text-xs text-red-500 transition-colors"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
                 onClick={() => onAction && onAction(row.original, "delete")}
               >
                 <Trash2 className="w-3.5 h-3.5" />

@@ -135,7 +135,7 @@ export const getUserManagementColumns = (onAction) => [
     accessorFn: (row) => row.transactions?.[0]?.created_at || null,
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Bought On
+        Started
       </div>
     ),
     size: 90,
@@ -156,7 +156,7 @@ export const getUserManagementColumns = (onAction) => [
     accessorKey: "plan_expiry",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Plan Expiry
+        Expires
       </div>
     ),
     size: 90,

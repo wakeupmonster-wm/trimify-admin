@@ -187,19 +187,37 @@ const fitzoneManagementSlice = createSlice({
       })
 
       // Toggle Status
+      .addCase(toggleFitzoneStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(toggleFitzoneStatus.fulfilled, (state, action) => {
+        state.loading = false;
         const { id, status } = action.payload;
         const index = state.fitzones.findIndex((fz) => fz.id === id);
         if (index !== -1) {
           state.fitzones[index].status = status;
         }
       })
+      .addCase(toggleFitzoneStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // Delete
+      .addCase(deleteFitzone.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(deleteFitzone.fulfilled, (state, action) => {
+        state.loading = false;
         const id = action.payload;
         state.fitzones = state.fitzones.filter((fz) => fz.id !== id);
         if (state.pagination.total > 0) state.pagination.total -= 1;
+      })
+      .addCase(deleteFitzone.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

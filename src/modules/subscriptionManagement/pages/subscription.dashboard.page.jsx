@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { format, startOfDay, endOfDay, subDays } from "date-fns";
+import { format, startOfDay, endOfDay } from "date-fns";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import OverviewView from "../components/dashboard/OverviewView";
@@ -25,9 +25,9 @@ export default function SubscriptionDashboardPage() {
 
   const [scrolled, setScrolled] = useState(false);
   const [dateRange, setDateRange] = useState(() => ({
-    from: subDays(startOfDay(new Date()), 30),
+    from: startOfDay(new Date()),
     to: endOfDay(new Date()),
-    preset: "last30",
+    preset: "today",
   }));
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -60,6 +60,7 @@ export default function SubscriptionDashboardPage() {
   const fetchChartsForRange = useCallback(
     (range) => {
       const params = {
+        preset: range.preset || "custom",
         from: format(range.from, "yyyy-MM-dd"),
         to: format(range.to, "yyyy-MM-dd"),
       };

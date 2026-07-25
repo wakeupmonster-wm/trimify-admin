@@ -2,7 +2,13 @@ import React from "react";
 import { CreditCard, Loader2, FileText, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileView";
 import { format } from "date-fns";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 export function TabTransactions({ data }) {
   const { transactionsState, onTransactionsPageChange, onTransactionsStatusChange } = data;
   const { loading, loaded, transactions, summary, page, totalPages, status } = transactionsState;
@@ -80,21 +86,22 @@ export function TabTransactions({ data }) {
         title="Transaction History"
         subtitle="All payments and refunds"
         right={
-          <div className="relative">
-            <select
-              value={status}
-              onChange={(e) => onTransactionsStatusChange(e.target.value)}
-              className="h-9 appearance-none rounded-md border border-slate-300/60 bg-white py-0 pl-3 pr-8 text-xs font-medium text-slate-600 outline-none transition-all hover:bg-slate-50 focus:border-app-primary2"
-            >
-              <option value="all">All Status</option>
-              <option value="success">Success</option>
-              <option value="failed">Failed</option>
-              <option value="pending">Pending</option>
-              <option value="refunded">Refunded</option>
-              <option value="disputed">Disputed</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          </div>
+          <Select
+            value={status}
+            onValueChange={(val) => onTransactionsStatusChange(val)}
+          >
+            <SelectTrigger className="h-9 w-30 rounded-md border border-slate-300/60 bg-white text-xs font-medium text-slate-600 focus:ring-1 focus:ring-app-primary2 transition-all hover:bg-slate-50">
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="success">Success</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="refunded">Refunded</SelectItem>
+              <SelectItem value="disputed">Disputed</SelectItem>
+            </SelectContent>
+          </Select>
         }
       >
         {isLoading ? (

@@ -49,18 +49,38 @@ const ManageProgramPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [replicateTarget, setReplicateTarget] = useState(null);
+  const [replicateLoading, setReplicateLoading] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
+  const [toggleLoading, setToggleLoading] = useState(false);
+  // `serverPagination.total` is scoped to whatever filters are currently
+  // applied (it's the row count for the active query, not a grand total),
+  // so using it directly for the "Total Programs" tile makes that number
+  // shift every time the Active/Inactive KPI is clicked. This is set from
+  // the fetch effect below only when no filters/search are applied, and
+  // stays frozen at that value while a filter is active.
+  const [pinnedTotalPrograms, setPinnedTotalPrograms] = useState(null);
 
   useEffect(() => {
-    dispatch(
-      fetchProgramList({
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        search: debouncedSearchTerm,
-        duration: durationFilter,
-        status: statusFilter,
-      }),
-    );
+    const noFiltersApplied =
+      !debouncedSearchTerm && !durationFilter && !statusFilter;
+    const loadPrograms = async () => {
+      const result = await dispatch(
+        fetchProgramList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          duration: durationFilter,
+          status: statusFilter,
+        }),
+      );
+      const total = result?.payload?.pagination?.total;
+      if (noFiltersApplied && total != null) {
+        setPinnedTotalPrograms(total);
+      }
+    };
+    loadPrograms();
   }, [
     dispatch,
     pagination.pageIndex,
@@ -96,28 +116,18 @@ const ManageProgramPage = () => {
     } else if (action === "delete") {
       setDeleteTarget(row);
     } else if (action === "replicate") {
-      const result = await dispatch(replicateProgram(row.id));
-      if (replicateProgram.fulfilled.match(result)) {
-        toast.success("Program replicated successfully!");
-        dispatch(
-          fetchProgramList({
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearchTerm,
-            duration: durationFilter,
-            status: statusFilter,
-          }),
-        );
-      } else {
-        toast.error(result.payload || "Failed to replicate program.");
-      }
+      setReplicateTarget(row);
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    setDeleteLoading(true);
     const result = await dispatch(deleteProgram(deleteTarget.id));
+    setDeleteLoading(false);
     if (deleteProgram.fulfilled.match(result)) {
+      toast.success("Program deleted successfully!");
+      setDeleteTarget(null);
       dispatch(
         fetchProgramList({
           page: pagination.pageIndex + 1,
@@ -127,24 +137,57 @@ const ManageProgramPage = () => {
           status: statusFilter,
         }),
       );
+    } else {
+      toast.error(result.payload || "Failed to delete program.");
     }
-    setDeleteTarget(null);
   };
 
-  const handleConfirmToggle = () => {
+  const handleConfirmReplicate = async () => {
+    if (!replicateTarget) return;
+    setReplicateLoading(true);
+    const result = await dispatch(replicateProgram(replicateTarget.id));
+    setReplicateLoading(false);
+    if (replicateProgram.fulfilled.match(result)) {
+      toast.success("Program replicated successfully!");
+      setReplicateTarget(null);
+      dispatch(
+        fetchProgramList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          duration: durationFilter,
+          status: statusFilter,
+        }),
+      );
+    } else {
+      toast.error(result.payload || "Failed to replicate program.");
+    }
+  };
+
+  const handleConfirmToggle = async () => {
     if (!toggleConfirm) return;
     const { row, action, value } = toggleConfirm;
 
+    setToggleLoading(true);
+    let result;
     if (action === "toggle-status") {
       const status = value ? "Active" : "Inactive";
-      dispatch(toggleProgramStatus({ id: row.id, status }));
-      toast.success("Status updated successfully!");
+      result = await dispatch(toggleProgramStatus({ id: row.id, status }));
     } else if (action === "toggle-food-visibility") {
-      dispatch(toggleFoodVisibility(row.id));
-      toast.success("Food visibility updated successfully!");
+      result = await dispatch(toggleFoodVisibility(row.id));
     }
+    setToggleLoading(false);
 
-    setToggleConfirm(null);
+    if (result?.meta?.requestStatus === "fulfilled") {
+      toast.success(
+        action === "toggle-status"
+          ? "Status updated successfully!"
+          : "Food visibility updated successfully!",
+      );
+      setToggleConfirm(null);
+    } else {
+      toast.error(result?.payload || "Failed to update program.");
+    }
   };
 
   const columns = useMemo(() => getManageProgramColumns(handleAction), []);
@@ -155,12 +198,11 @@ const ManageProgramPage = () => {
 
   // Local fallback filtering
   const displayData = useMemo(() => {
-    if (isManual) return programs || [];
     let data = programs || [];
     if (durationFilter) {
       data = data.filter((p) => String(p.duration) === String(durationFilter));
     }
-    if (statusFilter) {
+    if (statusFilter && ["active", "inactive"].includes(statusFilter.toLowerCase())) {
       data = data.filter(
         (p) =>
           String(p.status || "Active").toLowerCase() ===
@@ -168,7 +210,7 @@ const ManageProgramPage = () => {
       );
     }
     return data;
-  }, [programs, durationFilter, statusFilter, isManual]);
+  }, [programs, durationFilter, statusFilter]);
 
   const filterConfig = [
     {
@@ -208,7 +250,8 @@ const ManageProgramPage = () => {
       (p) => String(p.status || "Active").toLowerCase() === "active",
     ).length;
     return {
-      totalPrograms: serverPagination?.total || all.length,
+      totalPrograms:
+        pinnedTotalPrograms ?? serverPagination?.total ?? all.length,
       activePrograms: active,
       inactivePrograms: all.length - active,
       // The list API doesn't return a per-program `assigned_users_count`,
@@ -218,7 +261,7 @@ const ManageProgramPage = () => {
       // instead of a fake 0 until the backend ships `kpis.totalAssignedUsers`.
       totalAssignedUsers: null,
     };
-  }, [kpis, programs, serverPagination]);
+  }, [kpis, programs, serverPagination, pinnedTotalPrograms]);
 
   const kpiItems = [
     {
@@ -321,16 +364,29 @@ const ManageProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Program"
         message="Are you sure you want to delete this program? This action cannot be undone."
+        loading={deleteLoading}
+      />
+
+      <ConfirmModal
+        isOpen={!!replicateTarget}
+        onClose={() => !replicateLoading && setReplicateTarget(null)}
+        onConfirm={handleConfirmReplicate}
+        title="Replicate Program"
+        message="Are you sure you want to replicate this program? A copy will be created with all its intro, food, and diet plan data."
+        type="brand"
+        confirmText="Replicate"
+        loading={replicateLoading}
       />
 
       <ConfirmModal
         isOpen={!!toggleConfirm}
-        onClose={() => setToggleConfirm(null)}
+        onClose={() => !toggleLoading && setToggleConfirm(null)}
         onConfirm={handleConfirmToggle}
+        loading={toggleLoading}
         title={toggleConfirm?.title || ""}
         message={toggleConfirm?.message || ""}
         type="brand"

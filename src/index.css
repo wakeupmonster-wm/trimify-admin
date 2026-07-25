@@ -374,10 +374,10 @@
 }
 
 /* ===== Date Range Picker — Brand Color Override ===== */
-/* Override range start and end button colors to brand teal */
+/* Override range start and end button colors to app primary color */
 button[data-range-start="true"],
 button[data-range-end="true"] {
-  background-color: #46c7cd !important;
+  background-color: #007fc0 !important;
   color: #ffffff !important;
   border-radius: 0.375rem !important;
 }

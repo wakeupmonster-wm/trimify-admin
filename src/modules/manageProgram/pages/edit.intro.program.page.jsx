@@ -6,7 +6,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Save, FileText, ArrowLeft } from "lucide-react";
+import { Save, FileText, ArrowLeft, Loader2 } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import {
   getProgramIntro,
@@ -123,8 +123,17 @@ const EditIntroProgramPage = () => {
                 disabled={loading}
                 className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
               >
-                <Save size={16} />
-                {loading ? "Updating..." : "Update"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    Update
+                    <Save className="w-4 h-4 shrink-0" />
+                  </>
+                )}
               </Button>
             </div>
           </div>

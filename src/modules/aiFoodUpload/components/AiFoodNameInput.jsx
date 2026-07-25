@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { apiConnector } from "@/services/axios/axios.connector";
 import { BASE_URL } from "@/services/api-endpoints/base.url";
+import AiRobotImg from "@/assets/web/ai-robot.png";
 
 const MAX_NAMES = 50;
 
@@ -107,36 +108,50 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
   };
 
   const handleSubmit = () => {
-    const finalNames = [...names];
-    if (draft.trim()) finalNames.push(draft.trim());
-    if (finalNames.length === 0 || loading) return;
-    onGenerate(finalNames.slice(0, MAX_NAMES));
+    const parsedDraftNames = draft
+      .split(/[\n,]+/)
+      .map((n) => n.trim())
+      .filter(Boolean);
+    const uniqueNames = [...new Set([...names, ...parsedDraftNames])];
+    if (uniqueNames.length === 0 || loading) return;
+    onGenerate(uniqueNames.slice(0, MAX_NAMES));
     setNames([]);
     setDraft("");
   };
 
-  const pendingCount = names.length + (draft.trim() ? 1 : 0);
+  const pendingCount =
+    names.length +
+    draft
+      .split(/[\n,]+/)
+      .map((n) => n.trim())
+      .filter(Boolean).length;
 
   return (
-    <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-app-primary2/10 flex items-center justify-center shrink-0">
-            <UtensilsCrossed className="w-4 h-4 text-app-primary2" />
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-6 flex flex-col md:flex-row items-stretch gap-6 md:gap-8 overflow-hidden">
+      
+      {/* Subtle background decoration */}
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Left Section: Inputs */}
+      <div className="flex-1 w-full flex flex-col justify-center space-y-5 z-10">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-app-primary2/10 flex items-center justify-center shrink-0">
+              <UtensilsCrossed className="w-4 h-4 text-app-primary2" />
+            </div>
+            <div>
+              <label className="text-sm font-bold text-slate-800">
+                Food Names
+              </label>
+              <p className="text-[11px] text-slate-400">
+                Type a name and press Enter to add it to the batch
+              </p>
+            </div>
           </div>
-          <div>
-            <label className="text-sm font-bold text-slate-800">
-              Food Names
-            </label>
-            <p className="text-[11px] text-slate-400">
-              Type a name and press Enter to add it to the batch
-            </p>
-          </div>
+          {/* <span className="text-[11px] font-bold text-slate-400 shrink-0">
+            {pendingCount}/{MAX_NAMES}
+          </span> */}
         </div>
-        <span className="text-[11px] font-bold text-slate-400 shrink-0">
-          {pendingCount}/{MAX_NAMES}
-        </span>
-      </div>
 
       <div className="relative" ref={wrapperRef}>
         <div className="min-h-[48px] flex flex-wrap items-center gap-2 rounded-lg border border-slate-300/60 bg-slate-50/50 px-3 py-2.5 transition-all focus-within:bg-white focus-within:border-app-primary2 focus-within:ring-2 focus-within:ring-app-primary2/15">
@@ -209,23 +224,46 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[10px] text-slate-400">
-          Comma also works to separate names.
-        </p>
-        <Button
-          type="button"
-          onClick={handleSubmit}
-          disabled={loading || pendingCount === 0}
-          className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 font-semibold shadow-sm transition-all shrink-0"
-        >
-          {loading ? (
-            <Spinner className="w-4 h-4" />
-          ) : (
-            <Sparkles className="w-4 h-4" />
-          )}
-          Generate
-        </Button>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p className="text-[11px] text-slate-400 font-medium whitespace-nowrap">
+              * Comma also works to separate names.
+            </p>
+            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={creativeMode}
+                onChange={(e) => setCreativeMode(e.target.checked)}
+                className="rounded text-app-primary2 focus:ring-app-primary2 w-3.5 h-3.5 border-slate-300 shadow-sm"
+              />
+              <span className="text-[11px] font-semibold text-slate-600 whitespace-nowrap">
+                Include AI suggestions
+              </span>
+            </label>
+          </div>
+          <Button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading || pendingCount === 0}
+            className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 font-semibold shadow-md shadow-app-primary2/20 transition-all shrink-0 w-full sm:w-auto"
+          >
+            {loading ? (
+              <Spinner className="w-4 h-4" />
+            ) : (
+              <Sparkles className="w-4 h-4" />
+            )}
+            Generate
+          </Button>
+        </div>
+      </div>
+
+      {/* Right Section: AI Robot Image */}
+      <div className="hidden md:flex shrink-0 w-56 lg:w-64 items-center justify-center z-10">
+        <img
+          src={AiRobotImg}
+          alt="AI Assistant"
+          className="w-full h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-500 ease-out"
+        />
       </div>
     </div>
   );

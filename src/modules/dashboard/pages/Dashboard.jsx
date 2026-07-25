@@ -197,6 +197,19 @@ export default function Dashboard() {
         ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
         : dashboardMeta?.periodLabel;
 
+  // NOTE: client-side date trimming was tried here (matching each trend
+  // point's `date` field against the selected preset's [from, to] window)
+  // to work around the backend sometimes returning a full month regardless
+  // of the selected range. It was reverted — the trend endpoints' actual
+  // `date` field format isn't confirmed against the live backend, and a
+  // format mismatch made `new Date(item.date)` fail to parse for every
+  // point, silently emptying both charts for every filter. Until the
+  // backend confirms the exact format (or ships range-correct data, see
+  // backend TODO), pass the trend arrays through as-is so the charts show
+  // whatever the backend sends rather than risk hiding real data again.
+  const engagementDAUData = dashboardExtras?.trends?.engagementDAU || [];
+  const fitzoneCompletionData = dashboardExtras?.trends?.fitzoneCompletion || [];
+
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -440,7 +453,7 @@ export default function Dashboard() {
                   Icon={ActivityIcon}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.engagementDAU || []}
+                  data={engagementDAUData}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={[
@@ -460,7 +473,7 @@ export default function Dashboard() {
                   Icon={Dumbbell}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.fitzoneCompletion || []}
+                  data={fitzoneCompletionData}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={(
@@ -539,7 +552,7 @@ export default function Dashboard() {
                         ),
                       },
                     ]}
-                    actionLabel={<Eye size={14} />}
+                    actionLabel={"View"}
                     onAction={(row) =>
                       navigate(`/admin/users/view-user/${row.id}`, {
                         state: { from: "/admin/dashboard" },
