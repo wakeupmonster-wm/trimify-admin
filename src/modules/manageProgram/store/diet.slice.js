@@ -107,24 +107,31 @@ export const getProgramDuration = createAsyncThunk(
 
 export const searchFood = createAsyncThunk(
   "manageDiet/searchFood",
-  async (params = {}, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue, getState }) => {
     try {
-      const response = await searchFoodAPI();
-      if (response && response.status !== "error" && response.status !== false) {
-        let foods = response.searchfood || response.data || [];
-        
-        // Local filtering since backend doesn't support query params for search
-        if (params.query) {
-          const lowerQuery = params.query.toLowerCase();
-          foods = foods.filter((f) => {
-            const foodName = f.title || f.name || f.Meal_title || "";
-            return foodName.toLowerCase().includes(lowerQuery);
-          });
+      // The search endpoint doesn't support a query param, so it always
+      // returns the entire food catalog and we filter client-side. Fetch
+      // that full list once per session and cache it, instead of re-hitting
+      // the network on every keystroke of the (already debounced) search box.
+      const cached = getState().manageDiet.allFoodsCache;
+      let allFoods = cached;
+      if (!allFoods) {
+        const response = await searchFoodAPI();
+        if (!response || response.status === "error" || response.status === false) {
+          return rejectWithValue(response?.message || "Failed to search food");
         }
-        
-        return foods;
+        allFoods = response.searchfood || response.data || [];
       }
-      return rejectWithValue(response.message || "Failed to search food");
+
+      let foods = allFoods;
+      if (params.query) {
+        const lowerQuery = params.query.toLowerCase();
+        foods = foods.filter((f) => {
+          const foodName = f.title || f.name || f.Meal_title || "";
+          return foodName.toLowerCase().includes(lowerQuery);
+        });
+      }
+      return { foods, allFoods };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to search food");
     }
@@ -137,6 +144,7 @@ const manageDietSlice = createSlice({
     dietMeals: [],
     programDuration: 0,
     foodSearchResults: [],
+    allFoodsCache: null,
     pagination: {
       page: 1,
       limit: 10,
@@ -174,7 +182,8 @@ const manageDietSlice = createSlice({
       })
       // search food
       .addCase(searchFood.fulfilled, (state, action) => {
-        state.foodSearchResults = action.payload || [];
+        state.foodSearchResults = action.payload.foods || [];
+        state.allFoodsCache = action.payload.allFoods;
       });
   },
 });

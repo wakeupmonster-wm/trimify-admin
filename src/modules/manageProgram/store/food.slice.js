@@ -96,10 +96,20 @@ export const deleteFoodCategory = createAsyncThunk(
 
 export const getFoodList = createAsyncThunk(
   "manageFood/getFoodList",
-  async ({ programId, categoryId }, { rejectWithValue }) => {
+  async ({ programId, categoryId, params = {} }, { rejectWithValue }) => {
     try {
-      const response = await getFoodListAPI(programId, categoryId);
-      if (response && response.status === "success") return response.foods;
+      const response = await getFoodListAPI(programId, categoryId, params);
+      if (response && response.status === "success") {
+        return {
+          foods: response.foods || [],
+          pagination: {
+            page: response.pagination?.current_page || response.pagination?.page || 1,
+            limit: response.pagination?.per_page || 10,
+            total: response.pagination?.total || 0,
+            totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
+          },
+        };
+      }
       return rejectWithValue(response.message || "Failed to fetch foods");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to fetch foods");
@@ -161,24 +171,31 @@ export const deleteFood = createAsyncThunk(
 
 export const searchFoodItems = createAsyncThunk(
   "manageFood/searchFoodItems",
-  async (params = {}, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue, getState }) => {
     try {
-      const response = await searchFoodItemsAPI();
-       if (response && response.status !== "error" && response.status !== false) {
-          let foods = response.searchfood || response.data || [];
-                
-        // Local filtering since backend doesn't support query params for search sometimes
-        // Local filtering since backend doesn't support query params for search
-        if (params.query) {
-            const lowerQuery = params.query.toLowerCase();
-            foods = foods.filter((f) => {
-              const foodName = f.title || f.name || f.Meal_title || "";
-                return foodName.toLowerCase().includes(lowerQuery);
-              });
-            }
-        return foods;
+      // The search endpoint doesn't support a query param, so it always
+      // returns the entire food catalog and we filter client-side. Fetch
+      // that full list once per session and cache it, instead of re-hitting
+      // the network on every keystroke of the (already debounced) search box.
+      const cached = getState().manageFood.allFoodsCache;
+      let allFoods = cached;
+      if (!allFoods) {
+        const response = await searchFoodItemsAPI();
+        if (!response || response.status === "error" || response.status === false) {
+          return rejectWithValue(response?.message || "Failed to search food items");
+        }
+        allFoods = response.searchfood || response.data || [];
       }
-      return rejectWithValue(response.message || "Failed to search food items");
+
+      let foods = allFoods;
+      if (params.query) {
+        const lowerQuery = params.query.toLowerCase();
+        foods = foods.filter((f) => {
+          const foodName = f.title || f.name || f.Meal_title || "";
+          return foodName.toLowerCase().includes(lowerQuery);
+        });
+      }
+      return { foods, allFoods };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Failed to search food items");
     }
@@ -191,8 +208,15 @@ const manageFoodSlice = createSlice({
     categories: [],
     dropdownCategories: [],
     foodSearchResults: [],
+    allFoodsCache: null,
     foods: [],
     pagination: {
+      page: 1,
+      limit: 10,
+      total: 0,
+      totalPages: 1,
+    },
+    foodsPagination: {
       page: 1,
       limit: 10,
       total: 0,
@@ -231,7 +255,8 @@ const manageFoodSlice = createSlice({
       })
       .addCase(getFoodList.fulfilled, (state, action) => {
         state.loading = false;
-        state.foods = action.payload || [];
+        state.foods = action.payload.foods || [];
+        state.foodsPagination = action.payload.pagination;
       })
       .addCase(getFoodList.rejected, (state, action) => {
         state.loading = false;
@@ -239,7 +264,8 @@ const manageFoodSlice = createSlice({
       })
       // search food
       .addCase(searchFoodItems.fulfilled, (state, action) => {
-        state.foodSearchResults = action.payload || [];
+        state.foodSearchResults = action.payload.foods || [];
+        state.allFoodsCache = action.payload.allFoods;
       })
       // ... Add/Update/Delete cases just set loading true/false/error in typical patterns
       // but to save boilerplate we rely on refetching lists after successful mutations.

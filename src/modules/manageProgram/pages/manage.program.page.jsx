@@ -98,6 +98,7 @@ const ManageProgramPage = () => {
     } else if (action === "replicate") {
       const result = await dispatch(replicateProgram(row.id));
       if (replicateProgram.fulfilled.match(result)) {
+        toast.success("Program replicated successfully!");
         dispatch(
           fetchProgramList({
             page: pagination.pageIndex + 1,
@@ -107,6 +108,8 @@ const ManageProgramPage = () => {
             status: statusFilter,
           }),
         );
+      } else {
+        toast.error(result.payload || "Failed to replicate program.");
       }
     }
   };
