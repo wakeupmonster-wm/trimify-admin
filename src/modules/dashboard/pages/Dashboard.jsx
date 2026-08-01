@@ -11,7 +11,6 @@ import {
 import { PageHeader } from "@/components/common/headSubhead";
 import {
   LayoutDashboard,
-  Receipt,
   Target,
   Users2,
   Salad,
@@ -19,9 +18,6 @@ import {
   Activity as ActivityIcon,
   Dumbbell,
   Wallet,
-  ShieldCheck,
-  Bell,
-  Eye,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,8 +35,7 @@ import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
 import DashboardTableCard from "../components/DashboardTableCard";
-import StatusPill from "../components/StatusPill";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
@@ -626,8 +621,21 @@ export default function Dashboard() {
                           </span>
                         ),
                       },
-                      { key: "signed_up_at", label: "Signed Up", width: "w-[15%]", align: "left", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm"), },
-                      { key: "days_since_signup", label: "Days Since", width: "w-[15%]", align: "left", render: (r) => `${r.days_since_signup}d` },
+                      {
+                        key: "signed_up_at",
+                        label: "Signed Up",
+                        width: "w-[15%]",
+                        align: "left",
+                        render: (r) =>
+                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                      },
+                      {
+                        key: "days_since_signup",
+                        label: "Days Since",
+                        width: "w-[15%]",
+                        align: "left",
+                        render: (r) => `${r.days_since_signup}d`,
+                      },
                       {
                         key: "main_goal",
                         label: "Goal",
