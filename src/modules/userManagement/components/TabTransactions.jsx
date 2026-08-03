@@ -1,7 +1,14 @@
 import React from "react";
-import { CreditCard, Loader2, FileText, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import {
+  CreditCard,
+  Loader2,
+  FileText,
+  Calendar,
+  Clock,
+} from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileView";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -10,8 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 export function TabTransactions({ data }) {
-  const { transactionsState, onTransactionsPageChange, onTransactionsStatusChange } = data;
-  const { loading, loaded, transactions, summary, page, totalPages, status } = transactionsState;
+  const {
+    transactionsState,
+    onTransactionsPageChange,
+    onTransactionsStatusChange,
+  } = data;
+  const { loading, loaded, transactions, summary, page, totalPages, status } =
+    transactionsState;
   const isLoading = loading || !loaded;
 
   const getStatusTone = (status) => {
@@ -46,39 +58,53 @@ export function TabTransactions({ data }) {
   return (
     <div className="flex flex-col gap-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-            Total Transactions
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          {
+            label: "Total Transactions",
+            value: summary.totalTransactions || 0,
+            icon: CreditCard,
+            valClass: "text-slate-900 text-xl",
+          },
+          {
+            label: "Total Spent",
+            value: formatCurrency(summary.totalSpent),
+            icon: FileText,
+            valClass: "text-emerald-600 text-xl",
+          },
+          {
+            label: "First Purchase",
+            value: formatDate(summary.firstPurchaseAt),
+            icon: Calendar,
+            valClass: "text-slate-800 text-lg",
+          },
+          {
+            label: "Last Transaction",
+            value: formatDate(summary.lastTransactionAt),
+            icon: Clock,
+            valClass: "text-slate-800 text-lg",
+          },
+        ].map((item, idx) => (
+          <div
+            key={idx}
+            className="rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm flex items-start gap-3 transition-all hover:border-slate-300 hover:shadow-md"
+          >
+            <item.icon className="h-10 w-10 text-slate-500 bg-slate-100 rounded-xl p-2" />
+            <div className="flex flex-col items-start justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                {item.label}
+              </span>
+              <div
+                className={cn(
+                  "font-black tabular-nums tracking-tight",
+                  item.valClass,
+                )}
+              >
+                {item.value}
+              </div>
+            </div>
           </div>
-          <div className="text-xl font-black tabular-nums text-slate-900">
-            {summary.totalTransactions || 0}
-          </div>
-        </div>
-        <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-            Total Spent
-          </div>
-          <div className="text-xl font-black tabular-nums text-emerald-600">
-            {formatCurrency(summary.totalSpent)}
-          </div>
-        </div>
-        <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-            First Purchase
-          </div>
-          <div className="text-sm font-bold text-slate-900 mt-2">
-            {formatDate(summary.firstPurchaseAt)}
-          </div>
-        </div>
-        <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm">
-          <div className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-            Last Transaction
-          </div>
-          <div className="text-sm font-bold text-slate-900 mt-2">
-            {formatDate(summary.lastTransactionAt)}
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Transactions List */}
@@ -115,17 +141,38 @@ export function TabTransactions({ data }) {
               <table className="w-full text-left text-sm text-slate-600">
                 <thead>
                   <tr className="border-y border-slate-300/60 bg-app-primary2/5">
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Transaction ID</th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Date</th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Plan</th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Amount</th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Status</th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">Invoice</th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      SR.No
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Transaction ID
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Date
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Plan
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Amount
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Status
+                    </th>
+                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                      Invoice
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {transactions.map((tx) => (
-                    <tr key={tx.id} className="transition-colors hover:bg-slate-50/50">
+                  {transactions.map((tx, idx) => (
+                    <tr
+                      key={tx.id}
+                      className="transition-colors hover:bg-slate-50/50"
+                    >
+                      <td className="whitespace-nowrap px-5 py-3 text-[12px] font-medium text-slate-500">
+                        {((page || 1) - 1) * 10 + idx + 1}
+                      </td>
                       <td className="whitespace-nowrap px-4 py-3 text-[12px] font-medium text-slate-900">
                         {tx.transaction_id || "—"}
                       </td>
@@ -139,9 +186,7 @@ export function TabTransactions({ data }) {
                         {formatCurrency(tx.amount)}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3">
-                        <Pill tone={getStatusTone(tx.status)}>
-                          {tx.status}
-                        </Pill>
+                        <Pill tone={getStatusTone(tx.status)}>{tx.status}</Pill>
                         {tx.refund_reason && (
                           <div className="mt-1 text-[10px] text-slate-400">
                             {tx.refund_reason}
@@ -177,14 +222,18 @@ export function TabTransactions({ data }) {
                 </span>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => onTransactionsPageChange(Math.max(1, page - 1))}
+                    onClick={() =>
+                      onTransactionsPageChange(Math.max(1, page - 1))
+                    }
                     disabled={page === 1}
                     className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300/60 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => onTransactionsPageChange(Math.min(totalPages, page + 1))}
+                    onClick={() =>
+                      onTransactionsPageChange(Math.min(totalPages, page + 1))
+                    }
                     disabled={page === totalPages}
                     className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300/60 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
                   >

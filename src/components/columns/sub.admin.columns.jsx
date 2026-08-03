@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Ellipsis, Edit, Trash2 } from "lucide-react";
+import { Ellipsis, Edit, Trash2, Mail } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 export const getSubAdminColumns = (onAction) => [
   {
@@ -35,27 +37,6 @@ export const getSubAdminColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "createdAt",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Created At
-      </div>
-    ),
-    size: 100,
-    minSize: 100,
-    cell: ({ row }) => {
-      const dateValue = row.original.created_at;
-      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
-        return <span className="text-slate-400 text-xs">-</span>;
-      }
-      return (
-        <div className="text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
-          {format(new Date(dateValue), "dd MMM yyyy")}
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "userName",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
@@ -79,11 +60,19 @@ export const getSubAdminColumns = (onAction) => [
     ),
     size: 140,
     minSize: 140,
-    cell: ({ row }) => (
-      <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.email || "-"}
-      </span>
-    ),
+    cell: ({ row }) => {
+      const email = row.original.email;
+      if (!email) return <span className="text-slate-400 text-[11px] italic">-</span>;
+      return (
+        <div
+          className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight"
+          title={email}
+        >
+          <Mail className="w-3 h-3 text-muted-foreground shrink-0" />
+          <span className="truncate max-w-36 block">{email}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "hospital",
@@ -107,28 +96,26 @@ export const getSubAdminColumns = (onAction) => [
         Designation
       </div>
     ),
-    size: 100,
-    minSize: 90,
-    cell: ({ row }) => (
-      <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.designation || "-"}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "location",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Country
-      </div>
-    ),
-    size: 80,
-    minSize: 80,
-    cell: ({ row }) => (
-      <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.location || "-"}
-      </span>
-    ),
+    size: 120,
+    minSize: 110,
+    cell: ({ row }) => {
+      const designation = row.original.designation;
+      const isMissing = !designation || designation === "-";
+      return (
+        <Badge
+          variant="outline"
+          className={cn(
+            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+            isMissing
+              ? "bg-slate-500/10 text-slate-600"
+              : "bg-emerald-500/10 text-emerald-600",
+          )}
+        >
+          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          <span className="truncate capitalize">{isMissing ? "Not Assigned" : designation}</span>
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "role",
@@ -137,8 +124,8 @@ export const getSubAdminColumns = (onAction) => [
         Role
       </div>
     ),
-    size: 80,
-    minSize: 80,
+    size: 110,
+    minSize: 100,
     cell: ({ row }) => {
       const roleVal = row.original.role;
       let displayRole = "-";
@@ -178,6 +165,42 @@ export const getSubAdminColumns = (onAction) => [
         />
       </div>
     ),
+  },
+  {
+    accessorKey: "location",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Country
+      </div>
+    ),
+    size: 80,
+    minSize: 80,
+    cell: ({ row }) => (
+      <span className="capitalize text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+        {row.original.location || "-"}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Created At
+      </div>
+    ),
+    size: 100,
+    minSize: 100,
+    cell: ({ row }) => {
+      const dateValue = row.original.created_at;
+      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
+        return <span className="text-slate-400 text-xs">-</span>;
+      }
+      return (
+        <div className="text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {format(new Date(dateValue), "dd MMM yyyy")}
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -226,3 +249,4 @@ export const getSubAdminColumns = (onAction) => [
     ),
   },
 ];
+

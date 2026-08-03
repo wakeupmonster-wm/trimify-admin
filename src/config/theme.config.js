@@ -18,6 +18,15 @@ export const APP_COLORS = [
   "#cce6ff", // Lightest Blue
 ];
 
+export const ACCENT_COLORS = [
+    "#3b82f6", // Blue (Weight Loss)
+    "#10b981", // Emerald (Gain Muscle)
+    "#8b5cf6", // Violet (Stay Fit)
+    "#f59e0b", // Amber 
+    "#f43f5e", // Rose
+    "#0ea5e9", // Sky
+  ];
+
 // ─── Semantic Status Colors ──────────────────────────────────────────────────
 // Reserved exclusively for states that require immediate recognition 
 // (e.g., success, failure, pending). Never used for general categories.
@@ -37,15 +46,15 @@ export const STATUS_COLORS = {
 // ─── Semantic Status Badge Classes ───────────────────────────────────────────
 // Centralized mapping for status badges using soft tinted background and colored text.
 export const STATUS_BADGE_STYLE = {
-  success: "bg-emerald-100/70 text-emerald-700",
-  paid: "bg-emerald-100/70 text-emerald-700",
-  active: "bg-emerald-100/70 text-emerald-700",
-  failed: "bg-rose-100/70 text-rose-700",
-  expired: "bg-amber-100/70 text-amber-700",
-  churned: "bg-rose-100/70 text-rose-700",
-  pending: "bg-amber-100/70 text-amber-700",
-  revoked: "bg-rose-100/70 text-rose-700",
-  refunded: "bg-violet-100/70 text-violet-700",
-  disputed: "bg-orange-100/70 text-orange-700",
-  inactive: "bg-slate-100/70 text-slate-600",
+  success: "bg-emerald-500/10 text-emerald-600",
+  paid: "bg-emerald-500/10 text-emerald-600",
+  active: "bg-emerald-500/10 text-emerald-600",
+  failed: "bg-rose-500/10 text-rose-600",
+  expired: "bg-amber-500/10 text-amber-600",
+  churned: "bg-rose-500/10 text-rose-600",
+  pending: "bg-amber-500/10 text-amber-600",
+  revoked: "bg-rose-500/10 text-rose-600",
+  refunded: "bg-violet-500/10 text-violet-600",
+  disputed: "bg-orange-500/10 text-orange-600",
+  inactive: "bg-slate-500/10 text-slate-600",
 };

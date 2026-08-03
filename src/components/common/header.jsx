@@ -1,8 +1,14 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-const Header = ({ children }) => {
+const Header = ({ children, className }) => {
   return (
-    <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <header
+      className={cn(
+        "flex flex-col md:flex-row md:items-center justify-between gap-6",
+        className,
+      )}
+    >
       {children}
     </header>
   );

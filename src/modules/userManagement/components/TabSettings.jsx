@@ -99,11 +99,11 @@ export function TabSettings({ data }) {
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              <Label className="text-xs font-semibold text-slate-700">
                 Select Channel
               </Label>
               <Select value={channel} onValueChange={setChannel}>
-                <SelectTrigger className="h-9 w-full rounded-lg border-slate-300/60 bg-white px-3 text-[12.5px] font-semibold text-slate-700 focus:border-app-primary2 focus:ring-1 focus:ring-app-primary2">
+                <SelectTrigger className="h-11 w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-slate-100/50 focus:bg-white px-4 text-[13px] font-medium text-slate-900 focus:border-app-primary2 focus:ring-4 focus:ring-app-primary2/10 transition-all">
                   <SelectValue placeholder="Select Channel" />
                 </SelectTrigger>
                 <SelectContent>
@@ -114,7 +114,7 @@ export function TabSettings({ data }) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              <Label className="text-xs font-semibold text-slate-700">
                 {channel === "push" ? "Notification Title" : "Email Subject"}
               </Label>
               <Input
@@ -122,13 +122,13 @@ export function TabSettings({ data }) {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="e.g., Important account update"
-                className="h-9 w-full rounded-lg border-slate-300/60 bg-white px-3 text-[12.5px] font-medium text-slate-700 placeholder:text-slate-500 focus-visible:border-app-primary2 focus-visible:ring-1 focus-visible:ring-app-primary2"
+                className="h-11 w-full rounded-lg border-slate-200 bg-slate-50 hover:bg-slate-100/50 focus:bg-white px-4 text-[13px] font-medium text-slate-900 placeholder:text-slate-400 focus-visible:border-app-primary2 focus-visible:ring-4 focus-visible:ring-app-primary2/10 transition-all"
               />
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+          <div className="flex flex-col gap-1.5 mt-2">
+            <Label className="text-xs font-semibold text-slate-700">
               Message Body
             </Label>
             <Textarea
@@ -139,20 +139,20 @@ export function TabSettings({ data }) {
                   ? "Write your push notification message here..."
                   : "Write your email content here (HTML supported)..."
               }
-              className="min-h-[140px] w-full resize-y rounded-lg border-slate-300/60 bg-white p-3 text-[12.5px] font-medium text-slate-700 placeholder:text-slate-500 focus-visible:border-app-primary2 focus-visible:ring-1 focus-visible:ring-app-primary2"
+              className="min-h-[160px] w-full resize-y rounded-lg border-slate-200 bg-slate-50 hover:bg-slate-100/50 focus:bg-white p-4 text-[13px] font-medium text-slate-900 placeholder:text-slate-400 focus-visible:border-app-primary2 focus-visible:ring-4 focus-visible:ring-app-primary2/10 transition-all"
             />
           </div>
 
-          <div className="mt-1">
+          <div className="mt-4 flex justify-end">
             <Button
               onClick={handleSend}
               disabled={isLoading}
-              className="h-9 w-max rounded-md bg-app-primary2 px-4 text-xs font-semibold text-white shadow-sm transition-all hover:border-app-primary5 hover:bg-app-primary5"
+              className="h-10 rounded-lg bg-app-primary2 px-4 text-xs font-semibold text-white shadow-md shadow-app-primary2/20 transition-all hover:bg-app-primary5 hover:shadow-lg hover:-translate-y-0.5"
             >
               {isLoading ? (
-                <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
               ) : (
-                <Send className="mr-2 h-3.5 w-3.5 shrink-0" />
+                <Send className="mr-1 h-3.5 w-3.5 shrink-0" />
               )}
               {isLoading ? "Sending..." : "Send Message"}
             </Button>

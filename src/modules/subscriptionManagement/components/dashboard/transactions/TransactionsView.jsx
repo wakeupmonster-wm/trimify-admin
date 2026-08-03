@@ -189,7 +189,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
       {
         label: "Gross Revenue",
         value: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
-        icon: <DollarSign size={22} />,
+        icon: DollarSign,
         color: "blue",
         description: "Tap to clear filters",
         onClick: () => {
@@ -202,7 +202,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
       {
         label: "Total Transactions",
         value: kpiSummary.totalTransactions || 0,
-        icon: <Receipt size={22} />,
+        icon: Receipt,
         color: "emerald",
         description: "Tap to clear filters",
         onClick: () => {
@@ -212,20 +212,6 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         },
         isSelected: statusFilter === "" && planFilter === "",
       },
-      // {
-      //   label: "Basic Plan",
-      //   value: transactionsSummary.basic || 0,
-      //   icon: Star,
-      //   tone: "slate",
-      //   description: "Standard tier",
-      // },
-      // {
-      //   label: "Premium Plan",
-      //   value: transactionsSummary.premium || 0,
-      //   icon: Crown,
-      //   tone: "amber",
-      //   description: "Pro tier",
-      // },
       {
         label: "Avg. Transaction",
         value: `$${avgTransactionValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`,

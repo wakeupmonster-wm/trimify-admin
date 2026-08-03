@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
-import { Ellipsis, Eye, ShieldOff } from "lucide-react";
+import { Ellipsis, Eye, ShieldOff, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -80,14 +80,20 @@ export const getSubscriberColumns = (onAction) => [
       </div>
     ),
     size: 150,
-    minSize: 150,
-    cell: ({ row }) => (
-      <div className="min-w-0">
-        <p className="text-[11px] text-slate-600 font-medium truncate">
-          {row.original.email || "-"}
-        </p>
-      </div>
-    ),
+    minSize: 120,
+    cell: ({ row }) => {
+      const email = row.original.email;
+      if (!email) return <span className="text-slate-400 text-[11px] italic">-</span>;
+      return (
+        <div
+          className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight"
+          title={email}
+        >
+          <Mail className="w-3 h-3 text-muted-foreground shrink-0" />
+          <span className="truncate max-w-40 block">{email}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "plan_title",
@@ -98,11 +104,64 @@ export const getSubscriberColumns = (onAction) => [
     ),
     size: 150,
     minSize: 150,
-    cell: ({ row }) => (
-      <div className="font-semibold text-slate-600 text-[11px]">
-        {row.original.plan_title || "Unknown Plan"}
+    cell: ({ row }) => {
+      const plan = row.original.plan_title || "Unknown Plan";
+      const isPremium = plan.toLowerCase().includes("premium");
+      return (
+        <Badge
+          className={cn(
+            "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
+            isPremium
+              ? "bg-amber-50 text-amber-600"
+              : "bg-slate-100 text-slate-600"
+          )}
+        >
+          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          <span className="truncate">{plan}</span>
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Status
       </div>
     ),
+    size: 150,
+    minSize: 150,
+    cell: ({ row }) => {
+      const { status, revoked_reason, revoked_detail } = row.original;
+      return (
+        <div className="flex flex-col items-start gap-1">
+          <Badge
+            variant="outline"
+            className={cn(
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+              STATUS_BADGE_STYLE[status.toLowerCase()] ||
+                STATUS_BADGE_STYLE.active,
+            )}
+          >
+            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            <span className="truncate">{status}</span>
+          </Badge>
+          {status === "Revoked" && revoked_reason && revoked_reason !== "Inconsistent state" && (
+            <span className={cn(
+              "text-[10px] font-medium pl-0.5",
+              REVOKED_REASON_STYLE[revoked_reason] || "text-slate-400"
+            )}>
+              {humanizeReason(revoked_reason)}
+            </span>
+          )}
+          {status === "Revoked" && revoked_detail && (
+            <span className="text-[9px] font-medium text-slate-400 pl-0.5 italic max-w-[140px] truncate" title={revoked_detail}>
+              "{revoked_detail}"
+            </span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "started_at",
@@ -123,7 +182,7 @@ export const getSubscriberColumns = (onAction) => [
     accessorKey: "expires_at",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Expires
+        Expired
       </div>
     ),
     size: 150,
@@ -133,46 +192,6 @@ export const getSubscriberColumns = (onAction) => [
         {formatDate(row.original.expires_at)}
       </div>
     ),
-  },
-  {
-    accessorKey: "status",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Status
-      </div>
-    ),
-    size: 150,
-    minSize: 150,
-    cell: ({ row }) => {
-      const { status, revoked_reason, revoked_detail } = row.original;
-      return (
-        <div className="flex flex-col items-start gap-1">
-          <Badge
-            className={cn(
-              "font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 border-none shadow-none flex items-center gap-1.5 w-fit",
-              STATUS_BADGE_STYLE[status.toLowerCase()] ||
-                STATUS_BADGE_STYLE.active,
-            )}
-          >
-            <span className="w-1 h-1 rounded-full bg-current" />
-            {status}
-          </Badge>
-          {status === "Revoked" && revoked_reason && (
-            <span className={cn(
-              "text-[10px] font-medium pl-0.5",
-              REVOKED_REASON_STYLE[revoked_reason] || "text-slate-400"
-            )}>
-              {humanizeReason(revoked_reason)}
-            </span>
-          )}
-          {status === "Revoked" && revoked_detail && (
-            <span className="text-[9px] font-medium text-slate-400 pl-0.5 italic max-w-[140px] truncate" title={revoked_detail}>
-              "{revoked_detail}"
-            </span>
-          )}
-        </div>
-      );
-    },
   },
   {
     id: "actions",

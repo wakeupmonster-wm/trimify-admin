@@ -75,8 +75,9 @@ export const getManageProgramColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button
+          variant="outline"
           onClick={() => onAction && onAction(row.original, "view-user")}
-          className="bg-app-primary2 hover:bg-[#006597] text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           View User
         </Button>
@@ -95,8 +96,9 @@ export const getManageProgramColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button
+          variant="outline"
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-app-primary2 hover:bg-app-primary3 text-white h-8 px-4 text-[11px] font-medium rounded shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           Open Program
         </Button>

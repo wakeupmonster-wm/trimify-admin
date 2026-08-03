@@ -65,36 +65,46 @@ export function NavManagements({ items }) {
       return true;
 
     if (
-      lastSegment === "transactions" && (currentPath.includes("/transactions/view") ||
-      (currentPath.includes("/view-profile") && location.state?.source === "transactions"))
+      lastSegment === "transactions" &&
+      (currentPath.includes("/transactions/view") ||
+        (currentPath.includes("/view-profile") &&
+          location.state?.source === "transactions"))
     )
       return true;
 
     if (
-      lastSegment === "manage-subscribers" && currentPath.includes("/view-subscription")
+      lastSegment === "manage-subscribers" &&
+      currentPath.includes("/view-subscription")
     )
       return true;
     if (
       lastSegment === "users-management" &&
-      currentPath.includes("users-management/view-profile") && location.state?.from !== "/admin/dashboard"
+      currentPath.includes("users-management/view-profile") &&
+      location.state?.from !== "/admin/dashboard"
     )
       return true;
     if (
-      lastSegment === "nutrition-food" && (currentPath.includes("/add-nutrition") || currentPath.includes("/edit-nutrition"))
+      lastSegment === "nutrition-food" &&
+      (currentPath.includes("/add-nutrition") ||
+        currentPath.includes("/edit-nutrition"))
     )
       return true;
     if (
-      lastSegment === "ai-food-upload" && currentPath.includes("/ai-food-upload")
+      lastSegment === "ai-food-upload" &&
+      currentPath.includes("/ai-food-upload")
     ) {
       return true;
     }
     if (
-      lastSegment === "manage-category" && currentPath.includes("/blog-section") &&
-      (currentPath.includes("/add-category") || currentPath.includes("/edit-category"))
+      lastSegment === "manage-category" &&
+      currentPath.includes("/blog-section") &&
+      (currentPath.includes("/add-category") ||
+        currentPath.includes("/edit-category"))
     )
       return true;
     if (
-      lastSegment === "manage-blogs" && (currentPath.includes("/add-post") || currentPath.includes("/edit-post"))
+      lastSegment === "manage-blogs" &&
+      (currentPath.includes("/add-post") || currentPath.includes("/edit-post"))
     )
       return true;
 
@@ -107,9 +117,9 @@ export function NavManagements({ items }) {
 
   return (
     <SidebarGroup className="px-0">
-      {/* <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
+      <SidebarGroupLabel className="px-6 h-6 text-[9px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
         Management
-      </SidebarGroupLabel> */}
+      </SidebarGroupLabel>
       <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-4 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
           const isActive =
@@ -133,7 +143,7 @@ export function NavManagements({ items }) {
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "group relative h-10 w-full transition-all duration-300 px-5 rounded-none border-none",
+                      "group relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                       isActive && "bg-app-primary2/10 hover:bg-app-primary2/20",
@@ -144,23 +154,23 @@ export function NavManagements({ items }) {
                       className="flex items-center gap-3 w-full"
                     >
                       {isActive && (
-                        <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
                       )}
 
                       <div
                         className={cn(
-                          "flex size-[18px] 3xl:size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
+                          "flex size-5 3xl:size-6 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                           isActive
                             ? "text-app-primary2"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
-                        <Icon className="size-[18px] 3xl:size-5" />
+                        <Icon className="size-5 3xl:size-6" />
                       </div>
 
                       <span
                         className={cn(
-                          "flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
+                          "flex-1 truncate text-[13px] 3xl:text-sm tracking-tight transition-colors duration-300",
                           isActive
                             ? "text-app-primary2 font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
@@ -195,7 +205,7 @@ export function NavManagements({ items }) {
                   isActive={isActive}
                   tooltip={item.title}
                   className={cn(
-                    "relative h-10 w-full transition-all duration-300 px-5 rounded-none border-none",
+                    "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                     isActive && "!bg-blue-100/50 !hover:bg-blue-200/50",
@@ -206,23 +216,23 @@ export function NavManagements({ items }) {
                     className="flex items-center gap-3 w-full"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
+                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
                     )}
 
                     <div
                       className={cn(
-                        "flex size-[18px] 3xl:size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
+                        "flex size-5 3xl:size-6 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
                         isActive
                           ? "text-app-primary2"
                           : "text-slate-400 hover:text-foreground/80",
                       )}
                     >
-                      <Icon className="size-[18px] 3xl:size-5" />
+                      <Icon className="size-5 3xl:size-6" />
                     </div>
 
                     <span
                       className={cn(
-                        "group-data-[collapsible=icon]:hidden flex-1 truncate text-xs 3xl:text-[13px] tracking-tight transition-colors duration-300",
+                        "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] 3xl:text-sm tracking-tight transition-colors duration-300",
                         isActive
                           ? "text-app-primary2 font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
@@ -260,7 +270,7 @@ export function NavManagements({ items }) {
                             asChild
                             isActive={isSubActive}
                             className={cn(
-                              "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
+                              "group relative h-10 w-full transition-all duration-200 px-6 rounded-none",
                               isSubActive
                                 ? "!text-app-primary2 font-semibold !bg-blue-100/50"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
@@ -272,7 +282,7 @@ export function NavManagements({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
+                                <div className="absolute left-0 top-1 bottom-1 w-1 rounded-r-full bg-app-primary2" />
                               )}
                               <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}

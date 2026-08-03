@@ -130,7 +130,8 @@ const ManageFoodItemsPage = () => {
     }
   };
 
-  const handleAddOrUpdateFood = async () => {
+  const handleAddOrUpdateFood = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Please enter a food name.";
     else if (!formData.food_id)
@@ -275,7 +276,7 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -306,14 +307,14 @@ const ManageFoodItemsPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form onSubmit={(e) => handleAddOrUpdateFood(e)} className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-5">
             {/* Approval Status */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pb-2">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Approval Status
               </Label>
-              <div className="flex items-center gap-6 mt-2">
+              <div className="flex items-center gap-6 mt-4">
                 <Label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer font-normal">
                   <input
                     type="radio"
@@ -535,7 +536,7 @@ const ManageFoodItemsPage = () => {
               )}
               <Button
                 className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
-                onClick={handleAddOrUpdateFood}
+                type="submit"
                 disabled={loading}
               >
                 {loading ? (
@@ -553,7 +554,7 @@ const ManageFoodItemsPage = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </form>
 
         {/* Data Table */}
         <div className="w-full min-w-0 flex-1">

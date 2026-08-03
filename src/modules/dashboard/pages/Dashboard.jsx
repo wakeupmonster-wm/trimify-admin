@@ -39,7 +39,8 @@ import { format } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
-import { APP_COLORS } from "@/config/theme.config.js";
+import { ACCENT_COLORS, APP_COLORS } from "@/config/theme.config.js";
+
 export default function Dashboard() {
   const socket = useSocket();
   const dispatch = useDispatch();
@@ -56,7 +57,6 @@ export default function Dashboard() {
     dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
-  const [liveEvents, setLiveEvents] = useState([]);
 
   // --- Unified Brand Palette imported from theme.config.js ---
 
@@ -68,55 +68,36 @@ export default function Dashboard() {
     }));
   };
 
-  // ─── Socket: Real-time Live Activity Feed ──────────────────────────────────
-  // Connects to WebSocket to receive live user activity events.
-  // On mount: joins the admin dashboard room and listens for activity history + new events.
-  // On unmount: leaves the room and removes all socket listeners to prevent memory leaks.
-  useEffect(() => {
-    if (!socket) return;
+  const mapAccentColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item, i) => ({
+      ...item,
+      color: ACCENT_COLORS[i % ACCENT_COLORS.length],
+    }));
+  };
 
-    // 1. Load existing activity history when first joining the room
-    const handleHistory = (history) => {
-      console.log("📜 Activity History Received:");
-      if (Array.isArray(history)) {
-        setLiveEvents(history);
-      } else {
-        console.warn("⚠️ Received history is not an array:");
-      }
-    };
+  const mapGenderColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item) => {
+      let color = "#cbd5e1"; // Slate for Other/Unspecified
+      if (item.label === "Male")
+        color = "#3b82f6"; // Blue
+      else if (item.label === "Female") color = "#ec4899"; // Pink
+      return { ...item, color };
+    });
+  };
 
-    // 2. Append new live events as they arrive (capped at 50 most recent)
-    const handleNewActivity = (data) => {
-      console.log("🔥 Live Activity Received:", data);
-      setLiveEvents((prev) => [data, ...prev].slice(0, 50));
-    };
-
-    socket.on("activity_history", handleHistory);
-    socket.on("new_live_activity", handleNewActivity);
-
-    // 3. Join the admin dashboard room (handles both already-connected and reconnect scenarios)
-    console.log("📤 Emitting join_admin_dashboard...");
-
-    if (socket.connected) {
-      console.log("⚡ Socket already connected, joining now.");
-      socket.emit("join_admin_dashboard");
-    }
-
-    const onConnect = () => {
-      console.log("⚡ Socket connected event, joining now.");
-      socket.emit("join_admin_dashboard");
-    };
-    socket.on("connect", onConnect);
-
-    // Cleanup: leave room and detach all listeners
-    return () => {
-      console.log("📤 Emitting leave_admin_dashboard...");
-      socket.emit("leave_admin_dashboard");
-      socket.off("activity_history", handleHistory);
-      socket.off("new_live_activity", handleNewActivity);
-      socket.off("connect", onConnect);
-    };
-  }, [socket]);
+  const mapDietColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item) => {
+      let color = "#94a3b8"; // Slate for Unspecified
+      const lbl = item.label.toLowerCase();
+      if (lbl === "veg" || lbl === "vegetarian")
+        color = "#10b981"; // Green
+      else if (lbl === "non-veg" || lbl === "non-vegetarian") color = "#ef4444"; // Red
+      return { ...item, color };
+    });
+  };
 
   // Backend requires from/to as plain YYYY-MM-DD (per the dashboard API
   // contract) — never send a full ISO datetime here, the backend can't
@@ -282,7 +263,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-6 py-5 px-4 lg:px-6 w-full">
+          <div className="flex flex-col gap-4 3xl:gap-6 pb-5 pt-3 px-4 lg:px-6 w-full">
             {/* ─────────────────────────────────────────────────────────────
                 Previous dashboard widgets — temporarily disabled while the
                 new dashboard (extras-driven) is being built out. Nothing
@@ -363,14 +344,16 @@ export default function Dashboard() {
             )}
 
             <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
-            <EcosystemAlerts
-              data={{ alerts: dashboardExtras?.alerts || [] }}
-              selectedDate={selectedDate}
-            />
+            <div className="pt-3 3xl:pt-2">
+              <EcosystemAlerts
+                data={{ alerts: dashboardExtras?.alerts || [] }}
+                selectedDate={selectedDate}
+              />
+            </div>
 
             {/* Composition — pie/donut breakdowns */}
-            <div className="flex flex-col items-start gap-6">
-              <div className="flex flex-col items-start gap-1">
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start pt-2 gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Composition
                 </h2>
@@ -389,7 +372,7 @@ export default function Dashboard() {
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
                   // data={dashboardExtras?.pieCharts?.userGoals || []}
-                  data={mapChartColors(
+                  data={mapAccentColors(
                     dashboardExtras?.pieCharts?.userGoals || [],
                   )}
                   scrollableLegend
@@ -400,7 +383,6 @@ export default function Dashboard() {
                   Icon={Users2}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={dashboardExtras?.pieCharts?.gender || []}
                   data={mapChartColors(
                     dashboardExtras?.pieCharts?.gender || [],
                   )}
@@ -412,7 +394,7 @@ export default function Dashboard() {
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
                   tooltipText="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
-                  data={mapChartColors(
+                  data={mapDietColors(
                     dashboardExtras?.pieCharts?.dietPreference || [],
                   )}
                 />
@@ -421,8 +403,8 @@ export default function Dashboard() {
             </div>
 
             {/* Trends — everything not already covered by Signups/Revenue/Heatmap above */}
-            <div className="flex flex-col items-start gap-6">
-              <div className="flex flex-col items-start gap-1">
+            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+              <div className="flex flex-col items-start pt-2 gap-1">
                 <h2 className="text-base font-bold text-slate-900">Trends</h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
                   Change over time, grouped to match the selected date range
@@ -499,6 +481,17 @@ export default function Dashboard() {
                     emptyMessage="No recent users found."
                     columns={[
                       {
+                        key: "sr_no",
+                        label: "Sr. No.",
+                        width: "w-[10%]",
+                        align: "left",
+                        render: (_, idx) => (
+                          <span className="text-slate-500 px-2 font-medium">
+                            {idx + 1}
+                          </span>
+                        ),
+                      },
+                      {
                         key: "name",
                         label: "User",
                         render: (r) => (
@@ -568,7 +561,7 @@ export default function Dashboard() {
             )}
 
             {/* Drill-down lists */}
-            <div className="flex flex-col items-start gap-6">
+            <div className="flex flex-col items-start pt-2 gap-4 3xl:gap-6">
               <div className="flex flex-col items-start gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Follow-ups & Roster

@@ -154,6 +154,7 @@ const AiFoodViewPage = () => {
   const [imageRegenerating, setImageRegenerating] = useState(false);
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAutoRegenConfirmOpen, setIsAutoRegenConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (item && item.status !== "processing") {
@@ -236,6 +237,11 @@ const AiFoodViewPage = () => {
         setImageRegenerating(false);
         toast.error(error || "Failed to regenerate image.");
       });
+  };
+
+  const confirmAutoRegen = () => {
+    setIsAutoRegenConfirmOpen(false);
+    handleRegenerateImage();
   };
 
   // Fire-and-forget, same as the plain regenerate button — the response
@@ -392,15 +398,22 @@ const AiFoodViewPage = () => {
                     "This item already exists in the catalog."}
                 </p>
                 {item.duplicate_of_id && (
-                  <button
-                    type="button"
-                    onClick={handleViewExisting}
-                    disabled={viewingExisting}
-                    className="mt-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 underline decoration-amber-400 underline-offset-2 hover:text-amber-950 disabled:opacity-50"
-                  >
-                    {viewingExisting && <Spinner className="w-3 h-3" />}
-                    View existing item
-                  </button>
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleViewExisting}
+                      disabled={viewingExisting}
+                      className="border-amber-300 text-amber-700 hover:bg-amber-100 hover:text-amber-800 h-8 px-3 text-xs"
+                    >
+                      {viewingExisting ? (
+                        <Spinner className="w-3 h-3 mr-1" />
+                      ) : (
+                        <Pencil className="w-3 h-3 mr-1" />
+                      )}
+                      Update / Delete Existing
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
@@ -523,9 +536,9 @@ const AiFoodViewPage = () => {
 
         {showReviewForm && (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start">
-              {/* Left Column - Image Card */}
-              <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:lg:grid-cols-[1fr_400px] gap-6 items-start">
+              {/* Image Card (Right Column on Desktop) */}
+              <div className="flex flex-col gap-4 order-last lg:order-last">
                 <Card className="border-slate-200 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
                   <div className="flex items-center gap-2 px-1">
                     <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
@@ -568,24 +581,24 @@ const AiFoodViewPage = () => {
                           <Bot className="w-5 h-5" />
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuContent align="end" className="w-56 p-2">
                         <DropdownMenuItem
-                          onClick={handleRegenerateImage}
-                          className="gap-2 text-sm font-medium"
+                          onClick={() => setIsAutoRegenConfirmOpen(true)}
+                          className="gap-2 text-xs 3xl:text-sm font-medium cursor-pointer hover:!bg-app-primary2/10"
                         >
                           <RefreshCcw className="w-4 h-4 text-slate-500" /> Auto
                           Regenerate
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => setIsPromptModalOpen(true)}
-                          className="gap-2 text-sm font-medium"
+                          className="gap-2 text-xs 3xl:text-sm font-medium cursor-pointer hover:!bg-app-primary2/10"
                         >
                           <Sparkles className="w-4 h-4 text-app-primary2" />{" "}
                           Custom Regenerate
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => setIsDeleteModalOpen(true)}
-                          className="gap-2 text-sm font-medium text-red-600 focus:text-red-700"
+                          className="gap-2 text-xs 3xl:text-sm font-medium text-red-600 focus:text-red-700 cursor-pointer hover:!bg-red-100"
                         >
                           <Trash2 className="w-4 h-4" /> Remove Entire Item
                         </DropdownMenuItem>
@@ -630,8 +643,8 @@ const AiFoodViewPage = () => {
                 </Card>
               </div>
 
-              {/* Right Column - Form */}
-              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6">
+              {/* Data Form (Left Column on Desktop) */}
+              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6 order-first lg:order-first">
                 <div className="flex items-center gap-2 -mb-2">
                   <ClipboardList className="w-3.5 h-3.5 text-app-primary2" />
                   <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -804,6 +817,17 @@ const AiFoodViewPage = () => {
         confirmText="Remove"
         loading={isBusy}
         type="danger"
+      />
+
+      <ConfirmModal
+        isOpen={isAutoRegenConfirmOpen}
+        onClose={() => setIsAutoRegenConfirmOpen(false)}
+        onConfirm={confirmAutoRegen}
+        title="Auto Regenerate Image"
+        message="Are you sure you want to auto regenerate this image? This will replace the current image with a newly generated one."
+        confirmText="Regenerate"
+        loading={isBusy || imageRegenerating}
+        type="brand"
       />
     </Container>
   );

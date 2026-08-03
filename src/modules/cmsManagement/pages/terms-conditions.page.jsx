@@ -79,7 +79,7 @@ export default function TermAndConditionsPage() {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -119,7 +119,7 @@ export default function TermAndConditionsPage() {
         </Header>
 
         <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
-          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-5 sm:space-y-6 w-full min-w-0">
+          <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6 w-full min-w-0">
             <RichTextEditor
               value={content}
               onChange={setContent}

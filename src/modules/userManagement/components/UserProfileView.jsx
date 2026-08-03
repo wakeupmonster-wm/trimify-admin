@@ -7,6 +7,8 @@ import {
   Trash2,
   Edit,
   Loader2,
+  Calendar,
+  History,
 } from "lucide-react";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
@@ -16,6 +18,9 @@ import { TabAccount } from "./TabAccount";
 import { TabSettings } from "./TabSettings";
 import { TabTransactions } from "./TabTransactions";
 import { getUserTransactionsAPI } from "../services/user.services";
+import { useDispatch } from "react-redux";
+import { deleteUserThunk } from "../store/user.slice";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
@@ -100,7 +105,6 @@ function bmiCategory(bmi) {
   return { label: "Obese", color: "text-rose-600" };
 }
 
-
 /* =========================================================================
    Small UI primitives
 ========================================================================= */
@@ -162,9 +166,14 @@ export function Card({ title, subtitle, right, children, className }) {
   );
 }
 
-export function KV({ icon: Icon, label, value }) {
+export function KV({ icon: Icon, label, value, noBorder }) {
   return (
-    <div className="flex items-center justify-between gap-2.5 border-b border-slate-50 py-2 last:border-b-0 last:pb-0">
+    <div
+      className={cn(
+        "flex items-center justify-between gap-2.5 py-2",
+        !noBorder && "border-b border-slate-50 last:border-b-0 last:pb-0",
+      )}
+    >
       <span className="flex items-center gap-2 text-[12px] font-medium text-slate-500">
         {Icon && <Icon className="h-4 w-4" />}
         {label}
@@ -176,34 +185,52 @@ export function KV({ icon: Icon, label, value }) {
   );
 }
 
-export function Kpi({ label, value }) {
+export function Kpi({ icon: Icon, label, value }) {
   return (
     <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm transition-all duration-300 hover:border-blue-200">
-      <div className="text-xl font-black tracking-tight tabular-nums text-slate-900">
-        {value}
+      <div className="flex items-center gap-2 mb-1.5">
+        {Icon && (
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-50 border border-slate-100 text-slate-500">
+            <Icon className="h-3.5 w-3.5" />
+          </div>
+        )}
+        <div className="text-xl font-black tracking-tight tabular-nums text-slate-900">
+          {value}
+        </div>
       </div>
-      <div className="mt-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/80">
+      <div className="text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/80">
         {label}
       </div>
     </div>
   );
 }
 
-export function GoalTile({ label, value, pct }) {
+export function GoalTile({ label, value, pct, colorClass = "bg-blue-500" }) {
   return (
-    <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm transition-all duration-300 hover:border-blue-200">
-      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-        {label}
+    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md group flex flex-col gap-1">
+      <div className="space-y-1">
+        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          {label}
+        </div>
+        <div className="text-lg font-black tabular-nums text-slate-900 tracking-tight">
+          {value}
+        </div>
       </div>
-      <div className="text-base font-black tabular-nums text-slate-900">
-        {value}
-      </div>
+
       {pct !== undefined && (
-        <div className="mt-3.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${pct}%`, backgroundColor: APP_COLORS[0] }}
-          />
+        <div className="flex items-center gap-2.5">
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
+            <div
+              className={cn(
+                "h-full rounded-full transition-all duration-700 ease-out group-hover:opacity-80",
+                colorClass,
+              )}
+              style={{ width: `${Math.min(pct, 100)}%` }}
+            />
+          </div>
+          <span className="text-[11px] font-bold text-slate-600 text-right w-7">
+            {Math.round(pct)}%
+          </span>
         </div>
       )}
     </div>
@@ -262,8 +289,7 @@ const TABS = [
 ========================================================================= */
 export default function UserProfileView({ user, onBack, loading }) {
   const [tab, setTab] = useState("overview");
-  const [toastMsg, setToastMsg] = useState(null);
-  const toastTimer = useRef(null);
+  const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -280,9 +306,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     const macroTotal =
       (user.carbs_goal || 0) + (user.fat_goal || 0) + (user.protein_goal || 0);
     const macros = [
-      { label: "Carbs", v: user.carbs_goal || 0, color: APP_COLORS[2] },
-      { label: "Protein", v: user.protein_goal || 0, color: APP_COLORS[0] },
-      { label: "Fat", v: user.fat_goal || 0, color: APP_COLORS[5] },
+      { label: "Carbs", v: user.carbs_goal || 0, color: "#f59e0b" }, // amber-500
+      { label: "Protein", v: user.protein_goal || 0, color: "#3b82f6" }, // blue-500
+      { label: "Fat", v: user.fat_goal || 0, color: "#10b981" }, // emerald-500
     ];
     const fitnessProfileFields = [
       ["Weight Goal", user.weight_goal ? `${user.weight_goal} kg` : null],
@@ -394,30 +420,19 @@ export default function UserProfileView({ user, onBack, loading }) {
     );
   }
 
-  const showToast = (msg) => {
-    setToastMsg(msg);
-    window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToastMsg(null), 2000);
-  };
-
   const handleCopy = (value, label) => {
     navigator.clipboard?.writeText(String(value)).catch(() => {});
-    showToast(`${label} copied`);
+    toast.success(`${label} copied`);
   };
 
   const handleDeleteUser = async () => {
     try {
       setIsDeleting(true);
-      const { deleteUserAPI } = await import("../services/user.services");
-      const res = await deleteUserAPI(user.id);
-      if (res?.data?.success || res?.status === 200 || res?.status === 204) {
-        showToast("User deleted successfully.");
-        setTimeout(() => onBack(), 1000);
-      } else {
-        showToast(res?.data?.message || "Failed to delete user.");
-      }
+      await dispatch(deleteUserThunk(user.id)).unwrap();
+      toast.success("User deleted successfully.");
+      setTimeout(() => onBack(), 1000);
     } catch (error) {
-      showToast(error?.response?.data?.message || "Failed to delete user.");
+      toast.error(error || "Failed to delete user.");
     } finally {
       setIsDeleting(false);
     }
@@ -456,7 +471,7 @@ export default function UserProfileView({ user, onBack, loading }) {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -479,119 +494,133 @@ export default function UserProfileView({ user, onBack, loading }) {
             </div>
           </div>
         </Header>
-
-        {toastMsg && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-slate-900/95 px-4 py-2 text-xs font-semibold text-white shadow-xl">
-            {toastMsg}
-          </div>
-        )}
-
-        {/* Hero Header */}
-        <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-sm border border-slate-200">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt="Avatar"
-                  className="h-20 w-20 rounded-full object-cover ring-4 ring-white shadow-sm"
-                />
-              ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-2xl font-bold text-app-primary2 ring-4 ring-white shadow-sm">
-                  {initials(user.name)}
-                </div>
-              )}
-              {/* <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white shadow-sm">
-                <Pill tone={user.status === "Active" ? "success" : "neutral"}>
-                  {user.status}
-                </Pill>
-              </div> */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <span
+                className="hover:text-app-primary2 cursor-pointer transition-colors"
+                onClick={onBack}
+              >
+                User Directory
+              </span>
+              <span className="text-slate-300">/</span>
+              <span className="text-app-primary2">Profile View</span>
             </div>
-            <div className="flex flex-col gap-1.5 text-center sm:text-left">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
-                {user.name}
-              </h1>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-sm font-medium text-slate-500">
-                {user.email && (
-                  <span className="flex items-center gap-1">
-                    <Mail className="h-3.5 w-3.5" />
-                    {user.email}
-                  </span>
-                )}
-                {user.email && user.mobile && (
-                  <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
-                )}
-                {user.mobile && (
-                  <span className="flex items-center gap-1">
-                    <Phone className="h-3.5 w-3.5" />
-                    {user.mobile}
-                  </span>
-                )}
-              </div>
-              <div className="mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <Pill tone="info">UID: {user.id}</Pill>
-                <Pill tone="info">Age {age}</Pill>
-                <Pill tone={user.gender === "Female" ? "purple" : "blue"}>
-                  {user.gender}
-                </Pill>
-                {user.premium === "1" && <Pill tone="warning">Premium</Pill>}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
-            <ActionButton 
-              icon={isDeleting ? Loader2 : Trash2} 
-              label={isDeleting ? "Deleting..." : "Delete User"} 
-              variant="danger" 
-              onClick={() => setIsDeleteModalOpen(true)} 
-            />
           </div>
         </div>
 
-        <ConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          onConfirm={handleDeleteUser}
-          title="Confirm User Deletion"
-          message="Are you sure you want to delete this user? This action can be reversed by an admin."
-          confirmText="Delete User"
-        />
+        <div className="flex flex-col gap-4">
+          {/* Hero Header */}
+          <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-200">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="relative shrink-0">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="Avatar"
+                    className="h-24 w-24 rounded-full object-cover ring-[6px] ring-slate-50"
+                  />
+                ) : (
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-50 text-3xl font-bold text-app-primary2 ring-[6px] ring-slate-50">
+                    {initials(user.name)}
+                  </div>
+                )}
+              </div>
 
-        <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="mb-6 w-full justify-start overflow-x-auto border-b border-slate-200 bg-transparent p-0 h-10 rounded-none flex-nowrap">
-            {TABS.map((t) => (
-              <TabsTrigger
-                key={t.key}
-                value={t.key}
-                className="relative h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:border-app-primary2 data-[state=active]:text-app-primary2 data-[state=active]:shadow-none whitespace-nowrap"
-              >
-                {t.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+              <div className="flex flex-col gap-2.5 text-center sm:text-left sm:ml-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                  <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                    {user.name}
+                    <span className="text-slate-500 text-xl font-medium">
+                      , {age}
+                    </span>
+                  </h1>
 
-          <TabsContent value="overview">
-            <TabOverview data={tabData} />
-          </TabsContent>
-          <TabsContent value="health">
-            <TabHealth data={tabData} />
-          </TabsContent>
-          <TabsContent value="programs">
-            <TabPrograms data={tabData} />
-          </TabsContent>
-          <TabsContent value="activity">
-            <TabActivity data={tabData} />
-          </TabsContent>
-          <TabsContent value="account">
-            <TabAccount data={tabData} />
-          </TabsContent>
-          <TabsContent value="transactions">
-            <TabTransactions data={tabData} />
-          </TabsContent>
-          <TabsContent value="settings">
-            <TabSettings data={tabData} />
-          </TabsContent>
-        </Tabs>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                      {user.status || "Active"}
+                    </span>
+                    {/* <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    {user.premium === "1" ? "PREMIUM" : "FREE"}
+                  </span> */}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-[13px] font-medium text-slate-500">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-slate-400" />
+                    <span className="text-slate-400">Joined:</span>{" "}
+                    <span className="text-slate-700">
+                      {fmtDate(user.createdAt || user.created_at)}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <History className="h-4 w-4 text-slate-400" />
+                    <span className="text-slate-400">Updated:</span>{" "}
+                    <span className="text-slate-700">
+                      {fmtDate(user.updatedAt || user.updated_at)}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end shrink-0">
+              <ActionButton
+                icon={isDeleting ? Loader2 : Trash2}
+                label={isDeleting ? "Deleting..." : "Delete User"}
+                variant="danger"
+                onClick={() => setIsDeleteModalOpen(true)}
+              />
+            </div>
+          </div>
+
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={handleDeleteUser}
+            title="Confirm User Deletion"
+            message="Are you sure you want to delete this user? This action can be reversed by an admin."
+            confirmText="Delete User"
+            loading={isDeleting}
+          />
+
+          <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
+            <TabsList className="mb-6 flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max no-scrollbar">
+              {TABS.map((t) => (
+                <TabsTrigger
+                  key={t.key}
+                  value={t.key}
+                  className="h-10 rounded-lg px-5 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:bg-app-primary2 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 ease-in-out whitespace-nowrap"
+                >
+                  {t.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <TabsContent value="overview">
+              <TabOverview data={tabData} />
+            </TabsContent>
+            <TabsContent value="health">
+              <TabHealth data={tabData} />
+            </TabsContent>
+            <TabsContent value="programs">
+              <TabPrograms data={tabData} />
+            </TabsContent>
+            <TabsContent value="activity">
+              <TabActivity data={tabData} />
+            </TabsContent>
+            <TabsContent value="account">
+              <TabAccount data={tabData} />
+            </TabsContent>
+            <TabsContent value="transactions">
+              <TabTransactions data={tabData} />
+            </TabsContent>
+            <TabsContent value="settings">
+              <TabSettings data={tabData} />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </Container>
   );

@@ -64,21 +64,21 @@ const accountSlice = createSlice({
   name: "account",
   initialState: {
     account: {
-      id: "ADM-849201",
-      nickname: "John Doe",
-      email: "admin@trimify.com",
-      phone: "+1 (555) 123-4567",
-      memberSince: "2023-11-15T10:30:00.000Z",
-      lastLoginAt: new Date().toISOString(),
+      id: "",
+      nickname: "",
+      email: "",
+      phone: "",
+      memberSince: "",
+      lastLoginAt: "",
       avatar: {
         url: "",
       },
       verified: {
-        email: true,
-        phone: true,
+        email: false,
+        phone: false,
       },
-      role: "Super Admin",
-      status: "Active",
+      role: "",
+      status: "",
     },
     passwordSuccess: false,
     updating: false, // Separate loading state for updates

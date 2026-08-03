@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { Users, UserCheck, CalendarOff, ShieldOff } from "lucide-react";
+import { UserCheck, CalendarOff, ShieldOff } from "lucide-react";
+import { LuUsersRound } from "react-icons/lu";
 import {
   DataTable,
   DataTableFilters,
@@ -177,53 +178,54 @@ export default function SubscribersView() {
       {
         label: "Total Subscribers",
         value: kpiCounts.total || 0,
-        icon: <Users size={22} />,
-        color: "blue",
-        description: "Tap to view all",
+        icon: LuUsersRound,
+        tone: "blue",
+        description: "Tap to clear filters",
         onClick: () => {
           setStatusFilter("");
+          setPlanFilter("");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "",
+        isSelected: statusFilter === "" && planFilter === "",
       },
       {
-        label: "Active",
+        label: "Active Subscriptions",
         value: kpiCounts.active || 0,
-        icon: <UserCheck size={22} />,
+        icon: UserCheck,
         tone: "emerald",
-        description: "Tap to filter",
+        description: "Not revoked, not expired",
         onClick: () => {
-          setStatusFilter("Active");
+          setStatusFilter("active");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "Active",
+        isSelected: statusFilter === "active",
       },
       {
-        label: "Expired",
+        label: "Expired Plans",
         value: kpiCounts.expired || 0,
-        icon: <CalendarOff size={22} />,
+        icon: CalendarOff,
         tone: "amber",
         description: "Tap to filter",
         onClick: () => {
-          setStatusFilter("Expired");
+          setStatusFilter("expired");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "Expired",
+        isSelected: statusFilter === "expired",
       },
       {
-        label: "Revoked",
+        label: "Revoked Access",
         value: kpiCounts.revoked || 0,
-        icon: <ShieldOff size={22} />,
+        icon: ShieldOff,
         tone: "rose",
         description: "Tap to filter",
         onClick: () => {
-          setStatusFilter("Revoked");
+          setStatusFilter("revoked");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "Revoked",
+        isSelected: statusFilter === "revoked",
       },
     ],
-    [kpiCounts, statusFilter],
+    [kpiCounts, statusFilter, planFilter],
   );
 
   const columns = useMemo(() => getSubscriberColumns(handleAction), []);
@@ -300,13 +302,6 @@ export default function SubscribersView() {
             }}
           />
         }
-        onRowClick={(row) => {
-          const id = row?.original?.userId || row?.original?.user_id || row?.original?.id;
-          console.log("row: ", row)
-          if (id) {
-            navigate(`/admin/users/view-user/${id}`);
-          }
-        }}
       />
 
       <ConfirmModal

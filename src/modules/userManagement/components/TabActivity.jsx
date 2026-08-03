@@ -12,14 +12,22 @@ const FILTERS = [
   { key: "weight_log", label: "Weight", tile: "Weight" },
 ];
 
-const TILE_TYPE = { Steps: "step_log", Water: "water_log", Food: "food_log", Weight: "weight_log" };
+const TILE_TYPE = {
+  Steps: "step_log",
+  Water: "water_log",
+  Food: "food_log",
+  Weight: "weight_log",
+};
 
 export function TabActivity({ data }) {
   const { as, logActivities, maxSteps, fmtDate } = data;
   const [filter, setFilter] = useState("all");
 
   const filteredActivities = useMemo(
-    () => (filter === "all" ? logActivities : logActivities.filter((a) => a.type === filter)),
+    () =>
+      filter === "all"
+        ? logActivities
+        : logActivities.filter((a) => a.type === filter),
     [logActivities, filter],
   );
 
@@ -48,9 +56,7 @@ export function TabActivity({ data }) {
                   : "border-slate-200 hover:border-slate-300",
               )}
             >
-              <div className="text-xs font-medium text-slate-500">
-                {c.l}
-              </div>
+              <div className="text-xs font-medium text-slate-500">{c.l}</div>
               <div className="mt-1 text-base font-bold tabular-nums text-slate-900">
                 {c.d.total_entries || 0}{" "}
                 <span className="text-[11px] font-medium text-slate-500">
@@ -71,7 +77,7 @@ export function TabActivity({ data }) {
         title="Activity Log History"
         subtitle="Steps, water, food & weight entries, newest first"
         right={
-          <span className="text-[10.5px] font-semibold text-slate-500">
+          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
             {filteredActivities.length} records
           </span>
         }
@@ -121,7 +127,7 @@ export function TabActivity({ data }) {
                   </div>
                   {a.type === "step_log" && (
                     <div className="hidden w-24 shrink-0 sm:block">
-                      <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
                         <div
                           className="h-full rounded-full bg-app-primary2"
                           style={{
@@ -138,7 +144,11 @@ export function TabActivity({ data }) {
         ) : (
           <EmptyState
             icon={filter === "all" ? Activity : activityMeta(filter).icon}
-            title={filter === "all" ? "No Activity Logs" : `No ${activeFilterMeta.label} Logs`}
+            title={
+              filter === "all"
+                ? "No Activity Logs"
+                : `No ${activeFilterMeta.label} Logs`
+            }
             subtitle={
               filter === "all"
                 ? "User hasn't logged any activity yet."

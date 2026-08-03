@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import dayjs from "dayjs";
 
@@ -97,19 +96,14 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
           <Badge
             variant="outline"
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
               isActive
-                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
-                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100",
+                ? "bg-emerald-500/10 text-emerald-600"
+                : "bg-rose-500/10 text-rose-600",
             )}
           >
-            <span
-              className={cn(
-                "w-1 h-1 rounded-full",
-                isActive ? "bg-emerald-600" : "bg-rose-600",
-              )}
-            />
-            {displayStatus}
+            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            <span className="truncate">{displayStatus}</span>
           </Badge>
         </div>
       );

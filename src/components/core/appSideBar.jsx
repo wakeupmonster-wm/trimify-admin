@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavMain } from "@/components/core/navigations/nav-main";
 import { NavUser } from "@/components/core/navigations/nav-user";
 import {
@@ -26,11 +25,28 @@ import { cn } from "@/lib/utils";
 // import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
 // import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
 // import { fetchMyTickets } from "@/modules/support/store/support.slice";
+import { LogOut, Loader2 } from "lucide-react";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import { logout } from "@/modules/authentication/store/auth.slice";
 
 export function AppSidebar({ ...props }) {
   const dispatch = useDispatch();
   const { open, isMobile, setOpenMobile } = useSidebar();
   const { pathname } = useLocation();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      dispatch(logout());
+    } catch (e) {
+      console.error("Logout failed", e);
+    } finally {
+      setIsLoggingOut(false);
+      window.location.href = "/";
+    }
+  };
 
   useEffect(() => {
     if (isMobile) {
@@ -103,7 +119,7 @@ export function AppSidebar({ ...props }) {
                   to="/admin/dashboard"
                   className="flex items-center gap-2 pl-2"
                 >
-                  <div className="flex items-center justify-center rounded-lg max-w-28 h-12">
+                  <div className="flex items-center justify-center rounded-lg max-w-22 h-10">
                     <img
                       src={trimifyLogo}
                       alt="Logo"
@@ -127,7 +143,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50 pt-2">
         {/* Overview Section */}
         {/* {dynamicNavigation.navMain && ( */}
         <NavMain items={navigationData.navMain} />
@@ -149,9 +165,42 @@ export function AppSidebar({ ...props }) {
       </SidebarContent>
 
       {/* --- FOOTER: User Profile --- */}
-      <SidebarFooter className="border-t border-slate-300/60 px-3 py-4">
+      {/* <SidebarFooter className="border-t border-slate-300/60 px-3 py-4">
         <NavUser user={navUser} />
+      </SidebarFooter> */}
+
+      {/* Add Here Logout  */}
+      <SidebarFooter className="border-t border-slate-300/60 px-3 py-5">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setShowLogoutConfirm(true)}
+              disabled={isLoggingOut}
+              className="text-red-500 hover:text-white bg-red-100 hover:bg-red-500 w-full flex items-center gap-3 p-5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoggingOut ? (
+                <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2} />
+              ) : (
+                <LogOut className="h-5 w-5" strokeWidth={2} />
+              )}
+              <span className="font-bold text-sm">
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
+
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={handleLogout}
+        title="Logout from Trimify"
+        message="Are you sure you want to log out? You will need to enter your credentials to access the admin panel again."
+        confirmText="Logout"
+        type="danger"
+        loading={isLoggingOut}
+      />
     </Sidebar>
   );
 }

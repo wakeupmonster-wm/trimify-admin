@@ -11,7 +11,9 @@ import {
   User,
   Smartphone,
   Ban,
+  Star,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Card, Pill, KV, EmptyState } from "./UserProfileView";
 
 export function TabAccount({ data }) {
@@ -72,7 +74,27 @@ export function TabAccount({ data }) {
 
           <Card title="Billing" subtitle="Payment methods and history">
             <KV icon={CreditCard} label="Payment Status" value={user.paid ? "Paid" : "Unpaid"} />
-            <KV icon={ShieldCheck} label="Plan" value={user.plan ? user.plan.title : "No active plan"} />
+            <KV 
+              icon={ShieldCheck} 
+              label="Plan" 
+              value={
+                user.plan ? (
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide",
+                      user.paid 
+                        ? "bg-amber-50 text-amber-600" 
+                        : "bg-slate-100 text-slate-600"
+                    )}>
+                      {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
+                      {user.plan.title.toUpperCase()}
+                    </div>
+                  </div>
+                ) : (
+                  "No active plan"
+                )
+              } 
+            />
             <KV icon={Calendar} label="Plan Expiry" value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"} />
             <KV icon={CreditCard} label="Stripe ID" value={user.stripe_id || "Not linked"} />
             {(!user.transactions || user.transactions.length === 0) && (

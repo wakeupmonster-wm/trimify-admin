@@ -1,5 +1,5 @@
 import React from "react";
-import { Droplet, Target } from "lucide-react";
+import { Droplet, Target, Flame, Footprints } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileView";
 
@@ -74,19 +74,31 @@ export function TabHealth({ data }) {
           <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals">
             <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
               <GoalTile
+                icon={Droplet}
                 label="Water Goal"
                 value={`${waterGoal.toLocaleString()} ml`}
                 pct={Math.min(100, (waterGoal / 4000) * 100)}
+                colorClass="bg-sky-500"
+                textClass="text-sky-500"
+                bgLightClass="bg-sky-50"
               />
               <GoalTile
+                icon={Flame}
                 label="Calories Goal"
                 value={`${caloriesGoal.toLocaleString()} kcal`}
                 pct={Math.min(100, (caloriesGoal / 3500) * 100)}
+                colorClass="bg-orange-500"
+                textClass="text-orange-500"
+                bgLightClass="bg-orange-50"
               />
               <GoalTile
+                icon={Footprints}
                 label="Step Target"
                 value={targetSteps.toLocaleString()}
                 pct={Math.min(100, (targetSteps / 12000) * 100)}
+                colorClass="bg-emerald-500"
+                textClass="text-emerald-500"
+                bgLightClass="bg-emerald-50"
               />
             </div>
 
@@ -140,7 +152,7 @@ export function TabHealth({ data }) {
             subtitle="Goal & body-shape preferences"
           >
             {fitnessProfileSet.map(([l, v]) => (
-              <KV key={l} label={l} value={v} />
+              <KV key={l} label={l} value={v} noBorder={true} />
             ))}
             {fitnessProfileMissing.length === fitnessProfileFields.length ? (
               <EmptyState

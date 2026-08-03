@@ -185,10 +185,10 @@ export function TodayAtAGlance({
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
                             <div
-                              className={`flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 transition-transform ${
+                              className={`flex items-center gap-1 font-bold text-[10px] rounded-full py-1 px-2 shrink-0 transition-transform ${
                                 isRed
-                                  ? "text-rose-600 bg-rose-50 border-rose-200"
-                                  : "text-emerald-600 bg-emerald-50 border-emerald-200"
+                                  ? "text-rose-600 bg-rose-50"
+                                  : "text-emerald-600 bg-emerald-50"
                               }`}
                             >
                               {isTrendingUp ? (

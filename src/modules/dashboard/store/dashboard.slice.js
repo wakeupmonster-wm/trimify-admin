@@ -23,6 +23,7 @@ import {
   buildSecondaryKpis,
   buildAlerts,
 } from "../utils/dashboardExtras.transform";
+import { getMockDashboardData } from "../utils/mockDashboardData";
 // ─── Existing KPI thunk ────────────────────────────────────────────────────────
 
 export const fetchDashboardKPIs = createAsyncThunk(
@@ -178,16 +179,30 @@ export const fetchDashboardExtras = createAsyncThunk(
   },
 );
 
+export const fetchMockDashboardData = createAsyncThunk(
+  "dashboard/fetchMockDashboardData",
+  async (dateRange, { rejectWithValue }) => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return getMockDashboardData(dateRange);
+    } catch (err) {
+      return rejectWithValue(err.message || "Server Error");
+    }
+  }
+);
+
 const initialState = {
   stats: null,
   dashboardData: null,
   dashboardExtras: null,
+  mockData: null,
   dashboardMeta: null,
   dateRange: null,
   activities: [],
   loading: false,
   dashboardLoading: false,
   extrasLoading: false,
+  mockLoading: false,
   error: null,
   lastUpdated: null,
 };
@@ -245,6 +260,21 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchDashboardExtras.rejected, (state, action) => {
         state.extrasLoading = false;
+        state.error = action.payload;
+      })
+      // Mock Dashboard data cases (new)
+      .addCase(fetchMockDashboardData.pending, (state) => {
+        state.mockLoading = true;
+      })
+      .addCase(fetchMockDashboardData.fulfilled, (state, action) => {
+        state.mockLoading = false;
+        state.mockData = action.payload.data;
+        state.dashboardMeta = action.payload.meta;
+        state.dateRange = action.payload.meta.dateRange;
+        state.lastUpdated = Date.now();
+      })
+      .addCase(fetchMockDashboardData.rejected, (state, action) => {
+        state.mockLoading = false;
         state.error = action.payload;
       });
   },

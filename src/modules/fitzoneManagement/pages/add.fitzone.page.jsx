@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { addFitzone, updateFitzone } from "../store/fitzone.slice";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
+import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 
 const AddFitzonePage = () => {
   const navigate = useNavigate();
@@ -116,7 +117,7 @@ const AddFitzonePage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -239,6 +240,19 @@ const AddFitzonePage = () => {
                 <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Upload Banner Image
                 </Label>
+                {isEditMode && editData?.image && (
+                  <div className="flex flex-col items-center justify-center py-2 pb-4">
+                    <img
+                      src={
+                        editData.image?.startsWith("http")
+                          ? editData.image
+                          : `${IMAGE_BASE_URL}/${editData.image?.replace(/^\//, "")}`
+                      }
+                      alt="Current Banner"
+                      className="w-full max-w-[200px] h-auto object-cover rounded-md border border-slate-200"
+                    />
+                  </div>
+                )}
                 <div
                   className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
                     isDragging

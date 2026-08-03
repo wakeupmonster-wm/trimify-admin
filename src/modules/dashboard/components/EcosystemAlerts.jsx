@@ -83,7 +83,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
 
   return (
     <div className="mb-1">
-      <div className="mb-6 flex flex-col items-start gap-1">
+      <div className="mb-4 flex flex-col items-start gap-1">
         <h2 className="text-base font-bold text-slate-900 group">Alerts</h2>
         <p className="text-[11px] font-medium text-slate-500 leading-none">
           Needs your attention

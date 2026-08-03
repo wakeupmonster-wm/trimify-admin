@@ -90,12 +90,12 @@ export const ConversionFunnel = ({ data }) => {
                     <span className="text-xl font-bold text-slate-900 leading-none tracking-tight">
                       {stage.value.toLocaleString()}
                     </span>
-                    {stage.dropOff !== 0 && (
+                    {/* {stage.dropOff !== 0 && (
                       <div className="flex items-center gap-1 px-2 py-0.5 bg-rose-50 border border-rose-100/50 rounded-full text-rose-500 text-[11px] font-bold">
                         <ArrowDown size={12} strokeWidth={3} />
                         {Math.abs(stage.dropOff).toFixed(2)}%
                       </div>
-                    )}
+                    )} */}
                   </div>
                   <span className="text-[13px] font-medium text-slate-400 mt-1.5">
                     {((stage.value / stages[0].value) * 100)
@@ -120,7 +120,7 @@ export const ConversionFunnel = ({ data }) => {
               <p className="text-xs font-semibold text-slate-500">
                 Not Paid Yet
               </p>
-              <p className="text-xl font-extrabold text-[#e17b34] mt-2 leading-none">
+              <p className="text-xl font-extrabold text-orange-600 mt-2 leading-none">
                 {(data.notPaidUsers ?? 0).toLocaleString()}
               </p>
             </div>
@@ -128,7 +128,7 @@ export const ConversionFunnel = ({ data }) => {
               <p className="text-xs font-semibold text-slate-500">
                 Conversion Rate
               </p>
-              <p className="text-xl font-extrabold text-[#15b097] mt-2 leading-none">
+              <p className="text-xl font-extrabold text-emerald-600 mt-2 leading-none">
                 {data.conversionRate ?? 0}%
               </p>
             </div>
@@ -136,7 +136,7 @@ export const ConversionFunnel = ({ data }) => {
               <p className="text-xs font-semibold text-slate-500">
                 Drop-off Rate
               </p>
-              <p className="text-xl font-extrabold text-rose-500 mt-2 leading-none">
+              <p className="text-xl font-extrabold text-rose-600 mt-2 leading-none">
                 {data.dropOffRate ?? 0}%
               </p>
             </div>

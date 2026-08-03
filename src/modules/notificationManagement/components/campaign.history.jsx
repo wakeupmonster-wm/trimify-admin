@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { History } from "lucide-react";
 import {
   IconSearch,
@@ -136,24 +137,38 @@ export default function CampaignHistory({
   const stats = [
     {
       label: "Total Campaigns",
-      val: pagination?.total || 0,
+      value: pagination?.total || 0,
       icon: <IconChartBar size={22} />,
-      color: "blue",
+      tone: "blue",
       description: "Overall campaigns",
     },
     {
       label: "Emails Dispatched",
-      val: pagination?.emailCount || 0,
+      value: pagination?.emailCount || 0,
       icon: <IconMail size={22} />,
-      color: "indigo",
+      tone: "indigo",
       description: "Email communications",
+      onClick: () => {
+        setSearchTerm("");
+        setChannelFilter("email");
+        setStatusFilter("all");
+        onPaginationChange((prev) => ({ ...prev, pageIndex: 0 }));
+      },
+      isSelected: channelFilter === "email",
     },
     {
       label: "Pushes Dispatched",
-      val: pagination?.pushCount || 0,
+      value: pagination?.pushCount || 0,
       icon: <IconDeviceMobile size={22} />,
-      color: "emerald",
+      tone: "emerald",
       description: "Mobile notifications",
+      onClick: () => {
+        setSearchTerm("");
+        setChannelFilter("push");
+        setStatusFilter("all");
+        onPaginationChange((prev) => ({ ...prev, pageIndex: 0 }));
+      },
+      isSelected: channelFilter === "push",
     },
   ];
 
@@ -171,31 +186,7 @@ export default function CampaignHistory({
             performance metrics
           </p>
         </div>
-
-        {/* <div className="border-b border-slate-300/60/50 mx-5" /> */}
-
-        <div className="px-6">
-          {/* History KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <StatsGrid
-              stats={stats}
-              colorMap={colorMap}
-              bgMap={bgMap}
-              onCardClick={(label) => {
-                setSearchTerm("");
-                setChannelFilter("all");
-                setStatusFilter("all");
-
-                if (label === "Emails Dispatched") {
-                  setChannelFilter("email");
-                } else if (label === "Pushes Dispatched") {
-                  setChannelFilter("push");
-                }
-                onPaginationChange((prev) => ({ ...prev, pageIndex: 0 }));
-              }}
-            />
-          </div>
-        </div>
+        <ModuleKpiRow items={stats} loading={loading && !history?.length} />
       </Card>
 
       {/* History Toolbar (Consistent with User Management) */}
@@ -335,30 +326,30 @@ export default function CampaignHistory({
             <TableLoader text="Updating history..." />
           )}
           <Table className="min-w-[900px]">
-            <TableHeader className="bg-slate-50/50">
-              <TableRow>
-                <TableHead className="w-[6%] text-foreground/80 px-3 sm:px-6 text-center font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+            <TableHeader>
+              <TableRow className="border-y border-slate-300/60 bg-app-primary2/5 hover:bg-app-primary2/5">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-center">
                   SR.No
                 </TableHead>
-                <TableHead className="w-[12%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Date Sent
                 </TableHead>
-                <TableHead className="w-[12%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Channel
                 </TableHead>
-                <TableHead className="w-[15%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Campaign Details
                 </TableHead>
-                <TableHead className="w-[15%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Audience
                 </TableHead>
-                <TableHead className="w-[15%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Metrics
                 </TableHead>
-                <TableHead className="w-[11%] text-foreground/80 px-3 sm:px-6 text-left font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-left">
                   Status
                 </TableHead>
-                <TableHead className="w-[11%] text-foreground/80 px-3 sm:px-6 text-center font-bold uppercase h-10 bg-slate-100/50 text-[10px] whitespace-nowrap">
+                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap text-center">
                   Logs
                 </TableHead>
               </TableRow>
@@ -386,44 +377,47 @@ export default function CampaignHistory({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ delay: idx * 0.03, duration: 0.2 }}
-                      className="transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group cursor-pointer"
+                      className="hover:bg-slate-100/50 border-y border-slate-200/60 last:border-0 transition-colors group cursor-pointer"
                     >
-                      <TableCell className="px-3 sm:px-6 py-3 text-center whitespace-nowrap text-xs font-medium text-slate-500">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 text-center whitespace-nowrap">
                         {idx + 1}
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <span className="text-xs font-bold text-slate-900">
+                          <span className="text-[11px] font-bold text-slate-900">
                             {format(new Date(item.createdAt), "dd MMM, yyyy")}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 whitespace-nowrap">
                         <Badge
                           className={cn(
-                            "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
+                            "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
                             item.channel === "email"
                               ? "bg-indigo-50 text-indigo-600"
-                              : "bg-app-primary2 text-app-primary2",
+                              : "bg-emerald-50 text-emerald-600",
                           )}
                         >
-                          {item.channel || "Push"}
+                          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                          <span className="truncate">
+                            {item.channel || "Push"}
+                          </span>
                         </Badge>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 whitespace-nowrap">
                         <div className="flex flex-col max-w-xs whitespace-nowrap">
-                          <span className="text-[13px] font-bold text-slate-800 truncate">
+                          <span className="text-[11px] font-bold text-slate-800 truncate">
                             {item.campaignName || "General Campaign"}
                           </span>
-                          <span className="text-[11px] font-medium text-slate-500 line-clamp-1">
+                          <span className="text-[10px] font-medium text-slate-500 line-clamp-1">
                             {item.title}
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 text-[12px] font-bold text-slate-600 capitalize whitespace-nowrap">
+                      <TableCell className="py-2.5 text-[11px] font-bold text-slate-600 capitalize whitespace-nowrap">
                         {item.target || "Community"}
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           {(statusFilter === "all" ||
                             statusFilter === "delivered") && (
@@ -452,7 +446,7 @@ export default function CampaignHistory({
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <div
                             className={cn(
@@ -474,7 +468,7 @@ export default function CampaignHistory({
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="px-3 sm:px-6 py-3 text-center whitespace-nowrap">
+                      <TableCell className="py-2.5 text-xs font-medium text-slate-700 text-center whitespace-nowrap">
                         <Button
                           variant="outline"
                           size="sm"

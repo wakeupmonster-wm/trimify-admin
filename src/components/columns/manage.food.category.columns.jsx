@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
+import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,19 +49,25 @@ export const getManageFoodCategoryColumns = (handleAction) => [
     ),
     size: 100,
     minSize: 80,
-    cell: ({ row }) => (
-      <div className="flex justify-center items-center">
-        {row.original.image ? (
-          <img
-            src={row.original.image}
-            alt={row.original.name}
-            className="w-8 h-8 object-contain rounded-md bg-slate-50 border border-slate-100"
-          />
-        ) : (
-          <span className="text-xs text-slate-400">-</span>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const imageUrl = row.original.image?.startsWith("http")
+        ? row.original.image
+        : `${IMAGE_BASE_URL}/${row.original.image?.replace(/^\//, "")}`;
+
+      return (
+        <div className="flex justify-center items-center">
+          {row.original.image ? (
+            <img
+              src={imageUrl}
+              alt={row.original.name}
+              className="w-8 h-8 object-contain rounded-md bg-slate-50 border border-slate-100"
+            />
+          ) : (
+            <span className="text-xs text-slate-400">-</span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "created_at",
@@ -119,7 +126,7 @@ export const getManageFoodCategoryColumns = (handleAction) => [
           onClick={() =>
             handleAction && handleAction(row.original, "manage-food")
           }
-          className="bg-app-primary2 hover:bg-app-primary3 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-white hover:bg-app-primary2 text-app-primary2 hover:text-white border border-app-primary2 h-7 px-4 text-[10px] font-medium rounded shadow-sm"
         >
           Manage Food
         </Button>

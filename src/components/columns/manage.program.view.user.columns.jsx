@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Eye, Ellipsis } from "lucide-react";
+import { Eye, Ellipsis, Mail, Phone } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { STATUS_BADGE_STYLE } from "@/config/theme.config";
+import { format } from "date-fns";
 
 export const getViewUserProgramColumns = (onAction) => [
   {
@@ -34,29 +36,14 @@ export const getViewUserProgramColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "user_id",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        User Id
-      </div>
-    ),
-    size: 100,
-    minSize: 80,
-    cell: ({ row }) => (
-      <span className="font-bold text-slate-700 text-[11px] tracking-tight">
-        {row.original.user_id || "-"}
-      </span>
-    ),
-  },
-  {
     accessorKey: "name",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        User Name
+        Username
       </div>
     ),
-    size: 200,
-    minSize: 150,
+    size: 160,
+    minSize: 120,
     cell: ({ row }) => (
       <span className="capitalize font-bold text-slate-700 text-[11px] tracking-tight">
         {row.original.user?.name || "-"}
@@ -67,78 +54,93 @@ export const getViewUserProgramColumns = (onAction) => [
     accessorKey: "email",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Email
+        Email Address
       </div>
     ),
-    size: 250,
-    minSize: 150,
-    cell: ({ row }) => (
-      <span className="font-medium text-slate-700 text-[11px] tracking-tight">
-        {row.original.user?.email || "-"}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "start_date",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Start Date
-      </div>
-    ),
-    size: 120,
-    minSize: 100,
-    cell: ({ row }) => (
-      <span className="font-medium text-slate-700 text-[11px] tracking-tight">
-        {row.original.start_date || "-"}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "end_date",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        End Date
-      </div>
-    ),
-    size: 120,
-    minSize: 100,
-    cell: ({ row }) => (
-      <span className="font-medium text-slate-700 text-[11px] tracking-tight">
-        {row.original.end_date || "-"}
-      </span>
-    ),
+    size: 180,
+    minSize: 120,
+    cell: ({ row }) => {
+      const email = row.original.user?.email;
+      if (!email)
+        return <span className="text-slate-400 text-[11px] italic">-</span>;
+      return (
+        <div
+          className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-700 tracking-tight"
+          title={email}
+        >
+          <Mail className="w-3 h-3 text-slate-500 shrink-0" />
+          <span className="truncate max-w-44 block">{email}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
         Status
       </div>
     ),
-    size: 120,
-    minSize: 100,
+    size: 100,
+    minSize: 90,
     cell: ({ row }) => {
       const status = row.original.status || "Inactive";
-      const isActive = status === "Active";
+      const style =
+        STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (
-        <div className="flex justify-start">
+        <div className="flex justify-center">
           <Badge
             variant="outline"
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
-              isActive
-                ? "bg-emerald-100/70 text-emerald-700 hover:bg-emerald-100"
-                : "bg-rose-100/70 text-rose-700 hover:bg-rose-100",
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+              style,
             )}
           >
-            <span
-              className={cn(
-                "w-1 h-1 rounded-full",
-                isActive ? "bg-emerald-600" : "bg-rose-600",
-              )}
-            />
-            {status}
+            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            <span className="truncate">{status}</span>
           </Badge>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "start_date",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Started
+      </div>
+    ),
+    size: 100,
+    minSize: 90,
+    cell: ({ row }) => {
+      const dateValue = row.original.start_date;
+      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
+        return <div className="text-center text-slate-500 text-[11px]">—</div>;
+      }
+      return (
+        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {format(new Date(dateValue), "dd MMM yyyy")}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "end_date",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Expired
+      </div>
+    ),
+    size: 100,
+    minSize: 90,
+    cell: ({ row }) => {
+      const dateValue = row.original.end_date;
+      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
+        return <div className="text-center text-slate-500 text-[11px]">—</div>;
+      }
+      return (
+        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {format(new Date(dateValue), "dd MMM yyyy")}
         </div>
       );
     },
@@ -150,8 +152,8 @@ export const getViewUserProgramColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 60,
-    minSize: 60,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
         <DropdownMenu>

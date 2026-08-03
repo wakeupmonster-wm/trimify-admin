@@ -1,7 +1,7 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { LuUserRoundCog } from "react-icons/lu";
+import { LuUserRoundCheck, LuUserRoundCog, LuUsersRound } from "react-icons/lu";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
   Plus,
@@ -158,14 +158,14 @@ const SubAdminManagementPage = () => {
 
   const kpiItems = [
     {
-      icon: Users,
+      icon: LuUsersRound,
       label: "Total Admins",
       value: kpiStats.total.toLocaleString(),
       description: "Total registered users",
       tone: "blue",
     },
     {
-      icon: UserCheck,
+      icon: LuUserRoundCheck,
       label: "Active Accounts",
       value: kpiStats.active.toLocaleString(),
       description: "Currently active",
@@ -177,7 +177,8 @@ const SubAdminManagementPage = () => {
       value: kpiStats.subAdmins.toLocaleString(),
       description: "Tap to filter",
       tone: "indigo",
-      onClick: () => setRoleFilter("0"),
+      onClick: () => setRoleFilter(roleFilter === "0" ? "" : "0"),
+      isSelected: roleFilter === "0",
     },
     {
       icon: ShieldAlert,
@@ -185,7 +186,8 @@ const SubAdminManagementPage = () => {
       value: kpiStats.whiteListing.toLocaleString(),
       description: "Tap to filter",
       tone: "rose",
-      onClick: () => setRoleFilter("1"),
+      onClick: () => setRoleFilter(roleFilter === "1" ? "" : "1"),
+      isSelected: roleFilter === "1",
     },
   ];
 
@@ -224,8 +226,10 @@ const SubAdminManagementPage = () => {
     const rowId = toggleModal.rowData.id || toggleModal.rowData._id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
     setIsUpdating(true);
+
     try {
       const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+
       if (toggleSubAdminStatus.fulfilled.match(result)) {
         toast.success("Sub-admin status updated successfully.");
         dispatch(
@@ -249,6 +253,7 @@ const SubAdminManagementPage = () => {
     if (!deleteModal.rowData) return;
     const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
     setIsDeleting(true);
+    
     try {
       const result = await dispatch(deleteSubAdmin(rowId));
       if (deleteSubAdmin.fulfilled.match(result)) {
@@ -311,7 +316,7 @@ const SubAdminManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">

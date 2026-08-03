@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Ellipsis, Eye } from "lucide-react";
+import { Ellipsis, Eye, Mail, Phone } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,25 +37,10 @@ export const getUserManagementColumns = (onAction) => [
     enableHiding: false,
   },
   {
-    accessorKey: "user_id",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        User Id
-      </div>
-    ),
-    size: 100,
-    minSize: 80,
-    cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-700 tracking-tight break-all truncate min-w-0">
-        {row.original.user_id || "-"}
-      </div>
-    ),
-  },
-  {
     accessorKey: "name",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        User Name
+        Username
       </div>
     ),
     size: 160,
@@ -70,34 +55,44 @@ export const getUserManagementColumns = (onAction) => [
     accessorKey: "email",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Email Id
+        Email Address
       </div>
     ),
     size: 180,
     minSize: 120,
-    cell: ({ row }) => (
-      <div
-        className="text-[11px] font-medium text-slate-600 tracking-tight truncate max-w-36"
-        title={row.original.email}
-      >
-        {row.original.email || "-"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const email = row.original.email;
+      if (!email) return <div className="text-slate-400 text-[11px] italic">-</div>;
+      return (
+        <div
+          className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight"
+          title={email}
+        >
+          <Mail className="w-3 h-3 text-slate-500 shrink-0" />
+          <span className="truncate max-w-36 block">{email}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "mobileNo",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Contact No.
+        Contact Number
       </div>
     ),
-    size: 100,
-    minSize: 90,
-    cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.mobileNo || "-"}
-      </div>
-    ),
+    size: 110,
+    minSize: 100,
+    cell: ({ row }) => {
+      const phone = row.original.mobileNo;
+      if (!phone) return <div className="text-slate-400 text-[11px] italic">-</div>;
+      return (
+        <div className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+          <Phone className="w-3 h-3 text-slate-500 shrink-0" />
+          {phone}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "plan",
@@ -110,70 +105,20 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 130,
     cell: ({ row }) => {
       const plan = row.original?.plan?.title;
-      if (!plan || plan === "No-Active Plan") {
-        return (
-          <Badge
-            variant="outline"
-            className="font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 bg-slate-100/70 text-slate-500 border-none shadow-none max-w-full w-fit"
-          >
-            <span className="truncate">No-Active Plan</span>
-          </Badge>
-        );
-      }
+      const isNoPlan = !plan || plan === "No-Active Plan";
       return (
         <Badge
           variant="outline"
-          className="font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 bg-emerald-100/70 text-emerald-700 border-none shadow-none max-w-full w-fit"
+          className={cn(
+            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+            isNoPlan
+              ? "bg-slate-500/10 text-slate-600"
+              : "bg-emerald-500/10 text-emerald-600",
+          )}
         >
-          <span className="truncate">{plan}</span>
+          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          <span className="truncate">{isNoPlan ? "No-Active Plan" : plan}</span>
         </Badge>
-      );
-    },
-  },
-  {
-    id: "boughtOn",
-    accessorFn: (row) => row.transactions?.[0]?.created_at || null,
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Started
-      </div>
-    ),
-    size: 90,
-    minSize: 85,
-    cell: ({ row }) => {
-      const dateValue = row.original.transactions?.[0]?.created_at;
-      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
-        return <div className="text-center text-slate-500 text-[11px]">—</div>;
-      }
-      return (
-        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
-          {format(new Date(dateValue), "dd MMM yyyy")}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "plan_expiry",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Expires
-      </div>
-    ),
-    size: 90,
-    minSize: 85,
-    cell: ({ row }) => {
-      const dateValue = row.original.plan_expiry;
-      if (
-        !dateValue ||
-        dateValue === "No" ||
-        isNaN(new Date(dateValue).getTime())
-      ) {
-        return <div className="text-center text-slate-500 text-[11px]">No</div>;
-      }
-      return (
-        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
-          {format(new Date(dateValue), "dd MMM yyyy")}
-        </div>
       );
     },
   },
@@ -181,7 +126,7 @@ export const getUserManagementColumns = (onAction) => [
     accessorKey: "sub_admin",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Added by
+        Added By
       </div>
     ),
     size: 140,
@@ -214,14 +159,62 @@ export const getUserManagementColumns = (onAction) => [
       return (
         <div className="flex justify-center">
           <Badge
+            variant="outline"
             className={cn(
-              "font-bold text-[10px] uppercase rounded-full px-2.5 py-0.5 border-none shadow-none flex items-center gap-1.5 w-fit",
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
               style,
             )}
           >
-            <span className="w-1 h-1 rounded-full bg-current" />
-            {status}
+            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            <span className="truncate">{status}</span>
           </Badge>
+        </div>
+      );
+    },
+  },
+  {
+    id: "boughtOn",
+    accessorFn: (row) => row.transactions?.[0]?.created_at || null,
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Started
+      </div>
+    ),
+    size: 90,
+    minSize: 85,
+    cell: ({ row }) => {
+      const dateValue = row.original.transactions?.[0]?.created_at;
+      if (!dateValue || isNaN(new Date(dateValue).getTime())) {
+        return <div className="text-center text-slate-500 text-[11px]">—</div>;
+      }
+      return (
+        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {format(new Date(dateValue), "dd MMM yyyy")}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "plan_expiry",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Expired
+      </div>
+    ),
+    size: 90,
+    minSize: 85,
+    cell: ({ row }) => {
+      const dateValue = row.original.plan_expiry;
+      if (
+        !dateValue ||
+        dateValue === "No" ||
+        isNaN(new Date(dateValue).getTime())
+      ) {
+        return <div className="text-center text-slate-500 text-[11px]">—</div>;
+      }
+      return (
+        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+          {format(new Date(dateValue), "dd MMM yyyy")}
         </div>
       );
     },

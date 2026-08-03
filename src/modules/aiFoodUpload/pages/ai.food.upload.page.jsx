@@ -19,8 +19,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { DataTable } from "@/components/shared/datatable";
 import { getAiFoodColumns } from "@/components/columns/ai.food.columns";
 import AiFoodNameInput from "../components/AiFoodNameInput";
-import { generateAiFood, saveAiFoodItems } from "../store/ai.food.slice";
+import { generateAiFood, saveAiFoodItems, deleteAiFoodItem } from "../store/ai.food.slice";
 import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const OUTCOME_META = {
   saved: { label: "Saved", icon: CheckCircle2, className: "text-emerald-600" },
@@ -47,6 +48,8 @@ const AiFoodUploadPage = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
@@ -100,12 +103,34 @@ const AiFoodUploadPage = () => {
       .catch((error) => toast.error(error || "Failed to save items."));
   };
 
+  const handleRemoveItemClick = (id) => {
+    setItemToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!itemToDelete) return;
+    dispatch(deleteAiFoodItem(itemToDelete))
+      .unwrap()
+      .then(() => {
+        toast.success("Item removed.");
+        setDeleteConfirmOpen(false);
+        setItemToDelete(null);
+      })
+      .catch((error) => {
+        toast.error(error || "Failed to remove item.");
+        setDeleteConfirmOpen(false);
+        setItemToDelete(null);
+      });
+  };
+
   const columns = useMemo(
     () =>
       getAiFoodColumns({
         selectedIds,
         onToggleSelect: handleToggleSelect,
         onView: handleView,
+        onDelete: handleRemoveItemClick,
       }),
     [selectedIds],
   );
@@ -254,6 +279,19 @@ const AiFoodUploadPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Delete Generated Item"
+        message="Are you sure you want to remove this generated item? This action cannot be undone."
+        confirmText="Delete"
+        type="danger"
+      />
     </Container>
   );
 };
