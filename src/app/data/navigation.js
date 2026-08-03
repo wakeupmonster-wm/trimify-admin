@@ -47,12 +47,6 @@ const navigationData = {
       badge: null,
     },
     {
-      title: "Account Settings",
-      url: "/admin/account-settings",
-      icon: IconSettings,
-      badge: null,
-    },
-    {
       title: "Program Management",
       url: "/admin/manage-program",
       icon: IconClipboardCheck,
@@ -130,6 +124,12 @@ const navigationData = {
       title: "FAQ Management",
       url: "/admin/faq-management",
       icon: IconInfoCircle,
+      badge: null,
+    },
+    {
+      title: "Account Settings",
+      url: "/admin/account-settings",
+      icon: IconSettings,
       badge: null,
     },
   ],

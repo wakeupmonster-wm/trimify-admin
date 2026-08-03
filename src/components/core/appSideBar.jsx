@@ -39,6 +39,8 @@ export function AppSidebar({ ...props }) {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
+      // Artificial delay so the loading button state is visible to the user
+      await new Promise((resolve) => setTimeout(resolve, 800));
       dispatch(logout());
     } catch (e) {
       console.error("Logout failed", e);
