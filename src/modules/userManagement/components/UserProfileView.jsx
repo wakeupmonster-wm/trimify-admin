@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
   ArrowLeft,
   Mail,
@@ -381,6 +381,13 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
     }
   };
 
+  useEffect(() => {
+    if (tab === "transactions" && !txState.loaded && !txState.loading && user?.id) {
+      loadTransactions(1, "all");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, user?.id]);
+
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto max-w-[1180px]">
@@ -487,7 +494,7 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
         )}
 
         {/* Hero Header */}
-        <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-sm border border-slate-200">
+        <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-sm border border-slate-200">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative">
               {user.avatar ? (
@@ -538,7 +545,7 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end mt-4 sm:mt-0">
             <ActionButton 
               icon={isDeleting ? Loader2 : Trash2} 
               label={isDeleting ? "Deleting..." : "Delete User"} 

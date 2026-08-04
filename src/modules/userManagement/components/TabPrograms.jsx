@@ -18,7 +18,8 @@ export function TabPrograms({ data }) {
           }
         >
           {programs.length > 0 ? (
-            <table className="w-full border-collapse">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse min-w-[350px]">
               <thead>
                 <tr className="border-b border-slate-200">
                   <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
@@ -64,6 +65,7 @@ export function TabPrograms({ data }) {
                 ))}
               </tbody>
             </table>
+            </div>
           ) : (
             <EmptyState
               icon={Target}

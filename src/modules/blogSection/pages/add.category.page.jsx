@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, Layers, UploadCloud, Loader2, ArrowLeft } from "lucide-react";
+import { Save, Layers, UploadCloud, Loader2, ArrowLeft, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,21 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
 import { TbCategoryPlus } from "react-icons/tb";
-import { BASE_URL } from "@/services/api-endpoints/base.url";
-
-// Backend returns the icon as a relative storage path (e.g.
-// "images/blogcategory/icon.png"), not a full URL — resolve it against
-// the API's origin so the "Current Icon" preview actually loads.
-const ASSET_BASE_URL = BASE_URL.replace(/\/api\/?$/, "");
-const resolveIconUrl = (icon) => {
-  if (!icon) return "";
-  if (/^https?:\/\//i.test(icon)) return icon;
-  return `${ASSET_BASE_URL}/${icon.replace(/^\/+/, "")}`;
-};
 
 const AddCategoryPage = () => {
   const navigate = useNavigate();
@@ -42,6 +32,8 @@ const AddCategoryPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [currentIcon, setCurrentIcon] = useState(editData?.icon || null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -125,13 +117,17 @@ const AddCategoryPage = () => {
       }
 
       if (isEdit) {
-        await dispatch(updateBlogCategory({ id, data: payload })).unwrap();
+        const result = await dispatch(
+          updateBlogCategory({ id, data: payload }),
+        ).unwrap();
         toast.success("Category updated successfully!");
+        setCurrentIcon(result?.data?.icon || currentIcon);
+        setFormData((prev) => ({ ...prev, iconImage: null }));
       } else {
         await dispatch(addBlogCategory(payload)).unwrap();
         toast.success("Category added successfully!");
+        navigate(-1);
       }
-      navigate(-1);
     } catch (error) {
       toast.error(error || "An error occurred while saving the category");
     } finally {
@@ -227,29 +223,37 @@ const AddCategoryPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
-              {isEdit && editData?.icon && !formData.iconImage && (
+              {isEdit && currentIcon && !formData.iconImage && (
                 <div className="mb-4">
                   <Label className="text-xs font-bold text-slate-800 block mb-2">
                     Current Icon
                   </Label>
-                  <div className="w-24 h-24 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewOpen(true)}
+                    title="View full icon"
+                    className="relative w-24 h-24 rounded-lg bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2 group overflow-hidden"
+                  >
                     <img
-                      src={resolveIconUrl(editData.icon)}
+                      key={currentIcon}
+                      src={currentIcon}
                       alt="Current Icon"
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                       }}
                     />
-                  </div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
+                      <Eye className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
+                    </div>
+                  </button>
                 </div>
               )}
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                  }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -336,6 +340,23 @@ const AddCategoryPage = () => {
           </form>
         </div>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
+          {currentIcon && (
+            <img
+              src={currentIcon}
+              alt="Category icon"
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+            />
+          )}
+          <div className="p-4">
+            <p className="text-sm font-semibold text-slate-800">
+              {formData.title || "Category Icon"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };
