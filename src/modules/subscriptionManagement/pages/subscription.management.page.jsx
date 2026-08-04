@@ -49,6 +49,7 @@ const SubscriptionManagementPage = () => {
     open: false,
     rowData: null,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -76,9 +77,16 @@ const SubscriptionManagementPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    console.log("Delete subscription plan:", deleteModal.rowData);
-    // Add dispatch for delete action here when API is ready
-    setDeleteModal({ open: false, rowData: null });
+    setIsDeleting(true);
+    try {
+      console.log("Delete subscription plan:", deleteModal.rowData);
+      // Add dispatch for delete action here when API is ready
+      // Simulate delay for now
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
+    }
   };
 
   const handleDialogSubmit = (data) => {
@@ -93,7 +101,7 @@ const SubscriptionManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -156,6 +164,7 @@ const SubscriptionManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this subscription plan? This action cannot be undone."
+        loading={isDeleting}
       />
     </Container>
   );

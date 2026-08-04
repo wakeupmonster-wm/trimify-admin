@@ -5,13 +5,12 @@ import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  fetchDashboardExtras,
+  fetchMockDashboardData,
   setDashboardDateRange,
 } from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
 import {
   LayoutDashboard,
-  Receipt,
   Target,
   Users2,
   Salad,
@@ -19,9 +18,6 @@ import {
   Activity as ActivityIcon,
   Dumbbell,
   Wallet,
-  ShieldCheck,
-  Bell,
-  Eye,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,12 +35,12 @@ import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
 import DashboardTableCard from "../components/DashboardTableCard";
-import StatusPill from "../components/StatusPill";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
-import { APP_COLORS } from "@/config/theme.config.js";
+import { ACCENT_COLORS, APP_COLORS } from "@/config/theme.config.js";
+
 export default function Dashboard() {
   const socket = useSocket();
   const dispatch = useDispatch();
@@ -53,15 +49,34 @@ export default function Dashboard() {
   const {
     dashboardData,
     dashboardExtras,
+    mockData,
     dashboardMeta,
     dateRange,
     lastUpdated,
   } = useSelector((state) => state.dashboard);
+
+  // Derive flat extras structure from either mockData or real dashboardExtras
+  const displayExtras = mockData
+    ? {
+      title: mockData.zone1?.title,
+      secondaryKpis: mockData.zone1?.secondaryKpis,
+      alerts: mockData.zone2?.alerts,
+      pieCharts: mockData.zone3?.pieCharts,
+      funnel: mockData.zone3?.funnel,
+      trends: mockData.zone4?.trends,
+      tables: {
+        ...(mockData.zone4?.tables || {}),
+        ...(mockData.zone5?.tables || {}),
+      },
+    }
+    : dashboardExtras;
+
+  console.log("displayExtras: ", displayExtras);
+
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
-  const [liveEvents, setLiveEvents] = useState([]);
 
   // --- Unified Brand Palette imported from theme.config.js ---
 
@@ -73,55 +88,36 @@ export default function Dashboard() {
     }));
   };
 
-  // ─── Socket: Real-time Live Activity Feed ──────────────────────────────────
-  // Connects to WebSocket to receive live user activity events.
-  // On mount: joins the admin dashboard room and listens for activity history + new events.
-  // On unmount: leaves the room and removes all socket listeners to prevent memory leaks.
-  useEffect(() => {
-    if (!socket) return;
+  const mapAccentColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item, i) => ({
+      ...item,
+      color: ACCENT_COLORS[i % ACCENT_COLORS.length],
+    }));
+  };
 
-    // 1. Load existing activity history when first joining the room
-    const handleHistory = (history) => {
-      console.log("📜 Activity History Received:");
-      if (Array.isArray(history)) {
-        setLiveEvents(history);
-      } else {
-        console.warn("⚠️ Received history is not an array:");
-      }
-    };
+  const mapGenderColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item) => {
+      let color = "#cbd5e1"; // Slate for Other/Unspecified
+      if (item.label === "Male")
+        color = "#3b82f6"; // Blue
+      else if (item.label === "Female") color = "#ec4899"; // Pink
+      return { ...item, color };
+    });
+  };
 
-    // 2. Append new live events as they arrive (capped at 50 most recent)
-    const handleNewActivity = (data) => {
-      console.log("🔥 Live Activity Received:", data);
-      setLiveEvents((prev) => [data, ...prev].slice(0, 50));
-    };
-
-    socket.on("activity_history", handleHistory);
-    socket.on("new_live_activity", handleNewActivity);
-
-    // 3. Join the admin dashboard room (handles both already-connected and reconnect scenarios)
-    console.log("📤 Emitting join_admin_dashboard...");
-
-    if (socket.connected) {
-      console.log("⚡ Socket already connected, joining now.");
-      socket.emit("join_admin_dashboard");
-    }
-
-    const onConnect = () => {
-      console.log("⚡ Socket connected event, joining now.");
-      socket.emit("join_admin_dashboard");
-    };
-    socket.on("connect", onConnect);
-
-    // Cleanup: leave room and detach all listeners
-    return () => {
-      console.log("📤 Emitting leave_admin_dashboard...");
-      socket.emit("leave_admin_dashboard");
-      socket.off("activity_history", handleHistory);
-      socket.off("new_live_activity", handleNewActivity);
-      socket.off("connect", onConnect);
-    };
-  }, [socket]);
+  const mapDietColors = (dataArray) => {
+    if (!dataArray) return [];
+    return dataArray.map((item) => {
+      let color = "#94a3b8"; // Slate for Unspecified
+      const lbl = item.label.toLowerCase();
+      if (lbl === "veg" || lbl === "vegetarian")
+        color = "#10b981"; // Green
+      else if (lbl === "non-veg" || lbl === "non-vegetarian") color = "#ef4444"; // Red
+      return { ...item, color };
+    });
+  };
 
   // Backend requires from/to as plain YYYY-MM-DD (per the dashboard API
   // contract) — never send a full ISO datetime here, the backend can't
@@ -143,10 +139,10 @@ export default function Dashboard() {
     const refreshData = async (dateObj) => {
       // Show the refreshing overlay ONLY on subsequent loads (data already exists).
       // The initial load is handled by the DashboardSkeleton early return below.
-      const isSubsequentLoad = !!dashboardExtras;
+      const isSubsequentLoad = !!displayExtras;
       if (isSubsequentLoad) setRefreshing(true);
       try {
-        await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
+        await dispatch(fetchMockDashboardData(buildDateRangeParams(dateObj)));
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
       } finally {
@@ -173,7 +169,9 @@ export default function Dashboard() {
   const handleManualRefresh = async () => {
     setRefreshing(true);
     try {
-      await dispatch(fetchDashboardExtras(buildDateRangeParams(selectedDate)));
+      await dispatch(
+        fetchMockDashboardData(buildDateRangeParams(selectedDate)),
+      );
     } finally {
       setRefreshing(false);
     }
@@ -196,19 +194,11 @@ export default function Dashboard() {
       : selectedDate?.from
         ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
         : dashboardMeta?.periodLabel;
-
-  // NOTE: client-side date trimming was tried here (matching each trend
-  // point's `date` field against the selected preset's [from, to] window)
-  // to work around the backend sometimes returning a full month regardless
-  // of the selected range. It was reverted — the trend endpoints' actual
-  // `date` field format isn't confirmed against the live backend, and a
-  // format mismatch made `new Date(item.date)` fail to parse for every
-  // point, silently emptying both charts for every filter. Until the
-  // backend confirms the exact format (or ships range-correct data, see
-  // backend TODO), pass the trend arrays through as-is so the charts show
-  // whatever the backend sends rather than risk hiding real data again.
-  const engagementDAUData = dashboardExtras?.trends?.engagementDAU || [];
-  const fitzoneCompletionData = dashboardExtras?.trends?.fitzoneCompletion || [];
+  const isShortPeriod =
+    selectedDate?.preset === "today" || selectedDate?.preset === "yesterday";
+  const extendedSubtitleSuffix = isShortPeriod
+    ? ""
+    : ` by ${dynamicPeriodLabel}`;
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -235,7 +225,7 @@ export default function Dashboard() {
   // ─── Initial Load Guard ─────────────────────────────────────────────────────
   // Show full-page skeleton until the first API response populates dashboardData.
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
-  if (!dashboardExtras) {
+  if (!displayExtras) {
     return (
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
@@ -247,7 +237,7 @@ export default function Dashboard() {
     <>
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
-          {refreshing && dashboardExtras && (
+          {refreshing && displayExtras && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -300,7 +290,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
+          <div className="flex flex-col gap-4 3xl:gap-6 pb-5 pt-3 px-4 lg:px-6 w-full">
             {/* ─────────────────────────────────────────────────────────────
                 Previous dashboard widgets — temporarily disabled while the
                 new dashboard (extras-driven) is being built out. Nothing
@@ -380,15 +370,20 @@ export default function Dashboard() {
               </>
             )}
 
-            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
-            <EcosystemAlerts
-              data={{ alerts: dashboardExtras?.alerts || [] }}
-              selectedDate={selectedDate}
+            <SecondaryKpiRow
+              data={displayExtras?.secondaryKpis}
+              title={displayExtras?.title}
             />
+            <div className="pt-3 3xl:pt-2">
+              <EcosystemAlerts
+                data={{ alerts: displayExtras?.alerts || [] }}
+                selectedDate={selectedDate}
+              />
+            </div>
 
             {/* Composition — pie/donut breakdowns */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
-              <div className="flex flex-col items-start gap-1">
+              <div className="flex flex-col items-start pt-2 gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Composition
                 </h2>
@@ -402,45 +397,42 @@ export default function Dashboard() {
                     breakdowns belong with the rest of subscription analytics. */}
                 <DonutStatCard
                   title="User Goal Distribution"
-                  subtitle="Primary fitness goal"
+                  subtitle={`Primary fitness goal by ${dynamicPeriodLabel}`}
                   Icon={Target}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={dashboardExtras?.pieCharts?.userGoals || []}
-                  data={mapChartColors(
-                    dashboardExtras?.pieCharts?.userGoals || [],
+                  // data={displayExtras?.pieCharts?.userGoals || []}
+                  data={mapAccentColors(
+                    displayExtras?.pieCharts?.userGoals || [],
                   )}
                   scrollableLegend
                 />
                 <DonutStatCard
                   title="Gender Distribution"
-                  subtitle="Male vs Female user breakdown"
+                  subtitle={`Male vs Female user breakdown by ${dynamicPeriodLabel}`}
                   Icon={Users2}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={dashboardExtras?.pieCharts?.gender || []}
-                  data={mapChartColors(
-                    dashboardExtras?.pieCharts?.gender || [],
-                  )}
+                  data={mapChartColors(displayExtras?.pieCharts?.gender || [])}
                 />
                 <DonutStatCard
                   title="Vegetarian vs Non-veg"
-                  subtitle="Dietary preference split"
+                  subtitle={`Dietary preference split by ${dynamicPeriodLabel}`}
                   Icon={Salad}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
                   tooltipText="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
-                  data={mapChartColors(
-                    dashboardExtras?.pieCharts?.dietPreference || [],
+                  data={mapDietColors(
+                    displayExtras?.pieCharts?.dietPreference || [],
                   )}
                 />
-                <ConversionFunnel data={dashboardExtras?.funnel} />
+                <ConversionFunnel data={displayExtras?.funnel} />
               </div>
             </div>
 
             {/* Trends — everything not already covered by Signups/Revenue/Heatmap above */}
             <div className="flex flex-col items-start gap-4 3xl:gap-6">
-              <div className="flex flex-col items-start gap-1">
+              <div className="flex flex-col items-start pt-2 gap-1">
                 <h2 className="text-base font-bold text-slate-900">Trends</h2>
                 <p className="text-[11px] font-medium text-slate-500 leading-none">
                   Change over time, grouped to match the selected date range
@@ -449,11 +441,11 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                 <TrendChartCard
                   title="Engagement Trend (DAU)"
-                  subtitle="Users logging food / water / steps / weight"
+                  subtitle={`Users logging food / water / steps / weight ${dynamicPeriodLabel}`}
                   Icon={ActivityIcon}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={engagementDAUData}
+                  data={displayExtras?.trends?.engagementDAU || []}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={[
@@ -467,17 +459,18 @@ export default function Dashboard() {
                   ]}
                   note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
                 />
+
                 <TrendChartCard
                   title="Fitzone Session Completion"
-                  subtitle="Assignment volume per period"
+                  subtitle={`Assignment volume per period ${extendedSubtitleSuffix}`}
                   Icon={Dumbbell}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={fitzoneCompletionData}
+                  data={displayExtras?.trends?.fitzoneCompletion || []}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={(
-                    dashboardExtras?.trends?.fitzoneStatuses || ["Active"]
+                    displayExtras?.trends?.fitzoneStatuses || ["Active"]
                   ).map((status, i) => ({
                     key: status,
                     label: status,
@@ -488,11 +481,11 @@ export default function Dashboard() {
                 />
                 <TrendChartCard
                   title="Program Enrollment Split"
-                  subtitle="Top 10 ranked programs"
+                  subtitle={`Top 10 ranked programs${extendedSubtitleSuffix}`}
                   Icon={TrendingUp}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.popularPrograms || []}
+                  data={displayExtras?.trends?.popularPrograms || []}
                   xKey="title"
                   series={[
                     {
@@ -503,25 +496,37 @@ export default function Dashboard() {
                     },
                   ]}
                 />
+
                 <div className="w-full h-full min-h-[320px]">
                   <DashboardTableCard
                     title="Recent Joined Users"
-                    subtitle="Monitor the latest member registrations"
+                    subtitle={`Monitor the latest member registrations${extendedSubtitleSuffix}`}
                     Icon={Users2}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={(dashboardExtras?.tables?.recentUsers || []).slice(
+                    rows={(displayExtras?.tables?.recentUsers || []).slice(
                       0,
                       5,
                     )}
                     emptyMessage="No recent users found."
                     columns={[
                       {
+                        key: "sr_no",
+                        label: "Sr. No.",
+                        width: "w-[10%]",
+                        align: "left",
+                        render: (_, idx) => (
+                          <span className="text-slate-500 px-2 font-medium">
+                            {idx + 1}
+                          </span>
+                        ),
+                      },
+                      {
                         key: "name",
                         label: "User",
                         render: (r) => (
                           <span
-                            className="block max-w-[100px] truncate font-semibold"
+                            className="block max-w-[150px] truncate font-semibold"
                             title={r.name}
                           >
                             {r.name}
@@ -533,7 +538,7 @@ export default function Dashboard() {
                         label: "Email",
                         render: (r) => (
                           <span
-                            className="block max-w-[120px] truncate text-slate-500"
+                            className="block max-w-[180px] truncate text-slate-500"
                             title={r.email}
                           >
                             {r.email || "-"}
@@ -546,7 +551,7 @@ export default function Dashboard() {
                         render: (r) => (
                           <span className="whitespace-nowrap">
                             {r.created_at
-                              ? format(new Date(r.created_at), "MMM dd")
+                              ? format(new Date(r.created_at), "MMM, dd yyyy")
                               : "-"}
                           </span>
                         ),
@@ -586,7 +591,7 @@ export default function Dashboard() {
             )}
 
             {/* Drill-down lists */}
-            <div className="flex flex-col items-start gap-4 3xl:gap-6">
+            <div className="flex flex-col items-start pt-2 gap-4 3xl:gap-6">
               <div className="flex flex-col items-start gap-1">
                 <h2 className="text-base font-bold text-slate-900">
                   Follow-ups & Roster
@@ -598,57 +603,14 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                {/* MOVED TO SUBSCRIPTION DASHBOARD: Recent Transactions */}
-
-                {/* 
-                <DashboardTableCard
-                  title="Sub-Admin Roster"
-                  subtitle="Managers & how many users they cover"
-                  Icon={ShieldCheck}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                  rows={dashboardExtras?.tables?.subAdminRoster || []}
-                  emptyMessage="No sub-admins yet."
-                  columns={[
-                    { key: "name", label: "Name" },
-                    {
-                      key: "role",
-                      label: "Role",
-                      render: (r) => (
-                        <span className="capitalize">{r.role}</span>
-                      ),
-                    },
-                    {
-                      key: "managed_users",
-                      label: "Users Managed",
-                      align: "right",
-                    },
-                    {
-                      key: "status",
-                      label: "Status",
-                      render: (r) => <StatusPill status={r.status} />,
-                    },
-                  ]}
-                  footerStat={
-                    dashboardExtras?.tables?.unassignedUsers != null
-                      ? {
-                          label: "Unassigned Users",
-                          value:
-                            dashboardExtras.tables.unassignedUsers.toLocaleString(),
-                        }
-                      : undefined
-                  }
-                />
-                */}
-
                 <div className="w-full">
                   <DashboardTableCard
                     title="Pending / Abandoned Checkouts"
-                    subtitle="Signed up but haven't paid in 7+ days"
+                    subtitle={`Signed up but haven't paid in 7+ days ${extendedSubtitleSuffix}`}
                     Icon={Wallet}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={dashboardExtras?.tables?.abandonedCheckouts || []}
+                    rows={displayExtras?.tables?.abandonedCheckouts || []}
                     emptyMessage="No abandoned checkouts right now."
                     actionLabel="Follow Up"
                     onAction={(row) =>
@@ -668,9 +630,35 @@ export default function Dashboard() {
                           </span>
                         ),
                       },
-                      { key: "name", label: "User", width: "w-[20%]", align: "left" },
-                      { key: "signed_up_at", label: "Signed Up", width: "w-[15%]", align: "left", render: (r) => format(new Date(r.signed_up_at), "MMM dd, HH:mm"), },
-                      { key: "days_since_signup", label: "Days Since", width: "w-[15%]", align: "left", render: (r) => `${r.days_since_signup}d` },
+                      {
+                        key: "name",
+                        label: "User",
+                        width: "w-[20%]",
+                        align: "left",
+                        render: (r) => (
+                          <span
+                            className="block max-w-[120px] xl:max-w-max truncate font-semibold"
+                            title={r.name}
+                          >
+                            {r.name}
+                          </span>
+                        ),
+                      },
+                      {
+                        key: "signed_up_at",
+                        label: "Signed Up",
+                        width: "w-[15%]",
+                        align: "left",
+                        render: (r) =>
+                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                      },
+                      {
+                        key: "days_since_signup",
+                        label: "Days Since",
+                        width: "w-[15%]",
+                        align: "left",
+                        render: (r) => `${r.days_since_signup}d`,
+                      },
                       {
                         key: "main_goal",
                         label: "Goal",
@@ -692,63 +680,6 @@ export default function Dashboard() {
                     ]}
                   />
                 </div>
-
-                {/* MOVED TO SUBSCRIPTION DASHBOARD: Users Nearing Plan Expiry */}
-
-                {/* 
-                <DashboardTableCard
-                  title="Recent Notifications Sent"
-                  subtitle="Latest broadcast/push activity"
-                  Icon={Bell}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                  rows={dashboardExtras?.tables?.recentNotifications || []}
-                  emptyMessage="No notifications sent yet."
-                  columns={[
-                    { key: "title", label: "Title" },
-                    {
-                      key: "channel",
-                      label: "Channel",
-                      render: (r) => (
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border ${r.channel === "Push"
-                              ? "bg-blue-50 text-blue-600 border-blue-100"
-                              : "bg-violet-50 text-violet-600 border-violet-100"
-                            }`}
-                        >
-                          {r.channel}
-                        </span>
-                      ),
-                    },
-                    {
-                      key: "total_recipients",
-                      label: "Recipients",
-                      align: "right",
-                      render: (r) => r.total_recipients ?? "–",
-                    },
-                    {
-                      key: "success_count",
-                      label: "Success",
-                      align: "right",
-                      render: (r) => r.success_count ?? "–",
-                    },
-                    {
-                      key: "failed_count",
-                      label: "Failed",
-                      align: "right",
-                      render: (r) => r.failed_count ?? "–",
-                    },
-                    {
-                      key: "created_at",
-                      label: "Sent",
-                      render: (r) =>
-                        formatDistanceToNow(new Date(r.created_at), {
-                          addSuffix: true,
-                        }),
-                    },
-                  ]}
-                />
-                */}
               </div>
             </div>
           </div>

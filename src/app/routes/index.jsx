@@ -169,6 +169,7 @@ const ForgotPasswordPage = lazy(
 const RequestResetEmailForm = lazy(
   () => import("@/modules/authentication/components/request-resetEmail"),
 );
+
 const VerifyEmailOtp = lazy(
   () => import("@/modules/authentication/components/verify-emailOTP"),
 );

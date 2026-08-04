@@ -23,6 +23,7 @@ import faqManagementReducer from "@/modules/faqManagement/store/faq.slice";
 import nutritionReducer from "@/modules/dataManagement/store/nutrition.slice";
 import cmsManagementReducer from "@/modules/cmsManagement/store/cms.management.slice";
 import aiFoodReducer from "@/modules/aiFoodUpload/store/ai.food.slice";
+import accountSettingsReducer from "@/modules/accountSettings/store/account.settings.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -49,4 +50,5 @@ export const rootReducer = combineReducers({
   nutrition: nutritionReducer,
   cmsManagement: cmsManagementReducer,
   aiFood: aiFoodReducer,
+  accountSettings: accountSettingsReducer,
 });

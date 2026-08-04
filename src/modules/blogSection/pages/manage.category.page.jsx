@@ -52,8 +52,8 @@ const ManageCategoryPage = () => {
     rowData: null,
     targetStatus: false,
   });
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -79,10 +79,15 @@ const ManageCategoryPage = () => {
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
-    setToggleLoading(true);
+    setIsUpdating(true);
     try {
       const statusStr = toggleModal.targetStatus ? "Active" : "Inactive";
-      await dispatch(toggleBlogCategoryStatus({ id: toggleModal.rowData.id, status: statusStr })).unwrap();
+      await dispatch(
+        toggleBlogCategoryStatus({
+          id: toggleModal.rowData.id,
+          status: statusStr,
+        }),
+      ).unwrap();
       toast.success("Category status updated successfully!");
       setToggleModal({ open: false, rowData: null, targetStatus: false });
       dispatch(
@@ -95,17 +100,17 @@ const ManageCategoryPage = () => {
     } catch (error) {
       toast.error(error || "Failed to update category status");
     } finally {
-      setToggleLoading(false);
+      setIsUpdating(false);
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    setDeleteLoading(true);
+    setIsDeleting(true);
     try {
       await dispatch(deleteBlogCategory(deleteModal.rowData.id)).unwrap();
       toast.success("Category deleted successfully!");
-      setDeleteModal({ open: false, rowData: null });
       dispatch(
         fetchBlogCategories({
           page: categoryPage.pageIndex + 1,
@@ -116,7 +121,8 @@ const ManageCategoryPage = () => {
     } catch (error) {
       toast.error(error || "Failed to delete category");
     } finally {
-      setDeleteLoading(false);
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
     }
   };
 
@@ -233,9 +239,9 @@ const ManageCategoryPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Category"
@@ -245,7 +251,7 @@ const ManageCategoryPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/blog-section/add-category")}
                 className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -300,7 +306,7 @@ const ManageCategoryPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this category? This action cannot be undone."
-        loading={deleteLoading}
+        loading={isDeleting}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
@@ -313,7 +319,7 @@ const ManageCategoryPage = () => {
         message={`Are you sure you want to change the status of this category to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
-        loading={toggleLoading}
+        loading={isUpdating}
       />
     </Container>
   );

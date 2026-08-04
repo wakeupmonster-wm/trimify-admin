@@ -28,7 +28,7 @@ const ManageFoodProgramPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -61,21 +61,24 @@ const ManageFoodProgramPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    setDeleteLoading(true);
-    const result = await dispatch(deleteFoodCategory(deleteTarget.id));
-    setDeleteLoading(false);
-    if (deleteFoodCategory.fulfilled.match(result)) {
-      toast.success(result.payload?.message || "Food Category deleted successfully");
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteFoodCategory(deleteTarget.id));
+      if (deleteFoodCategory.fulfilled.match(result)) {
+        toast.success(result.payload?.message || "Food Category deleted successfully");
+        dispatch(
+          getFoodCategories({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+          }),
+        );
+      } else {
+        toast.error(result.payload || "Failed to delete food category.");
+      }
+    } finally {
+      setIsDeleting(false);
       setDeleteTarget(null);
-      dispatch(
-        getFoodCategories({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-        }),
-      );
-    } else {
-      toast.error(result.payload || "Failed to delete food category.");
     }
   };
 
@@ -86,7 +89,7 @@ const ManageFoodProgramPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full md:w-auto">
@@ -136,7 +139,7 @@ const ManageFoodProgramPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Food Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}
-        loading={deleteLoading}
+        loading={isDeleting}
       />
     </Container>
   );

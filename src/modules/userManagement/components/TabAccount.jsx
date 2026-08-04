@@ -11,8 +11,10 @@ import {
   User,
   Smartphone,
   Ban,
+  Star,
 } from "lucide-react";
-import { Card, Pill, KV, EmptyState } from "./UserProfileView";
+import { cn } from "@/lib/utils";
+import { Card, Pill, KV, EmptyState } from "./UserProfileShared";
 
 export function TabAccount({ data }) {
   const { user, handleCopy, initials, fmtDate, truncMid } = data;
@@ -72,7 +74,27 @@ export function TabAccount({ data }) {
 
           <Card title="Billing" subtitle="Payment methods and history">
             <KV icon={CreditCard} label="Payment Status" value={user.paid ? "Paid" : "Unpaid"} />
-            <KV icon={ShieldCheck} label="Plan" value={user.plan ? user.plan.title : "No active plan"} />
+            <KV 
+              icon={ShieldCheck} 
+              label="Plan" 
+              value={
+                user.plan ? (
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide",
+                      user.paid 
+                        ? "bg-amber-50 text-amber-600" 
+                        : "bg-slate-100 text-slate-600"
+                    )}>
+                      {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
+                      {user.plan.title.toUpperCase()}
+                    </div>
+                  </div>
+                ) : (
+                  "No active plan"
+                )
+              } 
+            />
             <KV icon={Calendar} label="Plan Expiry" value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"} />
             <KV icon={CreditCard} label="Stripe ID" value={user.stripe_id || "Not linked"} />
             {(!user.transactions || user.transactions.length === 0) && (
@@ -103,22 +125,22 @@ export function TabAccount({ data }) {
           </Card>
 
           <Card title="Managed By" subtitle="Assigned sub-admin details"
-            right={
-              <Pill
-                tone={
-                  user.sub_admin?.status === "Active" ||
-                  user.sub_admin?.status === "1"
-                    ? "success"
-                    : "neutral"
-                }
-              >
-                {user.sub_admin?.status === "1"
-                  ? "Active"
-                  : user.sub_admin?.status === "0"
-                    ? "Inactive"
-                    : user.sub_admin?.status}
-              </Pill>
-            }
+            // right={
+            //   <Pill
+            //     tone={
+            //       user.sub_admin?.status === "Active" ||
+            //       user.sub_admin?.status === "1"
+            //         ? "success"
+            //         : "neutral"
+            //     }
+            //   >
+            //     {user.sub_admin?.status === "1"
+            //       ? "Active"
+            //       : user.sub_admin?.status === "0"
+            //         ? "Inactive"
+            //         : user.sub_admin?.status}
+            //   </Pill>
+            // }
           >
             {user.sub_admin ? (
               <>

@@ -89,7 +89,8 @@ const AddDietProgramPage = () => {
     setSelectedMeals(selectedMeals.filter((m) => m.id !== mealId));
   };
 
-  const handleAddDietMeal = async () => {
+  const handleAddDietMeal = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!selectedWeek) newErrors.selectedWeek = "Please select a week.";
     if (!selectedDay) newErrors.selectedDay = "Please select a day.";
@@ -132,7 +133,7 @@ const AddDietProgramPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -159,7 +160,10 @@ const AddDietProgramPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form
+          onSubmit={(e) => handleAddDietMeal(e)}
+          className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full"
+        >
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-4 w-full min-w-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}
@@ -336,7 +340,7 @@ const AddDietProgramPage = () => {
               </Button>
               <Button
                 className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
-                onClick={handleAddDietMeal}
+                type="submit"
                 disabled={loading}
               >
                 {loading ? (
@@ -353,7 +357,7 @@ const AddDietProgramPage = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </Container>
   );

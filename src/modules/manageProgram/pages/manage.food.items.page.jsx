@@ -50,8 +50,8 @@ const ManageFoodItemsPage = () => {
   const [editingFoodId, setEditingFoodId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     food_id: "",
@@ -145,7 +145,8 @@ const ManageFoodItemsPage = () => {
     }
   };
 
-  const handleAddOrUpdateFood = async () => {
+  const handleAddOrUpdateFood = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Please enter a food name.";
     else if (!formData.food_id)
@@ -248,32 +249,38 @@ const ManageFoodItemsPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    setDeleteLoading(true);
-    const resultAction = await dispatch(deleteFood(deleteTarget.id));
-    setDeleteLoading(false);
-    if (deleteFood.fulfilled.match(resultAction)) {
-      toast.success("Food deleted successfully!");
+    setIsDeleting(true);
+    try {
+      const resultAction = await dispatch(deleteFood(deleteTarget.id));
+      if (deleteFood.fulfilled.match(resultAction)) {
+        toast.success("Food deleted successfully!");
+        dispatch(getFoodList({ programId, categoryId }));
+      } else {
+        toast.error(resultAction.payload || "Failed to delete food.");
+      }
+    } finally {
+      setIsDeleting(false);
       setDeleteTarget(null);
-      dispatch(getFoodList({ programId, categoryId }));
-    } else {
-      toast.error(resultAction.payload || "Failed to delete food.");
     }
   };
 
   const handleConfirmToggle = async () => {
     if (!toggleTarget) return;
     const { row, newStatus } = toggleTarget;
-    setToggleLoading(true);
-    const resultAction = await dispatch(
-      toggleFoodStatus({ id: row.id, status: newStatus }),
-    );
-    setToggleLoading(false);
-    if (toggleFoodStatus.fulfilled.match(resultAction)) {
-      toast.success("Status updated successfully!");
+    setIsUpdating(true);
+    try {
+      const resultAction = await dispatch(
+        toggleFoodStatus({ id: row.id, status: newStatus }),
+      );
+      if (toggleFoodStatus.fulfilled.match(resultAction)) {
+        toast.success("Status updated successfully!");
+        dispatch(getFoodList({ programId, categoryId }));
+      } else {
+        toast.error(resultAction.payload || "Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
       setToggleTarget(null);
-      dispatch(getFoodList({ programId, categoryId }));
-    } else {
-      toast.error(resultAction.payload || "Failed to update status.");
     }
   };
 
@@ -284,7 +291,7 @@ const ManageFoodItemsPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -315,14 +322,14 @@ const ManageFoodItemsPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form onSubmit={(e) => handleAddOrUpdateFood(e)} className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-5">
             {/* Approval Status */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pb-2">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                 Approval Status
               </Label>
-              <div className="flex items-center gap-6 mt-2">
+              <div className="flex items-center gap-6 mt-4">
                 <Label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer font-normal">
                   <input
                     type="radio"
@@ -544,7 +551,7 @@ const ManageFoodItemsPage = () => {
               )}
               <Button
                 className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
-                onClick={handleAddOrUpdateFood}
+                type="submit"
                 disabled={loading}
               >
                 {loading ? (
@@ -562,7 +569,7 @@ const ManageFoodItemsPage = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </form>
 
         {/* Data Table */}
         <div className="w-full min-w-0 flex-1">
@@ -586,7 +593,7 @@ const ManageFoodItemsPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
-        loading={deleteLoading}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -597,7 +604,7 @@ const ManageFoodItemsPage = () => {
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}
         type="brand"
         confirmText="Update"
-        loading={toggleLoading}
+        loading={isUpdating}
       />
     </Container>
   );

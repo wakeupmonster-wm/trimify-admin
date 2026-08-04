@@ -28,6 +28,7 @@ const NutritionFoodPage = () => {
     open: false,
     rowData: null,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -56,16 +57,22 @@ const NutritionFoodPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    console.log("Delete nutrition food", deleteModal.rowData);
-    // Add dispatch for delete action here when API is ready
-    setDeleteModal({ open: false, rowData: null });
+    setIsDeleting(true);
+    try {
+      console.log("Delete nutrition food", deleteModal.rowData);
+      // Add dispatch for delete action here when API is ready
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } finally {
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
+    }
   };
 
   const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -80,16 +87,17 @@ const NutritionFoodPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("/admin/data-management/add-nutrition")}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3.5 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Food</span>
               </Button>
               <Button
+                variant="outline"
                 onClick={() =>
                   navigate("/admin/data-management/ai-food-upload")
                 }
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-3.5 flex items-center justify-center gap-1.5"
               >
                 <UploadCloud className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Upload Food</span>
@@ -112,6 +120,7 @@ const NutritionFoodPage = () => {
             isLoading={loading}
             manualPagination={true}
             manualFiltering={true}
+            onRowClick={(row) => handleAction(row, "edit")}
           />
         </div>
       </div>
@@ -122,6 +131,7 @@ const NutritionFoodPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this nutrition food? This action cannot be undone."
+        loading={isDeleting}
       />
     </Container>
   );

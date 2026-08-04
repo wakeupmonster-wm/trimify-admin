@@ -56,7 +56,7 @@ export default function StoragePage() {
       </header>
 
       <Form {...form}>
-        <form className="space-y-8 px-2 pb-4">
+        <form onSubmit={form.handleSubmit(handleSave)} className="space-y-8 px-2 pb-4">
           {/* S3 Status Toggle */}
           <RenderField
             control={form.control}

@@ -1,7 +1,7 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { LuUserRoundCog } from "react-icons/lu";
+import { LuUserRoundCheck, LuUserRoundCog, LuUsersRound } from "react-icons/lu";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
   Plus,
@@ -122,8 +122,8 @@ const SubAdminManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [exportLoading, setExportLoading] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
@@ -160,10 +160,10 @@ const SubAdminManagementPage = () => {
   // they must NOT be recalculated from the currently-loaded page of `subAdmins`.
   const kpiItems = [
     {
-      icon: Users,
-      label: "Total Sub-Admins",
+      icon: LuUsersRound,
+      label: "Total Admins",
       value: (kpis?.total ?? 0).toLocaleString(),
-      description: "Tap to view all",
+      description: "Total registered users",
       tone: "blue",
       onClick: () => {
         setRoleFilter("");
@@ -172,7 +172,7 @@ const SubAdminManagementPage = () => {
       isSelected: !roleFilter && !statusFilter,
     },
     {
-      icon: UserCheck,
+      icon: LuUserRoundCheck,
       label: "Active Accounts",
       value: (kpis?.active ?? 0).toLocaleString(),
       description: "Tap to filter",
@@ -186,7 +186,7 @@ const SubAdminManagementPage = () => {
       value: (kpis?.subAdminUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "indigo",
-      onClick: () => setRoleFilter("0"),
+      onClick: () => setRoleFilter(roleFilter === "0" ? "" : "0"),
       isSelected: roleFilter === "0",
     },
     {
@@ -195,7 +195,7 @@ const SubAdminManagementPage = () => {
       value: (kpis?.whiteListingUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "rose",
-      onClick: () => setRoleFilter("1"),
+      onClick: () => setRoleFilter(roleFilter === "1" ? "" : "1"),
       isSelected: roleFilter === "1",
     },
   ];
@@ -236,46 +236,53 @@ const SubAdminManagementPage = () => {
     if (!toggleModal.rowData) return;
     const rowId = toggleModal.rowData.id || toggleModal.rowData._id;
     const status = toggleModal.targetStatus ? "Active" : "Inactive";
-    setToggleLoading(true);
-    const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
-    setToggleLoading(false);
-    if (toggleSubAdminStatus.fulfilled.match(result)) {
-      toast.success("Sub-admin status updated successfully.");
+    setIsUpdating(true);
+
+    try {
+      const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+
+      if (toggleSubAdminStatus.fulfilled.match(result)) {
+        toast.success("Sub-admin status updated successfully.");
+        dispatch(
+          fetchSubAdminList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            role: roleFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to update status.");
+      }
+    } finally {
+      setIsUpdating(false);
       setToggleModal({ open: false, rowData: null, targetStatus: false });
-      dispatch(
-        fetchSubAdminList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          role: roleFilter,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to update status.");
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
     const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
-    setDeleteLoading(true);
-    const result = await dispatch(deleteSubAdmin(rowId));
-    setDeleteLoading(false);
-    if (deleteSubAdmin.fulfilled.match(result)) {
-      toast.success("Sub-admin deleted successfully.");
+    setIsDeleting(true);
+
+    try {
+      const result = await dispatch(deleteSubAdmin(rowId));
+      if (deleteSubAdmin.fulfilled.match(result)) {
+        toast.success("Sub-admin deleted successfully.");
+        dispatch(
+          fetchSubAdminList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            role: roleFilter,
+          }),
+        );
+      } else {
+        toast.error("Failed to delete sub-admin.");
+      }
+    } finally {
+      setIsDeleting(false);
       setDeleteModal({ open: false, rowData: null });
-      dispatch(
-        fetchSubAdminList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          role: roleFilter,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error("Failed to delete sub-admin.");
     }
   };
 
@@ -341,7 +348,7 @@ const SubAdminManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -425,7 +432,7 @@ const SubAdminManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
-        loading={deleteLoading}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -439,7 +446,7 @@ const SubAdminManagementPage = () => {
         message={`Are you sure you want to change the status of this sub-admin to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
-        loading={toggleLoading}
+        loading={isUpdating}
       />
     </Container>
   );

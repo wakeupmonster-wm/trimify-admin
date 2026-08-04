@@ -31,7 +31,7 @@ const ManageFitzoneCategoryPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -65,7 +65,7 @@ const ManageFitzoneCategoryPage = () => {
 
   const handleConfirmDelete = () => {
     if (deleteTarget) {
-      setDeleteLoading(true);
+      setIsDeleting(true);
       dispatch(deleteFitzoneCategory(deleteTarget.id))
         .unwrap()
         .then((res) => {
@@ -84,7 +84,8 @@ const ManageFitzoneCategoryPage = () => {
           toast.error(err || "Failed to delete category");
         })
         .finally(() => {
-          setDeleteLoading(false);
+          setIsDeleting(false);
+          setDeleteTarget(null);
         });
     }
   };
@@ -100,7 +101,7 @@ const ManageFitzoneCategoryPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -149,7 +150,7 @@ const ManageFitzoneCategoryPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.title}"? This action cannot be undone.`}
-        loading={deleteLoading}
+        loading={isDeleting}
       />
     </Container>
   );

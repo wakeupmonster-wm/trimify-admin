@@ -60,8 +60,9 @@ export const getFitzoneManagementColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex">
         <Button
+          variant="outline"
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="bg-app-primary2 hover:bg-app-primary3 text-white h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           Open Fitzone
         </Button>
@@ -81,7 +82,7 @@ export const getFitzoneManagementColumns = (onAction) => [
       const desc = row.original.description || "-";
       return (
         <div
-          className="text-[11px] font-medium text-slate-500 tracking-tight line-clamp-2"
+          className="text-[11px] font-medium text-slate-500 tracking-tight truncate block max-w-[300px]"
           title={desc}
         >
           {desc}

@@ -1,29 +1,30 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
+import { ArrowLeft, Trash2, Loader2, Calendar, History } from "lucide-react";
 import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  CreditCard,
-  Trash2,
-  Edit,
-  Loader2,
-} from "lucide-react";
+  Pill,
+  Tag,
+  Card,
+  KV,
+  Kpi,
+  GoalTile,
+  EmptyState,
+} from "./UserProfileShared";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
 import { TabPrograms } from "./TabPrograms";
 import { TabActivity } from "./TabActivity";
-import { TabAccount } from "./TabAccount";
 import { TabSettings } from "./TabSettings";
 import { TabTransactions } from "./TabTransactions";
 import { getUserTransactionsAPI } from "../services/user.services";
-
+import { useDispatch } from "react-redux";
+import { deleteUserThunk } from "../store/user.slice";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { APP_COLORS } from "@/config/theme.config.js";
 import { LuUserRound } from "react-icons/lu";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -34,8 +35,8 @@ const cap = (s) =>
   s === null || s === undefined || s === ""
     ? null
     : String(s)
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
 const fmtDate = (v) => {
   if (!v) return "—";
@@ -100,131 +101,9 @@ function bmiCategory(bmi) {
   return { label: "Obese", color: "text-rose-600" };
 }
 
-
 /* =========================================================================
    Small UI primitives
 ========================================================================= */
-const PILL_TONES = {
-  success: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  danger: "bg-red-50 text-red-600 border-red-200",
-  warning: "bg-amber-50 text-amber-600 border-amber-200",
-  neutral: "bg-slate-100 text-slate-500 border-slate-300/60",
-};
-
-export function Pill({ tone = "neutral", children }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
-        PILL_TONES[tone] || PILL_TONES.neutral,
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
-export function Tag({ children }) {
-  return (
-    <span className="inline-flex items-center rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-500">
-      {children}
-    </span>
-  );
-}
-
-export function Card({ title, subtitle, right, children, className }) {
-  return (
-    <div
-      className={cn(
-        "overflow-hidden rounded-xl border border-slate-300/60 bg-white shadow-sm transition-all duration-300 hover:border-blue-200",
-        className,
-      )}
-    >
-      {(title || right) && (
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
-          <div>
-            {title && (
-              <div className="text-[13px] font-bold text-slate-900">
-                {title}
-              </div>
-            )}
-            {subtitle && (
-              <div className="mt-0.5 text-[11px] font-medium text-slate-500">
-                {subtitle}
-              </div>
-            )}
-          </div>
-          {right}
-        </div>
-      )}
-      <div className="px-5 py-4">{children}</div>
-    </div>
-  );
-}
-
-export function KV({ icon: Icon, label, value }) {
-  return (
-    <div className="flex items-center justify-between gap-2.5 border-b border-slate-50 py-2 last:border-b-0 last:pb-0">
-      <span className="flex items-center gap-2 text-[12px] font-medium text-slate-500">
-        {Icon && <Icon className="h-4 w-4" />}
-        {label}
-      </span>
-      <span className="max-w-[60%] break-words text-right text-[11.5px] font-semibold text-slate-900">
-        {value}
-      </span>
-    </div>
-  );
-}
-
-export function Kpi({ label, value }) {
-  return (
-    <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm transition-all duration-300 hover:border-blue-200">
-      <div className="text-xl font-black tracking-tight tabular-nums text-slate-900">
-        {value}
-      </div>
-      <div className="mt-1 text-[10.5px] font-bold uppercase tracking-wider text-muted-foreground/80">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-export function GoalTile({ label, value, pct }) {
-  return (
-    <div className="rounded-xl border border-slate-300/60 bg-white p-4 shadow-sm transition-all duration-300 hover:border-blue-200">
-      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </div>
-      <div className="text-base font-black tabular-nums text-slate-900">
-        {value}
-      </div>
-      {pct !== undefined && (
-        <div className="mt-3.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${pct}%`, backgroundColor: APP_COLORS[0] }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function EmptyState({ icon: Icon, title, subtitle }) {
-  return (
-    <div className="flex flex-col items-center justify-center gap-1.5 py-6 text-center">
-      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300 border border-slate-100">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="text-[11.5px] font-bold text-slate-600">{title}</div>
-      {subtitle && (
-        <div className="max-w-[280px] text-[10.5px] font-medium text-slate-400">
-          {subtitle}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
   return (
@@ -234,11 +113,11 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
       className={cn(
         "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
         variant === "primary" &&
-          "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
+        "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
         variant === "danger" &&
-          "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
+        "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
         variant === "outline" &&
-          "border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+        "border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
       )}
     >
       <Icon className="h-4 w-4 shrink-0" />
@@ -252,7 +131,7 @@ const TABS = [
   { key: "health", label: "Health & Goals" },
   { key: "programs", label: "Programs & Fitzone" },
   { key: "activity", label: "Activity" },
-  { key: "account", label: "Account" },
+  // { key: "account", label: "Account" },
   { key: "transactions", label: "Transactions" },
   { key: "settings", label: "Settings" },
 ];
@@ -260,10 +139,9 @@ const TABS = [
 /* =========================================================================
    Main component
 ========================================================================= */
-export default function UserProfileView({ user, onBack, loading, initialTab }) {
-  const [tab, setTab] = useState(initialTab || "overview");
-  const [toastMsg, setToastMsg] = useState(null);
-  const toastTimer = useRef(null);
+export default function UserProfileView({ user, onBack, loading }) {
+  const [tab, setTab] = useState("overview");
+  const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -280,9 +158,9 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
     const macroTotal =
       (user.carbs_goal || 0) + (user.fat_goal || 0) + (user.protein_goal || 0);
     const macros = [
-      { label: "Carbs", v: user.carbs_goal || 0, color: APP_COLORS[2] },
-      { label: "Protein", v: user.protein_goal || 0, color: APP_COLORS[0] },
-      { label: "Fat", v: user.fat_goal || 0, color: APP_COLORS[5] },
+      { label: "Carbs", v: user.carbs_goal || 0, color: "#f59e0b" }, // amber-500
+      { label: "Protein", v: user.protein_goal || 0, color: "#3b82f6" }, // blue-500
+      { label: "Fat", v: user.fat_goal || 0, color: "#10b981" }, // emerald-500
     ];
     const fitnessProfileFields = [
       ["Weight Goal", user.weight_goal ? `${user.weight_goal} kg` : null],
@@ -385,7 +263,7 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
     if (tab === "transactions" && !txState.loaded && !txState.loading && user?.id) {
       loadTransactions(1, "all");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, user?.id]);
 
   if (loading || !user) {
@@ -401,30 +279,19 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
     );
   }
 
-  const showToast = (msg) => {
-    setToastMsg(msg);
-    window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToastMsg(null), 2000);
-  };
-
   const handleCopy = (value, label) => {
-    navigator.clipboard?.writeText(String(value)).catch(() => {});
-    showToast(`${label} copied`);
+    navigator.clipboard?.writeText(String(value)).catch(() => { });
+    toast.success(`${label} copied`);
   };
 
   const handleDeleteUser = async () => {
     try {
       setIsDeleting(true);
-      const { deleteUserAPI } = await import("../services/user.services");
-      const res = await deleteUserAPI(user.id);
-      if (res?.data?.success || res?.status === 200 || res?.status === 204) {
-        showToast("User deleted successfully.");
-        setTimeout(() => onBack(), 1000);
-      } else {
-        showToast(res?.data?.message || "Failed to delete user.");
-      }
+      await dispatch(deleteUserThunk(user.id)).unwrap();
+      toast.success("User deleted successfully.");
+      setTimeout(() => onBack(), 1000);
     } catch (error) {
-      showToast(error?.response?.data?.message || "Failed to delete user.");
+      toast.error(error || "Failed to delete user.");
     } finally {
       setIsDeleting(false);
     }
@@ -463,9 +330,9 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="View User Profile"
@@ -475,7 +342,7 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <button
                 onClick={onBack}
                 className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -486,120 +353,133 @@ export default function UserProfileView({ user, onBack, loading, initialTab }) {
             </div>
           </div>
         </Header>
-
-        {toastMsg && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-slate-900/95 px-4 py-2 text-xs font-semibold text-white shadow-xl">
-            {toastMsg}
-          </div>
-        )}
-
-        {/* Hero Header */}
-        <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between rounded-2xl bg-white p-5 sm:p-6 shadow-sm border border-slate-200">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative">
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt="Avatar"
-                  className="h-20 w-20 rounded-full object-cover ring-4 ring-white shadow-sm"
-                />
-              ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-2xl font-bold text-app-primary2 ring-4 ring-white shadow-sm">
-                  {initials(user.name)}
-                </div>
-              )}
-              {/* <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white shadow-sm">
-                <Pill tone={user.status === "Active" ? "success" : "neutral"}>
-                  {user.status}
-                </Pill>
-              </div> */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <span
+                className="hover:text-app-primary2 cursor-pointer transition-colors"
+                onClick={onBack}
+              >
+                User Directory
+              </span>
+              <span className="text-slate-300">/</span>
+              <span className="text-app-primary2">Profile View</span>
             </div>
-            <div className="flex flex-col gap-1.5 text-center sm:text-left">
-              <h1 className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2 justify-center sm:justify-start">
-                {user.name}
-              </h1>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-sm font-medium text-slate-500">
-                {user.email && (
-                  <span className="flex items-center gap-1">
-                    <Mail className="h-3.5 w-3.5" />
-                    {user.email}
-                  </span>
-                )}
-                {user.email && user.mobile && (
-                  <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
-                )}
-                {user.mobile && (
-                  <span className="flex items-center gap-1">
-                    <Phone className="h-3.5 w-3.5" />
-                    {user.mobile}
-                  </span>
-                )}
-              </div>
-              <div className="mt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <Pill tone="info">UID: {user.id}</Pill>
-                <Pill tone="info">Age {age}</Pill>
-                <Pill tone={user.gender === "Female" ? "purple" : "blue"}>
-                  {user.gender}
-                </Pill>
-                {user.premium === "1" && <Pill tone="warning">Premium</Pill>}
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end mt-4 sm:mt-0">
-            <ActionButton 
-              icon={isDeleting ? Loader2 : Trash2} 
-              label={isDeleting ? "Deleting..." : "Delete User"} 
-              variant="danger" 
-              onClick={() => setIsDeleteModalOpen(true)} 
-            />
           </div>
         </div>
 
-        <ConfirmModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => !isDeleting && setIsDeleteModalOpen(false)}
-          onConfirm={handleDeleteUser}
-          title="Confirm User Deletion"
-          message="Are you sure you want to delete this user? This action can be reversed by an admin."
-          confirmText="Delete User"
-          loading={isDeleting}
-        />
+        <div className="flex flex-col gap-4">
+          {/* Hero Header */}
+          <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-slate-50 p-5 sm:p-6 shadow-sm border border-slate-200">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="relative shrink-0">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="Avatar"
+                    className="h-24 w-24 rounded-full object-cover ring-[6px] ring-slate-50"
+                  />
+                ) : (
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-50 text-3xl font-bold text-app-primary2 ring-[6px] ring-slate-50">
+                    {initials(user.name)}
+                  </div>
+                )}
+              </div>
 
-        <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="mb-6 w-full justify-start overflow-x-auto border-b border-slate-200 bg-transparent p-0 h-10 rounded-none flex-nowrap">
-            {TABS.map((t) => (
-              <TabsTrigger
-                key={t.key}
-                value={t.key}
-                className="relative h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 pb-3 pt-2 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:border-app-primary2 data-[state=active]:text-app-primary2 data-[state=active]:shadow-none whitespace-nowrap"
-              >
-                {t.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+              <div className="flex flex-col gap-2.5 text-center sm:text-left sm:ml-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                  <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+                    {user.name}
+                    <span className="text-slate-500 text-xl font-medium">
+                      , {age}
+                    </span>
+                  </h1>
 
-          <TabsContent value="overview">
-            <TabOverview data={tabData} />
-          </TabsContent>
-          <TabsContent value="health">
-            <TabHealth data={tabData} />
-          </TabsContent>
-          <TabsContent value="programs">
-            <TabPrograms data={tabData} />
-          </TabsContent>
-          <TabsContent value="activity">
-            <TabActivity data={tabData} />
-          </TabsContent>
-          <TabsContent value="account">
-            <TabAccount data={tabData} />
-          </TabsContent>
-          <TabsContent value="transactions">
-            <TabTransactions data={tabData} />
-          </TabsContent>
-          <TabsContent value="settings">
-            <TabSettings data={tabData} />
-          </TabsContent>
-        </Tabs>
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                      {user.status || "Active"}
+                    </span>
+                    {/* <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    {user.premium === "1" ? "PREMIUM" : "FREE"}
+                  </span> */}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-[13px] font-medium text-slate-500">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-slate-400" />
+                    <span className="text-slate-400">Joined:</span>{" "}
+                    <span className="text-slate-700">
+                      {fmtDate(user.createdAt || user.created_at)}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <History className="h-4 w-4 text-slate-400" />
+                    <span className="text-slate-400">Updated:</span>{" "}
+                    <span className="text-slate-700">
+                      {fmtDate(user.updatedAt || user.updated_at)}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end shrink-0">
+              <ActionButton
+                icon={isDeleting ? Loader2 : Trash2}
+                label={isDeleting ? "Deleting..." : "Delete User"}
+                variant="danger"
+                onClick={() => setIsDeleteModalOpen(true)}
+              />
+            </div>
+          </div>
+
+          <ConfirmModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={handleDeleteUser}
+            title="Confirm User Deletion"
+            message="Are you sure you want to delete this user? This action can be reversed by an admin."
+            confirmText="Delete User"
+            loading={isDeleting}
+          />
+
+          <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
+            <TabsList className="mb-6 flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max no-scrollbar">
+              {TABS.map((t) => (
+                <TabsTrigger
+                  key={t.key}
+                  value={t.key}
+                  className="h-10 rounded-lg px-5 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:bg-app-primary2 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 ease-in-out whitespace-nowrap"
+                >
+                  {t.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <TabsContent value="overview">
+              <TabOverview data={tabData} />
+            </TabsContent>
+            <TabsContent value="health">
+              <TabHealth data={tabData} />
+            </TabsContent>
+            <TabsContent value="programs">
+              <TabPrograms data={tabData} />
+            </TabsContent>
+            <TabsContent value="activity">
+              <TabActivity data={tabData} />
+            </TabsContent>
+            {/* <TabsContent value="account">
+              <TabAccount data={tabData} />
+            </TabsContent> */}
+            <TabsContent value="transactions">
+              <TabTransactions data={tabData} />
+            </TabsContent>
+            <TabsContent value="settings">
+              <TabSettings data={tabData} />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </Container>
   );

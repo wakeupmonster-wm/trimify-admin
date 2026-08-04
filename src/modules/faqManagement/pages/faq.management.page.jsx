@@ -63,6 +63,8 @@ const FaqManagementPage = () => {
     rowData: null,
     targetStatus: false,
   });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState(false);
@@ -137,7 +139,7 @@ const FaqManagementPage = () => {
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
     const newStatus = toggleModal.targetStatus ? "Active" : "Inactive";
-    setToggleLoading(true);
+    setIsUpdating(true);
     try {
       // Assuming unwrap() is available or handle success properly
       const res = await dispatch(
@@ -152,22 +154,22 @@ const FaqManagementPage = () => {
     } catch (error) {
       toast.error(error?.message || error || "Failed to update FAQ status");
     } finally {
-      setToggleLoading(false);
+      setIsUpdating(false);
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!deleteModal.rowData) return;
-    setDeleteLoading(true);
+    setIsDeleting(true);
     try {
       const res = await dispatch(deleteFaq(deleteModal.rowData.id)).unwrap();
       toast.success(res?.message || "FAQ deleted successfully");
-      setDeleteModal({ open: false, rowData: null });
-      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "Failed to delete FAQ");
     } finally {
-      setDeleteLoading(false);
+      setIsDeleting(false);
+      setDeleteModal({ open: false, rowData: null });
     }
   };
 
@@ -278,9 +280,9 @@ const FaqManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="FAQ"
@@ -290,7 +292,7 @@ const FaqManagementPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => {
                   setFormData({ question: "", answer: "" });
@@ -309,7 +311,7 @@ const FaqManagementPage = () => {
 
         {/* FAQ Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
+          <DialogContent className="max-w-sm sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
             <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300/60 bg-slate-50/50">
               <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-app-primary2" />
@@ -355,13 +357,13 @@ const FaqManagementPage = () => {
                   type="button"
                   variant="outline"
                   onClick={() => setIsDialogOpen(false)}
-                  className="rounded-lg px-5 h-10 text-xs font-semibold border-slate-300/60 text-slate-600 hover:bg-slate-50"
+                  className="rounded-md px-5 h-10 text-xs font-semibold border-slate-300/60 text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-lg px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
+                  className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center gap-2 shadow-sm transition-all active:scale-95"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -422,7 +424,7 @@ const FaqManagementPage = () => {
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this FAQ? This action cannot be undone."
-        loading={deleteLoading}
+        loading={isDeleting}
       />
       <ConfirmModal
         isOpen={toggleModal.open}
@@ -435,7 +437,7 @@ const FaqManagementPage = () => {
         message={`Are you sure you want to change the status of this FAQ to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
         type="brand"
         confirmText="Update"
-        loading={toggleLoading}
+        loading={isUpdating}
       />
     </Container>
   );

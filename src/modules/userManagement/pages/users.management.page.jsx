@@ -14,8 +14,12 @@ import { fetchUsersList } from "../store/user.slice";
 import { getUserManagementAPI } from "../services/user.services";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { LuUsersRound } from "react-icons/lu";
-import { Users, UserCheck, UserX, UserPlus } from "lucide-react";
+import {
+  LuUserRoundCheck,
+  LuUsersRound,
+  LuUserRoundX,
+  LuUserRoundPlus,
+} from "react-icons/lu";
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
@@ -128,7 +132,7 @@ const UsersManagementPage = () => {
 
   const kpiItems = [
     {
-      icon: Users,
+      icon: LuUsersRound,
       label: "Total Users",
       value: localKpis?.totalUsers?.toLocaleString() || "0",
       description: "Tap to view all",
@@ -139,7 +143,7 @@ const UsersManagementPage = () => {
       isSelected: statusFilter === "",
     },
     {
-      icon: UserCheck,
+      icon: LuUserRoundCheck,
       label: "Active Users",
       value: localKpis?.activeUsers?.toLocaleString() || "0",
       description: "Tap to filter",
@@ -151,7 +155,7 @@ const UsersManagementPage = () => {
       isSelected: statusFilter === "Active",
     },
     {
-      icon: UserX,
+      icon: LuUserRoundX,
       label: "Inactive Users",
       value: localKpis?.inactiveUsers?.toLocaleString() || "0",
       description: "Tap to filter",
@@ -163,7 +167,7 @@ const UsersManagementPage = () => {
       isSelected: statusFilter === "Inactive",
     },
     {
-      icon: UserPlus,
+      icon: LuUserRoundPlus,
       label: "New Signups",
       value: localKpis?.newSignupsToday?.toLocaleString() || "0",
       description: "Tap to filter",
@@ -216,25 +220,29 @@ const UsersManagementPage = () => {
     });
   }, [users, statusFilter, isManual]);
 
-  // KPI-only filter values that should highlight the card but not
-  // appear as a selection in the Status dropdown (they're not real statuses)
-  const KPI_ONLY_FILTERS = ["new_today"];
+  const handleStatusFilterChange = (v) => {
+    setStatusFilter(v);
+    setPagination((p) => ({ ...p, pageIndex: 0 }));
+    if (location.state?.filterId) {
+      const newState = { ...location.state };
+      delete newState.filterId;
+      navigate(location.pathname, { replace: true, state: newState });
+    }
+  };
 
   const filterConfig = [
     {
       type: "select",
       id: "statusFilter",
       label: "Status",
-      value: KPI_ONLY_FILTERS.includes(statusFilter) ? "" : statusFilter,
-      onChange: (v) => {
-        setStatusFilter(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
-      },
+      value: statusFilter,
+      onChange: handleStatusFilterChange,
       options: [
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
         { label: "Ghosted", value: "ghosted" },
         { label: "Zero Engagement", value: "zero_engagement" },
+        { label: "New Signups Today", value: "new_today" },
       ],
       placeholder: "All Status",
     },
@@ -242,7 +250,7 @@ const UsersManagementPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -277,7 +285,7 @@ const UsersManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setStatusFilter("")}
+                onClearAll={() => handleStatusFilterChange("")}
               />
             }
           />

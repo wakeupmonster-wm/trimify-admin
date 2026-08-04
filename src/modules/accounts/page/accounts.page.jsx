@@ -36,6 +36,7 @@ export default function AccountsPage() {
     (state) => state.account,
   );
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -67,11 +68,18 @@ export default function AccountsPage() {
     return <PreLoader />;
   }
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/auth/login");
-    toast.success("Logout successful.");
-    setIsLogoutModalOpen(false);
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      // Small delay for UI feedback
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      dispatch(logout());
+      navigate("/auth/login");
+      toast.success("Logout successful.");
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
   };
 
   return (
@@ -271,6 +279,7 @@ export default function AccountsPage() {
         message="Are you sure you want to log out of your admin session?"
         confirmText="Log Out"
         type="warning"
+        loading={isLoggingOut}
       />
     </>
   );

@@ -53,7 +53,6 @@ export const RichTextEditor = ({
               "media",
               "table",
               "code",
-              "help",
               "wordcount",
               "codesample",
               "emoticons",
@@ -81,6 +80,7 @@ export const RichTextEditor = ({
               }
             `,
             branding: false,
+            help_accessibility: false,
             skin: "oxide", // Light mode skin
             promotion: false, // Removes the upgrade prompt in free version
             quickbars_selection_toolbar:

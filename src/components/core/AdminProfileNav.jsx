@@ -15,8 +15,11 @@ export function AdminProfileNav() {
   // Get the authenticated user data from the auth slice
   const { user } = useSelector((state) => state.auth);
 
-  const displayName = user?.nickname || user?.name || "Admin";
-  const displayEmail = user?.email || "admin@example.com";
+  const localUserStr = localStorage.getItem("auth_user");
+  const localUser = localUserStr ? JSON.parse(localUserStr) : null;
+
+  const displayName = user?.nickname || user?.name || localUser?.nickname || localUser?.name || "Admin";
+  const displayEmail = user?.email || localUser?.email || "admin@example.com";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
@@ -24,7 +27,7 @@ export function AdminProfileNav() {
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            onClick={() => navigate("/admin/accounts")}
+            // onClick={() => navigate("/admin/accounts")}
             className="flex items-center gap-2.5 pl-2 pr-5 py-1 rounded-full border border-slate-300/60 bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
           >
             {/* Avatar with fallback logic */}

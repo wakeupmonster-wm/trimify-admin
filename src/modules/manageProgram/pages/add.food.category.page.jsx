@@ -11,6 +11,7 @@ import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 
 const AddFoodCategoryPage = () => {
   const navigate = useNavigate();
@@ -66,7 +67,8 @@ const AddFoodCategoryPage = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!categoryName.trim())
       newErrors.categoryName = "Category Name is required";
@@ -111,9 +113,9 @@ const AddFoodCategoryPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Food Category"
@@ -140,7 +142,7 @@ const AddFoodCategoryPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form onSubmit={(e) => handleSubmit(e)} className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
@@ -197,7 +199,11 @@ const AddFoodCategoryPage = () => {
                 </Label>
                 <div className="flex flex-col items-center justify-center py-4">
                   <img
-                    src={editData.image}
+                    src={
+                      editData.image?.startsWith("http")
+                        ? editData.image
+                        : `${IMAGE_BASE_URL}/${editData.image?.replace(/^\//, "")}`
+                    }
                     alt="Current Category"
                     className="w-16 h-16 object-contain rounded-md"
                   />
@@ -262,7 +268,7 @@ const AddFoodCategoryPage = () => {
             </Button>
             <Button
               className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
-              onClick={handleSubmit}
+              type="submit"
               disabled={loading}
             >
               {loading ? (
@@ -278,7 +284,7 @@ const AddFoodCategoryPage = () => {
               )}
             </Button>
           </div>
-        </div>
+        </form>
       </div>
     </Container>
   );

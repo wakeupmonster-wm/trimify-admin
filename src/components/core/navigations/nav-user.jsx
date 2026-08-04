@@ -35,12 +35,19 @@ export function NavUser({ user }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = () => {
-    // dispatch(logout());
-    navigate("/auth/login");
-    toast.success("Logout successful.");
-    setIsLogoutModalOpen(false);
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      // dispatch(logout());
+      navigate("/auth/login");
+      toast.success("Logout successful.");
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
   };
 
   return (
@@ -132,6 +139,7 @@ export function NavUser({ user }) {
         message="Are you sure you want to log out of your admin session?"
         confirmText="Log Out"
         type="warning"
+        loading={isLoggingOut}
       />
     </>
   );

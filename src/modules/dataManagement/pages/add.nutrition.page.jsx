@@ -83,7 +83,7 @@ const AddNutritionPage = () => {
         calories: editData.Meal_Calories_In_gm || editData.calories || "",
         fats: editData.Meal_Fats_In_gm || editData.fats || "",
         description: editData.Meal_Description || editData.description || "",
-        Meal_Type: editData.Meal_Type || editData.meal_type,
+        Meal_Type: editData.Meal_Type || editData.meal_type || "",
         meal_description:
           parseArrayToString(editData.Meal_instructions) ||
           editData.meal_description ||
@@ -108,6 +108,25 @@ const AddNutritionPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    if (!formData.title?.trim()) newErrors.title = "Food title is required";
+    if (!formData.image?.trim()) newErrors.image = "Image URL is required";
+    if (formData.protein === "" || formData.protein === null) newErrors.protein = "Proteins are required";
+    if (formData.carbs === "" || formData.carbs === null) newErrors.carbs = "Carbs are required";
+    if (formData.calories === "" || formData.calories === null) newErrors.calories = "Calories are required";
+    if (formData.fats === "" || formData.fats === null) newErrors.fats = "Fats are required";
+    if (!formData.description?.trim()) newErrors.description = "Description is required";
+    if (!formData.Meal_Type) newErrors.Meal_Type = "Meal Type is required";
+    if (!formData.meal_description?.trim()) newErrors.meal_description = "Meal Instructions are required";
+    if (!formData.meal_ingredients?.trim()) newErrors.meal_ingredients = "Meal Ingredients are required";
+    if (formData.Meal_Serving === "" || formData.Meal_Serving === null) newErrors.Meal_Serving = "Meal Serving is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
 
     const payloadData = {
       ...formData,
@@ -141,7 +160,7 @@ const AddNutritionPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -374,7 +393,9 @@ const AddNutritionPage = () => {
                 Meal Type
               </Label>
               <Select
-                value={formData.Meal_Type}
+                // Dynamic key lagane se state change hote hi UI sync ho jayega
+                key={`meal-type-${formData.Meal_Type}`}
+                value={formData.Meal_Type || undefined}
                 onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
               >
                 <SelectTrigger
@@ -508,7 +529,7 @@ const AddNutritionPage = () => {
               )}
             </div>
 
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 type="button"
                 variant="outline"

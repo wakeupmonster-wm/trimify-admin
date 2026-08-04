@@ -6,27 +6,77 @@ import {
   Calendar,
   Target,
   User,
+  ClipboardList,
+  Dumbbell,
+  Footprints,
+  CalendarDays,
+  Mail,
+  Phone,
+  Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Kpi, Card, Pill, KV, EmptyState } from "./UserProfileView";
+import { Kpi, Card, KV, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
 
 export function TabOverview({ data }) {
   const { user, es, cap, fmtDate, timeAgo, bmi, bmiCat, activeProgram } = data;
-  const recentActivities = user.recent_activities || [];
+  const recentActivities = (user.recent_activities || []).filter((a) => {
+    if (a.type === "step_log") {
+      const steps = parseInt(((a.title || "").match(/\d+/) || ["0"])[0], 10);
+      return steps > 0;
+    }
+    return true;
+  });
+
+  const kpiItems = [
+    {
+      label: "Programs Enrolled",
+      value: es.programs_enrolled || 0,
+      icon: ClipboardList,
+      tone: "blue",
+    },
+    {
+      label: "Fitzone Assignments",
+      value: es.fitzone_assignments || 0,
+      icon: Dumbbell,
+      tone: "purple",
+    },
+    {
+      label: "Step Logs",
+      value: es.step_logs_count || 0,
+      icon: Footprints,
+      tone: "emerald",
+    },
+    {
+      label: "Days Active (30d)",
+      value: es.days_active_last_30_days || 0,
+      icon: CalendarDays,
+      tone: "amber",
+    },
+  ];
 
   return (
     <>
       <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
         <div className="flex flex-col gap-3.5">
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            <Kpi label="Programs Enrolled" value={es.programs_enrolled || 0} />
             <Kpi
+              icon={ClipboardList}
+              label="Programs Enrolled"
+              value={es.programs_enrolled || 0}
+            />
+            <Kpi
+              icon={Dumbbell}
               label="Fitzone Assignments"
               value={es.fitzone_assignments || 0}
             />
-            <Kpi label="Step Logs" value={es.step_logs_count || 0} />
             <Kpi
+              icon={Footprints}
+              label="Step Logs"
+              value={es.step_logs_count || 0}
+            />
+            <Kpi
+              icon={CalendarDays}
               label="Days Active (30d)"
               value={es.days_active_last_30_days || 0}
             />
@@ -102,22 +152,31 @@ export function TabOverview({ data }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Card title="Snapshot" subtitle="Quick summary across all areas">
+          <Card
+            title="Snapshot"
+            subtitle="Quick summary across all areas"
+          >
             <KV
               icon={CreditCard}
               label="Plan"
               value={
                 user.plan ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    {user.plan.title}
-                    <Pill tone={user.paid ? "success" : "neutral"}>
-                      {user.paid ? "Paid" : "Unpaid"}
-                    </Pill>
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide",
+                      user.paid 
+                        ? "bg-amber-50 text-amber-600" 
+                        : "bg-slate-100 text-slate-600"
+                    )}>
+                      {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
+                      {user.plan.title.toUpperCase()}
+                    </div>
+                  </div>
                 ) : (
                   "No active plan"
                 )
               }
+              noBorder={true}
             />
             <KV
               icon={Calendar}
@@ -129,11 +188,8 @@ export function TabOverview({ data }) {
               label="Active Program"
               value={
                 activeProgram ? (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="font-semibold text-slate-800">
                     {activeProgram.title}
-                    <Pill tone={activeProgram.status === "Active" ? "success" : "neutral"}>
-                      {activeProgram.status}
-                    </Pill>
                   </span>
                 ) : (
                   "None assigned"
@@ -147,7 +203,9 @@ export function TabOverview({ data }) {
                 bmi ? (
                   <span className="inline-flex items-center gap-1.5">
                     {bmi.toFixed(1)}
-                    <span className={cn("text-[11px] font-semibold", bmiCat.color)}>
+                    <span
+                      className={cn("text-[11px] font-semibold", bmiCat.color)}
+                    >
                       {bmiCat.label}
                     </span>
                   </span>
@@ -159,8 +217,30 @@ export function TabOverview({ data }) {
             {user.sub_admin ? (
               <KV icon={User} label="Managed By" value={user.sub_admin?.name} />
             ) : (
-              <KV icon={User} label="Managed By" value="No Sub-Admin Assigned" />
+              <KV
+                icon={User}
+                label="Managed By"
+                value="No Sub-Admin Assigned"
+              />
             )}
+          </Card>
+
+          <Card title="Account Connectivity" subtitle="Primary contact methods">
+            <KV
+              icon={Mail}
+              label="Email"
+              value={user.email || "Not Provided"}
+            />
+            <KV
+              icon={Phone}
+              label="Phone"
+              value={user.mobile || "Not Provided"}
+            />
+            <KV
+              icon={Activity}
+              label="Last Login"
+              value={user.last_login ? fmtDate(user.last_login) : "—"}
+            />
           </Card>
         </div>
       </div>

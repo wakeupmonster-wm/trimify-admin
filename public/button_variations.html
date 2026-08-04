@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trimify Admin - Button Variations (KAM Design System)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        app: {
+                            primary: "#14151a",
+                            primary2: "#007FC0",
+                            primary3: "#005986",
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        /* Base Button Styles */
+        .kam-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            border-radius: 0.5rem; /* rounded-lg */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600; /* font-semibold */
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+            height: 2.5rem; /* h-10 */
+            padding-left: 1.25rem; /* px-5 */
+            padding-right: 1.25rem;
+            cursor: pointer;
+        }
+        .kam-btn:active {
+            transform: scale(0.98);
+        }
+        .kam-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Variation 1: Solid Primary (Elevated) */
+        .btn-var-1 {
+            background-color: #007FC0;
+            color: white;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            border: 1px solid transparent;
+        }
+        .btn-var-1:hover {
+            background-color: #005986;
+            box-shadow: 0 4px 6px -1px rgba(0, 127, 192, 0.2), 0 2px 4px -2px rgba(0, 127, 192, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Variation 2: Soft Secondary (Subtle) */
+        .btn-var-2 {
+            background-color: #cce6ff; /* Lightest Blue */
+            color: #005986; /* Dark Blue */
+            border: 1px solid #99CCF4; /* Soft Blue */
+        }
+        .btn-var-2:hover {
+            background-color: #99CCF4; 
+            border-color: #66B2E3; 
+        }
+
+        /* Variation 3: Crisp Outline */
+        .btn-var-3 {
+            background-color: white;
+            color: #334155; /* slate-700 */
+            border: 1px solid #cbd5e1; /* slate-300 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        .btn-var-3:hover {
+            background-color: #f8fafc; /* slate-50 */
+            color: #0f172a; /* slate-900 */
+            border-color: #94a3b8; /* slate-400 */
+        }
+
+        /* Variation 4: Ghost / Invisible */
+        .btn-var-4 {
+            background-color: transparent;
+            color: #475569; /* slate-600 */
+            border: 1px solid transparent;
+        }
+        .btn-var-4:hover {
+            background-color: #f1f5f9; /* slate-100 */
+            color: #0f172a; /* slate-900 */
+        }
+
+        /* Variation 5: Destructive (Danger) */
+        .btn-var-5 {
+            background-color: hsl(0, 84%, 60%); 
+            color: white;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            border: 1px solid transparent;
+        }
+        .btn-var-5:hover {
+            background-color: hsl(0, 84%, 50%); 
+            box-shadow: 0 4px 6px -1px rgba(240, 67, 67, 0.2), 0 2px 4px -2px rgba(240, 67, 67, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        /* Icon styling */
+        .btn-icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="p-8 md:p-12">
+    
+    <div class="max-w-5xl mx-auto space-y-12 bg-white p-8 md:p-10 rounded-2xl shadow-sm border border-slate-200">
+        <header class="border-b border-slate-200 pb-6 mb-8">
+            <h1 class="text-2xl font-bold text-slate-900 mb-2">Trimify Admin — Button Design System</h1>
+            <p class="text-slate-500">Deliverable 2: Keen As Mustard (KAM) button variations for approval.</p>
+        </header>
+
+        <!-- Solid Primary -->
+        <section class="space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Variation 1: Solid Primary (Elevated)</h2>
+                <p class="text-sm text-slate-500 mb-4">Used for main call-to-actions. Features a subtle lift and colored shadow on hover.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <button class="kam-btn btn-var-1">Save Changes</button>
+                <button class="kam-btn btn-var-1">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                    Add Food Item
+                </button>
+                <button class="kam-btn btn-var-1" disabled>Disabled State</button>
+            </div>
+        </section>
+
+        <!-- Soft Secondary -->
+        <section class="space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Variation 2: Soft Secondary (Subtle)</h2>
+                <p class="text-sm text-slate-500 mb-4">Used for secondary actions that don't need a heavy solid background. Deepens color on hover.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <button class="kam-btn btn-var-2">View Details</button>
+                <button class="kam-btn btn-var-2">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+                    Edit Profile
+                </button>
+                <button class="kam-btn btn-var-2" disabled>Disabled State</button>
+            </div>
+        </section>
+
+        <!-- Crisp Outline -->
+        <section class="space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Variation 3: Crisp Outline</h2>
+                <p class="text-sm text-slate-500 mb-4">Used for alternative actions or cancels. Gains a slight background fill and darker border on hover.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <button class="kam-btn btn-var-3">Cancel</button>
+                <button class="kam-btn btn-var-3">
+                    Filter Results
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" /></svg>
+                </button>
+                <button class="kam-btn btn-var-3" disabled>Disabled State</button>
+            </div>
+        </section>
+
+        <!-- Ghost / Invisible -->
+        <section class="space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Variation 4: Ghost (No Border/Bg)</h2>
+                <p class="text-sm text-slate-500 mb-4">Used for tertiary actions like datatable row actions or subtle text links. Shows background only on hover.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <button class="kam-btn btn-var-4">Skip</button>
+                <button class="kam-btn btn-var-4">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                    Share
+                </button>
+                <button class="kam-btn btn-var-4" disabled>Disabled State</button>
+            </div>
+        </section>
+
+        <!-- Destructive -->
+        <section class="space-y-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Variation 5: Destructive (Danger)</h2>
+                <p class="text-sm text-slate-500 mb-4">Used for deletion or dangerous actions. Includes red hover glow.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6 p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <button class="kam-btn btn-var-5">Delete User</button>
+                <button class="kam-btn btn-var-5">
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                    Remove Access
+                </button>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

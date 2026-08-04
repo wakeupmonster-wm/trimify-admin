@@ -43,7 +43,7 @@ const PageHeader = React.forwardRef(
         animate="visible"
         variants={containerVariants}
         className={cn(
-          "flex flex-col gap-2",
+          "flex flex-col gap-3",
           align === "center" && "items-center text-center",
           align === "right" && "items-end text-right",
           className,

@@ -6,33 +6,33 @@ import { cn } from "@/lib/utils";
 // Active/Success/Paid → green · Inactive/Failed/Churned → red ·
 // Pending/Expiring Soon/Expired → amber · Revoked → grey.
 const STATUS_STYLES = {
-  active: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
-  success: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
-  paid: { bg: "bg-emerald-100/70 hover:bg-emerald-100", text: "text-emerald-700", dot: "bg-emerald-600" },
-  inactive: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
-  failed: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
-  expired: { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
-  churned: { bg: "bg-red-100/70 hover:bg-red-100", text: "text-red-700", dot: "bg-red-600" },
-  pending: { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
-  "expiring soon": { bg: "bg-amber-100/70 hover:bg-amber-100", text: "text-amber-700", dot: "bg-amber-600" },
-  revoked: { bg: "bg-slate-100/70 hover:bg-slate-100", text: "text-slate-700", dot: "bg-slate-500" },
+  active: { bg: "bg-emerald-500/10", text: "text-emerald-600" },
+  success: { bg: "bg-emerald-500/10", text: "text-emerald-600" },
+  paid: { bg: "bg-emerald-500/10", text: "text-emerald-600" },
+  inactive: { bg: "bg-red-500/10", text: "text-red-600" },
+  failed: { bg: "bg-red-500/10", text: "text-red-600" },
+  expired: { bg: "bg-amber-500/10", text: "text-amber-600" },
+  churned: { bg: "bg-red-500/10", text: "text-red-600" },
+  pending: { bg: "bg-amber-500/10", text: "text-amber-600" },
+  "expiring soon": { bg: "bg-amber-500/10", text: "text-amber-600" },
+  revoked: { bg: "bg-slate-500/10", text: "text-slate-600" },
 };
 
 const StatusPill = ({ status }) => {
   const key = String(status || "").toLowerCase();
-  const config = STATUS_STYLES[key] || { bg: "bg-slate-100/70 hover:bg-slate-100", text: "text-slate-700", dot: "bg-slate-500" };
+  const config = STATUS_STYLES[key] || { bg: "bg-slate-500/10", text: "text-slate-600" };
 
   return (
     <Badge
       variant="outline"
       className={cn(
-        "h-6 px-2.5 rounded-xl border-transparent gap-1.5 font-semibold text-[10px] uppercase tracking-wider transition-colors shadow-none",
+        "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
         config.bg,
         config.text
       )}
     >
-      <span className={cn("h-1 w-1 rounded-full shrink-0", config.dot)} />
-      {status}
+      <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+      <span className="truncate">{status}</span>
     </Badge>
   );
 };

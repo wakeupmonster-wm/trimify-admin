@@ -115,7 +115,7 @@ export const getManageBlogsColumns = (onAction) => [
     cell: ({ row }) => {
       // Defaulting to "Public" if visibility_status is "Public" or true, else "Private"
       const statusValue =
-        row.original.visibility_status === "Publish" ||
+        row.original.visibility_status === "Public" ||
         row.original.visibility_status === true
           ? "Public"
           : "Private";

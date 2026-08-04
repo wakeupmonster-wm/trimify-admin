@@ -28,10 +28,10 @@ const ManageFitzoneSessionPage = () => {
     pagination: serverPagination,
   } = useSelector((state) => state.fitzoneSession);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleTarget, setToggleTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
@@ -71,48 +71,54 @@ const ManageFitzoneSessionPage = () => {
     if (toggleTarget) {
       const { row, value } = toggleTarget;
       const statusStr = value ? "Active" : "Inactive";
-      setToggleLoading(true);
-      const resultAction = await dispatch(
-        toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
-      );
-      setToggleLoading(false);
-      if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
-        toast.success("Status updated successfully!");
-        setToggleTarget(null);
-        dispatch(
-          getFitzoneSessions({
-            id,
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearch,
-          }),
+      setIsUpdating(true);
+      try {
+        const resultAction = await dispatch(
+          toggleFitzoneSessionStatus({ id: row.id, status: statusStr }),
         );
-      } else {
-        toast.error(resultAction.payload || "Failed to update status");
+        if (toggleFitzoneSessionStatus.fulfilled.match(resultAction)) {
+          toast.success("Status updated successfully!");
+          dispatch(
+            getFitzoneSessions({
+              id,
+              page: pagination.pageIndex + 1,
+              limit: pagination.pageSize,
+              search: debouncedSearch,
+            }),
+          );
+        } else {
+          toast.error(resultAction.payload || "Failed to update status");
+        }
+      } finally {
+        setIsUpdating(false);
+        setToggleTarget(null);
       }
     }
   };
 
   const handleConfirmDelete = async () => {
     if (deleteTarget) {
-      setDeleteLoading(true);
-      const resultAction = await dispatch(
-        deleteFitzoneSession(deleteTarget.id),
-      );
-      setDeleteLoading(false);
-      if (deleteFitzoneSession.fulfilled.match(resultAction)) {
-        toast.success("Session deleted successfully!");
-        setDeleteTarget(null);
-        dispatch(
-          getFitzoneSessions({
-            id,
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearch,
-          }),
+      setIsDeleting(true);
+      try {
+        const resultAction = await dispatch(
+          deleteFitzoneSession(deleteTarget.id),
         );
-      } else {
-        toast.error(resultAction.payload || "Failed to delete session");
+        if (deleteFitzoneSession.fulfilled.match(resultAction)) {
+          toast.success("Session deleted successfully!");
+          dispatch(
+            getFitzoneSessions({
+              id,
+              page: pagination.pageIndex + 1,
+              limit: pagination.pageSize,
+              search: debouncedSearch,
+            }),
+          );
+        } else {
+          toast.error(resultAction.payload || "Failed to delete session");
+        }
+      } finally {
+        setIsDeleting(false);
+        setDeleteTarget(null);
       }
     }
   };
@@ -128,7 +134,7 @@ const ManageFitzoneSessionPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -177,7 +183,7 @@ const ManageFitzoneSessionPage = () => {
         onConfirm={handleConfirmDelete}
         title="Delete Session"
         message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
-        loading={deleteLoading}
+        loading={isDeleting}
       />
 
       <ConfirmModal
@@ -188,7 +194,7 @@ const ManageFitzoneSessionPage = () => {
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.title || "this session"}" to ${toggleTarget?.value ? "Active" : "Inactive"}?`}
         confirmText="Update"
         type="brand"
-        loading={toggleLoading}
+        loading={isUpdating}
       />
     </Container>
   );

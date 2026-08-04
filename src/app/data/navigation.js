@@ -91,7 +91,7 @@ const navigationData = {
       ],
     },
     {
-      title: "Subscription Management",
+      title: "Subscription",
       url: "/admin/subscription-management",
       icon: IconCreditCard,
       badge: null,

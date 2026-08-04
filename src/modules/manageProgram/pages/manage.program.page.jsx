@@ -45,21 +45,15 @@ const ManageProgramPage = () => {
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [durationFilter, setDurationFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState(location.state?.filterId || "");
+  const [statusFilter, setStatusFilter] = useState(
+    location.state?.filterId || "",
+  );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [replicateTarget, setReplicateTarget] = useState(null);
-  const [replicateLoading, setReplicateLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
-  const [toggleLoading, setToggleLoading] = useState(false);
-  // `serverPagination.total` is scoped to whatever filters are currently
-  // applied (it's the row count for the active query, not a grand total),
-  // so using it directly for the "Total Programs" tile makes that number
-  // shift every time the Active/Inactive KPI is clicked. This is set from
-  // the fetch effect below only when no filters/search are applied, and
-  // stays frozen at that value while a filter is active.
+  const [isUpdating, setIsUpdating] = useState(false);
   const [pinnedTotalPrograms, setPinnedTotalPrograms] = useState(null);
 
   useEffect(() => {
@@ -122,71 +116,42 @@ const ManageProgramPage = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    setDeleteLoading(true);
-    const result = await dispatch(deleteProgram(deleteTarget.id));
-    setDeleteLoading(false);
-    if (deleteProgram.fulfilled.match(result)) {
-      toast.success("Program deleted successfully!");
+    setIsDeleting(true);
+    try {
+      const result = await dispatch(deleteProgram(deleteTarget.id));
+      if (deleteProgram.fulfilled.match(result)) {
+        dispatch(
+          fetchProgramList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            duration: durationFilter,
+            status: statusFilter,
+          }),
+        );
+      }
+    } finally {
+      setIsDeleting(false);
       setDeleteTarget(null);
-      dispatch(
-        fetchProgramList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          duration: durationFilter,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error(result.payload || "Failed to delete program.");
-    }
-  };
-
-  const handleConfirmReplicate = async () => {
-    if (!replicateTarget) return;
-    setReplicateLoading(true);
-    const result = await dispatch(replicateProgram(replicateTarget.id));
-    setReplicateLoading(false);
-    if (replicateProgram.fulfilled.match(result)) {
-      toast.success("Program replicated successfully!");
-      setReplicateTarget(null);
-      dispatch(
-        fetchProgramList({
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-          search: debouncedSearchTerm,
-          duration: durationFilter,
-          status: statusFilter,
-        }),
-      );
-    } else {
-      toast.error(result.payload || "Failed to replicate program.");
     }
   };
 
   const handleConfirmToggle = async () => {
     if (!toggleConfirm) return;
     const { row, action, value } = toggleConfirm;
-
-    setToggleLoading(true);
-    let result;
-    if (action === "toggle-status") {
-      const status = value ? "Active" : "Inactive";
-      result = await dispatch(toggleProgramStatus({ id: row.id, status }));
-    } else if (action === "toggle-food-visibility") {
-      result = await dispatch(toggleFoodVisibility(row.id));
-    }
-    setToggleLoading(false);
-
-    if (result?.meta?.requestStatus === "fulfilled") {
-      toast.success(
-        action === "toggle-status"
-          ? "Status updated successfully!"
-          : "Food visibility updated successfully!",
-      );
+    setIsUpdating(true);
+    try {
+      if (action === "toggle-status") {
+        const status = value ? "Active" : "Inactive";
+        await dispatch(toggleProgramStatus({ id: row.id, status }));
+        toast.success("Status updated successfully!");
+      } else if (action === "toggle-food-visibility") {
+        await dispatch(toggleFoodVisibility(row.id));
+        toast.success("Food visibility updated successfully!");
+      }
+    } finally {
+      setIsUpdating(false);
       setToggleConfirm(null);
-    } else {
-      toast.error(result?.payload || "Failed to update program.");
     }
   };
 
@@ -202,7 +167,10 @@ const ManageProgramPage = () => {
     if (durationFilter) {
       data = data.filter((p) => String(p.duration) === String(durationFilter));
     }
-    if (statusFilter && ["active", "inactive"].includes(statusFilter.toLowerCase())) {
+    if (
+      statusFilter &&
+      ["active", "inactive"].includes(statusFilter.toLowerCase())
+    ) {
       data = data.filter(
         (p) =>
           String(p.status || "Active").toLowerCase() ===
@@ -304,9 +272,9 @@ const ManageProgramPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-5 sm:space-y-6 min-w-0">
+      <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Program"
@@ -318,7 +286,7 @@ const ManageProgramPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 onClick={() => navigate("add-program")}
                 className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -364,33 +332,22 @@ const ManageProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => !deleteLoading && setDeleteTarget(null)}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Program"
         message="Are you sure you want to delete this program? This action cannot be undone."
-        loading={deleteLoading}
-      />
-
-      <ConfirmModal
-        isOpen={!!replicateTarget}
-        onClose={() => !replicateLoading && setReplicateTarget(null)}
-        onConfirm={handleConfirmReplicate}
-        title="Replicate Program"
-        message="Are you sure you want to replicate this program? A copy will be created with all its intro, food, and diet plan data."
-        type="brand"
-        confirmText="Replicate"
-        loading={replicateLoading}
+        loading={isDeleting}
       />
 
       <ConfirmModal
         isOpen={!!toggleConfirm}
-        onClose={() => !toggleLoading && setToggleConfirm(null)}
+        onClose={() => !isUpdating && setToggleConfirm(null)}
         onConfirm={handleConfirmToggle}
-        loading={toggleLoading}
         title={toggleConfirm?.title || ""}
         message={toggleConfirm?.message || ""}
         type="brand"
         confirmText="Update"
+        loading={isUpdating}
       />
     </Container>
   );

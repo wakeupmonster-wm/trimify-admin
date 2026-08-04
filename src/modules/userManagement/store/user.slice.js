@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getUserManagementAPI, getSingleUserProfileAPI } from "../services/user.services";
+import { getUserManagementAPI, getSingleUserProfileAPI, deleteUserAPI } from "../services/user.services";
 
 // Backend TODO: `GET /admin/users` should return a `kpis` object alongside
 // `users`/`pagination`, aggregated over the FULL table (not just the current
@@ -48,6 +48,23 @@ export const fetchSingleUserProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch user profile"
+      );
+    }
+  }
+);
+
+export const deleteUserThunk = createAsyncThunk(
+  "userManagement/deleteUser",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteUserAPI(id);
+      if (response?.data?.success || response?.status === 200 || response?.status === 204) {
+        return id;
+      }
+      return rejectWithValue(response?.data?.message || response?.message || "Failed to delete user");
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || error?.message || "Failed to delete user"
       );
     }
   }
@@ -111,6 +128,9 @@ const userManagementSlice = createSlice({
       .addCase(fetchSingleUserProfile.rejected, (state, action) => {
         state.currentUserLoading = false;
         state.currentUserError = action.payload;
+      })
+      .addCase(deleteUserThunk.fulfilled, (state, action) => {
+        state.users = state.users.filter((u) => u.id !== action.payload);
       });
   },
 });
