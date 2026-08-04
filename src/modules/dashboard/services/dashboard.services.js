@@ -5,6 +5,21 @@ export const dashboardAlertsAPI = () => {
   return apiConnector("GET", DASHBOARD_ENDPOINTS.ALERTS);
 };
 
+export const dashboardAllAPI = (dateRange) => {
+  const params = {};
+  if (dateRange?.preset) params.preset = dateRange.preset;
+  if (dateRange?.preset === "custom") {
+    const formatDt = (d) => {
+      if (!d) return "";
+      if (d instanceof Date) return d.toISOString().split("T")[0];
+      return String(d).split("T")[0];
+    };
+    if (dateRange.from) params.from = formatDt(dateRange.from);
+    if (dateRange.to) params.to = formatDt(dateRange.to);
+  }
+  return apiConnector("GET", DASHBOARD_ENDPOINTS.ALL, null, {}, params);
+};
+
 export const dashboardSummaryAPI = (dateRange) => {
   const params = {};
   if (dateRange?.preset) params.preset = dateRange.preset;

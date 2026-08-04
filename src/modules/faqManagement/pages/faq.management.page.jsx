@@ -284,7 +284,7 @@ const FaqManagementPage = () => {
                   setCurrentFaqId(null);
                   setIsDialogOpen(true);
                 }}
-                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
+                className="w-full sm:w-auto flex-1 xl:flex-none bg-slate-50 hover:bg-app-primary2 text-slate-600 hover:text-white border border-slate-300/80 rounded-md px-4 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all duration-300"
               >
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add FAQ</span>
@@ -295,19 +295,30 @@ const FaqManagementPage = () => {
 
         {/* FAQ Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-sm sm:max-w-[600px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-300/60 bg-slate-50/50">
-              <DialogTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-app-primary2" />
-                {editMode ? "Edit FAQ" : "Add New FAQ"}
-              </DialogTitle>
-              <button
+          <DialogContent className="max-w-sm sm:max-w-2xl p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
+            <div className="flex justify-between items-start px-6 py-5 border-b border-slate-200 bg-white">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-app-primary2/10 rounded-2xl flex items-center justify-center shrink-0 border border-app-primary2/20">
+                  <HelpCircle className="w-5 h-5 text-app-primary2" />
+                </div>
+                <div className="flex flex-col justify-center gap-1">
+                  <DialogTitle className="text-lg font-extrabold text-slate-900 tracking-tight leading-none pt-1">
+                    {editMode ? "Update FAQ" : "Add FAQ"}
+                  </DialogTitle>
+                  <p className="text-xs font-medium text-slate-500 leading-none">
+                    {editMode
+                      ? "Modify the details of your active FAQ item"
+                      : "Add a new question and answer pair to help users"}
+                  </p>
+                </div>
+              </div>
+              {/* <button
                 type="button"
                 onClick={() => setIsDialogOpen(false)}
-                className="text-slate-400 hover:text-slate-600 hover:bg-slate-200/50 p-1.5 rounded-full transition-colors"
+                className="w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-all hover:scale-105 active:scale-95 shrink-0"
               >
-                <X className="w-4 h-4" />
-              </button>
+                <X className="w-5 h-5 shrink-0" />
+              </button> */}
             </div>
             <form onSubmit={handleSubmit} className="px-6 pb-6 pt-1 space-y-6">
               <div className="space-y-2">
@@ -319,7 +330,7 @@ const FaqManagementPage = () => {
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/60 bg-slate-50 hover:bg-white transition-colors"
+                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
@@ -332,11 +343,11 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/60 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
-              <div className="pt-4 flex justify-end gap-3 border-t border-slate-300/60 mt-2">
+              <div className="pt-4 flex justify-end gap-3">
                 <Button
                   type="button"
                   variant="outline"

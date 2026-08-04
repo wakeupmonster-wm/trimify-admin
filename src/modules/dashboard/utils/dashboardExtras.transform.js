@@ -113,58 +113,63 @@ export const buildSecondaryKpis = (summary) => {
 export const buildAlerts = (alerts = {}) => {
   const result = [];
 
-  if (alerts.ghostingUsers?.needsAttention) {
+  const ghosting = alerts?.ghostingUsers;
+  if (ghosting && (ghosting.needsAttention === true || ghosting.needsAttention === "true" || ghosting.needsAttention === 1)) {
     result.push({
       id: "ghosting",
       label: "Ghosting Users",
-      value: `${alerts.ghostingUsers.count} users have been inactive for over ${alerts.ghostingUsers.thresholdDays} days`,
+      value: `${ghosting.count || 0} users have been inactive for over ${ghosting.thresholdDays || 60} days`,
       route: "/admin/users",
       filterId: "ghosted"
     });
   }
 
-  if (alerts.newSignupsZeroEngagement?.needsAttention) {
+  const zeroEng = alerts?.newSignupsZeroEngagement;
+  if (zeroEng && (zeroEng.needsAttention === true || zeroEng.needsAttention === "true" || zeroEng.needsAttention === 1)) {
     result.push({
       id: "reported",
       label: "Zero Engagement",
-      value: `${alerts.newSignupsZeroEngagement.count} new signups have 0 activity in ${alerts.newSignupsZeroEngagement.thresholdDays} days`,
+      value: `${zeroEng.count || 0} new signups have 0 activity in ${zeroEng.thresholdDays || 7} days`,
       route: "/admin/users",
       filterId: "zero_engagement"
     });
   }
 
-  if (alerts.incompleteProfiles?.needsAttention) {
+  const incomplete = alerts?.incompleteProfiles;
+  if (incomplete && (incomplete.needsAttention === true || incomplete.needsAttention === "true" || incomplete.needsAttention === 1)) {
     result.push({
       id: "kyc",
       label: "Incomplete Profiles",
-      value: `${alerts.incompleteProfiles.incompleteCount} profiles are missing information`,
+      value: `${incomplete.incompleteCount || 0} profiles are missing information`,
       route: "/admin/users",
       filterId: "incomplete"
     });
   }
 
-  if (alerts.contentStagnation?.needsAttention) {
+  const stagnation = alerts?.contentStagnation;
+  if (stagnation && (stagnation.needsAttention === true || stagnation.needsAttention === "true" || stagnation.needsAttention === 1)) {
     const staleItems = [];
-    if (alerts.contentStagnation.programs?.stale) staleItems.push("programs");
-    if (alerts.contentStagnation.blogs?.stale) staleItems.push("blogs");
-    if (alerts.contentStagnation.fitzoneCategories?.stale) staleItems.push("fitzone sessions");
+    if (stagnation.programs?.stale) staleItems.push("programs");
+    if (stagnation.blogs?.stale) staleItems.push("blogs");
+    if (stagnation.fitzoneCategories?.stale) staleItems.push("fitzone sessions");
 
     const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
 
     // result.push({
-    //   id: "ghosting",
+    //   id: "ghosting", // Should probably be 'stalled_content' in EcosystemAlerts config
     //   label: "Content Stagnation",
-    //   value: `No new ${itemString} published in over ${alerts.contentStagnation.thresholdDays} days`,
+    //   value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
     //   route: "/admin/manage-program",
     //   filterId: "stale_content"
     // });
   }
 
-  if (alerts.zeroEnrollmentPrograms?.needsAttention) {
+  const zeroEnrollment = alerts?.zeroEnrollmentPrograms;
+  if (zeroEnrollment && (zeroEnrollment.needsAttention === true || zeroEnrollment.needsAttention === "true" || zeroEnrollment.needsAttention === 1)) {
     result.push({
       id: "stalled",
       label: "Zero Enrollment",
-      value: `${alerts.zeroEnrollmentPrograms.count} programs have 0 enrollments past grace period`,
+      value: `${zeroEnrollment.count || 0} programs have 0 enrollments past grace period`,
       route: "/admin/manage-program",
       filterId: "zero_enrollment"
     });

@@ -18,4 +18,5 @@ export const DASHBOARD_ENDPOINTS = {
   DEMOGRAPHICS_CHARTS: `${ADMIN}/dashboard/demographics-charts`,
   FITZONE_COMPLETION_TREND: `${ADMIN}/dashboard/fitzone-completion-trend`,
   ALERTS: `${ADMIN}/dashboard/alerts`,
-}
+  ALL: `${ADMIN}/dashboard/all`,
+};

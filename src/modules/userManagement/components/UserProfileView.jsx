@@ -1,14 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { ArrowLeft, Trash2, Loader2, Calendar, History } from "lucide-react";
 import {
-  Pill,
-  Tag,
-  Card,
-  KV,
-  Kpi,
-  GoalTile,
-  EmptyState,
-} from "./UserProfileShared";
+  ArrowLeft,
+  Trash2,
+  Loader2,
+  Calendar,
+  History,
+  ChevronLeft,
+} from "lucide-react";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
 import { TabPrograms } from "./TabPrograms";
@@ -144,6 +142,19 @@ export default function UserProfileView({ user, onBack, loading }) {
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyId = async () => {
+    if (!user?.id) return;
+    try {
+      await navigator.clipboard.writeText(user.id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast.success("User ID Copied");
+    } catch (err) {
+      console.error("Failed to copy!", err);
+    }
+  };
 
   const derived = useMemo(() => {
     if (!user) return {};
@@ -324,46 +335,49 @@ export default function UserProfileView({ user, onBack, loading }) {
   return (
     <Container>
       <div className="w-full flex flex-col space-y-6 min-w-0">
-        <Header>
-          <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
-            <div className="flex-1 min-w-0 w-full xl:w-auto">
-              <PageHeader
-                heading="View User Profile"
-                icon={<LuUserRound className="w-6 h-6 text-white shrink-0" />}
-                variant="primary"
-                subheading="View detailed user information and history."
-              />
-            </div>
-
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <button
-                onClick={onBack}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </button>
-            </div>
-          </div>
-        </Header>
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              <span
-                className="hover:text-app-primary2 cursor-pointer transition-colors"
-                onClick={onBack}
-              >
+        {/* Navigation Bar */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onBack}
+              className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+              <span className="text-xl md:text-2xl font-bold text-slate-900 truncate">
                 User Directory
               </span>
-              <span className="text-slate-300">/</span>
-              <span className="text-app-primary2">Profile View</span>
+              <span className="text-muted-foreground/30 font-normal text-xl md:text-2xl hidden xs:inline">
+                /
+              </span>
+              <span className="text-base md:text-xl font-normal text-foreground/30 mt-1 truncate">
+                {user.name || "Profile View"}
+              </span>
             </div>
           </div>
-        </div>
+          <div className="flex items-center gap-3 self-end sm:self-auto">
+            <button
+              onClick={() => handleCopy(user.id, "ID")}
+              className="group flex items-center gap-2 bg-white text-[10px] font-semibold text-muted-foreground px-3 py-1.5 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:border-app-primary2/30 max-w-[130px] sm:max-w-none"
+            >
+              <span className="text-app-primary2/60 shrink-0">ID:</span>
+              <span className="truncate">{user.id}</span>
+            </button>
+
+            {/* <button
+              onClick={onBack}
+              className="group flex items-center gap-2 bg-white text-[10px] sm:text-xs font-semibold text-slate-600 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:bg-slate-50"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button> */}
+          </div>
+        </header>
 
         <div className="flex flex-col gap-4">
           {/* Hero Header */}
-          <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-slate-50 p-5 sm:p-6 shadow-sm border border-slate-200">
+          <div className="mb-3 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-slate-50 p-5 sm:p-6 shadow-sm border border-slate-200">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="relative shrink-0">
                 {user.avatar ? (

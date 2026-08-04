@@ -112,7 +112,7 @@ const SecondaryKpiRow = ({ data, title }) => {
     <div className="flex flex-col gap-4">
       <div className="mb-2 flex flex-col items-start gap-1">
         <h2 className="text-base font-bold text-slate-900">
-           {title || "Today at a glance"}
+          {title || "Today at a glance"}
         </h2>
         <p className="text-[11px] font-medium text-slate-500 leading-none">
           Key insights that matter most right now.
@@ -123,12 +123,14 @@ const SecondaryKpiRow = ({ data, title }) => {
         {Array.isArray(data)
           ? data.map((kpi, idx) => {
               const config = KPI_CONFIG.find((c) => c.label === kpi.label);
-              
+
               // Parse numeric value for the tooltip chart
-              const rawVal = parseFloat(String(kpi.value).replace(/[^0-9.-]+/g, "")) || 0;
+              const rawVal =
+                parseFloat(String(kpi.value).replace(/[^0-9.-]+/g, "")) || 0;
               const isCurrency = String(kpi.value).includes("$");
-              const trendPct = parseFloat(String(kpi.trend).replace(/[^0-9.-]+/g, "")) || 0;
-              
+              const trendPct =
+                parseFloat(String(kpi.trend).replace(/[^0-9.-]+/g, "")) || 0;
+
               const multiplier = kpi.isPositive
                 ? (100 - trendPct) / 100
                 : (100 + trendPct) / 100;

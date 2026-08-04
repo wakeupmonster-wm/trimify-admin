@@ -169,7 +169,7 @@ export function TabOverview({ data }) {
                         : "bg-slate-100 text-slate-600"
                     )}>
                       {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
-                      {user.plan.title.toUpperCase()}
+                      {String(user.plan.title || user.plan).toUpperCase()}
                     </div>
                   </div>
                 ) : (
