@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, EmptyState } from "./UserProfileView";
+import { Card, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
 
 const FILTERS = [

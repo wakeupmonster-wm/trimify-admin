@@ -5,7 +5,7 @@ import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  fetchDashboardExtras,
+  fetchMockDashboardData,
   setDashboardDateRange,
 } from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -49,10 +49,30 @@ export default function Dashboard() {
   const {
     dashboardData,
     dashboardExtras,
+    mockData,
     dashboardMeta,
     dateRange,
     lastUpdated,
   } = useSelector((state) => state.dashboard);
+
+  // Derive flat extras structure from either mockData or real dashboardExtras
+  const displayExtras = mockData
+    ? {
+        title: mockData.zone1?.title,
+        secondaryKpis: mockData.zone1?.secondaryKpis,
+        alerts: mockData.zone2?.alerts,
+        pieCharts: mockData.zone3?.pieCharts,
+        funnel: mockData.zone3?.funnel,
+        trends: mockData.zone4?.trends,
+        tables: {
+          ...(mockData.zone4?.tables || {}),
+          ...(mockData.zone5?.tables || {}),
+        },
+      }
+    : dashboardExtras;
+
+  console.log("displayExtras: ", displayExtras);
+
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
   );
@@ -119,10 +139,10 @@ export default function Dashboard() {
     const refreshData = async (dateObj) => {
       // Show the refreshing overlay ONLY on subsequent loads (data already exists).
       // The initial load is handled by the DashboardSkeleton early return below.
-      const isSubsequentLoad = !!dashboardExtras;
+      const isSubsequentLoad = !!displayExtras;
       if (isSubsequentLoad) setRefreshing(true);
       try {
-        await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
+        await dispatch(fetchMockDashboardData(buildDateRangeParams(dateObj)));
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
       } finally {
@@ -149,7 +169,9 @@ export default function Dashboard() {
   const handleManualRefresh = async () => {
     setRefreshing(true);
     try {
-      await dispatch(fetchDashboardExtras(buildDateRangeParams(selectedDate)));
+      await dispatch(
+        fetchMockDashboardData(buildDateRangeParams(selectedDate)),
+      );
     } finally {
       setRefreshing(false);
     }
@@ -172,6 +194,12 @@ export default function Dashboard() {
       : selectedDate?.from
         ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
         : dashboardMeta?.periodLabel;
+
+  const isShortPeriod =
+    selectedDate?.preset === "today" || selectedDate?.preset === "yesterday";
+  const extendedSubtitleSuffix = isShortPeriod
+    ? ""
+    : ` by ${dynamicPeriodLabel}`;
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -198,7 +226,7 @@ export default function Dashboard() {
   // ─── Initial Load Guard ─────────────────────────────────────────────────────
   // Show full-page skeleton until the first API response populates dashboardData.
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
-  if (!dashboardExtras) {
+  if (!displayExtras) {
     return (
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
@@ -210,7 +238,7 @@ export default function Dashboard() {
     <>
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
-          {refreshing && dashboardExtras && (
+          {refreshing && displayExtras && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -343,10 +371,13 @@ export default function Dashboard() {
               </>
             )}
 
-            <SecondaryKpiRow data={dashboardExtras?.secondaryKpis} />
+            <SecondaryKpiRow
+              data={displayExtras?.secondaryKpis}
+              title={displayExtras?.title}
+            />
             <div className="pt-3 3xl:pt-2">
               <EcosystemAlerts
-                data={{ alerts: dashboardExtras?.alerts || [] }}
+                data={{ alerts: displayExtras?.alerts || [] }}
                 selectedDate={selectedDate}
               />
             </div>
@@ -367,38 +398,36 @@ export default function Dashboard() {
                     breakdowns belong with the rest of subscription analytics. */}
                 <DonutStatCard
                   title="User Goal Distribution"
-                  subtitle="Primary fitness goal"
+                  subtitle={`Primary fitness goal by ${dynamicPeriodLabel}`}
                   Icon={Target}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={dashboardExtras?.pieCharts?.userGoals || []}
+                  // data={displayExtras?.pieCharts?.userGoals || []}
                   data={mapAccentColors(
-                    dashboardExtras?.pieCharts?.userGoals || [],
+                    displayExtras?.pieCharts?.userGoals || [],
                   )}
                   scrollableLegend
                 />
                 <DonutStatCard
                   title="Gender Distribution"
-                  subtitle="Male vs Female user breakdown"
+                  subtitle={`Male vs Female user breakdown by ${dynamicPeriodLabel}`}
                   Icon={Users2}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={mapChartColors(
-                    dashboardExtras?.pieCharts?.gender || [],
-                  )}
+                  data={mapChartColors(displayExtras?.pieCharts?.gender || [])}
                 />
                 <DonutStatCard
                   title="Vegetarian vs Non-veg"
-                  subtitle="Dietary preference split"
+                  subtitle={`Dietary preference split by ${dynamicPeriodLabel}`}
                   Icon={Salad}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
                   tooltipText="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
                   data={mapDietColors(
-                    dashboardExtras?.pieCharts?.dietPreference || [],
+                    displayExtras?.pieCharts?.dietPreference || [],
                   )}
                 />
-                <ConversionFunnel data={dashboardExtras?.funnel} />
+                <ConversionFunnel data={displayExtras?.funnel} />
               </div>
             </div>
 
@@ -413,11 +442,11 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
                 <TrendChartCard
                   title="Engagement Trend (DAU)"
-                  subtitle="Users logging food / water / steps / weight"
+                  subtitle={`Users logging food / water / steps / weight ${dynamicPeriodLabel}`}
                   Icon={ActivityIcon}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.engagementDAU || []}
+                  data={displayExtras?.trends?.engagementDAU || []}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={[
@@ -431,17 +460,18 @@ export default function Dashboard() {
                   ]}
                   note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
                 />
+
                 <TrendChartCard
                   title="Fitzone Session Completion"
-                  subtitle="Assignment volume per period"
+                  subtitle={`Assignment volume per period ${extendedSubtitleSuffix}`}
                   Icon={Dumbbell}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.fitzoneCompletion || []}
+                  data={displayExtras?.trends?.fitzoneCompletion || []}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   series={(
-                    dashboardExtras?.trends?.fitzoneStatuses || ["Active"]
+                    displayExtras?.trends?.fitzoneStatuses || ["Active"]
                   ).map((status, i) => ({
                     key: status,
                     label: status,
@@ -452,11 +482,11 @@ export default function Dashboard() {
                 />
                 <TrendChartCard
                   title="Program Enrollment Split"
-                  subtitle="Top 10 ranked programs"
+                  subtitle={`Top 10 ranked programs${extendedSubtitleSuffix}`}
                   Icon={TrendingUp}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={dashboardExtras?.trends?.popularPrograms || []}
+                  data={displayExtras?.trends?.popularPrograms || []}
                   xKey="title"
                   series={[
                     {
@@ -467,14 +497,15 @@ export default function Dashboard() {
                     },
                   ]}
                 />
+
                 <div className="w-full h-full min-h-[320px]">
                   <DashboardTableCard
                     title="Recent Joined Users"
-                    subtitle="Monitor the latest member registrations"
+                    subtitle={`Monitor the latest member registrations${extendedSubtitleSuffix}`}
                     Icon={Users2}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={(dashboardExtras?.tables?.recentUsers || []).slice(
+                    rows={(displayExtras?.tables?.recentUsers || []).slice(
                       0,
                       5,
                     )}
@@ -576,11 +607,11 @@ export default function Dashboard() {
                 <div className="w-full">
                   <DashboardTableCard
                     title="Pending / Abandoned Checkouts"
-                    subtitle="Signed up but haven't paid in 7+ days"
+                    subtitle={`Signed up but haven't paid in 7+ days ${extendedSubtitleSuffix}`}
                     Icon={Wallet}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={dashboardExtras?.tables?.abandonedCheckouts || []}
+                    rows={displayExtras?.tables?.abandonedCheckouts || []}
                     emptyMessage="No abandoned checkouts right now."
                     actionLabel="Follow Up"
                     onAction={(row) =>

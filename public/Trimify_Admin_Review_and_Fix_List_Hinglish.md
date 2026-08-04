@@ -12,7 +12,7 @@
   - **Solution:** Ek accent color palette banayein. Primary color ko rare banayein (D-11 dekhein).
 - ✅ **CC-5 🟡 Tables me email aur phone icons missing hain:**
   - **Solution:** Har table me jahan email/phone hai, wahan KAM ki tarah icons add karein.
-- **CC-6 🔴 Dummy/placeholder data (jaise John Doe, Priya Sharma) abhi bhi visible hai:**
+- ✅ **CC-6 🔴 Dummy/placeholder data (jaise John Doe, Priya Sharma) abhi bhi visible hai:**
   - **Solution:** Har jagah dummy data ko real data se replace karein.
 - ✅ **CC-7 🔴 Dashboards aur tables me data static hai aur filters se change nahi hota:**
   - **Solution:** Date-range aur filter selection ko backend data ya dynamic logic ke sath wire karein taaki dashboard react kare.

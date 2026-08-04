@@ -15,7 +15,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Kpi, Card, KV, EmptyState } from "./UserProfileView";
+import { Kpi, Card, KV, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
 
 export function TabOverview({ data }) {

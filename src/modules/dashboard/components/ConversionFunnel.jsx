@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Filter, ArrowDown } from "lucide-react";
+import { Filter } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { APP_COLORS } from "@/config/theme.config";
 

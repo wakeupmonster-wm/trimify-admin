@@ -14,7 +14,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, Pill, KV, EmptyState } from "./UserProfileView";
+import { Card, Pill, KV, EmptyState } from "./UserProfileShared";
 
 export function TabAccount({ data }) {
   const { user, handleCopy, initials, fmtDate, truncMid } = data;

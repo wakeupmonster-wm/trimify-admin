@@ -104,7 +104,7 @@ const KPI_CONFIG = [
   },
 ];
 
-const SecondaryKpiRow = ({ data }) => {
+const SecondaryKpiRow = ({ data, title }) => {
   const navigate = useNavigate();
   if (!data) return null;
 
@@ -112,7 +112,7 @@ const SecondaryKpiRow = ({ data }) => {
     <div className="flex flex-col gap-4">
       <div className="mb-2 flex flex-col items-start gap-1">
         <h2 className="text-base font-bold text-slate-900">
-          Today at a glance
+           {title || "Today at a glance"}
         </h2>
         <p className="text-[11px] font-medium text-slate-500 leading-none">
           Key insights that matter most right now.
@@ -120,33 +120,67 @@ const SecondaryKpiRow = ({ data }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {KPI_CONFIG.map((kpi) => {
-          const val = data[kpi.key] || 0;
-          // Simple mock formula to generate a "previous" value so tooltips look realistic
-          const multiplier = kpi.isPositive
-            ? (100 - parseInt(kpi.trendValue)) / 100
-            : (100 + parseInt(kpi.trendValue)) / 100;
-          const previous = val * multiplier;
+        {Array.isArray(data)
+          ? data.map((kpi, idx) => {
+              const config = KPI_CONFIG.find((c) => c.label === kpi.label);
+              
+              // Parse numeric value for the tooltip chart
+              const rawVal = parseFloat(String(kpi.value).replace(/[^0-9.-]+/g, "")) || 0;
+              const isCurrency = String(kpi.value).includes("$");
+              const trendPct = parseFloat(String(kpi.trend).replace(/[^0-9.-]+/g, "")) || 0;
+              
+              const multiplier = kpi.isPositive
+                ? (100 - trendPct) / 100
+                : (100 + trendPct) / 100;
+              const previous = rawVal * multiplier;
 
-          return (
-            <KpiCard
-              key={kpi.key}
-              label={kpi.label}
-              value={kpi.format(data)}
-              description={kpi.description}
-              tone={kpi.tone}
-              trendValue={kpi.trendValue}
-              isPositive={kpi.isPositive}
-              trendExplanation={kpi.trendExplanation}
-              tooltipData={{
-                current: val,
-                previous,
-                isCurrency: kpi.isCurrency,
-              }}
-              onClick={() => kpi.onClick(navigate)}
-            />
-          );
-        })}
+              return (
+                <KpiCard
+                  key={idx}
+                  label={kpi.label}
+                  value={kpi.value}
+                  description={kpi.sub}
+                  tone={kpi.color}
+                  trendValue={kpi.trend}
+                  isPositive={kpi.isPositive}
+                  tooltipData={{
+                    current: rawVal,
+                    previous,
+                    isCurrency,
+                  }}
+                  onClick={() => {
+                    if (config?.onClick) config.onClick(navigate);
+                  }}
+                />
+              );
+            })
+          : KPI_CONFIG.map((kpi) => {
+              const val = data[kpi.key] || 0;
+              // Simple mock formula to generate a "previous" value so tooltips look realistic
+              const multiplier = kpi.isPositive
+                ? (100 - parseInt(kpi.trendValue)) / 100
+                : (100 + parseInt(kpi.trendValue)) / 100;
+              const previous = val * multiplier;
+
+              return (
+                <KpiCard
+                  key={kpi.key}
+                  label={kpi.label}
+                  value={kpi.format(data)}
+                  description={kpi.description}
+                  tone={kpi.tone}
+                  trendValue={kpi.trendValue}
+                  isPositive={kpi.isPositive}
+                  trendExplanation={kpi.trendExplanation}
+                  tooltipData={{
+                    current: val,
+                    previous,
+                    isCurrency: kpi.isCurrency,
+                  }}
+                  onClick={() => kpi.onClick(navigate)}
+                />
+              );
+            })}
       </div>
     </div>
   );

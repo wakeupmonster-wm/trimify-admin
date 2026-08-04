@@ -6,7 +6,7 @@ import {
   Calendar,
   Clock,
 } from "lucide-react";
-import { Card, Pill, EmptyState } from "./UserProfileView";
+import { Card, Pill, EmptyState } from "./UserProfileShared";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {

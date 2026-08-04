@@ -1,7 +1,7 @@
 import React from "react";
 import { Droplet, Target, Flame, Footprints } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileView";
+import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileShared";
 
 export function TabHealth({ data }) {
   const { 

@@ -25,6 +25,10 @@ function detectPreset(dateRange) {
   return "custom";
 }
 
+/**
+ * Returns a comparison context label based on date range preset.
+ * e.g., "vs yesterday", "vs previous 7 days"
+ */
 function getContextLabel(preset) {
   switch (preset) {
     case "today": return "vs yesterday";
@@ -36,6 +40,10 @@ function getContextLabel(preset) {
   }
 }
 
+/**
+ * Returns a human-readable period label.
+ * e.g., "Today", "Last 7 Days", "Apr 01 – Apr 08, 2026"
+ */
 function getPeriodLabel(dateRange, preset) {
   switch (preset) {
     case "today": return "Today";
@@ -51,6 +59,30 @@ function getPeriodLabel(dateRange, preset) {
   }
 }
 
+/**
+ * Returns a section title prefix for the glance zone.
+ */
+function getGlanceTitle(preset) {
+  switch (preset) {
+    case "today":
+      return "Today at a glance";
+    case "yesterday":
+      return "Yesterday at a glance";
+    case "last3":
+      return "Last 3 days at a glance";
+    case "last7":
+      return "Last 7 days at a glance";
+    case "last30":
+      return "Last 30 days at a glance";
+    case "custom":
+    default:
+      return "Period at a glance";
+  }
+}
+
+/**
+ * Randomizes a number within a variance percentage for variety.
+ */
 function randomize(base, variancePercent = 15) {
   if (base === 0) return 0;
   const variance = base * (variancePercent / 100);
@@ -89,35 +121,121 @@ function getTrendDates(preset, dateRange) {
 
 function buildZone1(preset) {
   const multiplier = preset === "last30" ? 30 : preset === "last7" ? 7 : preset === "last3" ? 3 : 1;
+  const getTrend = (baseTrend) => `${randomize(baseTrend, 30)}%`;
   
   return {
-    secondaryKpis: {
-      totalRevenueAllTime: 3209.97,
-      totalUsersAllTime: 736,
-      newSignupsToday: randomize(6 * multiplier, 20),
-      expiringSoon: randomize(2 * multiplier, 30),
-      totalPrograms: 8,
-      totalFitzoneSessions: randomize(15 * multiplier, 20),
-      totalBlogs: 24,
-      totalPublishedBlogs: 4,
-      totalSubAdmins: 0, 
-    },
+    title: getGlanceTitle(preset),
+    secondaryKpis: [
+      {
+        label: "Total Revenue",
+        value: `$${randomize(3209.97 + (multiplier * 15), 5).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+        sub: "All-time, all plans",
+        trend: getTrend(12),
+        isPositive: true,
+        icon: "Wallet",
+        color: "emerald",
+      },
+      {
+        label: "Total Users",
+        value: String(randomize(736 + (multiplier * 5), 5)),
+        sub: "All-time platform total",
+        trend: getTrend(8),
+        isPositive: true,
+        icon: "Users",
+        color: "blue",
+      },
+      {
+        label: "New Signups",
+        value: String(randomize(6 * multiplier, 20)),
+        sub: "Signed up today",
+        trend: getTrend(2 * multiplier),
+        isPositive: true,
+        icon: "UserPlus",
+        color: "indigo",
+      },
+      {
+        label: "Expiring Soon",
+        value: String(randomize(2 * multiplier, 30)),
+        sub: "Next 7 days · tap to view",
+        trend: getTrend(5),
+        isPositive: false,
+        icon: "Clock",
+        color: "amber",
+      },
+      {
+        label: "Total Programs",
+        value: String(randomize(8 + (multiplier > 7 ? 2 : 0), 10)),
+        sub: "Tap to manage",
+        trend: getTrend(4),
+        isPositive: true,
+        icon: "Dumbbell",
+        color: "violet",
+      },
+      {
+        label: "Fitzone Sessions",
+        value: String(randomize(15 * multiplier, 20)),
+        sub: "Tap to manage",
+        trend: getTrend(15),
+        isPositive: true,
+        icon: "Activity",
+        color: "rose",
+      },
+      {
+        label: "Total Blogs",
+        value: String(randomize(24 + (multiplier > 7 ? 4 : 0), 10)),
+        sub: "Tap to manage",
+        trend: getTrend(3),
+        isPositive: true,
+        icon: "FileText",
+        color: "cyan",
+      },
+      {
+        label: "Published Blogs",
+        value: String(randomize(4 + (multiplier > 7 ? 1 : 0), 10)),
+        sub: "Live on the app",
+        trend: getTrend(1),
+        isPositive: true,
+        icon: "CheckCircle",
+        color: "emerald",
+      },
+    ],
+  };
+}
+
+// buildZoneBAlerts removed — KYC, Reported Users, Ghosting not applicable to this app
+function buildZoneAlerts2() {
+  return { 
     alerts: {
       ghostingUsers: {
+        label: "ghostingUsers",
         needsAttention: true,
         count: randomize(121, 10),
         thresholdDays: 60,
       },
       newSignupsZeroEngagement: {
+        label: "newSignupsZeroEngagement",
         needsAttention: true,
         count: randomize(7, 20),
         thresholdDays: 7,
       },
+      zeroEnrollmentPrograms: {
+        label: "zeroEnrollmentPrograms",
+        graceDays: 7,
+        count: 1,
+        needsAttention: true,
+            preview: [
+                {
+                    id: 91,
+                    title: "Diabetes Diet",
+                    created_at: "2025-03-24 23:25:10"
+                }
+            ]
+        }
     },
   };
 }
 
-function buildZone2(preset) {
+function buildZone3(preset) {
   const multiplier = preset === "last30" ? 30 : preset === "last7" ? 7 : preset === "last3" ? 3 : 1;
   const signups = randomize(6 * multiplier, 20);
   const paid = Math.floor(signups * 0.4); // ~40% conversion
@@ -125,36 +243,40 @@ function buildZone2(preset) {
   return {
     pieCharts: {
       userGoals: [
-        { label: "Unspecified", total: 395 },
-        { label: "Weight Loss", total: 290 },
-        { label: "Gain Muscle", total: 30 },
-        { label: "Manage Hypertension", total: 13 },
-        { label: "Maintain Weight", total: 11 },
-        { label: "Manage Diabetes", total: 0 },
-        { label: "Prevent Chronic Disease", total: 1 },
+        { label: "Unspecified", value: randomize(395 + (multiplier * 10), 5) },
+        { label: "Weight Loss", value: randomize(290 + (multiplier * 8), 5) },
+        { label: "Gain Muscle", value: randomize(30 + (multiplier * 2), 10) },
+        { label: "Manage Hypertension", value: randomize(13 + multiplier, 15) },
+        { label: "Maintain Weight", value: randomize(11 + multiplier, 15) },
+        { label: "Manage Diabetes", value: randomize(multiplier, 50) },
+        { label: "Prevent Chronic Disease", value: randomize(1 + Math.floor(multiplier / 2), 50) },
       ],
       gender: [
-        { label: "Male", total: 420 },
-        { label: "Female", total: 322 },
-        { label: "Other", total: 4 },
+        { label: "Male", value: randomize(420 + (multiplier * 12), 5) },
+        { label: "Female", value: randomize(322 + (multiplier * 9), 5) },
+        { label: "Other", value: randomize(4 + multiplier, 10) },
       ],
       dietPreference: [
-        { label: "Unspecified", total: 395 },
-        { label: "Non-Vegetarian", total: 317 },
-        { label: "Vegetarian", total: 24 },
+        { label: "Unspecified", value: randomize(395 + (multiplier * 10), 5) },
+        { label: "Non-Vegetarian", value: randomize(317 + (multiplier * 8), 5) },
+        { label: "Vegetarian", value: randomize(24 + multiplier, 10) },
       ],
     },
     funnel: {
       totalSignups: signups,
       paidUsers: paid,
       notPaidUsers: signups - paid,
-      conversionRate: signups > 0 ? Math.round((paid / signups) * 100) : 0,
-      dropOffRate: signups > 0 ? Math.round(((signups - paid) / signups) * 100) : 0,
+      conversionRate: Math.round((paid / signups) * 100) || 0,
+      dropOffRate: Math.round(((signups - paid) / signups) * 100) || 0,
+      stages: [
+        { label: "Total Signups", value: signups, dropOff: 0 },
+        { label: "Paid Users", value: paid, dropOff: -(Math.round(((signups - paid) / signups) * 100) || 0) },
+      ]
     },
   };
 }
 
-function buildZone3(preset, dateRange) {
+function buildZone4(preset, dateRange) {
   const dates = getTrendDates(preset, dateRange);
   const multiplier = preset === "last30" ? 4 : 1;
   
@@ -197,7 +319,7 @@ function buildZone3(preset, dateRange) {
   };
 }
 
-function buildZone4() {
+function buildZone5() {
   return {
     tables: {
       abandonedCheckouts: [
@@ -232,9 +354,10 @@ export function getMockDashboardData(dateRange) {
     },
     data: {
       zone1: buildZone1(preset),
-      zone2: buildZone2(preset),
-      zone3: buildZone3(preset, dateRange),
-      zone4: buildZone4(),
+      zone2: buildZoneAlerts2(preset),
+      zone3: buildZone3(preset),
+      zone4: buildZone4(preset, dateRange),
+      zone5: buildZone5(),
     },
   };
 }

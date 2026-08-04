@@ -1,6 +1,6 @@
 import React from "react";
 import { Target, Activity } from "lucide-react";
-import { Card, Pill, EmptyState } from "./UserProfileView";
+import { Card, Pill, EmptyState } from "./UserProfileShared";
 
 export function TabPrograms({ data }) {
   const { programs, fitzoneStatus, fmtDate } = data;
