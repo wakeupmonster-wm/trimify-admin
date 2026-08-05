@@ -16,9 +16,10 @@ export const fetchSubAdminList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           subAdmins: response.subAdmins || [],
+          kpis: response.kpis || null,
           pagination: {
             page: response.pagination?.current_page || response.pagination?.page || 1,
-            limit: response.pagination?.per_page || 10, 
+            limit: response.pagination?.per_page || 10,
             total: response.pagination?.total || 0,
             totalPages: response.pagination?.totalPage || response.pagination?.last_page || 1,
           },
@@ -109,6 +110,7 @@ const subAdminSlice = createSlice({
   name: "subAdmin",
   initialState: {
     subAdmins: [],
+    kpis: null,
     loading: false,
     error: null,
     pagination: {
@@ -137,6 +139,7 @@ const subAdminSlice = createSlice({
       .addCase(fetchSubAdminList.fulfilled, (state, action) => {
         state.loading = false;
         state.subAdmins = action.payload.subAdmins;
+        state.kpis = action.payload.kpis;
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchSubAdminList.rejected, (state, action) => {

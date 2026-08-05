@@ -55,7 +55,6 @@ export default function Dashboard() {
     lastUpdated,
     error,
   } = useSelector((state) => state.dashboard);
-
   const displayExtras = dashboardExtras;
 
   // console.log("displayExtras: ", displayExtras);
@@ -179,7 +178,6 @@ export default function Dashboard() {
       : selectedDate?.from
         ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
         : dashboardMeta?.periodLabel;
-
   const isShortPeriod =
     selectedDate?.preset === "today" || selectedDate?.preset === "yesterday";
   const extendedSubtitleSuffix = isShortPeriod
@@ -272,7 +270,7 @@ export default function Dashboard() {
                 : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full flex-wrap">
               <PageHeader
                 heading="Dashboard Overview"
                 icon={

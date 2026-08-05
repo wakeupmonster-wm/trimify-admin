@@ -25,8 +25,8 @@ export const deleteFoodCategoryAPI = async (id) => {
 
 // ──────────────── Food Items ────────────────
 
-export const getFoodListAPI = async (programId, categoryId) => {
-  return apiConnector("GET", FOOD.FOOD_GET_BY_PROGRAM_CATEGORY(programId, categoryId));
+export const getFoodListAPI = async (programId, categoryId, params = {}) => {
+  return apiConnector("GET", FOOD.FOOD_GET_BY_PROGRAM_CATEGORY(programId, categoryId), null, null, params);
 };
 
 export const addFoodAPI = async (data) => {

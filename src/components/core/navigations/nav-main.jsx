@@ -59,7 +59,7 @@ export function NavMain({ items }) {
                 isActive={isActive}
                 tooltip={item.title}
                 className={cn(
-                  "relative h-11 w-full transition-all duration-300 px-4 rounded-none border-none",
+                  "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
                   "hover:bg-slate-100/50 active:scale-[0.98]",
                   isActive && "!bg-app-primary2 !hover:bg-app-primary3",
                 )}
@@ -89,7 +89,7 @@ export function NavMain({ items }) {
 
                   <span
                     className={cn(
-                      "flex-1 truncate text-sm tracking-tight transition-colors duration-300",
+                      "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
                       isActive
                         ? "text-app-primary2 font-bold"
                         : "text-slate-600 font-medium hover:text-slate-900",

@@ -27,10 +27,11 @@ const ViewUserProfilePage = () => {
   const rawUserData = currentUser || location.state?.userData;
 
   return (
-    <UserProfileView 
-      user={rawUserData} 
-      loading={currentUserLoading} 
-      onBack={() => navigate("/admin/users")} 
+    <UserProfileView
+      user={rawUserData}
+      loading={currentUserLoading}
+      onBack={() => navigate("/admin/users")}
+      initialTab={location.state?.initialTab}
     />
   );
 };

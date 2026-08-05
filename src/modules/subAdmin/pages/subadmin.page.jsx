@@ -70,9 +70,21 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     ];
   });
 
+  // Excel auto-detects quoted date-like strings and converts them to real
+  // dates, which then render as "####" when the column is too narrow. Wrap
+  // the "Created At" column in an Excel text-literal formula so it's kept
+  // as plain text instead of being reinterpreted.
+  const escapeCsvField = (value, forceText = false) => {
+    const str = String(value ?? "");
+    const raw = forceText && str !== "-" ? `="${str}"` : str;
+    return `"${raw.replace(/"/g, '""')}"`;
+  };
+
   const csvContent = [
     headers.join(","),
-    ...rows.map((row) => row.map((str) => `"${str}"`).join(",")),
+    ...rows.map((row) =>
+      row.map((value, i) => escapeCsvField(value, i === 1)).join(",")
+    ),
   ].join("\n");
 
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -90,12 +102,14 @@ const SubAdminManagementPage = () => {
   const dispatch = useDispatch();
   const {
     subAdmins,
+    kpis,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.subAdmin);
 
   const [globalFilter, setGlobalFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const navigate = useNavigate();
@@ -141,59 +155,30 @@ const SubAdminManagementPage = () => {
     }, intervalTime);
   };
 
-  const [pinnedKpis, setPinnedKpis] = useState(null);
-
-  useEffect(() => {
-    if (pinnedKpis) return;
-
-    Promise.all([
-      dispatch(fetchSubAdminList({ limit: 1 })).unwrap(),
-      dispatch(fetchSubAdminList({ limit: 1, status: "Active" })).unwrap(),
-      dispatch(fetchSubAdminList({ limit: 1, role: 0 })).unwrap(),
-      dispatch(fetchSubAdminList({ limit: 1, role: 1 })).unwrap(),
-    ])
-      .then(([resTotal, resActive, resSubAdmins, resWhiteListing]) => {
-        setPinnedKpis({
-          total: resTotal?.pagination?.total || 0,
-          active: resActive?.pagination?.total || 0,
-          subAdmins: resSubAdmins?.pagination?.total || 0,
-          whiteListing: resWhiteListing?.pagination?.total || 0,
-        });
-      })
-      .catch((err) => {
-        console.error("Failed to fetch KPIs:", err);
-      });
-  }, [pinnedKpis, dispatch]);
-
-  const kpiStats = useMemo(() => {
-    if (pinnedKpis) return pinnedKpis;
-    return {
-      total: serverPagination?.total || 0,
-      active: 0,
-      subAdmins: 0,
-      whiteListing: 0,
-    };
-  }, [serverPagination, pinnedKpis]);
-
+  // KPIs come straight from the backend (`response.kpis`) — they're computed
+  // over the full sub_admins table regardless of search/role/status/page, so
+  // they must NOT be recalculated from the currently-loaded page of `subAdmins`.
   const kpiItems = [
     {
       icon: LuUsersRound,
       label: "Total Admins",
-      value: kpiStats.total.toLocaleString(),
+      value: (kpis?.total ?? 0).toLocaleString(),
       description: "Total registered users",
       tone: "blue",
     },
     {
       icon: LuUserRoundCheck,
       label: "Active Accounts",
-      value: kpiStats.active.toLocaleString(),
-      description: "Currently active",
+      value: (kpis?.active ?? 0).toLocaleString(),
+      description: "Tap to filter",
       tone: "emerald",
+      onClick: () => setStatusFilter("Active"),
+      isSelected: statusFilter === "Active",
     },
     {
       icon: Shield,
       label: "Sub-Admin Users",
-      value: kpiStats.subAdmins.toLocaleString(),
+      value: (kpis?.subAdminUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "indigo",
       onClick: () => setRoleFilter(roleFilter === "0" ? "" : "0"),
@@ -202,7 +187,7 @@ const SubAdminManagementPage = () => {
     {
       icon: ShieldAlert,
       label: "WhiteListing Users",
-      value: kpiStats.whiteListing.toLocaleString(),
+      value: (kpis?.whiteListingUsers ?? 0).toLocaleString(),
       description: "Tap to filter",
       tone: "rose",
       onClick: () => setRoleFilter(roleFilter === "1" ? "" : "1"),
@@ -217,6 +202,7 @@ const SubAdminManagementPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         role: roleFilter,
+        status: statusFilter,
       }),
     );
   }, [
@@ -225,6 +211,7 @@ const SubAdminManagementPage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
     roleFilter,
+    statusFilter,
   ]);
 
   const handleAction = useCallback(
@@ -308,17 +295,26 @@ const SubAdminManagementPage = () => {
   // If serverPagination exists, it's server-paginated.
   const isManual = !!serverPagination;
 
-  // Local fallback filtering in case the backend ignores the `role` parameter
+  // Local fallback filtering in case the backend ignores the `role`/`status` parameters
   const filteredSubAdmins = useMemo(() => {
-    if (!roleFilter) return subAdmins || [];
-    return (subAdmins || []).filter((admin) => {
-      // Handle both string and integer matching
-      if (String(admin.role) === String(roleFilter)) return true;
-      if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
-      if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
-      return false;
-    });
-  }, [subAdmins, roleFilter]);
+    let list = subAdmins || [];
+    if (roleFilter) {
+      list = list.filter((admin) => {
+        // Handle both string and integer matching
+        if (String(admin.role) === String(roleFilter)) return true;
+        if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
+        if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
+        return false;
+      });
+    }
+    if (statusFilter) {
+      list = list.filter(
+        (admin) =>
+          String(admin.status).toLowerCase() === statusFilter.toLowerCase(),
+      );
+    }
+    return list;
+  }, [subAdmins, roleFilter, statusFilter]);
 
   const filterConfig = [
     {
@@ -338,6 +334,18 @@ const SubAdminManagementPage = () => {
           : val === "1"
             ? "WhiteListing User"
             : "All Roles",
+    },
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: setStatusFilter,
+      options: [
+        { label: "Active", value: "Active" },
+        { label: "Inactive", value: "Inactive" },
+      ],
+      placeholder: "All Status",
     },
   ];
 
@@ -402,7 +410,10 @@ const SubAdminManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setRoleFilter("")}
+                onClearAll={() => {
+                  setRoleFilter("");
+                  setStatusFilter("");
+                }}
               />
             }
           />
@@ -418,7 +429,9 @@ const SubAdminManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !isDeleting && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this sub-admin? This action cannot be undone."
@@ -428,6 +441,7 @@ const SubAdminManagementPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !isUpdating &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

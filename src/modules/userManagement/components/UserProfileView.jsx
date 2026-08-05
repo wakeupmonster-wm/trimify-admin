@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
 import { LuUserRound } from "react-icons/lu";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import {
@@ -39,8 +40,8 @@ const cap = (s) =>
   s === null || s === undefined || s === ""
     ? null
     : String(s)
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
 const fmtDate = (v) => {
   if (!v) return "—";
@@ -117,11 +118,11 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
       className={cn(
         "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
         variant === "primary" &&
-          "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
+        "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
         variant === "danger" &&
-          "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
+        "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
         variant === "outline" &&
-          "border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+        "border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
       )}
     >
       <Icon className="h-4 w-4 shrink-0" />
@@ -175,9 +176,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     const macroTotal =
       (user.carbs_goal || 0) + (user.fat_goal || 0) + (user.protein_goal || 0);
     const macros = [
-      { label: "Carbs", v: user.carbs_goal || 0, color: "#f59e0b" }, // amber-500
-      { label: "Protein", v: user.protein_goal || 0, color: "#3b82f6" }, // blue-500
-      { label: "Fat", v: user.fat_goal || 0, color: "#10b981" }, // emerald-500
+      { label: "Carbs", v: user.carbs_goal || 0, color: "#f43f5e" }, // Rose-500
+      { label: "Protein", v: user.protein_goal || 0, color: "#0ea5e9" }, // Sky-500
+      { label: "Fat", v: user.fat_goal || 0, color: "#8b5cf6" }, // Violet-500
     ];
     const fitnessProfileFields = [
       ["Weight Goal", user.weight_goal ? `${user.weight_goal} kg` : null],
@@ -276,6 +277,13 @@ export default function UserProfileView({ user, onBack, loading }) {
     }
   };
 
+  useEffect(() => {
+    if (tab === "transactions" && !txState.loaded && !txState.loading && user?.id) {
+      loadTransactions(1, "all");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab, user?.id]);
+
   if (loading || !user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto max-w-[1180px]">
@@ -290,7 +298,7 @@ export default function UserProfileView({ user, onBack, loading }) {
   }
 
   const handleCopy = (value, label) => {
-    navigator.clipboard?.writeText(String(value)).catch(() => {});
+    navigator.clipboard?.writeText(String(value)).catch(() => { });
     toast.success(`${label} copied`);
   };
 
@@ -350,6 +358,14 @@ export default function UserProfileView({ user, onBack, loading }) {
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
+              <span className="text-xl md:text-2xl font-bold text-slate-900 truncate">
+                User Directory
+              </span>
+              <span className="text-slate-300 font-normal text-xl md:text-2xl hidden xs:inline">
+                /
+              </span>
+              <span className="text-base md:text-xl font-normal text-slate-400 mt-1 truncate">
             <div className="flex flex-col sm:flex-row sm:items-center gap-x-1.5 gap-y-0 min-w-0">
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 truncate">
@@ -459,6 +475,27 @@ export default function UserProfileView({ user, onBack, loading }) {
           />
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
+            <TabsList className="mb-6 flex overflow-x-auto h-auto p-1 bg-white backdrop-blur-md border border-slate-200 shadow-sm rounded-xl w-full lg:max-w-max no-scrollbar">
+              {TABS.map((t) => (
+                <TabsTrigger
+                  key={t.key}
+                  value={t.key}
+                  className={cn(
+                    "relative flex items-center gap-2 px-6 py-2.5 text-sm font-semibold transition-all duration-300 rounded-lg border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-app-primary2 text-slate-500 hover:text-slate-900 whitespace-nowrap"
+                  )}
+                >
+                  {tab === t.key && (
+                    <motion.div
+                      layoutId="activeTabProfile"
+                      className="absolute inset-0 bg-app-primary2/10 rounded-lg"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{t.label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
             <div className="relative w-full overflow-hidden mb-6">
               <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start no-scrollbar hide-scrollbar snap-x snap-mandatory shadow-sm">
                 {TABS.map((t) => {

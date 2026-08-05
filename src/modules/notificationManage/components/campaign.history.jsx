@@ -36,6 +36,7 @@ export default function CampaignHistory({
   setStatusFilter,
   searchTerm,
   setSearchTerm,
+  pinnedTotalCampaigns,
 }) {
   const dispatch = useDispatch();
   const { loading, campaignLogs, logsLoading } = useSelector(
@@ -73,11 +74,12 @@ export default function CampaignHistory({
     return [
       {
         label: "Total Campaigns",
-        value: pagination?.total || 0,
+        value: pinnedTotalCampaigns ?? pagination?.total ?? 0,
         icon: IconChartBar,
         tone: "blue",
         description: "Overall campaigns",
         onClick: () => handleKpiClick("all"),
+        isSelected: channelFilter === "all",
       },
       {
         label: "Emails Dispatched",
@@ -86,6 +88,7 @@ export default function CampaignHistory({
         tone: "indigo",
         description: "Email communications",
         onClick: () => handleKpiClick("email"),
+        isSelected: channelFilter === "email",
       },
       {
         label: "Pushes Dispatched",
@@ -94,10 +97,13 @@ export default function CampaignHistory({
         tone: "emerald",
         description: "Mobile notifications",
         onClick: () => handleKpiClick("push"),
+        isSelected: channelFilter === "push",
       },
     ];
   }, [
     pagination,
+    channelFilter,
+    pinnedTotalCampaigns,
     setSearchTerm,
     setChannelFilter,
     setStatusFilter,

@@ -267,7 +267,9 @@ const FitzoneManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this fitzone? This action cannot be undone."
@@ -276,6 +278,7 @@ const FitzoneManagementPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

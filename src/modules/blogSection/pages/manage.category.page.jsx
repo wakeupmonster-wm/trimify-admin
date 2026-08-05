@@ -89,6 +89,7 @@ const ManageCategoryPage = () => {
         }),
       ).unwrap();
       toast.success("Category status updated successfully!");
+      setToggleModal({ open: false, rowData: null, targetStatus: false });
       dispatch(
         fetchBlogCategories({
           page: categoryPage.pageIndex + 1,
@@ -186,6 +187,7 @@ const ManageCategoryPage = () => {
         tone: statusFilter === "" ? "blue" : "slate",
         description: "All blog categories",
         onClick: () => setStatusFilter(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Active Categories",
@@ -200,6 +202,7 @@ const ManageCategoryPage = () => {
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Inactive Categories",
@@ -214,6 +217,7 @@ const ManageCategoryPage = () => {
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+        isSelected: statusFilter === "Inactive",
       },
       {
         label: "Recently Added",
@@ -228,6 +232,7 @@ const ManageCategoryPage = () => {
         description: "Added in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        isSelected: statusFilter === "Recent",
       },
     ];
   }, [categories, categoriesPagination?.total, statusFilter]);
@@ -295,7 +300,9 @@ const ManageCategoryPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this category? This action cannot be undone."
@@ -304,6 +311,7 @@ const ManageCategoryPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

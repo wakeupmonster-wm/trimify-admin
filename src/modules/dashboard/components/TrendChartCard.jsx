@@ -41,6 +41,14 @@ const TrendChartCard = ({
   const chartConfig = Object.fromEntries(
     series.map((s) => [s.key, { label: s.label, color: s.color }]),
   );
+  // NOTE: an "all series values are 0" check was tried here so a single
+  // all-zero point (e.g. a day with 0 sessions) would also show "No data",
+  // not just a genuinely empty array. Reverted — it assumes each series'
+  // `key` matches the backend's actual field name exactly, which isn't
+  // confirmed for every TrendChartCard consumer (e.g. Active vs Churned
+  // Users), and a mismatch there made the check see "all zero" for real,
+  // non-zero data and hide it. Length-only is the safe baseline until
+  // every series key is verified against its live response.
   const hasData = data.length > 0;
 
   return (

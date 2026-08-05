@@ -9,7 +9,7 @@ import {
 } from "@/components/shared/datatable";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import ErrorState from "@/components/shared/ErrorState";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, format, parseISO } from "date-fns";
 import { getTransactionColumns } from "./transaction.columns";
 import RevokeTransactionDialog from "./RevokeTransactionDialog";
@@ -37,6 +37,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
   const { plans } = useSelector((state) => state.subscriptionManagement);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [exportLoading, setExportLoading] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
@@ -223,9 +224,24 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
     [kpiSummary, avgTransactionValue, statusFilter],
   );
 
+  const goToUserTransactions = (txn) => {
+    const userId =
+      txn?.user_id || txn?.userId || txn?.user?.id || txn?.user?.user_id;
+    if (!userId) {
+      console.warn("Transaction is missing a linkable user id:", txn);
+      toast.error("Couldn't open this user's profile — no user ID on this transaction.");
+      return;
+    }
+    navigate(`/admin/users/view-user/${userId}`, {
+      state: { userData: txn.user, initialTab: "transactions" },
+    });
+  };
+
   const handleAction = (txn, action) => {
     if (action === "revoke") {
       setRevokeTransactionData(txn);
+    } else if (action === "view") {
+      goToUserTransactions(txn);
     }
   };
 
@@ -333,6 +349,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         isLoading={transactionsLoading}
         manualPagination
         manualFiltering
+        onRowClick={(row) => goToUserTransactions(row.original)}
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />

@@ -1,34 +1,22 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { DataTable } from "@/components/shared/datatable";
 import { Button } from "@/components/ui/button";
 import { Settings, ArrowLeft } from "lucide-react";
-import { getProgramFoodVisibility } from "../store/program.slice";
 import { getManageProgramDetailsColumns } from "@/components/columns/manage.program.details.columns";
 
 const ManageProgramDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
   });
   const [globalFilter, setGlobalFilter] = React.useState("");
-
-  const { programFoodVisibility } = useSelector((state) => state.manageProgram);
-
-  useEffect(() => {
-    if (id) {
-      // Fetch visibility state just in case it's needed for child pages
-      dispatch(getProgramFoodVisibility(id));
-    }
-  }, [dispatch, id]);
 
   const handleAction = (actionId) => {
     if (actionId === "intro") {

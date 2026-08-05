@@ -46,9 +46,18 @@ const NotificationManagePage = () => {
   const [pushTitle, setPushTitle] = useState("");
   const [target, setTarget] = useState("all");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  // `campaignPagination.total` is scoped to whatever channel/status/search
+  // filters are currently applied (it's the matching row count, not a
+  // grand total), so using it directly for "Total Campaigns" makes that
+  // number shift every time the Email/Push KPI is clicked. This is set
+  // below only when no filters/search are applied, and stays frozen at
+  // that value while a filter is active.
+  const [pinnedTotalCampaigns, setPinnedTotalCampaigns] = useState(null);
 
   useEffect(() => {
     if (activeTab === "history") {
+      const noFiltersApplied =
+        channelFilter === "all" && statusFilter === "all" && !debouncedSearchTerm;
       const params = {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
@@ -56,7 +65,12 @@ const NotificationManagePage = () => {
       };
       if (channelFilter !== "all") params.channel = channelFilter;
       if (statusFilter !== "all") params.status = statusFilter;
-      dispatch(fetchCampaignHistory(params));
+      dispatch(fetchCampaignHistory(params)).then((result) => {
+        const total = result?.payload?.pagination?.total;
+        if (noFiltersApplied && total != null) {
+          setPinnedTotalCampaigns(total);
+        }
+      });
     }
   }, [
     dispatch,
@@ -521,6 +535,7 @@ const NotificationManagePage = () => {
               setStatusFilter={setStatusFilter}
               searchTerm={globalFilter}
               setSearchTerm={setGlobalFilter}
+              pinnedTotalCampaigns={pinnedTotalCampaigns}
             />
           )}
         </div>

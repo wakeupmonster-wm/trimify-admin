@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }) {
                   to="/admin/dashboard"
                   className="flex items-center gap-2 pl-2"
                 >
-                  <div className="flex items-center justify-center rounded-lg max-w-24 h-10">
+                  <div className="flex items-center justify-center rounded-lg max-w-[4.5rem] h-8">
                     <img
                       src={trimifyLogo}
                       alt="Logo"
@@ -96,7 +96,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50 pt-2">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50 pt-4">
         {/* Overview Section */}
         {/* {dynamicNavigation.navMain && ( */}
         <NavMain items={navigationData.navMain} />

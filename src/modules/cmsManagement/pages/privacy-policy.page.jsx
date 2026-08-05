@@ -3,6 +3,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Eye, ShieldCheck, Loader2, Save } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { toast } from "sonner";
@@ -116,7 +117,6 @@ export default function PrivacyAndPolicyPage() {
             </div>
           </div>
         </Header>
-
         <div className="bg-slate-50 rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
           <div className="px-4 sm:px-6 md:px-8 pt-5 pb-6 space-y-6 w-full min-w-0">
             <RichTextEditor

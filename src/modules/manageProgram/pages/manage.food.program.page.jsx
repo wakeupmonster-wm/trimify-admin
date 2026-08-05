@@ -135,7 +135,7 @@ const ManageFoodProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}

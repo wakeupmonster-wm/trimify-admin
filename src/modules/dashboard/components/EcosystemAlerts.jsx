@@ -10,7 +10,6 @@ import { useNavigate } from "react-router";
 import { startOfDay, endOfDay, subDays } from "date-fns";
 
 export function EcosystemAlerts({ data, selectedDate }) {
-  if (!data?.alerts?.length) return null;
   const navigate = useNavigate();
 
   // Resolve preset-based date selections to actual from/to dates
@@ -47,6 +46,8 @@ export function EcosystemAlerts({ data, selectedDate }) {
         return { from: null, to: null };
     }
   }, [selectedDate]);
+
+  if (!data?.alerts?.length) return null;
 
   const config = {
     kyc: {
@@ -97,17 +98,17 @@ export function EcosystemAlerts({ data, selectedDate }) {
       actionLabel: "Manage",
       icon: Target,
     },
-    stale_content: {
-      bgColor: "bg-[#FFF7ED]",
-      borderColor: "border-[#FDBA74]",
-      iconBg: "bg-[#FFEDD5]",
-      iconColor: "text-[#EA580C]",
-      badgeBg: "bg-[#FFF7ED]",
-      badgeText: "text-[#EA580C]",
+    zero_enrollment: {
+      bgColor: "bg-[#F0FDF4]",
+      borderColor: "border-[#BBF7D0]",
+      iconBg: "bg-[#DCFCE7]",
+      iconColor: "text-[#16A34A]",
+      badgeBg: "bg-[#F0FDF4]",
+      badgeText: "text-[#16A34A]",
       actionBg: "bg-[#FFFFFF]",
-      actionText: "text-[#EA580C]",
-      actionLabel: "Publish now",
-      icon: AlertTriangle,
+      actionText: "text-[#16A34A]",
+      actionLabel: "Review",
+      icon: Target,
     },
   };
 
@@ -119,7 +120,6 @@ export function EcosystemAlerts({ data, selectedDate }) {
           Needs your attention
         </p>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {Array.isArray(data.alerts) &&
           data.alerts.map((alert, idx) => {
@@ -169,16 +169,16 @@ export function EcosystemAlerts({ data, selectedDate }) {
                   </p>
                 </div>
 
-                {/* Action Button */}
-                <div
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg ${alertConfig.actionBg} ${alertConfig.actionText} font-semibold text-[12px] shadow-sm hover:shadow transition-all whitespace-nowrap`}
-                >
-                  {alertConfig.actionLabel}
-                  <ArrowRight size={13} className="ml-0.5" strokeWidth={3} />
-                </div>
+              {/* Action Button */}
+              <div
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg ${alertConfig.actionBg} ${alertConfig.actionText} font-semibold text-[12px] shadow-sm hover:shadow transition-all whitespace-nowrap shrink-0`}
+              >
+                {alertConfig.actionLabel}
+                <ArrowRight size={13} className="ml-0.5" strokeWidth={3} />
               </div>
-            );
-          })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -260,6 +260,7 @@ export default function KYCVerificationPage() {
         tone: "blue",
         description: "Active KYC queue",
         onClick: () => handleKpiClick(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Not Started",
@@ -268,6 +269,7 @@ export default function KYCVerificationPage() {
         tone: "slate",
         description: "Yet to begin KYC",
         onClick: () => handleKpiClick("not_started"),
+        isSelected: statusFilter === "not_started",
       },
       {
         label: "Approved",
@@ -276,6 +278,7 @@ export default function KYCVerificationPage() {
         tone: "emerald",
         description: "Verified users",
         onClick: () => handleKpiClick("approved"),
+        isSelected: statusFilter === "approved",
       },
       {
         label: "Pending",
@@ -284,6 +287,7 @@ export default function KYCVerificationPage() {
         tone: "amber",
         description: "Waiting for review",
         onClick: () => handleKpiClick("pending"),
+        isSelected: statusFilter === "pending",
       },
       {
         label: "Rejected",
@@ -292,9 +296,10 @@ export default function KYCVerificationPage() {
         tone: "rose",
         description: "Declined requests",
         onClick: () => handleKpiClick("rejected"),
+        isSelected: statusFilter === "rejected",
       },
     ];
-  }, [filteredData, reduxPagination?.total, kpiStats]);
+  }, [filteredData, reduxPagination?.total, kpiStats, statusFilter]);
 
   return (
     <Container>

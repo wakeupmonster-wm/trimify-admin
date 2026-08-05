@@ -51,10 +51,17 @@ const EditFitzoneIntroPage = () => {
       };
       let resultAction;
 
-      // If we got some intro previously, we update it, otherwise add it.
-      if (intro && intro.id) {
+      // The intro resource is keyed by the fitzone's own id (there's no
+      // separate intro id in the API), so whether one already exists is
+      // determined by whether the GET call returned any content, not by
+      // an `intro.id` field that the API never sends.
+      const hasExistingIntro = !!(
+        intro &&
+        (intro.heading || intro.subheading || intro.content)
+      );
+      if (hasExistingIntro) {
         resultAction = await dispatch(
-          updateFitzoneIntro({ id: intro.id, data: payload }),
+          updateFitzoneIntro({ id, data: payload }),
         );
       } else {
         resultAction = await dispatch(addFitzoneIntro(payload));

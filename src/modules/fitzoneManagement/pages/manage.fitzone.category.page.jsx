@@ -70,6 +70,7 @@ const ManageFitzoneCategoryPage = () => {
         .unwrap()
         .then((res) => {
           toast.success(res?.message || "Category deleted successfully!");
+          setDeleteTarget(null);
           dispatch(
             getFitzoneCategories({
               id,
@@ -145,7 +146,7 @@ const ManageFitzoneCategoryPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.title}"? This action cannot be undone.`}

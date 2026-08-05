@@ -77,15 +77,19 @@ export const toLabeledPie = (items = []) =>
 export const buildFunnel = (data) => {
   if (!data) return { stages: [], insight: "" };
   const { totalSignups = 0, paidUsers = 0, notPaidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
+  
+  const safeConversionRate = Number.isNaN(Number(conversionRate)) ? 0 : Number(conversionRate);
+  const safeDropOffRate = Number.isNaN(Number(dropOffRate)) ? 0 : Number(dropOffRate);
+  
   return {
     subtitle: "Signup → Payment, this period",
     notPaidUsers,
-    conversionRate,
-    dropOffRate,
-    insight: `${conversionRate}% of signups have converted to a paid subscription. Since every user is expected to subscribe eventually, the ${notPaidUsers.toLocaleString()} who haven't yet (${dropOffRate}%) are the ones to follow up with.`,
+    conversionRate: safeConversionRate,
+    dropOffRate: safeDropOffRate,
+    insight: `${safeConversionRate}% of signups have converted to a paid subscription. Since every user is expected to subscribe eventually, the ${notPaidUsers.toLocaleString()} who haven't yet (${safeDropOffRate}%) are the ones to follow up with.`,
     stages: [
       { label: "Total Signups", value: totalSignups, color: CATEGORICAL_COLORS[0], dropOff: 0 },
-      { label: "Paid Users", value: paidUsers, color: STATUS_COLORS.success, dropOff: -Math.round(dropOffRate) },
+      { label: "Paid Users", value: paidUsers, color: STATUS_COLORS.success, dropOff: -Math.round(safeDropOffRate) },
     ],
   };
 };
@@ -107,12 +111,13 @@ export const buildSecondaryKpis = (summary) => {
     totalBlogs: summary.totalBlogs || 0,
     totalPublishedBlogs: summary.totalPublishedBlogs || 0,
     totalSubAdmins: summary.totalSubAdmins || 0,
+    missedStepGoals: summary.missedStepGoals || 0,
+    missedDietWaterLogs: summary.missedDietWaterLogs || 0,
   };
 };
 
 export const buildAlerts = (alerts = {}) => {
   const result = [];
-
   const ghosting = alerts?.ghostingUsers;
   if (ghosting && (ghosting.needsAttention === true || ghosting.needsAttention === "true" || ghosting.needsAttention === 1)) {
     result.push({
@@ -156,18 +161,17 @@ export const buildAlerts = (alerts = {}) => {
     const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
 
     result.push({
-      id: "stale_content",
+      id: "stalled",
       label: "Content Stagnation",
       value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
-      route: "/admin/fitzone-management",
-      filterId: "stale_content",
+      route: "/admin/manage-program",
+      filterId: "stale_content"
     });
   }
-
   const zeroEnrollment = alerts?.zeroEnrollmentPrograms;
   if (zeroEnrollment && (zeroEnrollment.needsAttention === true || zeroEnrollment.needsAttention === "true" || zeroEnrollment.needsAttention === 1)) {
     result.push({
-      id: "stalled",
+      id: "zero_enrollment",
       label: "Zero Enrollment",
       value: `${zeroEnrollment.count || 0} programs have 0 enrollments past grace period`,
       route: "/admin/manage-program",

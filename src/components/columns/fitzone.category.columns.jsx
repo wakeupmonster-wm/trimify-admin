@@ -176,7 +176,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-red-50 focus:text-red-600 font-semibold text-xs text-red-500 transition-colors"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
                 onClick={() => onAction && onAction(row.original, "delete")}
               >
                 <Trash2 className="w-3.5 h-3.5" />

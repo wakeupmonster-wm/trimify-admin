@@ -23,26 +23,48 @@ const KPI_CONFIG = [
     onClick: (navigate) =>
       navigate("/admin/subscription-management/transactions"),
   },
+  // {
+  //   key: "totalUsersAllTime",
+  //   label: "Total Users",
+  //   description: "All-time platform total",
+  //   trendValue: "8%",
+  //   isPositive: true,
+  //   format: (data) => data?.totalUsersAllTime?.toLocaleString() || "0",
+  //   isCurrency: false,
+  //   onClick: (navigate) => navigate("/admin/users"),
+  // },
+  // {
+  //   key: "newSignupsToday",
+  //   label: "New Signups",
+  //   description: "Signed up today",
+  //   trendValue: "2%",
+  //   isPositive: true,
+  //   format: (data) => data?.newSignupsToday?.toLocaleString() || "0",
+  //   isCurrency: false,
+  //   onClick: (navigate) =>
+  //     navigate("/admin/users", { state: { filterId: "new_today" } }),
+  // },
   {
-    key: "totalUsersAllTime",
-    label: "Total Users",
-    description: "All-time platform total",
-    trendValue: "8%",
-    isPositive: true,
-    format: (data) => data?.totalUsersAllTime?.toLocaleString() || "0",
+    key: "missedStepGoals",
+    label: "Missed Step Goals",
+    description: "Users missing goals",
+    tone: "rose",
+    trendValue: "2%",
+    isPositive: false,
+    format: (data) => data?.missedStepGoals?.toLocaleString() || "0",
     isCurrency: false,
     onClick: (navigate) => navigate("/admin/users"),
   },
   {
-    key: "newSignupsToday",
-    label: "New Signups",
-    description: "Signed up today",
-    trendValue: "2%",
-    isPositive: true,
-    format: (data) => data?.newSignupsToday?.toLocaleString() || "0",
+    key: "missedDietWaterLogs",
+    label: "Missed Diet/Water",
+    description: "Users missing logs",
+    tone: "amber",
+    trendValue: "1%",
+    isPositive: false,
+    format: (data) => data?.missedDietWaterLogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate) =>
-      navigate("/admin/users", { state: { filterId: "new_today" } }),
+    onClick: (navigate) => navigate("/admin/users"),
   },
   {
     key: "expiringSoon",
@@ -122,67 +144,65 @@ const SecondaryKpiRow = ({ data, title }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.isArray(data)
           ? data.map((kpi, idx) => {
-              const config = KPI_CONFIG.find((c) => c.label === kpi.label);
+            const config = KPI_CONFIG.find((c) => c.label === kpi.label);
 
-              // Parse numeric value for the tooltip chart
-              const rawVal =
-                parseFloat(String(kpi.value).replace(/[^0-9.-]+/g, "")) || 0;
-              const isCurrency = String(kpi.value).includes("$");
-              const trendPct =
-                parseFloat(String(kpi.trend).replace(/[^0-9.-]+/g, "")) || 0;
+            // Parse numeric value for the tooltip chart
+            const rawVal = parseFloat(String(kpi.value).replace(/[^0-9.-]+/g, "")) || 0;
+            const isCurrency = String(kpi.value).includes("$");
+            const trendPct = parseFloat(String(kpi.trend).replace(/[^0-9.-]+/g, "")) || 0;
 
-              const multiplier = kpi.isPositive
-                ? (100 - trendPct) / 100
-                : (100 + trendPct) / 100;
-              const previous = rawVal * multiplier;
+            const multiplier = kpi.isPositive
+              ? (100 - trendPct) / 100
+              : (100 + trendPct) / 100;
+            const previous = rawVal * multiplier;
 
-              return (
-                <KpiCard
-                  key={idx}
-                  label={kpi.label}
-                  value={kpi.value}
-                  description={kpi.sub}
-                  tone={kpi.color}
-                  trendValue={kpi.trend}
-                  isPositive={kpi.isPositive}
-                  tooltipData={{
-                    current: rawVal,
-                    previous,
-                    isCurrency,
-                  }}
-                  onClick={() => {
-                    if (config?.onClick) config.onClick(navigate);
-                  }}
-                />
-              );
-            })
+            return (
+              <KpiCard
+                key={idx}
+                label={kpi.label}
+                value={kpi.value}
+                description={kpi.sub}
+                tone={kpi.color}
+                trendValue={kpi.trend}
+                isPositive={kpi.isPositive}
+                tooltipData={{
+                  current: rawVal,
+                  previous,
+                  isCurrency,
+                }}
+                onClick={() => {
+                  if (config?.onClick) config.onClick(navigate);
+                }}
+              />
+            );
+          })
           : KPI_CONFIG.map((kpi) => {
-              const val = data[kpi.key] || 0;
-              // Simple mock formula to generate a "previous" value so tooltips look realistic
-              const multiplier = kpi.isPositive
-                ? (100 - parseInt(kpi.trendValue)) / 100
-                : (100 + parseInt(kpi.trendValue)) / 100;
-              const previous = val * multiplier;
+            const val = data[kpi.key] || 0;
+            // Simple mock formula to generate a "previous" value so tooltips look realistic
+            const multiplier = kpi.isPositive
+              ? (100 - parseInt(kpi.trendValue)) / 100
+              : (100 + parseInt(kpi.trendValue)) / 100;
+            const previous = val * multiplier;
 
-              return (
-                <KpiCard
-                  key={kpi.key}
-                  label={kpi.label}
-                  value={kpi.format(data)}
-                  description={kpi.description}
-                  tone={kpi.tone}
-                  trendValue={kpi.trendValue}
-                  isPositive={kpi.isPositive}
-                  trendExplanation={kpi.trendExplanation}
-                  tooltipData={{
-                    current: val,
-                    previous,
-                    isCurrency: kpi.isCurrency,
-                  }}
-                  onClick={() => kpi.onClick(navigate)}
-                />
-              );
-            })}
+            return (
+              <KpiCard
+                key={kpi.key}
+                label={kpi.label}
+                value={kpi.format(data)}
+                description={kpi.description}
+                tone={kpi.tone}
+                trendValue={kpi.trendValue}
+                isPositive={kpi.isPositive}
+                trendExplanation={kpi.trendExplanation}
+                tooltipData={{
+                  current: val,
+                  previous,
+                  isCurrency: kpi.isCurrency,
+                }}
+                onClick={() => kpi.onClick(navigate)}
+              />
+            );
+          })}
       </div>
     </div>
   );

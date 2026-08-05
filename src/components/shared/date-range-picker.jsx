@@ -182,7 +182,7 @@ export function CalendarDateRangePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-full min-w-52 p-2 pb-1 rounded-xl mt-0.5 sm:mt-1 overflow-hidden bg-white"
+          className="w-full min-w-52 max-h-[var(--radix-popover-content-available-height)] overflow-y-auto p-2 pb-1 rounded-xl mt-0.5 sm:mt-1 bg-white"
           align="end"
         >
           {/* Presets List */}

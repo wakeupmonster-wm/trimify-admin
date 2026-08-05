@@ -64,7 +64,7 @@ export const getFitzoneManagementColumns = (onAction) => [
           onClick={() => onAction && onAction(row.original, "open-program")}
           className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
-          Open Program
+          Open Fitzone
         </Button>
       </div>
     ),

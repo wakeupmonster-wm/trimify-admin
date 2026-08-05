@@ -149,7 +149,7 @@ const ManageDietProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Diet Meal"
         message={`Are you sure you want to delete the diet meal "${deleteTarget?.diet_meal_data?.Meal_title || deleteTarget?.meal}"? This action cannot be undone.`}
@@ -158,13 +158,16 @@ const ManageDietProgramPage = () => {
 
       <ConfirmModal
         isOpen={toggleModal.open}
-        onClose={() => setToggleModal({ open: false, rowData: null, targetStatus: false })}
+        onClose={() =>
+          !toggleLoading &&
+          setToggleModal({ open: false, rowData: null, targetStatus: false })
+        }
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleModal.rowData?.diet_meal_data?.Meal_title || toggleModal.rowData?.meal || "this diet meal"}" to ${toggleModal.targetStatus ? "Active" : "Inactive"}?`}
+        loading={toggleLoading}
         type="brand"
         confirmText="Update"
-        loading={isUpdating}
       />
     </Container>
   );

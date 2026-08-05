@@ -54,17 +54,27 @@ const ManageProgramPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [pinnedTotalPrograms, setPinnedTotalPrograms] = useState(null);
 
   useEffect(() => {
-    dispatch(
-      fetchProgramList({
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        search: debouncedSearchTerm,
-        duration: durationFilter,
-        status: statusFilter,
-      }),
-    );
+    const noFiltersApplied =
+      !debouncedSearchTerm && !durationFilter && !statusFilter;
+    const loadPrograms = async () => {
+      const result = await dispatch(
+        fetchProgramList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          duration: durationFilter,
+          status: statusFilter,
+        }),
+      );
+      const total = result?.payload?.pagination?.total;
+      if (noFiltersApplied && total != null) {
+        setPinnedTotalPrograms(total);
+      }
+    };
+    loadPrograms();
   }, [
     dispatch,
     pagination.pageIndex,
@@ -100,18 +110,7 @@ const ManageProgramPage = () => {
     } else if (action === "delete") {
       setDeleteTarget(row);
     } else if (action === "replicate") {
-      const result = await dispatch(replicateProgram(row.id));
-      if (replicateProgram.fulfilled.match(result)) {
-        dispatch(
-          fetchProgramList({
-            page: pagination.pageIndex + 1,
-            limit: pagination.pageSize,
-            search: debouncedSearchTerm,
-            duration: durationFilter,
-            status: statusFilter,
-          }),
-        );
-      }
+      setReplicateTarget(row);
     }
   };
 
@@ -141,7 +140,6 @@ const ManageProgramPage = () => {
     if (!toggleConfirm) return;
     const { row, action, value } = toggleConfirm;
     setIsUpdating(true);
-
     try {
       if (action === "toggle-status") {
         const status = value ? "Active" : "Inactive";
@@ -220,7 +218,8 @@ const ManageProgramPage = () => {
       (p) => String(p.status || "Active").toLowerCase() === "active",
     ).length;
     return {
-      totalPrograms: serverPagination?.total || all.length,
+      totalPrograms:
+        pinnedTotalPrograms ?? serverPagination?.total ?? all.length,
       activePrograms: active,
       inactivePrograms: all.length - active,
       // The list API doesn't return a per-program `assigned_users_count`,
@@ -230,7 +229,7 @@ const ManageProgramPage = () => {
       // instead of a fake 0 until the backend ships `kpis.totalAssignedUsers`.
       totalAssignedUsers: null,
     };
-  }, [kpis, programs, serverPagination]);
+  }, [kpis, programs, serverPagination, pinnedTotalPrograms]);
 
   const kpiItems = [
     {
@@ -333,7 +332,7 @@ const ManageProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Program"
         message="Are you sure you want to delete this program? This action cannot be undone."
@@ -342,7 +341,7 @@ const ManageProgramPage = () => {
 
       <ConfirmModal
         isOpen={!!toggleConfirm}
-        onClose={() => setToggleConfirm(null)}
+        onClose={() => !isUpdating && setToggleConfirm(null)}
         onConfirm={handleConfirmToggle}
         title={toggleConfirm?.title || ""}
         message={toggleConfirm?.message || ""}

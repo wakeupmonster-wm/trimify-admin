@@ -53,93 +53,92 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
             </SelectContent>
           </Select>
         </div>
-
         <div className="flex items-center justify-center gap-1 sm:gap-1.5">
-          {/* Previous Button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <IconChevronLeft size={16} />
-          </Button>
+        {/* Previous Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          <IconChevronLeft size={16} />
+        </Button>
 
-          {/* Page Numbers */}
-          <div className="flex items-center justify-center gap-1 sm:gap-1.5">
-            {(() => {
-              const pages = [];
+        {/* Page Numbers */}
+        <div className="flex items-center justify-center gap-1 sm:gap-1.5">
+          {(() => {
+            const pages = [];
 
-              if (totalPages <= 7) {
-                for (let i = 1; i <= totalPages; i++) pages.push(i);
-              } else {
-                if (currentPage <= 3) {
-                  pages.push(1, 2, 3, "...", totalPages);
-                } else if (currentPage >= totalPages - 2) {
-                  pages.push(
-                    1,
-                    "...",
-                    totalPages - 3,
-                    totalPages - 2,
-                    totalPages - 1,
-                    totalPages,
-                  );
-                } else {
-                  pages.push(
-                    // 1,
-                    // "...",
-                    currentPage - 1,
-                    currentPage,
-                    currentPage + 1,
-                    "...",
-                    totalPages,
-                  );
-                }
-              }
-
-              return pages.map((page, idx) => {
-                if (page === "...") {
-                  return (
-                    <span
-                      key={`dots-${idx}`}
-                      className="px-1 text-slate-400 text-xs font-bold"
-                    >
-                      ...
-                    </span>
-                  );
-                }
-                const isActive = currentPage === page;
-                return (
-                  <Button
-                    key={page}
-                    onClick={() => table.setPageIndex(page - 1)}
-                    className={cn(
-                      "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
-                      isActive
-                        ? "bg-app-primary2 text-white hover:bg-app-primary3 shadow-md shadow-blue-100 border-none"
-                        : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
-                    )}
-                  >
-                    {page}
-                  </Button>
+            if (totalPages <= 7) {
+              for (let i = 1; i <= totalPages; i++) pages.push(i);
+            } else {
+              if (currentPage <= 3) {
+                pages.push(1, 2, 3, "...", totalPages);
+              } else if (currentPage >= totalPages - 2) {
+                pages.push(
+                  1,
+                  "...",
+                  totalPages - 3,
+                  totalPages - 2,
+                  totalPages - 1,
+                  totalPages,
                 );
-              });
-            })()}
-          </div>
+              } else {
+                pages.push(
+                  // 1,
+                  // "...",
+                  currentPage - 1,
+                  currentPage,
+                  currentPage + 1,
+                  "...",
+                  totalPages,
+                );
+              }
+            }
 
-          {/* Next Button */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <IconChevronRight size={16} />
-          </Button>
+            return pages.map((page, idx) => {
+              if (page === "...") {
+                return (
+                  <span
+                    key={`dots-${idx}`}
+                    className="px-1 text-slate-400 text-xs font-bold"
+                  >
+                    ...
+                  </span>
+                );
+              }
+              const isActive = currentPage === page;
+              return (
+                <Button
+                  key={page}
+                  onClick={() => table.setPageIndex(page - 1)}
+                  className={cn(
+                    "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
+                    isActive
+                      ? "bg-app-primary2 text-white hover:bg-app-primary3 shadow-md shadow-blue-100 border-none"
+                      : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none",
+                  )}
+                >
+                  {page}
+                </Button>
+              );
+            });
+          })()}
         </div>
+
+        {/* Next Button */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          <IconChevronRight size={16} />
+        </Button>
+      </div>
       </div>
     </div>
-  );
+  )
 }

@@ -35,7 +35,7 @@ const ManageFoodItemsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { foods, dropdownCategories, foodSearchResults, loading } = useSelector(
+  const { foods, foodsPagination, dropdownCategories, foodSearchResults, loading } = useSelector(
     (state) => state.manageFood,
   );
 
@@ -65,6 +65,16 @@ const ManageFoodItemsPage = () => {
   const [errors, setErrors] = useState({});
   const searchTimeout = useRef(null);
 
+  // Reset to page 1 and sync the form's category whenever the route's
+  // categoryId changes — done during render (not an effect) since this is
+  // just adjusting state in response to a prop change.
+  const [prevCategoryId, setPrevCategoryId] = useState(categoryId);
+  if (categoryId !== prevCategoryId) {
+    setPrevCategoryId(categoryId);
+    setFormData((prev) => ({ ...prev, category_id: categoryId || "" }));
+    setPagination((prev) => (prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 }));
+  }
+
   const standardUnits = [
     "g",
     "mg",
@@ -86,12 +96,17 @@ const ManageFoodItemsPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Fetch food items for this program and category
+    // Fetch food items for this program and category, page by page
     if (programId && categoryId) {
-      dispatch(getFoodList({ programId, categoryId }));
-      setFormData((prev) => ({ ...prev, category_id: categoryId }));
+      dispatch(
+        getFoodList({
+          programId,
+          categoryId,
+          params: { page: pagination.pageIndex + 1, limit: pagination.pageSize },
+        }),
+      );
     }
-  }, [dispatch, programId, categoryId]);
+  }, [dispatch, programId, categoryId, pagination.pageIndex, pagination.pageSize]);
 
   const resetForm = () => {
     setIsEditing(false);
@@ -559,7 +574,8 @@ const ManageFoodItemsPage = () => {
           <DataTable
             columns={columns}
             data={foods}
-            rowCount={foods.length}
+            rowCount={foodsPagination?.total || foods.length}
+            manualPagination={true}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
@@ -571,7 +587,7 @@ const ManageFoodItemsPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
@@ -580,7 +596,7 @@ const ManageFoodItemsPage = () => {
 
       <ConfirmModal
         isOpen={!!toggleTarget}
-        onClose={() => setToggleTarget(null)}
+        onClose={() => !toggleLoading && setToggleTarget(null)}
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}

@@ -29,6 +29,7 @@ const AddFitzonePage = () => {
     workoutDescription: editData?.workout_sub_heading || "",
   });
 
+  const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -54,6 +55,7 @@ const AddFitzonePage = () => {
     const file = e.dataTransfer.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      setPreviewUrl(URL.createObjectURL(file));
       if (errors.bannerImage)
         setErrors((prev) => ({ ...prev, bannerImage: null }));
     }
@@ -63,6 +65,7 @@ const AddFitzonePage = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      setPreviewUrl(URL.createObjectURL(file));
       if (errors.bannerImage)
         setErrors((prev) => ({ ...prev, bannerImage: null }));
     }
@@ -273,12 +276,27 @@ const AddFitzonePage = () => {
                     accept="image/*"
                     onChange={handleFileSelect}
                   />
-                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                  <p className="text-sm font-semibold text-slate-700">
-                    {formData.bannerImage
-                      ? formData.bannerImage.name
-                      : "Click or drag and drop to upload"}
-                  </p>
+                  {previewUrl ? (
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={previewUrl}
+                        alt="Banner preview"
+                        className="w-32 h-32 object-contain rounded-md border border-slate-300/60 p-2 mb-3"
+                      />
+                      <span className="text-sm font-semibold text-slate-700 text-center">
+                        {formData.bannerImage
+                          ? formData.bannerImage.name
+                          : "Current banner. Click or drag to replace."}
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                      <p className="text-sm font-semibold text-slate-700">
+                        Click or drag and drop to upload
+                      </p>
+                    </>
+                  )}
                   <p className="text-xs text-slate-500 mt-1">
                     SVG, PNG, JPG or GIF (max. 800x400px)
                   </p>

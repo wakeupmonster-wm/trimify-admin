@@ -171,7 +171,7 @@ const ManageFitzoneSessionPage = () => {
             manualPagination={true}
             manualFiltering={true}
             pageCount={serverPagination?.totalPages || 1}
-            rowCount={serverPagination?.total || 1}
+            rowCount={serverPagination?.total || (sessions || []).length}
             itemName="sessions"
           />
         </div>
@@ -179,7 +179,7 @@ const ManageFitzoneSessionPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => !deleteLoading && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Session"
         message={`Are you sure you want to delete the session "${deleteTarget?.title}"? This action cannot be undone.`}
@@ -188,7 +188,7 @@ const ManageFitzoneSessionPage = () => {
 
       <ConfirmModal
         isOpen={!!toggleTarget}
-        onClose={() => setToggleTarget(null)}
+        onClose={() => !toggleLoading && setToggleTarget(null)}
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.title || "this session"}" to ${toggleTarget?.value ? "Active" : "Inactive"}?`}

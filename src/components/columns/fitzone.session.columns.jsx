@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -110,20 +111,13 @@ export const getManageFitzoneSessionColumns = (onAction) => [
         row.original.status === 1;
       return (
         <div className="flex justify-center">
-          <button
-            onClick={() =>
-              onAction && onAction(row.original, "toggle-status", !isActive)
+          <Switch
+            checked={isActive}
+            onCheckedChange={(checked) =>
+              onAction && onAction(row.original, "toggle-status", checked)
             }
-            className={`w-10 h-5 rounded-full relative transition-colors duration-200 ease-in-out focus:outline-none ${
-              isActive ? "bg-app-primary2" : "bg-slate-300"
-            }`}
-          >
-            <div
-              className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200 ease-in-out ${
-                isActive ? "transform translate-x-5" : ""
-              }`}
-            />
-          </button>
+            className="data-[state=checked]:bg-app-primary2"
+          />
         </div>
       );
     },
@@ -164,7 +158,7 @@ export const getManageFitzoneSessionColumns = (onAction) => [
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-600 font-semibold text-xs"
+                className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
                 onClick={() => onAction && onAction(row.original, "delete")}
               >
                 <Trash2 className="w-3.5 h-3.5" />

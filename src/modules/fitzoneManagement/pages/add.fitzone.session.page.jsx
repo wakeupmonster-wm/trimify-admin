@@ -356,48 +356,6 @@ const AddFitzoneSessionPage = () => {
               </Label>
               {(categories && categories.length > 0) ||
               (isEdit && editData?.workoutsession) ? (
-                // <Select
-                //   key={`category-select-${sessionCategoryId || "empty"}`}
-                //   defaultValue={
-                //     sessionCategoryId ? sessionCategoryId.toString() : undefined
-                //   }
-                //   onValueChange={(val) => {
-                //     setSessionCategoryId(val);
-                //     if (errors.sessionCategoryId)
-                //       setErrors((prev) => ({
-                //         ...prev,
-                //         sessionCategoryId: null,
-                //       }));
-                //   }}
-                // >
-                //   <SelectTrigger
-                //     className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}
-                //   >
-                //     <SelectValue placeholder="Select a category" />
-                //   </SelectTrigger>
-                //   <SelectContent>
-                //     {categories?.map((cat) => (
-                //       <SelectItem key={cat.id} value={cat.id.toString()}>
-                //         {cat.title}
-                //       </SelectItem>
-                //     ))}
-                //     {isEdit &&
-                //       editData?.workoutsession &&
-                //       (!categories ||
-                //         !categories.some(
-                //           (c) =>
-                //             c.id?.toString() ===
-                //             editData.workoutsession.id?.toString(),
-                //         )) && (
-                //         <SelectItem
-                //           key={`fallback-${editData.workoutsession.id}`}
-                //           value={editData.workoutsession.id.toString()}
-                //         >
-                //           {editData.workoutsession.title}
-                //         </SelectItem>
-                //       )}
-                //   </SelectContent>
-                // </Select>
                 <Select
                   // dynamic key lagane se dropdown sahi se re-render hoga jab data aayega
                   key={`select-${categories?.length}-${sessionCategoryId}`}

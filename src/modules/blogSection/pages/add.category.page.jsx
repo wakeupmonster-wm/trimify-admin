@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
@@ -117,13 +118,17 @@ const AddCategoryPage = () => {
       }
 
       if (isEdit) {
-        await dispatch(updateBlogCategory({ id, data: payload })).unwrap();
+        const result = await dispatch(
+          updateBlogCategory({ id, data: payload }),
+        ).unwrap();
         toast.success("Category updated successfully!");
+        setCurrentIcon(result?.data?.icon || currentIcon);
+        setFormData((prev) => ({ ...prev, iconImage: null }));
       } else {
         await dispatch(addBlogCategory(payload)).unwrap();
         toast.success("Category added successfully!");
+        navigate(-1);
       }
-      navigate(-1);
     } catch (error) {
       toast.error(error || "An error occurred while saving the category");
     } finally {
@@ -243,11 +248,10 @@ const AddCategoryPage = () => {
                 </div>
               ) : (
                 <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                    isDragging
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
                       ? "border-app-primary2 bg-blue-50"
                       : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
+                    }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -333,6 +337,23 @@ const AddCategoryPage = () => {
           </form>
         </div>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
+          {currentIcon && (
+            <img
+              src={currentIcon}
+              alt="Category icon"
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+            />
+          )}
+          <div className="p-4">
+            <p className="text-sm font-semibold text-slate-800">
+              {formData.title || "Category Icon"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };

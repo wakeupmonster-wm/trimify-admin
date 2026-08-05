@@ -127,6 +127,7 @@ export default function SupportTicketsPage() {
         tone: "blue",
         description: "All tickets in system",
         onClick: () => handleKpiClick(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Open",
@@ -135,6 +136,7 @@ export default function SupportTicketsPage() {
         tone: "indigo",
         description: "Awaiting assignment",
         onClick: () => handleKpiClick("open"),
+        isSelected: statusFilter === "open",
       },
       {
         label: "In Progress",
@@ -143,6 +145,7 @@ export default function SupportTicketsPage() {
         tone: "emerald",
         description: "Currently being handled",
         onClick: () => handleKpiClick("in_progress"),
+        isSelected: statusFilter === "in_progress",
       },
       {
         label: "Resolved",
@@ -151,9 +154,10 @@ export default function SupportTicketsPage() {
         tone: "amber",
         description: "Fixed, pending closure",
         onClick: () => handleKpiClick("resolved"),
+        isSelected: statusFilter === "resolved",
       },
     ];
-  }, [kpiStats]);
+  }, [kpiStats, statusFilter]);
 
   useEffect(() => {
     dispatch(

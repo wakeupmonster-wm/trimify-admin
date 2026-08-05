@@ -19,11 +19,17 @@ export const getManageFoodItemsColumns = (handleAction) => [
     ),
     size: 60,
     minSize: 50,
-    cell: ({ row }) => (
-      <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
-        {row.index + 1}
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const { pageIndex = 0, pageSize = 10 } =
+        table.getState().pagination || {};
+      const serialNumber = pageIndex * pageSize + row.index + 1;
+
+      return (
+        <div className="px-1 text-left font-bold text-[11px] text-foreground/90">
+          {serialNumber}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "updated_at",
@@ -60,7 +66,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
     minSize: 250,
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
-        {row.original.meal.Meal_title || "-"}
+        {row.original.meal?.Meal_title || "-"}
       </span>
     ),
   },

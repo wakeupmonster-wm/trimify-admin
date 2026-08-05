@@ -42,6 +42,7 @@ const FaqManagementPage = () => {
   const {
     faqs,
     loading,
+    error,
     pagination: serverPagination,
   } = useSelector((state) => state.faqManagement);
 
@@ -65,8 +66,10 @@ const FaqManagementPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
-  useEffect(() => {
+  const refetchFaqs = () =>
     dispatch(
       fetchFaqList({
         page: pagination.pageIndex + 1,
@@ -74,12 +77,19 @@ const FaqManagementPage = () => {
         search: debouncedSearchTerm,
       }),
     );
+
+  useEffect(() => {
+    refetchFaqs();
   }, [
     dispatch,
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
   ]);
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +115,7 @@ const FaqManagementPage = () => {
       setFormData({ question: "", answer: "" }); // Reset form
       setEditMode(false);
       setCurrentFaqId(null);
+      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "An error occurred");
     } finally {
@@ -136,6 +147,7 @@ const FaqManagementPage = () => {
       );
       if (toggleFaqStatus.fulfilled.match(res)) {
         toast.success(`FAQ marked as ${newStatus}`);
+        setToggleModal({ open: false, rowData: null, targetStatus: false });
       } else {
         toast.error("Failed to update FAQ status");
       }
@@ -216,6 +228,7 @@ const FaqManagementPage = () => {
         tone: statusFilter === "" ? "blue" : "slate",
         description: "All questions & answers",
         onClick: () => setStatusFilter(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Active FAQs",
@@ -230,6 +243,7 @@ const FaqManagementPage = () => {
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Inactive FAQs",
@@ -244,6 +258,7 @@ const FaqManagementPage = () => {
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+        isSelected: statusFilter === "Inactive",
       },
       {
         label: "Recently Updated",
@@ -258,6 +273,7 @@ const FaqManagementPage = () => {
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        isSelected: statusFilter === "Recent",
       },
     ];
   }, [faqs, serverPagination?.total, statusFilter]);
@@ -363,13 +379,13 @@ const FaqManagementPage = () => {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       {editMode ? "Updating..." : "Saving..."}
                     </>
                   ) : (
                     <>
                       {editMode ? "Update FAQ" : "Save FAQ"}
-                      <Send className="w-4 h-4 ml-1" />
+                      <Send className="w-4 h-4" />
                     </>
                   )}
                 </Button>
@@ -413,7 +429,9 @@ const FaqManagementPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
         message="Are you sure you want to delete this FAQ? This action cannot be undone."
@@ -422,6 +440,7 @@ const FaqManagementPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
+          !toggleLoading &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

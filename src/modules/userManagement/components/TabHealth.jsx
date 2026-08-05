@@ -1,7 +1,41 @@
 import React from "react";
 import { Droplet, Target, Flame, Footprints } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileShared";
+import { Card, KV, EmptyState, Tag } from "./UserProfileShared";
+
+function ActivityRing({ value, max, label, unit, icon: Icon, colorClass, textClass, bgLightClass }) {
+  const pct = Math.min(100, Math.max(0, (value / (max || 1)) * 100));
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (pct / 100) * circumference;
+
+  return (
+    <div className="flex flex-col items-center justify-center p-4 rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-200">
+      <div className="relative flex items-center justify-center h-24 w-24 mb-3">
+        <svg className="h-full w-full -rotate-90 transform drop-shadow-sm" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r={radius} className="stroke-slate-100" strokeWidth="9" fill="none" />
+          <circle 
+            cx="50" cy="50" r={radius} 
+            className={cn("transition-all duration-1000 ease-out drop-shadow-sm", textClass)} 
+            stroke="currentColor" strokeWidth="9" fill="none" 
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+          />
+        </svg>
+        <div className={cn("absolute inset-0 flex items-center justify-center rounded-full m-6", bgLightClass)}>
+           <Icon className={cn("w-5 h-5", textClass)} />
+        </div>
+      </div>
+      <div className="text-center w-full">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">{label}</div>
+        <div className="text-[13px] font-black tabular-nums text-slate-900 leading-tight">
+          {value.toLocaleString()} <span className="text-[10px] font-bold text-slate-400">/ {max.toLocaleString()} {unit}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function TabHealth({ data }) {
   const {
@@ -72,31 +106,31 @@ export function TabHealth({ data }) {
           </Card>
 
           <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals">
-            <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              <GoalTile
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <ActivityRing
                 icon={Droplet}
                 label="Water Goal"
-                value={`${waterGoal.toLocaleString()} ml`}
-                pct={Math.min(100, (waterGoal / 4000) * 100)}
-                colorClass="bg-sky-500"
+                value={waterGoal}
+                max={4000}
+                unit="ml"
                 textClass="text-sky-500"
                 bgLightClass="bg-sky-50"
               />
-              <GoalTile
+              <ActivityRing
                 icon={Flame}
                 label="Calories Goal"
-                value={`${caloriesGoal.toLocaleString()} kcal`}
-                pct={Math.min(100, (caloriesGoal / 3500) * 100)}
-                colorClass="bg-orange-500"
+                value={caloriesGoal}
+                max={3500}
+                unit="kcal"
                 textClass="text-orange-500"
                 bgLightClass="bg-orange-50"
               />
-              <GoalTile
+              <ActivityRing
                 icon={Footprints}
                 label="Step Target"
-                value={targetSteps.toLocaleString()}
-                pct={Math.min(100, (targetSteps / 12000) * 100)}
-                colorClass="bg-emerald-500"
+                value={targetSteps}
+                max={12000}
+                unit=""
                 textClass="text-emerald-500"
                 bgLightClass="bg-emerald-50"
               />
@@ -141,6 +175,7 @@ export function TabHealth({ data }) {
                       : "Restricted (quantity not set)"
                     : "None"
                 }
+                noBorder={true}
               />
             </div>
           </Card>

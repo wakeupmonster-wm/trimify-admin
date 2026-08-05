@@ -166,6 +166,7 @@ const ManageBlogsPage = () => {
         tone: statusFilter === "" ? "blue" : "slate",
         description: "All platform blogs",
         onClick: () => setStatusFilter(""),
+        isSelected: statusFilter === "",
       },
       {
         label: "Published Blogs",
@@ -180,6 +181,7 @@ const ManageBlogsPage = () => {
         description: "Live on app",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Publish" ? "" : "Publish")),
+        isSelected: statusFilter === "Publish",
       },
       {
         label: "Draft / Hidden",
@@ -194,6 +196,7 @@ const ManageBlogsPage = () => {
         description: "Not visible to users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Draft" ? "" : "Draft")),
+        isSelected: statusFilter === "Draft",
       },
       {
         label: "Recently Updated",
@@ -208,6 +211,7 @@ const ManageBlogsPage = () => {
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+        isSelected: statusFilter === "Recent",
       },
     ];
   }, [posts, postsPagination?.total, statusFilter]);
@@ -272,11 +276,13 @@ const ManageBlogsPage = () => {
 
       <ConfirmModal
         isOpen={deleteModal.open}
-        onClose={() => setDeleteModal({ open: false, rowData: null })}
+        onClose={() =>
+          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+        }
         onConfirm={handleConfirmDelete}
+        loading={deleteLoading}
         title="Confirm Deletion"
         message="Are you sure you want to delete this blog post? This action cannot be undone."
-        loading={isDeleting}
       />
     </Container>
   );
