@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }) {
                   to="/admin/dashboard"
                   className="flex items-center gap-2 pl-2"
                 >
-                  <div className="flex items-center justify-center rounded-lg max-w-22 h-10">
+                  <div className="flex items-center justify-center rounded-lg max-w-24 h-10">
                     <img
                       src={trimifyLogo}
                       alt="Logo"

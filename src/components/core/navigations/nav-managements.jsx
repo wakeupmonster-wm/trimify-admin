@@ -117,7 +117,7 @@ export function NavManagements({ items }) {
 
   return (
     <SidebarGroup className="px-0">
-      <SidebarGroupLabel className="px-6 h-6 text-[9px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
+      <SidebarGroupLabel className="px-6 h-8 text-[10px] mb-1 font-bold uppercase tracking-widest text-slate-500">
         Management
       </SidebarGroupLabel>
       <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
@@ -143,7 +143,7 @@ export function NavManagements({ items }) {
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "group relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                      "relative w-full transition-all duration-300 h-11 px-6 rounded-none border-none",
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                       isActive && "bg-app-primary2/10 hover:bg-app-primary2/20",
@@ -205,7 +205,7 @@ export function NavManagements({ items }) {
                   isActive={isActive}
                   tooltip={item.title}
                   className={cn(
-                    "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                    "relative w-full transition-all duration-300 h-11 px-6 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
                     isActive && "!bg-blue-100/50 !hover:bg-blue-200/50",

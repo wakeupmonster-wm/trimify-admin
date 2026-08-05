@@ -308,7 +308,7 @@ export default function Dashboard() {
               data={displayExtras?.secondaryKpis}
               title={displayExtras?.title}
             />
-            <div className="pt-3 3xl:pt-2">
+            <div className="pt-4 3xl:pt-2">
               <EcosystemAlerts
                 data={{ alerts: displayExtras?.alerts || [] }}
                 selectedDate={selectedDate}
@@ -347,7 +347,7 @@ export default function Dashboard() {
                   Icon={Users2}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  data={mapChartColors(displayExtras?.pieCharts?.gender || [])}
+                  data={mapGenderColors(displayExtras?.pieCharts?.gender || [])}
                 />
                 <DonutStatCard
                   title="Vegetarian vs Non-veg"

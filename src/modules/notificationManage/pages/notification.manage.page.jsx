@@ -37,7 +37,7 @@ const NotificationManagePage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  const [activeTab, setActiveTab] = useState("push");
+  const [activeTab, setActiveTab] = useState("email");
   const [channelFilter, setChannelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [messageText, setMessageText] = useState("");

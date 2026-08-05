@@ -48,7 +48,10 @@ export const ConversionFunnel = ({ data }) => {
             const x4 = (100 - currentBottom) / 2;
 
             return (
-              <div key={idx} className="flex items-center justify-center gap-16 min-h-[60px]">
+              <div
+                key={idx}
+                className="flex items-center justify-center gap-16 min-h-[60px]"
+              >
                 {/* Funnel Segment — Rounded Clip-Path */}
                 <div className="flex-1 relative h-full flex items-center justify-center">
                   <svg width="0" height="0" className="absolute">
@@ -98,9 +101,11 @@ export const ConversionFunnel = ({ data }) => {
                     )} */}
                   </div>
                   <span className="text-[13px] font-medium text-slate-400 mt-1.5">
-                    {((stage.value / stages[0].value) * 100)
-                      .toFixed(2)
-                      .replace(/\.00$/, "")}
+                    {stages.length > 0
+                      ? ((stage.value / stages[0].value) * 100)
+                          .toFixed(2)
+                          .replace(/\.00$/, "") || 0
+                      : 0}
                     %
                   </span>
                 </div>
