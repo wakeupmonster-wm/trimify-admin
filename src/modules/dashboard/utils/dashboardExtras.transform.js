@@ -155,13 +155,13 @@ export const buildAlerts = (alerts = {}) => {
 
     const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
 
-    // result.push({
-    //   id: "ghosting", // Should probably be 'stalled_content' in EcosystemAlerts config
-    //   label: "Content Stagnation",
-    //   value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
-    //   route: "/admin/manage-program",
-    //   filterId: "stale_content"
-    // });
+    result.push({
+      id: "stale_content",
+      label: "Content Stagnation",
+      value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
+      route: "/admin/fitzone-management",
+      filterId: "stale_content",
+    });
   }
 
   const zeroEnrollment = alerts?.zeroEnrollmentPrograms;

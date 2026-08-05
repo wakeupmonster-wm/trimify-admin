@@ -79,7 +79,20 @@ export function EcosystemAlerts({ data, selectedDate }) {
       actionLabel: "Manage",
       icon: Target,
     },
+    stale_content: {
+      bgColor: "bg-[#FFF7ED]",
+      borderColor: "border-[#FDBA74]",
+      iconBg: "bg-[#FFEDD5]",
+      iconColor: "text-[#EA580C]",
+      badgeBg: "bg-[#FFF7ED]",
+      badgeText: "text-[#EA580C]",
+      actionBg: "bg-[#FFFFFF]",
+      actionText: "text-[#EA580C]",
+      actionLabel: "Publish now",
+      icon: AlertTriangle,
+    },
   };
+
 
   return (
     <div className="mb-1">
