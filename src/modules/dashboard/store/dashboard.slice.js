@@ -5,17 +5,8 @@ import {
   dashboardRevenueChartsAPI,
   dashboardEngagementChartsAPI,
   dashboardRecentActivityAPI,
-  dashboardConversionFunnelAPI,
-  dashboardDemographicsChartsAPI,
-  dashboardFitzoneCompletionTrendAPI,
-  dashboardAlertsAPI,
+  dashboardAllAPI,
 } from "../services/dashboard.services";
-import {
-  getDailyPerformanceAPI,
-  getRetentionTrendAPI,
-  getExpiringSoonAPI,
-  getAbandonedCheckoutsAPI,
-} from "@/modules/subscriptionManagement/services/subscription-dashboard.services";
 import {
   toCategoricalPie,
   toLabeledPie,
@@ -24,6 +15,39 @@ import {
   buildAlerts,
 } from "../utils/dashboardExtras.transform";
 import { getMockDashboardData } from "../utils/mockDashboardData";
+import { format, subDays } from "date-fns";
+
+function getGlanceTitle(preset) {
+  switch (preset) {
+    case "today": return "Today at a glance";
+    case "yesterday": return "Yesterday at a glance";
+    case "last3": return "Last 3 days at a glance";
+    case "last7": return "Last 7 days at a glance";
+    case "last30": return "Last 30 days at a glance";
+    case "last90": return "Last 90 days at a glance";
+    case "thisMonth": return "This month at a glance";
+    case "lastMonth": return "Last month at a glance";
+    case "custom": default: return "Period at a glance";
+  }
+}
+
+function getPeriodLabel(dateRange, preset) {
+  switch (preset) {
+    case "today": return "Today";
+    case "yesterday": return "Yesterday";
+    case "last3": return "Last 3 Days";
+    case "last7": return "Last 7 Days";
+    case "last30": return "Last 30 Days";
+    case "last90": return "Last 90 Days";
+    case "thisMonth": return "This Month";
+    case "lastMonth": return "Last Month";
+    case "custom": default: {
+      const from = dateRange?.from ? new Date(dateRange.from) : subDays(new Date(), 7);
+      const to = dateRange?.to ? new Date(dateRange.to) : new Date();
+      return `${format(from, "MMM dd")} – ${format(to, "dd MMM, yyyy")}`;
+    }
+  }
+}
 // ─── Existing KPI thunk ────────────────────────────────────────────────────────
 
 export const fetchDashboardKPIs = createAsyncThunk(
@@ -99,50 +123,35 @@ export const fetchDashboardExtras = createAsyncThunk(
   "dashboard/fetchDashboardExtras",
   async (dateRange, { rejectWithValue }) => {
     try {
-      const [
-        summaryRes,
-        demographicsRes,
-        funnelRes,
-        engagementRes,
-        recentActivityRes,
-        dailyPerfRes,
-        fitzoneRes,
-        retentionRes,
-        expiringSoonRes,
-        abandonedRes,
-        contentRes,
-        alertsRes,
-      ] = await Promise.allSettled([
-        dashboardSummaryAPI(dateRange),
-        dashboardDemographicsChartsAPI(),
-        dashboardConversionFunnelAPI(dateRange),
-        dashboardEngagementChartsAPI(dateRange),
-        dashboardRecentActivityAPI(dateRange),
-        getDailyPerformanceAPI(),
-        dashboardFitzoneCompletionTrendAPI(dateRange),
-        getRetentionTrendAPI(),
-        getExpiringSoonAPI({ limit: 10 }),
-        getAbandonedCheckoutsAPI({ limit: 10 }),
-        dashboardContentChartsAPI(dateRange),
-        dashboardAlertsAPI(),
-      ]);
+      const res = await dashboardAllAPI(dateRange);
 
-      const pick = (res) => (res.status === "fulfilled" && res.value?.success ? res.value.data : null);
+      if (!res?.success) {
+        throw new Error(res?.message || "Failed to fetch dashboard data");
+      }
 
-      const summary = pick(summaryRes);
-      const demographics = pick(demographicsRes);
-      const funnelData = pick(funnelRes);
-      const engagement = pick(engagementRes);
-      const recentActivity = pick(recentActivityRes);
-      const dailyPerf = pick(dailyPerfRes);
-      const fitzone = pick(fitzoneRes);
-      const retention = pick(retentionRes);
-      const expiringSoon = pick(expiringSoonRes);
-      const abandoned = pick(abandonedRes);
-      const content = pick(contentRes);
-      const alerts = pick(alertsRes);
+      const { data } = res;
+
+      console.log("data: ", data);
+
+      const summary = data?.summary || {};
+      const demographics = data?.demographics || {};
+      const funnelData = data?.conversionFunnel || {};
+      const engagement = data?.engagement || {};
+      const recentActivity = data?.recentActivity || {};
+      const fitzone = data?.fitzone || {};
+      const content = data?.content || {};
+      const alerts = data?.alerts || {};
+      const abandoned = data?.abandonedCheckouts || [];
+
+      const preset = dateRange?.preset || "today";
 
       return {
+        title: data?.title || getGlanceTitle(preset),
+        meta: res?.meta || {
+          dateRange,
+          preset,
+          periodLabel: getPeriodLabel(dateRange, preset),
+        },
         secondaryKpis: buildSecondaryKpis(summary),
         pieCharts: {
           userGoals: demographics?.goalDistribution
@@ -154,17 +163,14 @@ export const fetchDashboardExtras = createAsyncThunk(
           dietPreference: demographics?.vegetarianSplit ? toLabeledPie(demographics.vegetarianSplit) : [],
         },
         trends: {
-          activeVsChurned: retention?.retentionTrend || [],
           engagementDAU: engagement?.activeUsersTrend || [],
           fitzoneCompletion: fitzone?.fitzoneStatusTrend || [],
           fitzoneStatuses: fitzone?.statuses || [],
-          planRevenue: dailyPerf?.topSellingPlans || [],
           popularPrograms: content?.popularPrograms || [],
         },
         tables: {
           recentTransactions: recentActivity?.recentTransactions || [],
-          expiringSoon: expiringSoon?.subscribers || [],
-          abandonedCheckouts: abandoned?.checkouts || [],
+          abandonedCheckouts: abandoned || [],
           subAdminRoster: recentActivity?.subAdminRoster || [],
           unassignedUsers: recentActivity?.unassignedUsers ?? null,
           recentNotifications: recentActivity?.recentNotifications || [],
@@ -256,6 +262,8 @@ const dashboardSlice = createSlice({
       .addCase(fetchDashboardExtras.fulfilled, (state, action) => {
         state.extrasLoading = false;
         state.dashboardExtras = action.payload;
+        state.dashboardMeta = action.payload.meta;
+        state.dateRange = action.payload.meta?.dateRange || state.dateRange;
         state.lastUpdated = Date.now();
       })
       .addCase(fetchDashboardExtras.rejected, (state, action) => {

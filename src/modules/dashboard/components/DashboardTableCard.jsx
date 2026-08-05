@@ -83,7 +83,8 @@ const DashboardTableCard = ({
               rows.map((row, idx) => (
                 <TableRow
                   key={row.list_key ?? row.id ?? idx}
-                  className="hover:bg-slate-100/50 border-y border-slate-200/60 last:border-0 transition-colors"
+                  className={`hover:bg-slate-100/50 border-y border-slate-200/60 last:border-0 transition-colors ${onAction ? "cursor-pointer" : ""}`}
+                  onClick={() => onAction && onAction(row)}
                 >
                   {columns.map((col) => (
                     <TableCell

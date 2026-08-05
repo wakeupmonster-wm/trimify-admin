@@ -183,7 +183,7 @@ export function AppSidebar({ ...props }) {
               {isLoggingOut ? (
                 <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2} />
               ) : (
-                <LogOut className="h-5 w-5" strokeWidth={2} />
+                <LogOut className="h-5 w-5 ml-0.5" strokeWidth={2} />
               )}
               <span className="font-bold text-sm">
                 {isLoggingOut ? "Logging out..." : "Logout"}

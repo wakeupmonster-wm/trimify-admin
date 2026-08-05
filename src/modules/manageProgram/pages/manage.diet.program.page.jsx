@@ -168,7 +168,6 @@ const ManageDietProgramPage = () => {
         loading={toggleLoading}
         type="brand"
         confirmText="Update"
-        loading={isUpdating}
       />
     </Container>
   );

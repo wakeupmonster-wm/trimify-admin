@@ -283,7 +283,6 @@ const ManageBlogsPage = () => {
         loading={deleteLoading}
         title="Confirm Deletion"
         message="Are you sure you want to delete this blog post? This action cannot be undone."
-        loading={isDeleting}
       />
     </Container>
   );

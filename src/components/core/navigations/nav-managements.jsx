@@ -120,7 +120,7 @@ export function NavManagements({ items }) {
       <SidebarGroupLabel className="px-6 h-6 text-[9px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
         Management
       </SidebarGroupLabel>
-      <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-4 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
           const isActive =
             isPathActive(location.pathname, item.url) ||

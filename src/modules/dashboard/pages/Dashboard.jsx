@@ -5,7 +5,7 @@ import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  fetchMockDashboardData,
+  fetchDashboardExtras,
   setDashboardDateRange,
 } from "../store/dashboard.slice";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -49,29 +49,13 @@ export default function Dashboard() {
   const {
     dashboardData,
     dashboardExtras,
-    mockData,
     dashboardMeta,
     dateRange,
     lastUpdated,
   } = useSelector((state) => state.dashboard);
+  const displayExtras = dashboardExtras;
 
-  // Derive flat extras structure from either mockData or real dashboardExtras
-  const displayExtras = mockData
-    ? {
-      title: mockData.zone1?.title,
-      secondaryKpis: mockData.zone1?.secondaryKpis,
-      alerts: mockData.zone2?.alerts,
-      pieCharts: mockData.zone3?.pieCharts,
-      funnel: mockData.zone3?.funnel,
-      trends: mockData.zone4?.trends,
-      tables: {
-        ...(mockData.zone4?.tables || {}),
-        ...(mockData.zone5?.tables || {}),
-      },
-    }
-    : dashboardExtras;
-
-  console.log("displayExtras: ", displayExtras);
+  // console.log("displayExtras: ", displayExtras);
 
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
@@ -142,7 +126,7 @@ export default function Dashboard() {
       const isSubsequentLoad = !!displayExtras;
       if (isSubsequentLoad) setRefreshing(true);
       try {
-        await dispatch(fetchMockDashboardData(buildDateRangeParams(dateObj)));
+        await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
       } finally {
@@ -169,9 +153,7 @@ export default function Dashboard() {
   const handleManualRefresh = async () => {
     setRefreshing(true);
     try {
-      await dispatch(
-        fetchMockDashboardData(buildDateRangeParams(selectedDate)),
-      );
+      await dispatch(fetchDashboardExtras(buildDateRangeParams(selectedDate)));
     } finally {
       setRefreshing(false);
     }
@@ -615,7 +597,7 @@ export default function Dashboard() {
                     actionLabel="Follow Up"
                     onAction={(row) =>
                       navigate(
-                        `/admin/users/view-user/${row.user_id || row.id}`,
+                        `/admin/users/view-user/${row.id || row.user_id}`,
                       )
                     }
                     columns={[

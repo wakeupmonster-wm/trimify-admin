@@ -4,10 +4,12 @@ import { cn } from "@/lib/utils";
 import { Card, GoalTile, KV, EmptyState, Tag } from "./UserProfileShared";
 
 export function TabHealth({ data }) {
-  const { 
-    user, waterGoal, caloriesGoal, targetSteps, height, weight, bmi, bmiCat, bmiPct, macroTotal, 
+  const {
+    user, waterGoal, caloriesGoal, targetSteps, height, weight, bmi, bmiCat, bmiPct, macroTotal,
     macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields,
   } = data;
+
+  console.log("data: ", data)
 
   return (
     <>
