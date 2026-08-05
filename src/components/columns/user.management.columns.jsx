@@ -46,7 +46,7 @@ export const getUserManagementColumns = (onAction) => [
     size: 160,
     minSize: 120,
     cell: ({ row }) => (
-      <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight break-words line-clamp-2">
+      <div className="capitalize w-max font-bold text-slate-700 text-[11px] tracking-tight break-words line-clamp-2">
         {row.original.name || "-"}
       </div>
     ),
@@ -136,7 +136,7 @@ export const getUserManagementColumns = (onAction) => [
         ? row.original.sub_admin.name || row.original.sub_admin
         : "-";
       return (
-        <div className="capitalize text-[11px] font-medium text-slate-600 tracking-tight line-clamp-2 break-words">
+        <div className="capitalize w-max text-[11px] font-medium text-slate-600 tracking-tight line-clamp-2 break-words">
           {addedBy}
         </div>
       );

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Trash2,
@@ -20,11 +21,16 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
-import Header from "@/components/common/header";
-import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { LuUserRound } from "react-icons/lu";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 /* =========================================================================
    Helpers
@@ -336,22 +342,24 @@ export default function UserProfileView({ user, onBack, loading }) {
     <Container>
       <div className="w-full flex flex-col space-y-6 min-w-0">
         {/* Navigation Bar */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
-          <div className="flex items-center gap-3">
+        <header className="flex md:items-center justify-between gap-4 pt-2">
+          <div className="flex flex-row items-center gap-3 min-w-0">
             <button
               onClick={onBack}
               className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 min-w-0">
-              <span className="text-xl md:text-2xl font-bold text-slate-900 truncate">
-                User Directory
-              </span>
-              <span className="text-muted-foreground/30 font-normal text-xl md:text-2xl hidden xs:inline">
-                /
-              </span>
-              <span className="text-base md:text-xl font-normal text-foreground/30 mt-1 truncate">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-x-1.5 gap-y-0 min-w-0">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 truncate">
+                  User Directory
+                </span>
+                <span className="text-muted-foreground/30 font-normal text-xl md:text-2xl hidden sm:inline">
+                  /
+                </span>
+              </div>
+              <span className="text-sm sm:text-base md:text-xl font-normal text-foreground/40 sm:mt-1 truncate">
                 {user.name || "Profile View"}
               </span>
             </div>
@@ -359,69 +367,67 @@ export default function UserProfileView({ user, onBack, loading }) {
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <button
               onClick={() => handleCopy(user.id, "ID")}
-              className="group flex items-center gap-2 bg-white text-[10px] font-semibold text-muted-foreground px-3 py-1.5 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:border-app-primary2/30 max-w-[130px] sm:max-w-none"
+              className="group flex md:flex-none items-center justify-center md:justify-start gap-1 bg-white text-xs sm:text-[10px] font-semibold text-muted-foreground px-3 py-2 sm:py-1.5 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:border-app-primary2/30"
             >
               <span className="text-app-primary2/60 shrink-0">ID:</span>
-              <span className="truncate">{user.id}</span>
+              <span className="truncate max-w-[200px] md:max-w-none">
+                {user.id}
+              </span>
             </button>
-
-            {/* <button
-              onClick={onBack}
-              className="group flex items-center gap-2 bg-white text-[10px] sm:text-xs font-semibold text-slate-600 px-3 py-1.5 sm:px-4 sm:py-2 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:bg-slate-50"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </button> */}
           </div>
         </header>
 
         <div className="flex flex-col gap-4">
           {/* Hero Header */}
-          <div className="mb-3 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between rounded-2xl bg-slate-50 p-5 sm:p-6 shadow-sm border border-slate-200">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="mb-2 sm:mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between rounded-2xl bg-white p-4 sm:p-6 shadow-sm border border-slate-200">
+            <div className="flex flex-row items-center w-full gap-4 sm:gap-6">
               <div className="relative shrink-0">
                 {user.avatar ? (
                   <img
                     src={user.avatar}
                     alt="Avatar"
-                    className="h-24 w-24 rounded-full object-cover ring-[6px] ring-slate-50"
+                    className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-4 sm:ring-[6px] ring-slate-50 shadow-sm"
                   />
                 ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-50 text-3xl font-bold text-app-primary2 ring-[6px] ring-slate-50">
+                  <div className="flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-blue-50 text-xl sm:text-3xl font-bold text-app-primary2 ring-4 sm:ring-[6px] ring-slate-50 shadow-sm">
                     {initials(user.name)}
                   </div>
                 )}
               </div>
 
-              <div className="flex flex-col gap-2.5 text-center sm:text-left sm:ml-2">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
-                  <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              <div className="flex flex-col items-start text-left flex-1 min-w-0 gap-1.5 sm:gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-slate-900 truncate max-w-full">
                     {user.name}
-                    <span className="text-slate-500 text-xl font-medium">
-                      , {age}
-                    </span>
+                    {age && (
+                      <span className="text-slate-500 font-medium">
+                        , {age}
+                      </span>
+                    )}
                   </h1>
 
-                  <div className="flex items-center gap-3">
-                    <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-emerald-700">
                       {user.status || "Active"}
                     </span>
-                    {/* <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    {user.premium === "1" ? "PREMIUM" : "FREE"}
-                  </span> */}
+                    {/* {user.premium === "1" && (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-amber-600">
+                        ★ PRO
+                      </span>
+                    )} */}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-5 text-[13px] font-medium text-slate-500">
+                <div className="flex flex-col sm:flex-row items-start gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-medium text-slate-500">
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 text-slate-400" />
+                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
                     <span className="text-slate-400">Joined:</span>{" "}
                     <span className="text-slate-700">
                       {fmtDate(user.createdAt || user.created_at)}
                     </span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <History className="h-4 w-4 text-slate-400" />
+                    <History className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
                     <span className="text-slate-400">Updated:</span>{" "}
                     <span className="text-slate-700">
                       {fmtDate(user.updatedAt || user.updated_at)}
@@ -431,11 +437,12 @@ export default function UserProfileView({ user, onBack, loading }) {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end shrink-0">
+            <div className="flex flex-row items-center justify-end shrink-0 w-full lg:w-auto mt-0 pt-4 lg:pt-0 border-t border-slate-100 lg:border-t-0">
               <ActionButton
                 icon={isDeleting ? Loader2 : Trash2}
                 label={isDeleting ? "Deleting..." : "Delete User"}
                 variant="danger"
+                className="w-full sm:w-auto justify-center"
                 onClick={() => setIsDeleteModalOpen(true)}
               />
             </div>
@@ -452,17 +459,62 @@ export default function UserProfileView({ user, onBack, loading }) {
           />
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="mb-6 flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max no-scrollbar">
-              {TABS.map((t) => (
-                <TabsTrigger
-                  key={t.key}
-                  value={t.key}
-                  className="h-10 rounded-lg px-5 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:bg-app-primary2 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 ease-in-out whitespace-nowrap"
-                >
-                  {t.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+            <div className="relative w-full overflow-hidden mb-6">
+              <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start no-scrollbar hide-scrollbar snap-x snap-mandatory shadow-sm">
+                {TABS.map((t) => {
+                  const isActive = tab === t.key;
+                  return (
+                    <TabsTrigger
+                      key={t.key}
+                      value={t.key}
+                      className={cn(
+                        "relative h-10 rounded-lg px-4 sm:px-5 text-xs sm:text-sm font-semibold transition-all duration-300 border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-slate-900 snap-start shrink-0 whitespace-nowrap",
+                        isActive
+                          ? "text-white hover:text-white"
+                          : "text-slate-500",
+                      )}
+                    >
+                      <span
+                        className={`hidden sm:inline relative z-10 ${isActive ? "text-white" : "text-foreground/70"}`}
+                      >
+                        {t.label}
+                      </span>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeTabProfileTrimify"
+                          className="absolute inset-0 bg-app-primary2 rounded-lg shadow-sm"
+                          transition={{
+                            type: "spring",
+                            bounce: 0.2,
+                            duration: 0.6,
+                          }}
+                        />
+                      )}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+
+              {/* Tablet/Mobile Select Dropdown */}
+              <div className="lg:hidden w-full">
+                <Select value={tab} onValueChange={handleTabChange}>
+                  <SelectTrigger className="w-full h-10 bg-white border border-slate-200 rounded-md px-4 text-xs font-semibold text-slate-600 shadow-sm focus:outline-none focus:border-slate-500 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none focus:ring-offset-0 focus-visible:ring-offset-0 transition-all">
+                    <SelectValue placeholder="Select Section" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                    {TABS.map((t) => (
+                      <SelectItem
+                        key={t.key}
+                        value={t.key}
+                        className="py-3 px-4 text-sm font-semibold text-slate-600 focus:bg-app-primary2/10 focus:text-app-primary2 rounded-lg cursor-pointer"
+                      >
+                        {t.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
             <TabsContent value="overview">
               <TabOverview data={tabData} />

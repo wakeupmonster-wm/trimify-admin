@@ -35,7 +35,7 @@ export function TabActivity({ data }) {
 
   return (
     <>
-      <div className="mb-3.5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+      <div className="mb-3.5 grid grid-cols-2 gap-2.5 md:grid-cols-2 lg:grid-cols-4">
         {[
           { l: "Steps", d: as.steps || {} },
           { l: "Water", d: as.water || {} },
