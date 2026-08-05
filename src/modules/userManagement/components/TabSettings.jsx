@@ -100,7 +100,6 @@ export function TabSettings({ data }) {
       }
     } catch (error) {
       toast.error("An error occurred while sending");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +108,11 @@ export function TabSettings({ data }) {
   return (
     <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-3.5">
-        <Card title="Account Status" subtitle="Current status and security details" className={"pb-1.5"}>
+        <Card
+          title="Account Status"
+          subtitle="Current status and security details"
+          className={"pb-1.5"}
+        >
           <KV
             icon={ShieldCheck}
             label="Status"
@@ -212,7 +215,7 @@ export function TabSettings({ data }) {
                     )}
                   >
                     {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
-                    {user.plan.title.toUpperCase()}
+                    {String(user.plan.title || user.plan || "").toUpperCase()}
                   </div>
                 </div>
               ) : (
@@ -291,7 +294,7 @@ export function TabSettings({ data }) {
         </Card>
       </div>
 
-      <div className="flex col-span-2 flex-col gap-3.5">
+      <div className="flex flex-col gap-3.5 lg:col-span-2">
         <Card
           title="Direct Administrative Messaging"
           subtitle="Dispatch warning letters, policy updates, or direct notifications"

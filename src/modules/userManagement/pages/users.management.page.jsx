@@ -1,7 +1,7 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import Header from "@/components/common/header";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import {
   DataTable,
   DataTableFilters,
@@ -57,15 +57,13 @@ const UsersManagementPage = () => {
     statusFilter,
   ]);
 
-  const handleAction = (row, action) => {
+  const handleAction = useCallback((row, action) => {
     if (action === "view") {
       navigate(`/admin/users/view-user/${row.id}`, {
         state: { userData: row },
       });
-    } else {
-      console.log("Action:", action, "Row:", row);
     }
-  };
+  }, [navigate]);
 
   const isUnfiltered = !statusFilter && !debouncedSearchTerm;
   const [pinnedKpis, setPinnedKpis] = useState(null);
@@ -102,7 +100,7 @@ const UsersManagementPage = () => {
       });
   }, [kpis, pinnedKpis]);
 
-  const columns = useMemo(() => getUserManagementColumns(handleAction), []);
+  const columns = useMemo(() => getUserManagementColumns(handleAction), [handleAction]);
 
   const localKpis = useMemo(() => {
     if (pinnedKpis) return pinnedKpis;
@@ -165,25 +163,8 @@ const UsersManagementPage = () => {
     },
   ];
 
-  // Check if the backend is doing manual pagination.
-  // If serverPagination.total exists, it's server-paginated.
-  const isManual = !!(serverPagination && serverPagination.total > 0);
-
-  // KPI Calculations
-  const kpiStats = useMemo(() => {
-    const list = users || [];
-    return {
-      total: serverPagination?.total || list.length,
-      paid: list.filter((u) => u.paid === 1 || String(u.paid) === "true")
-        .length,
-      free: list.filter(
-        (u) => u.paid === 0 || String(u.paid) === "false" || u.paid === null,
-      ).length,
-      active: list.filter(
-        (u) => String(u.status || "Active").toLowerCase() === "active",
-      ).length,
-    };
-  }, [users, serverPagination]);
+  // If serverPagination exists, it's server-paginated.
+  const isManual = !!serverPagination;
 
   // Local fallback filtering in case the backend ignores the `status` parameter
   const filteredUsers = useMemo(() => {

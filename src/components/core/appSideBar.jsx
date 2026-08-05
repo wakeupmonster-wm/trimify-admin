@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { NavMain } from "@/components/core/navigations/nav-main";
-import { NavUser } from "@/components/core/navigations/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -15,16 +14,10 @@ import {
 import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
-import { Link, useLocation } from "react-router-dom";
-import dummyImg from "@/assets/web/owner.png";
-import { useDispatch, useSelector } from "react-redux";
-// import { fetchProfile } from "@/modules/accounts/store/account.slice";
-import { useMemo } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { cn } from "@/lib/utils";
-// import { fetchReportedProfiles } from "@/modules/profileReview/store/profile-review.slice";
-// import { fetchPendingVerifications } from "@/modules/verification/store/verfication.slice";
-// import { fetchMyTickets } from "@/modules/support/store/support.slice";
 import { LogOut, Loader2 } from "lucide-react";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { logout } from "@/modules/authentication/store/auth.slice";
@@ -36,6 +29,8 @@ export function AppSidebar({ ...props }) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
@@ -46,7 +41,7 @@ export function AppSidebar({ ...props }) {
       console.error("Logout failed", e);
     } finally {
       setIsLoggingOut(false);
-      window.location.href = "/";
+      navigate("/auth/login", { replace: true });
     }
   };
 
@@ -55,50 +50,6 @@ export function AppSidebar({ ...props }) {
       setOpenMobile(false);
     }
   }, [pathname, isMobile, setOpenMobile]);
-  // const { account } = useSelector((state) => state.account);
-
-  // --- Dynamic Badge Stats ---
-  // const { kpiStats: reportStats = {} } = useSelector((state) => state.profileReview);
-  // const { kpiStats: kycStats  = {} } = useSelector((state) => state.verification);
-  // const { kpiStats: supportStats  = {} } = useSelector((state) => state.support);
-
-  useEffect(() => {
-    // dispatch(fetchProfile());
-    // // Fetch counts for badges
-    // dispatch(fetchReportedProfiles({ limit: 1 }));
-    // dispatch(fetchPendingVerifications({ limit: 1 }));
-    // dispatch(fetchMyTickets({ limit: 1 }));
-  }, [dispatch]);
-
-  const { user } = useSelector((state) => state.auth);
-
-  const navUser = useMemo(
-    () => ({
-      name: user?.nickname || user?.name || "Admin",
-      email: user?.email || "admin@example.com",
-      avatar: dummyImg,
-    }),
-    [user],
-  );
-
-  // --- Optimized Navigation Data with Dynamic Badges ---
-  // const dynamicNavigation = useMemo(() => {
-  //   return {
-  //     ...navigationData,
-  //     navManagement: navigationData.navManagement.map((item) => {
-  //       if (item.title === "Profile reports") {
-  //         return { ...item, badge: reportStats?.newReports || null };
-  //       }
-  //       if (item.title === "KYC Verification") {
-  //         return { ...item, badge: kycStats?.pending || null };
-  //       }
-  //       if (item.title === "Support Tickets") {
-  //         return { ...item, badge: supportStats?.openTickets || null };
-  //       }
-  //       return item;
-  //     }),
-  //   };
-  // }, [reportStats, kycStats, supportStats]);
 
   return (
     <Sidebar
@@ -160,16 +111,7 @@ export function AppSidebar({ ...props }) {
         {/* {dynamicNavigation.navPlateform && ( */}
         <NavPlateform items={navigationData.navPlateform} />
         {/* )} */}
-
-        {/* {dynamicNavigation.navSecondary && (
-          <NavSecondary items={dynamicNavigation.navSecondary} />
-        )} */}
       </SidebarContent>
-
-      {/* --- FOOTER: User Profile --- */}
-      {/* <SidebarFooter className="border-t border-slate-300/60 px-3 py-4">
-        <NavUser user={navUser} />
-      </SidebarFooter> */}
 
       {/* Add Here Logout  */}
       <SidebarFooter className="border-t border-slate-300/60 px-3 py-5">

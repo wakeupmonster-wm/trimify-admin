@@ -44,7 +44,6 @@ export default function OverviewView({
   overview,
   overviewLoading,
   overviewError,
-  charts,
   dailyPerformance,
   dashboardExtras,
   rangeLabel,
@@ -296,12 +295,43 @@ export default function OverviewView({
               })
             }
             columns={[
+              {
+                key: "sno",
+                label: "SR.No",
+                width: "w-[5%]",
+                render: (_, idx) => (
+                  <span className="font-bold text-[11px] text-slate-700">
+                    {idx + 1}
+                  </span>
+                ),
+              },
               { key: "user_name", label: "User", width: "w-[26%]" },
               {
                 key: "plan_title",
                 label: "Plan",
                 width: "w-[18%]",
-                render: (r) => r.plan_title || "Unknown Plan",
+                render: (r) => {
+                  const title = r.plan_title || "Unknown Plan";
+                  const lower = title.toLowerCase();
+                  let colorClass = "text-slate-600";
+
+                  if (lower.includes("premium"))
+                    colorClass = "text-app-primary2";
+                  else if (lower.includes("basic") || lower.includes("starter"))
+                    colorClass = "text-app-primary3";
+                  else if (lower.includes("super"))
+                    colorClass = "text-orange-500";
+                  else if (lower.includes("pro") || lower.includes("plus"))
+                    colorClass = "text-purple-500";
+
+                  return (
+                    <div
+                      className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                    >
+                      {title}
+                    </div>
+                  );
+                },
               },
               {
                 key: "amount",
@@ -360,8 +390,32 @@ export default function OverviewView({
                   key: "plan_title",
                   label: "Plan",
                   width: "w-[25%]",
-                  render: (r) =>
-                    r.plan?.title || r.plan_title || "Unknown Plan",
+                  render: (r) => {
+                    const title =
+                      r.plan?.title || r.plan_title || "Unknown Plan";
+                    const lower = title.toLowerCase();
+                    let colorClass = "text-slate-600";
+
+                    if (lower.includes("premium"))
+                      colorClass = "text-app-primary2";
+                    else if (
+                      lower.includes("basic") ||
+                      lower.includes("starter")
+                    )
+                      colorClass = "text-app-primary3";
+                    else if (lower.includes("super"))
+                      colorClass = "text-orange-500";
+                    else if (lower.includes("pro") || lower.includes("plus"))
+                      colorClass = "text-purple-500";
+
+                    return (
+                      <div
+                        className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                      >
+                        {title}
+                      </div>
+                    );
+                  },
                 },
                 {
                   key: "expires_at",

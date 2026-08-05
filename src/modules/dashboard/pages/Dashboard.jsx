@@ -18,10 +18,11 @@ import {
   Activity as ActivityIcon,
   Dumbbell,
   Wallet,
+  AlertTriangle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TodayAtAGlance } from "../components/TodayAtAGlance";
 import { UserGrowthChart } from "../components/UserGrowthChart";
 import { RevenueBreakdown } from "../components/RevenueBreakdown";
 import { LiveActivity } from "../components/LiveActivity";
@@ -52,6 +53,7 @@ export default function Dashboard() {
     dashboardMeta,
     dateRange,
     lastUpdated,
+    error,
   } = useSelector((state) => state.dashboard);
 
   const displayExtras = dashboardExtras;
@@ -207,6 +209,33 @@ export default function Dashboard() {
   }, []);
 
   // ─── Initial Load Guard ─────────────────────────────────────────────────────
+  if (error && !displayExtras) {
+    return (
+      <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+          </div>
+          <h2 className="text-lg font-bold text-slate-900">
+            Failed to load Dashboard Data
+          </h2>
+          <p className="text-sm text-slate-500 max-w-sm">
+            {typeof error === "string"
+              ? error
+              : "An unknown error occurred while fetching dashboard data."}
+          </p>
+          <Button
+            onClick={handleManualRefresh}
+            variant="outline"
+            className="mt-4"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   // Show full-page skeleton until the first API response populates dashboardData.
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
   if (!displayExtras) {
@@ -275,85 +304,6 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col gap-4 3xl:gap-6 pb-5 pt-3 px-4 lg:px-6 w-full">
-            {/* ─────────────────────────────────────────────────────────────
-                Previous dashboard widgets — temporarily disabled while the
-                new dashboard (extras-driven) is being built out. Nothing
-                deleted, just switched off; flip back to `true` to restore.
-               ───────────────────────────────────────────────────────────── */}
-            {false && (
-              <>
-                <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
-                  <TodayAtAGlance
-                    data={dashboardData?.zoneA}
-                    summaryData={dashboardData?.summaryData}
-                    periodLabel={dynamicPeriodLabel}
-                    selectedDate={selectedDate}
-                  />
-                </div>
-
-                <div className="flex flex-col items-start justify-between gap-4 3xl:gap-6">
-                  <div className="flex flex-col items-start gap-1">
-                    <h2 className="text-base font-bold text-slate-900 group">
-                      Key Metrics
-                    </h2>
-                    <p className="text-[11px] font-medium text-slate-500 leading-none">
-                      Quick overview of platform health
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                    <UserGrowthChart
-                      data={dashboardData?.engagementChartsData}
-                      selectedDate={selectedDate}
-                    />
-                    <LiveActivity
-                      data={
-                        dashboardData
-                          ? dashboardData.recentActivityData
-                          : undefined
-                      }
-                    />
-                  </div>
-                </div>
-
-                {/* Analytical Row 3: Bento Grid (Revenue, Match, Gender, Heatmap) */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                  {/* Left Column: Revenue Breakdown */}
-                  <div className="lg:col-span-4 h-full">
-                    <RevenueBreakdown
-                      data={dashboardData?.revenueBreakdown}
-                      revenueChartsData={dashboardData?.revenueChartsData}
-                    />
-                  </div>
-
-                  {/* Right Column: Stats & Heatmap */}
-                  <div className="lg:col-span-8 flex flex-col gap-4 3xl:gap-6">
-                    <div className="flex-1">
-                      <ActivityHeatmap
-                        data={dashboardData?.engagementChartsData}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col xl:flex-row gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                  <div className="flex-[1.2] min-w-0 flex flex-col h-full w-full">
-                    <RevenueTrendChart
-                      data={dashboardData?.revenueChartsData}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0 flex flex-col h-full w-full">
-                    <ChartUserDistribution
-                      data={{
-                        active: dashboardData?.summaryData?.activeUsers || 0,
-                        inactive:
-                          dashboardData?.summaryData?.inactiveUsers || 0,
-                      }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
             <SecondaryKpiRow
               data={displayExtras?.secondaryKpis}
               title={displayExtras?.title}

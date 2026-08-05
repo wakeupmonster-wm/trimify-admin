@@ -25,8 +25,8 @@ const ModuleKpiRow = ({ items, loading = false }) => {
   if (loading) {
     return (
       <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridClass} gap-4`}>
-        {items.map((item) => (
-          <Skeleton key={item.label} className="h-[92px] rounded-2xl" />
+        {items?.map((item, index) => (
+          <Skeleton key={item?.label || index} className="h-[92px] rounded-2xl" />
         ))}
       </div>
     );

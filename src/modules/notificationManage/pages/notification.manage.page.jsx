@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Container } from "@/components/common/container";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Send, Bell, Loader2 } from "lucide-react";
+import { Send, Bell, Loader2, Monitor, Mail } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { useDispatch, useSelector } from "react-redux";
@@ -157,24 +158,16 @@ const NotificationManagePage = () => {
           {/* TABS */}
           <div className="w-full flex flex-row items-center gap-6 border-b border-slate-300/60 mb-6 overflow-x-auto scrollbar-none">
             <button
-              onClick={() => setActiveTab("push")}
+              onClick={() => {
+                if (activeTab === "history") setActiveTab("email");
+              }}
               className={`pb-4 text-[13px] font-semibold transition-all px-2 relative whitespace-nowrap shrink-0 ${
-                activeTab === "push"
+                activeTab === "push" || activeTab === "email"
                   ? "text-app-primary2 border-b-2 border-app-primary2"
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
-              Push Notification
-            </button>
-            <button
-              onClick={() => setActiveTab("email")}
-              className={`pb-4 text-[13px] font-semibold transition-all px-2 relative whitespace-nowrap shrink-0 ${
-                activeTab === "email"
-                  ? "text-app-primary2 border-b-2 border-app-primary2"
-                  : "text-slate-500 hover:text-slate-600"
-              }`}
-            >
-              Email Messaging
+              New Campaign
             </button>
             <button
               onClick={() => setActiveTab("history")}
@@ -184,7 +177,7 @@ const NotificationManagePage = () => {
                   : "text-slate-500 hover:text-slate-600"
               }`}
             >
-              Message History
+              Campaign History
             </button>
           </div>
 
@@ -193,19 +186,85 @@ const NotificationManagePage = () => {
               {/* LEFT: MESSAGE DETAILS */}
               <div className="lg:col-span-7">
                 <div className="border border-slate-300/60 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <div className="px-4 sm:px-6 py-2 md:py-4 border-b border-slate-300/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <h2 className="text-base sm:text-lg font-bold text-slate-900">
-                      {activeTab === "email"
-                        ? "Email Details"
-                        : "Push Notification Details"}
+                  <div className="px-4 sm:px-6 py-4 md:py-5 border-b border-slate-300/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+                      Campaign Details
                     </h2>
-                    <span className="text-[10px] sm:text-xs font-medium text-slate-400">
-                      Configure and dispatch{" "}
-                      {activeTab === "email" ? "emails" : "push notifications"}
+                    <span className="text-xs sm:text-sm font-medium text-slate-400">
+                      Configure and dispatch engagement notifications
                     </span>
                   </div>
 
                   <div className="px-4 sm:px-6 py-6 space-y-6">
+                    {/* CHANNEL TYPE */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-app-primary2">
+                        <Monitor className="w-5 h-5" />
+                        <h3 className="text-sm font-bold">Channel Type</h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* Email Card */}
+                        <div
+                          onClick={() => setActiveTab("email")}
+                          className={`cursor-pointer border rounded-xl p-4 flex items-center gap-4 transition-all ${
+                            activeTab === "email"
+                              ? "border-app-primary2 bg-[#F0FBFC]"
+                              : "border-slate-200 hover:border-slate-300 bg-white"
+                          }`}
+                        >
+                          <div
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                              activeTab === "email"
+                                ? "bg-app-primary2"
+                                : "bg-slate-50"
+                            }`}
+                          >
+                            <Mail
+                              className={`w-6 h-6 transition-colors ${activeTab === "email" ? "text-white" : "text-slate-400"}`}
+                            />
+                          </div>
+                          <div>
+                            <h4 className="text-[13px] font-bold text-slate-900">
+                              Email Campaign
+                            </h4>
+                            <p className="text-[11px] text-slate-500">
+                              Rich HTML newsletters & offers
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Push Card */}
+                        <div
+                          onClick={() => setActiveTab("push")}
+                          className={`cursor-pointer border rounded-xl p-4 flex items-center gap-4 transition-all ${
+                            activeTab === "push"
+                              ? "border-app-primary2 bg-[#F0FBFC]"
+                              : "border-slate-200 hover:border-slate-300 bg-white"
+                          }`}
+                        >
+                          <div
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                              activeTab === "push"
+                                ? "bg-app-primary2"
+                                : "bg-slate-50"
+                            }`}
+                          >
+                            <Bell
+                              className={`w-6 h-6 transition-colors ${activeTab === "push" ? "text-white" : "text-slate-400"}`}
+                            />
+                          </div>
+                          <div>
+                            <h4 className="text-[13px] font-bold text-slate-900">
+                              Push Notification
+                            </h4>
+                            <p className="text-[11px] text-slate-500">
+                              Direct mobile device alerts
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className="space-y-2">
                       <Label className="text-xs font-bold text-slate-800">
                         Campaign Name
@@ -336,97 +395,116 @@ const NotificationManagePage = () => {
 
                   {/* Preview Container */}
                   <div className="flex-1 bg-white px-2 py-6 flex justify-center items-center overflow-hidden">
-                    {activeTab === "push" ? (
-                      <div className="w-full flex justify-center">
-                        {/* Phone Mockup */}
-                        <div className="relative w-[280px] h-[550px] bg-[#0F172A] rounded-[40px] p-1.5 shadow-2xl border-4 border-[#334155]/20">
-                          {/* Screen */}
-                          <div className="w-full h-full rounded-[30px] overflow-hidden relative bg-slate-900">
-                            {/* Notch */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80px] h-[24px] bg-[#0F172A] rounded-b-[12px] z-20"></div>
+                    <AnimatePresence mode="wait">
+                      {activeTab === "push" ? (
+                        <motion.div
+                          key="push-preview"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="w-full flex justify-center"
+                        >
+                          {/* Phone Mockup */}
+                          <div className="relative w-[280px] h-[550px] bg-[#0F172A] rounded-[40px] p-1.5 shadow-2xl border-4 border-[#334155]/20">
+                            {/* Screen */}
+                            <div className="w-full h-full rounded-[30px] overflow-hidden relative bg-slate-900">
+                              {/* Notch */}
+                              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80px] h-[24px] bg-[#0F172A] rounded-b-[12px] z-20"></div>
 
-                            {/* Wallpaper */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#4F46E5] via-[#C084FC] to-[#0EA5E9] opacity-90">
-                              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
-                              <div className="absolute -bottom-20 -left-20 w-[150%] h-[150%] bg-gradient-to-t from-[#0EA5E9]/80 via-transparent to-transparent rounded-[100%] transform -rotate-12 blur-2xl"></div>
-                            </div>
+                              {/* Wallpaper */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#4F46E5] via-[#C084FC] to-[#0EA5E9] opacity-90">
+                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
+                                <div className="absolute -bottom-20 -left-20 w-[150%] h-[150%] bg-gradient-to-t from-[#0EA5E9]/80 via-transparent to-transparent rounded-[100%] transform -rotate-12 blur-2xl"></div>
+                              </div>
 
-                            {/* Notification Banner */}
-                            <div className="absolute top-10 left-3 right-3 z-30 transition-all duration-300">
-                              <div className="bg-white/95 backdrop-blur-md shadow-lg rounded-[16px] p-3 border border-white/20">
-                                <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-500">
-                                  <div className="w-[18px] h-[18px] bg-app-primary2 rounded flex items-center justify-center">
-                                    <Bell
-                                      className="text-white w-2.5 h-2.5"
-                                      strokeWidth={3}
-                                    />
+                              {/* Notification Banner */}
+                              <div className="absolute top-10 left-3 right-3 z-30">
+                                <motion.div
+                                  initial={{ y: -20, opacity: 0 }}
+                                  animate={{ y: 0, opacity: 1 }}
+                                  transition={{ delay: 0.2 }}
+                                  className="bg-white/95 backdrop-blur-md shadow-lg rounded-[16px] p-3 border border-white/20"
+                                >
+                                  <div className="flex items-center gap-1.5 mb-1.5 text-[11px] text-slate-500">
+                                    <div className="w-[18px] h-[18px] bg-app-primary2 rounded flex items-center justify-center">
+                                      <Bell
+                                        className="text-white w-2.5 h-2.5"
+                                        strokeWidth={3}
+                                      />
+                                    </div>
+                                    <span className="font-medium text-slate-700">
+                                      Trimify Admin
+                                    </span>
+                                    <span>•</span>
+                                    <span>now</span>
                                   </div>
-                                  <span className="font-medium text-slate-700">
-                                    Trimify Admin
-                                  </span>
-                                  <span>•</span>
-                                  <span>now</span>
+                                  <p className="text-[12px] text-slate-800 line-clamp-3 leading-snug font-medium mt-1 whitespace-pre-wrap">
+                                    {pushTitle && (
+                                      <strong className="block mb-0.5">
+                                        {pushTitle}
+                                      </strong>
+                                    )}
+                                    {messageText ||
+                                      "Notification content will appear here..."}
+                                  </p>
+                                </motion.div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="email-preview"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="w-full flex justify-center items-start px-2 h-full"
+                        >
+                          {/* Email Mockup */}
+                          <div className="w-full max-w-[420px] bg-white border border-slate-300/60 rounded-xl shadow-lg overflow-hidden h-max">
+                            {/* Window Topbar */}
+                            <div className="bg-slate-100 px-4 py-3 border-b border-slate-300/60 flex items-center gap-1.5">
+                              <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
+                              <div className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
+                              <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />
+                            </div>
+
+                            {/* Email Header Info */}
+                            <div className="p-5 border-b border-slate-100">
+                              <h3 className="text-[16px] font-bold text-slate-900 mb-3 break-words">
+                                {emailSubject || "(No Subject)"}
+                              </h3>
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary4 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                                  T
                                 </div>
-                                <p className="text-[12px] text-slate-800 line-clamp-3 leading-snug font-medium mt-1 whitespace-pre-wrap">
-                                  {pushTitle && (
-                                    <strong className="block mb-0.5">
-                                      {pushTitle}
-                                    </strong>
-                                  )}
-                                  {messageText ||
-                                    "Notification content will appear here..."}
-                                </p>
+                                <div className="leading-tight">
+                                  <p className="text-[13px] font-semibold text-slate-900">
+                                    Trimify Admin
+                                  </p>
+                                  <p className="text-[11px] text-slate-500">
+                                    info@trimify.com.au
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-full flex justify-center items-start px-2 h-full">
-                        {/* Email Mockup */}
-                        <div className="w-full max-w-[420px] bg-white border border-slate-300/60 rounded-xl shadow-lg overflow-hidden h-max">
-                          {/* Window Topbar */}
-                          <div className="bg-slate-100 px-4 py-3 border-b border-slate-300/60 flex items-center gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />
-                          </div>
 
-                          {/* Email Header Info */}
-                          <div className="p-5 border-b border-slate-100">
-                            <h3 className="text-[16px] font-bold text-slate-900 mb-3 break-words">
-                              {emailSubject || "(No Subject)"}
-                            </h3>
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-app-primary2 to-app-primary4 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                                T
-                              </div>
-                              <div className="leading-tight">
-                                <p className="text-[13px] font-semibold text-slate-900">
-                                  Trimify Admin
-                                </p>
-                                <p className="text-[11px] text-slate-500">
-                                  info@trimify.com.au
-                                </p>
-                              </div>
+                            {/* Email Body */}
+                            <div className="p-5 min-h-[200px] max-h-[300px] overflow-y-auto">
+                              {messageText ? (
+                                <div className="text-[13px] text-[#334155] leading-[1.6] whitespace-pre-wrap break-words">
+                                  {messageText}
+                                </div>
+                              ) : (
+                                <span className="text-[13px] text-slate-400 italic">
+                                  Email content will appear here...
+                                </span>
+                              )}
                             </div>
                           </div>
-
-                          {/* Email Body */}
-                          <div className="p-5 min-h-[200px] max-h-[300px] overflow-y-auto">
-                            {messageText ? (
-                              <div className="text-[13px] text-[#334155] leading-[1.6] whitespace-pre-wrap break-words">
-                                {messageText}
-                              </div>
-                            ) : (
-                              <span className="text-[13px] text-slate-400 italic">
-                                Email content will appear here...
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>
@@ -466,7 +544,7 @@ const NotificationManagePage = () => {
               </strong>{" "}
               campaign?
             </p>
-            {/* <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
               <p className="flex justify-between items-center">
                 <strong className="text-slate-800">Name:</strong>
                 <span className="font-medium">{campaignName}</span>
@@ -479,7 +557,7 @@ const NotificationManagePage = () => {
             <p className="text-red-500 font-medium text-[11.5px] pt-2">
               This action cannot be undone. Notifications will be queued
               immediately.
-            </p> */}
+            </p>
           </div>
         }
       />

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/common/header";
 import ExportLoadingModal from "@/components/shared/ExportLoadingModal";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DataTable,
@@ -141,20 +141,39 @@ const SubAdminManagementPage = () => {
     }, intervalTime);
   };
 
-  // KPI Calculations
+  const [pinnedKpis, setPinnedKpis] = useState(null);
+
+  useEffect(() => {
+    if (pinnedKpis) return;
+
+    Promise.all([
+      dispatch(fetchSubAdminList({ limit: 1 })).unwrap(),
+      dispatch(fetchSubAdminList({ limit: 1, status: "Active" })).unwrap(),
+      dispatch(fetchSubAdminList({ limit: 1, role: 0 })).unwrap(),
+      dispatch(fetchSubAdminList({ limit: 1, role: 1 })).unwrap(),
+    ])
+      .then(([resTotal, resActive, resSubAdmins, resWhiteListing]) => {
+        setPinnedKpis({
+          total: resTotal?.pagination?.total || 0,
+          active: resActive?.pagination?.total || 0,
+          subAdmins: resSubAdmins?.pagination?.total || 0,
+          whiteListing: resWhiteListing?.pagination?.total || 0,
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to fetch KPIs:", err);
+      });
+  }, [pinnedKpis, dispatch]);
+
   const kpiStats = useMemo(() => {
-    const list = subAdmins || [];
+    if (pinnedKpis) return pinnedKpis;
     return {
-      total: pagination?.total || list.length,
-      active: list.filter((s) => s.status === "Active").length,
-      subAdmins: list.filter(
-        (s) => s.role === 0 || s.role_name === "Sub-Admin User",
-      ).length,
-      whiteListing: list.filter(
-        (s) => s.role === 1 || s.role_name === "WhiteListing User",
-      ).length,
+      total: serverPagination?.total || 0,
+      active: 0,
+      subAdmins: 0,
+      whiteListing: 0,
     };
-  }, [subAdmins, pagination]);
+  }, [serverPagination, pinnedKpis]);
 
   const kpiItems = [
     {
@@ -208,18 +227,21 @@ const SubAdminManagementPage = () => {
     roleFilter,
   ]);
 
-  const handleAction = async (row, action, checked) => {
-    const rowId = row.id || row._id;
-    if (action === "toggle-status") {
-      setToggleModal({ open: true, rowData: row, targetStatus: checked });
-    } else if (action === "edit") {
-      navigate("/admin/sub-admin-management/edit", {
-        state: { editData: row },
-      });
-    } else if (action === "delete") {
-      setDeleteModal({ open: true, rowData: row });
-    }
-  };
+  const handleAction = useCallback(
+    async (row, action, checked) => {
+      const rowId = row.id || row._id;
+      if (action === "toggle-status") {
+        setToggleModal({ open: true, rowData: row, targetStatus: checked });
+      } else if (action === "edit") {
+        navigate("/admin/sub-admin-management/edit", {
+          state: { editData: row },
+        });
+      } else if (action === "delete") {
+        setDeleteModal({ open: true, rowData: row });
+      }
+    },
+    [navigate],
+  );
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
@@ -228,7 +250,9 @@ const SubAdminManagementPage = () => {
     setIsUpdating(true);
 
     try {
-      const result = await dispatch(toggleSubAdminStatus({ id: rowId, status }));
+      const result = await dispatch(
+        toggleSubAdminStatus({ id: rowId, status }),
+      );
 
       if (toggleSubAdminStatus.fulfilled.match(result)) {
         toast.success("Sub-admin status updated successfully.");
@@ -253,7 +277,7 @@ const SubAdminManagementPage = () => {
     if (!deleteModal.rowData) return;
     const rowId = deleteModal.rowData.id || deleteModal.rowData._id;
     setIsDeleting(true);
-    
+
     try {
       const result = await dispatch(deleteSubAdmin(rowId));
       if (deleteSubAdmin.fulfilled.match(result)) {
@@ -275,11 +299,14 @@ const SubAdminManagementPage = () => {
     }
   };
 
-  const columns = useMemo(() => getSubAdminColumns(handleAction), []);
+  const columns = useMemo(
+    () => getSubAdminColumns(handleAction),
+    [handleAction],
+  );
 
   // Check if the backend is doing manual pagination.
-  // If serverPagination.total exists, it's server-paginated.
-  const isManual = !!(serverPagination && serverPagination.total > 0);
+  // If serverPagination exists, it's server-paginated.
+  const isManual = !!serverPagination;
 
   // Local fallback filtering in case the backend ignores the `role` parameter
   const filteredSubAdmins = useMemo(() => {

@@ -28,33 +28,6 @@ export function TabOverview({ data }) {
     return true;
   });
 
-  const kpiItems = [
-    {
-      label: "Programs Enrolled",
-      value: es.programs_enrolled || 0,
-      icon: ClipboardList,
-      tone: "blue",
-    },
-    {
-      label: "Fitzone Assignments",
-      value: es.fitzone_assignments || 0,
-      icon: Dumbbell,
-      tone: "purple",
-    },
-    {
-      label: "Step Logs",
-      value: es.step_logs_count || 0,
-      icon: Footprints,
-      tone: "emerald",
-    },
-    {
-      label: "Days Active (30d)",
-      value: es.days_active_last_30_days || 0,
-      icon: CalendarDays,
-      tone: "amber",
-    },
-  ];
-
   return (
     <>
       <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">

@@ -1,11 +1,11 @@
-// src/app/routes/index.js
-import { Suspense, lazy } from "react"; // Added Suspense and lazy
-import { createBrowserRouter, Navigate, useParams } from "react-router-dom";
+import { Suspense, lazy } from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import PrivateRoute from "./privateRoute";
 
 // 1. Layouts (Keep these standard or lazy load them too)
 import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
+import App from "@/App";
 import { PreLoader } from "../loader/preloader";
 import RouteErrorBoundary from "@/components/common/RouteErrorBoundary";
 
@@ -154,7 +154,6 @@ const AboutUsPage = lazy(
 
 // 2. LAZY LOAD COMPONENTS
 const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
-const App = lazy(() => import("@/App"));
 const NotFoundPage = lazy(
   () => import("@/modules/not-found/Pages/not-found.page"),
 );
@@ -405,14 +404,6 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <EditDietProgramPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "manage/edit-intro/:id",
-            element: (
-              <Suspense fallback={<PreLoader />}>
-                <EditIntroProgramPage />
               </Suspense>
             ),
           },
@@ -764,9 +755,3 @@ export const router = createBrowserRouter([
   },
   { path: "*", element: <NotFoundPage /> },
 ]);
-
-// eslint-disable-next-line react-refresh/only-export-components
-function ChatReviewWrapper() {
-  const { matchId } = useParams();
-  return <ChatReviewDetail matchId={matchId} />;
-}

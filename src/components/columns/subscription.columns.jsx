@@ -22,7 +22,7 @@ export const getSubscriptionColumns = (onAction) => [
         SR.No
       </div>
     ),
-    size: 60,
+    size: 80,
     minSize: 50,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
@@ -45,7 +45,7 @@ export const getSubscriptionColumns = (onAction) => [
         Plan Title
       </div>
     ),
-    size: 120,
+    size: 140,
     minSize: 80,
     cell: ({ row }) => (
       <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight whitespace-nowrap">
@@ -60,11 +60,11 @@ export const getSubscriptionColumns = (onAction) => [
         Duration
       </div>
     ),
-    size: 120,
+    size: 140,
     minSize: 80,
     cell: ({ row }) => (
-      <div className="capitalize font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
-        {row.original.duration ? `${row.original.duration} Months` : "-"}
+      <div className="w-max px-3 py-1 rounded-full bg-blue-50 text-app-primary2 font-bold text-[10px] uppercase tracking-wider whitespace-nowrap">
+        {row.original.duration ? `${row.original.duration} MONTH${row.original.duration > 1 ? "S" : ""}` : "-"}
       </div>
     ),
   },
@@ -75,7 +75,7 @@ export const getSubscriptionColumns = (onAction) => [
         Price
       </div>
     ),
-    size: 120,
+    size: 140,
     minSize: 80,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
@@ -90,7 +90,7 @@ export const getSubscriptionColumns = (onAction) => [
         Sub Title
       </div>
     ),
-    size: 150,
+    size: 160,
     minSize: 100,
     cell: ({ row }) => (
       <div className="font-medium text-slate-600 text-[11px] tracking-tight whitespace-nowrap">
@@ -105,10 +105,10 @@ export const getSubscriptionColumns = (onAction) => [
         Features
       </div>
     ),
-    size: 200,
+    size: 220,
     minSize: 150,
     cell: ({ row }) => (
-      <div className="font-medium text-slate-600 text-[11px] tracking-tight truncate max-w-[250px]">
+      <div className="font-medium text-slate-600 text-[11px] tracking-tight truncate max-w-72">
         {row.original.features || "-"}
       </div>
     ),

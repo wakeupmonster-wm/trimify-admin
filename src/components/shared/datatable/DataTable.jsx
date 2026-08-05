@@ -29,8 +29,7 @@ export default function DataTable({
   searchPlaceholder = "Search...",
   globalFilter,
   setGlobalFilter,
-  isLoading: _isLoading,
-  loading,
+  isLoading,
   meta,
   itemName = "items",
   onRowClick,
@@ -41,7 +40,6 @@ export default function DataTable({
   manualSorting = false,
   rowClassName, // custom function or string for row class
 }) {
-  const isLoading = _isLoading || loading;
   const [sorting, setSorting] = useState([]);
 
   const table = useReactTable({

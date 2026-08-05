@@ -57,7 +57,7 @@ const DashboardTableCard = ({
               {columns.map((col) => (
                 <TableHead
                   key={col.key}
-                  className={`text-[11px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-6 last:pr-6 whitespace-nowrap ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
+                  className={`text-[10px] font-bold uppercase tracking-wider text-slate-600 h-10 first:pl-4 last:pr-6 whitespace-nowrap ${col.align === "right" ? "text-right" : "text-left"} ${col.width ? col.width : ""}`}
                 >
                   {col.label}
                 </TableHead>
