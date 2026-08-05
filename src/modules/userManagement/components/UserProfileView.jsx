@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trash2, Loader2, Calendar, History, ChevronLeft } from "lucide-react";
 import { TabOverview } from "./TabOverview";
@@ -404,7 +404,7 @@ export default function UserProfileView({ user, onBack, loading }) {
                   <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-slate-900 truncate max-w-full">
                     {user.name}
                     {age && (
-                      <span className="text-slate-500 font-medium">
+                      <span className="text-slate-500 text-sm lg:text-lg font-medium">
                         , {age}
                       </span>
                     )}

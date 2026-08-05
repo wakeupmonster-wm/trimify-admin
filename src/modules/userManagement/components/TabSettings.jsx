@@ -238,40 +238,31 @@ export function TabSettings({ data }) {
 
         <Card title="Managed By" subtitle="Assigned sub-admin details">
           {user.sub_admin ? (
-            <div>
-              <div className="flex items-center gap-3 border-b border-slate-200 pb-3 mb-1">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 shadow-sm text-[14px] font-bold text-slate-500">
+            <>
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-500">
                   {initials(user.sub_admin?.name)}
                 </div>
                 <div>
-                  <div className="text-[13px] font-bold text-slate-900">
+                  <div className="text-[12.5px] font-bold text-slate-900">
                     {user.sub_admin?.name}
                   </div>
-                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                  <div className="text-[10.5px] font-medium text-slate-500">
                     {user.sub_admin?.designation} · {user.sub_admin?.hospital}
                   </div>
                 </div>
               </div>
 
-              <KV
-                icon={Mail}
-                label="Email"
-                value={user.sub_admin?.email}
-                noBorder={true}
-              />
-              <KV
-                icon={Phone}
-                label="Phone"
-                value={user.sub_admin?.phone}
-                noBorder={true}
-              />
-              <KV
-                icon={Globe}
-                label="Location"
-                value={user.sub_admin?.location}
-                noBorder={true}
-              />
-            </div>
+              <div className="mt-3 px-1">
+                <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
+                <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
+                <KV
+                  icon={Globe}
+                  label="Location"
+                  value={user.sub_admin?.location}
+                />
+              </div>
+            </>
           ) : (
             <EmptyState
               icon={User}
