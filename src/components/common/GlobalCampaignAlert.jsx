@@ -13,7 +13,6 @@ export default function GlobalCampaignAlert() {
   // We listen to Redux ONLY as a trigger mechanism.
   // When a campaign is created or updated, Redux changes.
   const { campaigns } = useSelector((s) => s.campaign);
-  // console.log("campaign", campaigns)
 
   // 1. Independent Fetch Triggered by Redux Changes
   // Whenever Redux updates (e.g. you create a campaign), we ask the backend for the UNFILTERED truth.

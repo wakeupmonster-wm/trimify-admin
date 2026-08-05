@@ -54,7 +54,6 @@ export default function ADSMobPage() {
     try {
       setFetching(true);
       const result = await dispatch(fetchAdsConfig()).unwrap();
-      console.log("Ads API Data Received:", result);
       const adsData = result;
 
       if (adsData) {

@@ -42,8 +42,6 @@ const EditDietProgramPage = () => {
 
   const { dietMeals, programDuration, foodSearchResults, loading } =
     useSelector((state) => state.manageDiet);
-  // console.log("dietMeals: ", dietMeals);
-
   const [selectedWeek, setSelectedWeek] = useState("");
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedMealType, setSelectedMealType] = useState("");

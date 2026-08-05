@@ -33,8 +33,6 @@ const EditFitzoneIntroPage = () => {
     }
   }, [dispatch, id]);
 
-  console.log("intro: ", intro);
-
   useEffect(() => {
     if (intro) {
       setHeading(intro.heading || "");

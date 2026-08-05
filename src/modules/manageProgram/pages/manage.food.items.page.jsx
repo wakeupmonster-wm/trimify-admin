@@ -39,8 +39,6 @@ const ManageFoodItemsPage = () => {
     (state) => state.manageFood,
   );
 
-  console.log("foodSearchResults: ", foodSearchResults);
-
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");

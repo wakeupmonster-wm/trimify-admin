@@ -39,7 +39,7 @@ export const getCmsManagementColumns = (onAction) => [
         Page name
       </div>
     ),
-    size: 250,
+    size: 200,
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-[10px] 3xl:text-xs font-medium text-slate-700">
@@ -54,13 +54,13 @@ export const getCmsManagementColumns = (onAction) => [
         Description
       </div>
     ),
-    size: 350,
+    size: 380,
     minSize: 300,
     cell: ({ row }) => {
       const description = row.getValue("description") || "-";
       return (
         <div
-          className="text-[10px] 3xl:text-xs font-medium text-slate-700 line-clamp-2"
+          className="text-[10px] 3xl:text-xs font-medium max-w-80 text-slate-700 line-clamp-2"
           dangerouslySetInnerHTML={{ __html: description }}
         />
       );
@@ -73,7 +73,7 @@ export const getCmsManagementColumns = (onAction) => [
         Created At
       </div>
     ),
-    size: 150,
+    size: 180,
     minSize: 100,
     cell: ({ row }) => (
       <div className="text-[10px] 3xl:text-xs font-medium text-slate-700">

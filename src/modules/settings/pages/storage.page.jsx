@@ -37,7 +37,6 @@ export default function StoragePage() {
 
   const handleSave = () => {
     setLoading(true);
-    console.log("Saving Storage Config:", form.getValues());
     setTimeout(() => {
       setLoading(false);
       toast.success("Storage settings saved successfully");
