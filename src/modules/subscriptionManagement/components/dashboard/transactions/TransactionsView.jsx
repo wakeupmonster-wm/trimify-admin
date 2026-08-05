@@ -349,7 +349,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         isLoading={transactionsLoading}
         manualPagination
         manualFiltering
-        onRowClick={(row) => goToUserTransactions(row.original)}
+        // onRowClick={(row) => goToUserTransactions(row.original)}
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />

@@ -25,8 +25,6 @@ const PRESETS = [
   { label: "Last 7 Days", value: "last7" },
   { label: "Last 30 Days", value: "last30" },
   { label: "Last 90 Days", value: "last90" },
-  { label: "This Month", value: "thisMonth" },
-  { label: "Last Month", value: "lastMonth" },
   { label: "Custom Range", value: "custom" },
 ];
 

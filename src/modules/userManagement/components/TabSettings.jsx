@@ -24,7 +24,6 @@ import {
   Globe,
   Calendar,
   ShieldCheck,
-  ShieldOff,
   Bell,
   CreditCard,
   User,
@@ -108,7 +107,11 @@ export function TabSettings({ data }) {
   return (
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
-        <Card className="p-0 overflow-hidden" title="Account Status" subtitle="Current status and security details">
+        <Card
+          className="p-0 overflow-hidden"
+          title="Account Status"
+          subtitle="Current status and security details"
+        >
           <KV
             icon={ShieldCheck}
             label="Status"
@@ -157,10 +160,7 @@ export function TabSettings({ data }) {
           />
         </Card>
 
-        <Card
-          title="Device & Notifications"
-          subtitle="App settings and preferences"
-        >
+        <Card title="Managed By" subtitle="Assigned sub-admin details">
           <KV
             icon={Bell}
             label="Notifications"
@@ -236,13 +236,10 @@ export function TabSettings({ data }) {
           )}
         </Card>
 
-        <Card
-          title="Managed By"
-          subtitle="Assigned sub-admin details"
-        >
+        <Card title="Managed By" subtitle="Assigned sub-admin details">
           {user.sub_admin ? (
-            <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100">
-              <div className="flex items-center gap-3 border-b border-slate-200 pb-3 mb-3">
+            <div>
+              <div className="flex items-center gap-3 border-b border-slate-200 pb-3 mb-1">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 shadow-sm text-[14px] font-bold text-slate-500">
                   {initials(user.sub_admin?.name)}
                 </div>
@@ -256,16 +253,24 @@ export function TabSettings({ data }) {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <KV icon={Mail} label="Email" value={user.sub_admin?.email} noBorder={true} />
-                <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} noBorder={true} />
-                <KV
-                  icon={Globe}
-                  label="Location"
-                  value={user.sub_admin?.location}
-                  noBorder={true}
-                />
-              </div>
+              <KV
+                icon={Mail}
+                label="Email"
+                value={user.sub_admin?.email}
+                noBorder={true}
+              />
+              <KV
+                icon={Phone}
+                label="Phone"
+                value={user.sub_admin?.phone}
+                noBorder={true}
+              />
+              <KV
+                icon={Globe}
+                label="Location"
+                value={user.sub_admin?.location}
+                noBorder={true}
+              />
             </div>
           ) : (
             <EmptyState

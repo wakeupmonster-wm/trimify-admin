@@ -84,7 +84,7 @@ export function AppSidebar({ ...props }) {
               </SidebarMenuButton>
             )}
 
-            {/* 3. Trigger button hamesha dikhega, collapsed mode mein center हो jayega */}
+            {/* 3. Trigger button hamesha dikhega, collapsed mode mein center */}
             <SidebarTrigger
               className={cn(
                 "-ml-1 mr-2 text-slate-500 hover:bg-slate-100",
@@ -96,7 +96,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50 pt-4">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50 pt-2">
         {/* Overview Section */}
         {/* {dynamicNavigation.navMain && ( */}
         <NavMain items={navigationData.navMain} />

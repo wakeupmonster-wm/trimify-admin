@@ -39,8 +39,6 @@ function getPeriodLabel(dateRange, preset) {
     case "last7": return "Last 7 Days";
     case "last30": return "Last 30 Days";
     case "last90": return "Last 90 Days";
-    case "thisMonth": return "This Month";
-    case "lastMonth": return "Last Month";
     case "custom": default: {
       const from = dateRange?.from ? new Date(dateRange.from) : subDays(new Date(), 7);
       const to = dateRange?.to ? new Date(dateRange.to) : new Date();

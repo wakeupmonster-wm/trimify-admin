@@ -83,7 +83,7 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
   const csvContent = [
     headers.join(","),
     ...rows.map((row) =>
-      row.map((value, i) => escapeCsvField(value, i === 1)).join(",")
+      row.map((value, i) => escapeCsvField(value, i === 1)).join(","),
     ),
   ].join("\n");
 
@@ -303,7 +303,8 @@ const SubAdminManagementPage = () => {
         // Handle both string and integer matching
         if (String(admin.role) === String(roleFilter)) return true;
         if (roleFilter === "0" && admin.role === "Sub-Admin User") return true;
-        if (roleFilter === "1" && admin.role === "WhiteListing User") return true;
+        if (roleFilter === "1" && admin.role === "WhiteListing User")
+          return true;
         return false;
       });
     }

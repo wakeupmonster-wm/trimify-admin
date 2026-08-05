@@ -169,8 +169,6 @@ export default function Dashboard() {
     last7: "Last 7 Days",
     last30: "Last 30 Days",
     last90: "Last 90 Days",
-    thisMonth: "This Month",
-    lastMonth: "Last Month",
   };
   const dynamicPeriodLabel =
     selectedDate?.preset && PRESET_LABELS[selectedDate.preset]

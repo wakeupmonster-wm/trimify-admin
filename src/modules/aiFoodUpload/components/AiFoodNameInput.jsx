@@ -49,17 +49,25 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           `${BASE_URL}/admin/ai-food/search-suggestions?q=${encodeURIComponent(q)}&creative=${creativeMode ? 1 : 0}`,
           null,
           null,
-          null
+          null,
         );
         if (controller.signal.aborted) return;
 
         let list = [];
         if (Array.isArray(res)) {
           list = res;
-        } else if (res && typeof res === 'object') {
-          list = res.suggestions || res.data?.suggestions || res.data?.data?.suggestions || [];
+        } else if (res && typeof res === "object") {
+          list =
+            res.suggestions ||
+            res.data?.suggestions ||
+            res.data?.data?.suggestions ||
+            [];
           if (!Array.isArray(list)) {
-            list = Array.isArray(res.data) ? res.data : (Array.isArray(res.data?.data) ? res.data.data : []);
+            list = Array.isArray(res.data)
+              ? res.data
+              : Array.isArray(res.data?.data)
+                ? res.data.data
+                : [];
           }
         }
 
@@ -128,7 +136,6 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
 
   return (
     <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-5 sm:py-6 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 overflow-hidden">
-
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -187,41 +194,47 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
             />
           </div>
 
-          {showSuggestions && (suggestions.length > 0 || loadingSuggestions) && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300/60 rounded-md shadow-lg max-h-60 overflow-auto">
-              {loadingSuggestions ? (
-                <div className="p-3 text-sm text-slate-500 text-center">
-                  Searching...
-                </div>
-              ) : suggestions.length > 0 ? (
-                <ul className="py-1">
-                  {suggestions.map((s, i) => {
-                    const suggestionText = typeof s === "string" ? s : s.name || s.title || s.Food_Name;
-                    if (!suggestionText) return null;
-                    return (
-                      <li
-                        key={i}
-                        className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm flex items-center justify-between"
-                        onClick={() => {
-                          addName(suggestionText);
-                          setShowSuggestions(false);
-                        }}
-                      >
-                        <span>{suggestionText}</span>
-                        {creativeMode && (
-                          <span className="text-[10px] font-medium text-app-primary2 bg-app-primary2/10 px-1.5 py-0.5 rounded">AI</span>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <div className="p-3 text-sm text-slate-500 text-center">
-                  No suggestions found.
-                </div>
-              )}
-            </div>
-          )}
+          {showSuggestions &&
+            (suggestions.length > 0 || loadingSuggestions) && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-slate-300/60 rounded-md shadow-lg max-h-60 overflow-auto">
+                {loadingSuggestions ? (
+                  <div className="p-3 text-sm text-slate-500 text-center">
+                    Searching...
+                  </div>
+                ) : suggestions.length > 0 ? (
+                  <ul className="py-1">
+                    {suggestions.map((s, i) => {
+                      const suggestionText =
+                        typeof s === "string"
+                          ? s
+                          : s.name || s.title || s.Food_Name;
+                      if (!suggestionText) return null;
+                      return (
+                        <li
+                          key={i}
+                          className="px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm flex items-center justify-between"
+                          onClick={() => {
+                            addName(suggestionText);
+                            setShowSuggestions(false);
+                          }}
+                        >
+                          <span>{suggestionText}</span>
+                          {creativeMode && (
+                            <span className="text-[10px] font-medium text-app-primary2 bg-app-primary2/10 px-1.5 py-0.5 rounded">
+                              AI
+                            </span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <div className="p-3 text-sm text-slate-500 text-center">
+                    No suggestions found.
+                  </div>
+                )}
+              </div>
+            )}
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
