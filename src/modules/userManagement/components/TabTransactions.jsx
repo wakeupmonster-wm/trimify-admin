@@ -5,8 +5,11 @@ import {
   FileText,
   Calendar,
   Clock,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileShared";
+import DashboardHead from "@/components/shared/dashboard.head";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
@@ -87,16 +90,18 @@ export function TabTransactions({ data }) {
         ].map((item, idx) => (
           <div
             key={idx}
-            className="rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm flex items-start gap-3 transition-all hover:border-slate-300 hover:shadow-md"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex items-start gap-4 transition-all hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"
           >
-            <item.icon className="h-10 w-10 text-slate-500 bg-slate-100 rounded-xl p-2" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-500 shadow-sm">
+              <item.icon className="h-6 w-6" />
+            </div>
             <div className="flex flex-col items-start justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
                 {item.label}
               </span>
               <div
                 className={cn(
-                  "font-black tabular-nums tracking-tight",
+                  "font-black tracking-tight",
                   item.valClass,
                 )}
               >
@@ -108,15 +113,20 @@ export function TabTransactions({ data }) {
       </div>
 
       {/* Transactions List */}
-      <Card
-        title="Transaction History"
-        subtitle="All payments and refunds"
-        right={
+      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:border-slate-300">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-slate-100 bg-slate-50/50">
+          <DashboardHead
+            title="Payment Records"
+            subtitle="Transaction history and invoices"
+            Icon={FileText}
+            iconColor="text-slate-600"
+            iconBg="bg-slate-100/50"
+          />
           <Select
             value={status}
             onValueChange={(val) => onTransactionsStatusChange(val)}
           >
-            <SelectTrigger className="h-9 w-30 rounded-md border border-slate-300/60 bg-white text-xs font-medium text-slate-600 focus:ring-1 focus:ring-app-primary2 transition-all hover:bg-slate-50">
+            <SelectTrigger className="h-10 w-32 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
@@ -128,38 +138,38 @@ export function TabTransactions({ data }) {
               <SelectItem value="disputed">Disputed</SelectItem>
             </SelectContent>
           </Select>
-        }
-      >
+        </div>
+        <div className="p-0 bg-white">
         {isLoading ? (
           <div className="flex min-h-[200px] flex-col items-center justify-center gap-3 text-slate-400">
             <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
             <span className="text-xs font-medium">Loading transactions...</span>
           </div>
         ) : transactions.length > 0 ? (
-          <div className="flex flex-col gap-4">
-            <div className="overflow-x-auto">
+          <div className="flex flex-col w-full">
+            <div className="overflow-x-auto w-full">
               <table className="w-full text-left text-sm text-slate-600">
                 <thead>
-                  <tr className="border-y border-slate-300/60 bg-app-primary2/5">
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       SR.No
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Transaction ID
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Date
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Plan
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Amount
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Status
                     </th>
-                    <th className="h-10 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                       Invoice
                     </th>
                   </tr>
@@ -168,24 +178,24 @@ export function TabTransactions({ data }) {
                   {transactions.map((tx, idx) => (
                     <tr
                       key={tx.id}
-                      className="transition-colors hover:bg-slate-50/50"
+                      className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
                     >
-                      <td className="whitespace-nowrap px-5 py-3 text-[12px] font-medium text-slate-500">
+                      <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
                         {((page || 1) - 1) * 10 + idx + 1}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-[12px] font-medium text-slate-900">
+                      <td className="whitespace-nowrap px-5 py-4 text-[11px] font-semibold text-slate-900">
                         {tx.transaction_id || "—"}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-[12px]">
+                      <td className="whitespace-nowrap px-5 py-4 text-[11px] font-medium text-slate-600">
                         {formatDate(tx.created_at)}
                       </td>
-                      <td className="px-4 py-3 text-[12px] font-medium">
+                      <td className="px-5 py-4 text-[11px] font-bold text-slate-700">
                         {tx.plan_title || "—"}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3 text-[12px] font-bold text-slate-900">
+                      <td className="whitespace-nowrap px-5 py-4 text-[12px] font-black text-slate-900">
                         {formatCurrency(tx.amount)}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3">
+                      <td className="whitespace-nowrap px-5 py-4">
                         <Pill tone={getStatusTone(tx.status)}>{tx.status}</Pill>
                         {tx.refund_reason && (
                           <div className="mt-1 text-[10px] text-slate-400">
@@ -193,19 +203,19 @@ export function TabTransactions({ data }) {
                           </div>
                         )}
                       </td>
-                      <td className="whitespace-nowrap px-4 py-3">
+                      <td className="whitespace-nowrap px-5 py-4">
                         {tx.invoice_url ? (
                           <a
                             href={tx.invoice_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-app-primary2 hover:underline"
+                            className="inline-flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-wide text-app-primary2 bg-app-primary2/10 hover:bg-app-primary2 hover:text-white px-3 py-1.5 rounded-md transition-all uppercase"
                           >
                             <FileText className="h-3.5 w-3.5" />
                             View
                           </a>
                         ) : (
-                          <span className="text-[11px] text-slate-400">—</span>
+                          <span className="text-[11px] text-slate-400 font-medium">—</span>
                         )}
                       </td>
                     </tr>
@@ -216,8 +226,8 @@ export function TabTransactions({ data }) {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-                <span className="text-xs font-medium text-slate-500">
+              <div className="flex items-center justify-between border-t border-slate-200 px-6 py-4 bg-slate-50">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   Page {page} of {totalPages}
                 </span>
                 <div className="flex items-center gap-2">
@@ -226,7 +236,7 @@ export function TabTransactions({ data }) {
                       onTransactionsPageChange(Math.max(1, page - 1))
                     }
                     disabled={page === 1}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300/60 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </button>
@@ -235,7 +245,7 @@ export function TabTransactions({ data }) {
                       onTransactionsPageChange(Math.min(totalPages, page + 1))
                     }
                     disabled={page === totalPages}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300/60 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </button>
@@ -244,13 +254,16 @@ export function TabTransactions({ data }) {
             )}
           </div>
         ) : (
-          <EmptyState
-            icon={CreditCard}
-            title="No transactions found"
-            subtitle="This user hasn't made any transactions yet."
-          />
+          <div className="p-8 pb-12">
+            <EmptyState
+              icon={CreditCard}
+              title="No transactions found"
+              subtitle="This user hasn't made any transactions yet."
+            />
+          </div>
         )}
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

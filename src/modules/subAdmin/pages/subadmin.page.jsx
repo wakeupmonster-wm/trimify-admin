@@ -165,11 +165,6 @@ const SubAdminManagementPage = () => {
       value: (kpis?.total ?? 0).toLocaleString(),
       description: "Total registered users",
       tone: "blue",
-      onClick: () => {
-        setRoleFilter("");
-        setStatusFilter("");
-      },
-      isSelected: !roleFilter && !statusFilter,
     },
     {
       icon: LuUserRoundCheck,
@@ -427,7 +422,7 @@ const SubAdminManagementPage = () => {
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={() =>
-          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+          !isDeleting && setDeleteModal({ open: false, rowData: null })
         }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
@@ -438,7 +433,7 @@ const SubAdminManagementPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
-          !toggleLoading &&
+          !isUpdating &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

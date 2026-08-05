@@ -98,9 +98,11 @@ export const ConversionFunnel = ({ data }) => {
                     )} */}
                   </div>
                   <span className="text-[13px] font-medium text-slate-400 mt-1.5">
-                    {((stage.value / stages[0].value) * 100)
-                      .toFixed(2)
-                      .replace(/\.00$/, "")}
+                    {stages[0].value > 0
+                      ? ((stage.value / stages[0].value) * 100)
+                          .toFixed(2)
+                          .replace(/\.00$/, "")
+                      : 0}
                     %
                   </span>
                 </div>

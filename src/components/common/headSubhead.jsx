@@ -55,7 +55,7 @@ const PageHeader = React.forwardRef(
             <motion.div
               variants={itemVariants}
               className={cn(
-                "flex p-2 size-10 items-center justify-center rounded-xl",
+                "flex p-2 size-10 shrink-0 items-center justify-center rounded-xl",
                 color || variantStyles[variant],
               )}
             >

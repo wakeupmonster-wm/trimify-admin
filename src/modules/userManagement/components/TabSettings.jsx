@@ -107,9 +107,9 @@ export function TabSettings({ data }) {
   };
 
   return (
-    <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.2fr_1fr]">
-      <div className="flex flex-col gap-3.5">
-        <Card title="Account Status" subtitle="Current status and security details" className={"pb-1.5"}>
+    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
+      <div className="flex flex-col gap-4">
+        <Card className="p-0 overflow-hidden" title="Account Status" subtitle="Current status and security details">
           <KV
             icon={ShieldCheck}
             label="Status"
@@ -190,8 +190,8 @@ export function TabSettings({ data }) {
         </Card>
       </div>
 
-      <div className="flex flex-col gap-3.5">
-        <Card title="Billing" subtitle="Payment methods and history">
+      <div className="flex flex-col gap-4">
+        <Card title="Billing & Plan" subtitle="Payment methods and history">
           <KV
             icon={CreditCard}
             label="Payment Status"
@@ -212,7 +212,7 @@ export function TabSettings({ data }) {
                     )}
                   >
                     {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
-                    {user.plan.title.toUpperCase()}
+                    {String(user.plan.title || user.plan).toUpperCase()}
                   </div>
                 </div>
               ) : (
@@ -231,56 +231,43 @@ export function TabSettings({ data }) {
             value={user.stripe_id || "Not linked"}
           />
           {(!user.transactions || user.transactions.length === 0) && (
-            <EmptyState icon={CreditCard} title="No transactions yet" />
+            <div className="pt-2">
+              <EmptyState icon={CreditCard} title="No transactions yet" />
+            </div>
           )}
         </Card>
 
         <Card
           title="Managed By"
           subtitle="Assigned sub-admin details"
-          // right={
-          //   <Pill
-          //     tone={
-          //       user.sub_admin?.status === "Active" ||
-          //       user.sub_admin?.status === "1"
-          //         ? "success"
-          //         : "neutral"
-          //     }
-          //   >
-          //     {user.sub_admin?.status === "1"
-          //       ? "Active"
-          //       : user.sub_admin?.status === "0"
-          //         ? "Inactive"
-          //         : user.sub_admin?.status}
-          //   </Pill>
-          // }
         >
           {user.sub_admin ? (
-            <>
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-[13px] font-semibold text-slate-500">
+            <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100">
+              <div className="flex items-center gap-3 border-b border-slate-200 pb-3 mb-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 shadow-sm text-[14px] font-bold text-slate-500">
                   {initials(user.sub_admin?.name)}
                 </div>
                 <div>
-                  <div className="text-[12.5px] font-bold text-slate-900">
+                  <div className="text-[13px] font-bold text-slate-900">
                     {user.sub_admin?.name}
                   </div>
-                  <div className="text-[10.5px] font-medium text-slate-500">
+                  <div className="text-[11px] font-medium text-slate-500 mt-0.5">
                     {user.sub_admin?.designation} · {user.sub_admin?.hospital}
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3 px-1">
-                <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
-                <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
+              <div className="space-y-1">
+                <KV icon={Mail} label="Email" value={user.sub_admin?.email} noBorder={true} />
+                <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} noBorder={true} />
                 <KV
                   icon={Globe}
                   label="Location"
                   value={user.sub_admin?.location}
+                  noBorder={true}
                 />
               </div>
-            </>
+            </div>
           ) : (
             <EmptyState
               icon={User}

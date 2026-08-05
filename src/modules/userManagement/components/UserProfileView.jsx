@@ -23,6 +23,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
 import { LuUserRound } from "react-icons/lu";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -169,9 +170,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     const macroTotal =
       (user.carbs_goal || 0) + (user.fat_goal || 0) + (user.protein_goal || 0);
     const macros = [
-      { label: "Carbs", v: user.carbs_goal || 0, color: "#f59e0b" }, // amber-500
-      { label: "Protein", v: user.protein_goal || 0, color: "#3b82f6" }, // blue-500
-      { label: "Fat", v: user.fat_goal || 0, color: "#10b981" }, // emerald-500
+      { label: "Carbs", v: user.carbs_goal || 0, color: "#f43f5e" }, // Rose-500
+      { label: "Protein", v: user.protein_goal || 0, color: "#0ea5e9" }, // Sky-500
+      { label: "Fat", v: user.fat_goal || 0, color: "#8b5cf6" }, // Violet-500
     ];
     const fitnessProfileFields = [
       ["Weight Goal", user.weight_goal ? `${user.weight_goal} kg` : null],
@@ -355,10 +356,10 @@ export default function UserProfileView({ user, onBack, loading }) {
               <span className="text-xl md:text-2xl font-bold text-slate-900 truncate">
                 User Directory
               </span>
-              <span className="text-muted-foreground/30 font-normal text-xl md:text-2xl hidden xs:inline">
+              <span className="text-slate-300 font-normal text-xl md:text-2xl hidden xs:inline">
                 /
               </span>
-              <span className="text-base md:text-xl font-normal text-foreground/30 mt-1 truncate">
+              <span className="text-base md:text-xl font-normal text-slate-400 mt-1 truncate">
                 {user.name || "Profile View"}
               </span>
             </div>
@@ -459,14 +460,24 @@ export default function UserProfileView({ user, onBack, loading }) {
           />
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="mb-6 flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max no-scrollbar">
+            <TabsList className="mb-6 flex overflow-x-auto h-auto p-1 bg-white backdrop-blur-md border border-slate-200 shadow-sm rounded-xl w-full lg:max-w-max no-scrollbar">
               {TABS.map((t) => (
                 <TabsTrigger
                   key={t.key}
                   value={t.key}
-                  className="h-10 rounded-lg px-5 text-sm font-semibold text-slate-500 hover:text-slate-900 data-[state=active]:bg-app-primary2 data-[state=active]:text-white data-[state=active]:shadow-sm transition-all duration-300 ease-in-out whitespace-nowrap"
+                  className={cn(
+                    "relative flex items-center gap-2 px-6 py-2.5 text-sm font-semibold transition-all duration-300 rounded-lg border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-app-primary2 text-slate-500 hover:text-slate-900 whitespace-nowrap"
+                  )}
                 >
-                  {t.label}
+                  {tab === t.key && (
+                    <motion.div
+                      layoutId="activeTabProfile"
+                      className="absolute inset-0 bg-app-primary2/10 rounded-lg"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{t.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>

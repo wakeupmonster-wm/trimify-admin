@@ -80,6 +80,18 @@ export function EcosystemAlerts({ data, selectedDate }) {
       actionLabel: "Manage",
       icon: Target,
     },
+    zero_enrollment: {
+      bgColor: "bg-[#F0FDF4]",
+      borderColor: "border-[#BBF7D0]",
+      iconBg: "bg-[#DCFCE7]",
+      iconColor: "text-[#16A34A]",
+      badgeBg: "bg-[#F0FDF4]",
+      badgeText: "text-[#16A34A]",
+      actionBg: "bg-[#FFFFFF]",
+      actionText: "text-[#16A34A]",
+      actionLabel: "Review",
+      icon: Target,
+    },
   };
 
   return (

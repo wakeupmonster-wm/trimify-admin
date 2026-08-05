@@ -241,7 +241,7 @@ export default function Dashboard() {
                 : "bg-slate-50 backdrop-blur-none border-b border-transparent shadow-none",
             )}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full flex-wrap">
               <PageHeader
                 heading="Dashboard Overview"
                 icon={
