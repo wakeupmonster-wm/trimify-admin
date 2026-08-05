@@ -87,8 +87,6 @@ const AccountSettingsPage = () => {
         updateEmail({ email: emailForm.email }),
       ).unwrap();
 
-      console.log("res: ", res);
-
       toast.success(res?.message || "OTP has been sent to your email.");
       setShowOtpField(true);
     } catch (error) {

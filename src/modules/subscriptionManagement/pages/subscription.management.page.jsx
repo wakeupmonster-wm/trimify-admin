@@ -79,7 +79,6 @@ const SubscriptionManagementPage = () => {
     if (!deleteModal.rowData) return;
     setIsDeleting(true);
     try {
-      console.log("Delete subscription plan:", deleteModal.rowData);
       // Add dispatch for delete action here when API is ready
       // Simulate delay for now
       await new Promise((resolve) => setTimeout(resolve, 500));

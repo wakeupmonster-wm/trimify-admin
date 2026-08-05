@@ -131,8 +131,6 @@ export const fetchDashboardExtras = createAsyncThunk(
 
       const { data } = res;
 
-      console.log("data: ", data);
-
       const summary = data?.summary || {};
       const demographics = data?.demographics || {};
       const funnelData = data?.conversionFunnel || {};

@@ -59,7 +59,6 @@ const NutritionFoodPage = () => {
     if (!deleteModal.rowData) return;
     setIsDeleting(true);
     try {
-      console.log("Delete nutrition food", deleteModal.rowData);
       // Add dispatch for delete action here when API is ready
       await new Promise((resolve) => setTimeout(resolve, 500));
     } finally {

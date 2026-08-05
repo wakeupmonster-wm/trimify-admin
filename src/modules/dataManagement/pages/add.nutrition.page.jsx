@@ -63,8 +63,6 @@ const AddNutritionPage = () => {
     }
   };
 
-  console.log("editData: ", editData);
-
   useEffect(() => {
     if (isEdit && editData) {
       // const rawMealType = editData.Meal_Type || editData.meal_type || editData.type || "";

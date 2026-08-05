@@ -53,8 +53,6 @@ export default function CampaignDeliveryLogs({
   logs,
   loading,
 }) {
-  console.log("campaign: ", campaign);
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-sm md:max-w-2xl lg:max-w-4xl max-h-[85vh] gap-0 overflow-hidden flex flex-col bg-white rounded-2xl border-none shadow-2xl p-0">

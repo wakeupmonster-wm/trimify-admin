@@ -49,8 +49,6 @@ export default function KYCVerificationPage() {
     navState === "High" ||
     navState === "KYC pending";
 
-  // console.log("navState: ", navState)
-
   const [statusFilter, setStatusFilter] = useState(() => {
     // Priority 1: Dashboard navigation intent → always "pending"
     if (isFromDashboard) return "pending";

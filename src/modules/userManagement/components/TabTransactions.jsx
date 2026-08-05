@@ -64,25 +64,25 @@ export function TabTransactions({ data }) {
             label: "Total Transactions",
             value: summary.totalTransactions || 0,
             icon: CreditCard,
-            valClass: "text-slate-900 text-xl",
+            valClass: "text-slate-900 text-lg",
           },
           {
             label: "Total Spent",
             value: formatCurrency(summary.totalSpent),
             icon: FileText,
-            valClass: "text-emerald-600 text-xl",
+            valClass: "text-emerald-600 text-lg",
           },
           {
             label: "First Purchase",
             value: formatDate(summary.firstPurchaseAt),
             icon: Calendar,
-            valClass: "text-slate-800 text-lg",
+            valClass: "text-slate-800 text-base",
           },
           {
             label: "Last Transaction",
             value: formatDate(summary.lastTransactionAt),
             icon: Clock,
-            valClass: "text-slate-800 text-lg",
+            valClass: "text-slate-800 text-base",
           },
         ].map((item, idx) => (
           <div

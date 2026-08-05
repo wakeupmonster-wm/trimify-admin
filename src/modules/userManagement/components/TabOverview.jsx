@@ -164,9 +164,11 @@ export function TabOverview({ data }) {
                   <div className="flex items-center gap-2">
                     <div className={cn(
                       "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide",
-                      user.paid 
-                        ? "bg-amber-50 text-amber-600" 
-                        : "bg-slate-100 text-slate-600"
+                      !user.paid
+                        ? "bg-slate-100 text-slate-600"
+                        : String(user.plan.title || user.plan).toLowerCase().includes("premium")
+                          ? "bg-amber-50 text-amber-600"
+                          : "bg-blue-50 text-app-primary2"
                     )}>
                       {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
                       {String(user.plan.title || user.plan).toUpperCase()}

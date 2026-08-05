@@ -70,65 +70,50 @@ const UsersManagementPage = () => {
   const isUnfiltered = !statusFilter && !debouncedSearchTerm;
   const [pinnedKpis, setPinnedKpis] = useState(null);
 
-  // Background fetch for true KPIs if we arrive with a filter applied
+  // Background fetch for true KPIs if the backend doesn't provide them
   useEffect(() => {
-    if (!isUnfiltered && !pinnedKpis) {
-      getUserManagementAPI({ limit: 1 })
-        .then((res) => {
-          if (res && res.status === "success") {
-            const fetchedKpis = res.kpis || {
-              totalUsers: res.pagination?.total || 0,
-              activeUsers: 0, // Fallback if backend doesn't provide
-              inactiveUsers: 0,
-              newSignupsToday: 0,
-            };
-            setPinnedKpis(fetchedKpis);
-          }
-        })
-        .catch(() => {});
+    // If we already have pinned KPIs, don't refetch
+    if (pinnedKpis) return;
+
+    // If the backend provided `kpis` in the initial fetch, use them directly
+    if (kpis) {
+      setPinnedKpis(kpis);
+      return;
     }
-  }, [isUnfiltered, pinnedKpis]);
+
+    // Otherwise, we need to fetch the counts manually because calculating them
+    // from the current page of users is mathematically incorrect.
+    Promise.all([
+      getUserManagementAPI({ limit: 1 }),
+      getUserManagementAPI({ limit: 1, status: "Active" }),
+      getUserManagementAPI({ limit: 1, status: "Inactive" }),
+      getUserManagementAPI({ limit: 1, status: "new_today" }),
+    ])
+      .then(([resTotal, resActive, resInactive, resNew]) => {
+        setPinnedKpis({
+          totalUsers: resTotal?.pagination?.total || 0,
+          activeUsers: resActive?.pagination?.total || 0,
+          inactiveUsers: resInactive?.pagination?.total || 0,
+          newSignupsToday: resNew?.pagination?.total || 0,
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to fetch KPIs:", err);
+      });
+  }, [kpis, pinnedKpis]);
 
   const columns = useMemo(() => getUserManagementColumns(handleAction), []);
 
   const localKpis = useMemo(() => {
-    // If we have pinned KPIs, ALWAYS use them. This ensures clicking a filter doesn't change the cards.
     if (pinnedKpis) return pinnedKpis;
 
-    // If the data is unfiltered right now, we can calculate and pin the real KPIs
-    if (isUnfiltered && (kpis || users?.length > 0)) {
-      const all = users || [];
-      const active = all.filter(
-        (u) =>
-          String(u.status || "Active").toLowerCase() === "active" ||
-          u.status === "1" ||
-          u.status === "true",
-      ).length;
-
-      const computedKpis = kpis || {
-        totalUsers: serverPagination?.total || all.length,
-        activeUsers: active,
-        inactiveUsers: (serverPagination?.total || all.length) - active,
-        newSignupsToday: all.filter((u) => {
-          if (!u.created_at) return false;
-          const today = new Date().toISOString().split("T")[0];
-          return String(u.created_at).startsWith(today);
-        }).length,
-      };
-
-      // Update the pinned state in the next tick to avoid render warnings
-      setTimeout(() => setPinnedKpis(computedKpis), 0);
-      return computedKpis;
-    }
-
-    // Fallback while loading
     return {
-      totalUsers: 0,
+      totalUsers: serverPagination?.total || 0,
       activeUsers: 0,
       inactiveUsers: 0,
       newSignupsToday: 0,
     };
-  }, [kpis, users, serverPagination, isUnfiltered, pinnedKpis]);
+  }, [serverPagination, pinnedKpis]);
 
   const kpiItems = [
     {

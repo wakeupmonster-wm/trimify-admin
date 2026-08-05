@@ -9,8 +9,6 @@ export function TabHealth({ data }) {
     macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields,
   } = data;
 
-  console.log("data: ", data)
-
   return (
     <>
       <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
