@@ -99,10 +99,8 @@ const ManageBlogsPage = () => {
     }
   };
 
-  const postColumns = useMemo(
-    () => getManageBlogsColumns(handlePostAction),
-    [],
-  );
+  const postColumns = useMemo(() => getManageBlogsColumns(handlePostAction), []);
+  
   const displayPosts = useMemo(() => {
     let list = posts && posts.length > 0 ? posts : [];
     if (statusFilter === "Publish") {
@@ -277,10 +275,10 @@ const ManageBlogsPage = () => {
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={() =>
-          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+          !isDeleting && setDeleteModal({ open: false, rowData: null })
         }
         onConfirm={handleConfirmDelete}
-        loading={deleteLoading}
+        loading={isDeleting}
         title="Confirm Deletion"
         message="Are you sure you want to delete this blog post? This action cannot be undone."
       />

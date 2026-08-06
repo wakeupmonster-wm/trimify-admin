@@ -192,13 +192,13 @@ export const getManageProgramColumns = (onAction) => [
               <Edit className="w-3.5 h-3.5" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "replicate")}
             >
               <Copy className="w-3.5 h-3.5" />
               Replicate
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem
               className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "delete")}

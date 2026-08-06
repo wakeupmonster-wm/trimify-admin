@@ -3,7 +3,14 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, FileText, Loader2, ArrowLeft, X } from "lucide-react";
+import {
+  Save,
+  UploadCloud,
+  FileText,
+  Loader2,
+  ArrowLeft,
+  X,
+} from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +39,8 @@ const AddPostPage = () => {
   const isEdit = Boolean(id);
   const editData = location.state?.editData || null;
 
+  console.log("editData : ", editData);
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
@@ -41,12 +50,16 @@ const AddPostPage = () => {
     title: "",
     category: "",
     description: "",
-    status: "Active", // "Active" maps to the SelectItem displaying "Public"
+    status: "Published",
     bannerImage: null,
   });
 
   useEffect(() => {
     if (isEdit && editData) {
+      // Check if status is Published or Public
+      const currentStatus =
+        editData.visibility_status || editData.status || "Published";
+
       setFormData({
         title: editData.title || "",
         category:
@@ -54,13 +67,7 @@ const AddPostPage = () => {
           editData.blog_category_id?.toString() ||
           "",
         description: editData.description || "",
-        // If backend sends "Active", we store "Active" so the Select dropdown displays "Public"
-        status:
-          editData.status === "Active"
-            ? "Active"
-            : editData.status === "Inactive"
-              ? "Inactive"
-              : "Active",
+        status: currentStatus, // Ensure correct mapping
         bannerImage: null,
       });
     }
@@ -139,6 +146,7 @@ const AddPostPage = () => {
       payload.append("category_id", formData.category);
       payload.append("content", formData.description);
       payload.append("status", formData.status);
+      // payload.append("status", "Active");
 
       if (formData.bannerImage) {
         payload.append("image", formData.bannerImage);
@@ -276,10 +284,15 @@ const AddPostPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Featured Image" : "Upload Featured Image"}
               </Label>
-              {formData.bannerImage || (isEdit && editData?.image && !removedExistingImage) ? (
+              {formData.bannerImage ||
+              (isEdit && editData?.image && !removedExistingImage) ? (
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
                   <img
-                    src={formData.bannerImage ? URL.createObjectURL(formData.bannerImage) : editData.image}
+                    src={
+                      formData.bannerImage
+                        ? URL.createObjectURL(formData.bannerImage)
+                        : editData.image
+                    }
                     alt="Featured"
                     className="w-full h-48 object-cover bg-slate-50"
                   />
@@ -290,7 +303,8 @@ const AddPostPage = () => {
                         e.stopPropagation();
                         setFormData((prev) => ({ ...prev, bannerImage: null }));
                         if (isEdit) setRemovedExistingImage(true);
-                        if (errors.bannerImage) setErrors((prev) => ({ ...prev, bannerImage: "" }));
+                        if (errors.bannerImage)
+                          setErrors((prev) => ({ ...prev, bannerImage: "" }));
                       }}
                       className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
                     >
@@ -300,14 +314,17 @@ const AddPostPage = () => {
                 </div>
               ) : (
                 <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                    isDragging
                       ? "border-app-primary2 bg-blue-50"
                       : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                    }`}
+                  }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  onClick={() => document.getElementById("banner-upload").click()}
+                  onClick={() =>
+                    document.getElementById("banner-upload").click()
+                  }
                 >
                   <input
                     id="banner-upload"
@@ -338,17 +355,20 @@ const AddPostPage = () => {
                 Status
               </Label>
               <Select
+                key={`status-${formData.status}`}
                 value={formData.status}
                 onValueChange={(val) => handleSelectChange("status", val)}
               >
                 <SelectTrigger
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.status ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${
+                    errors.status ? "border-red-500" : "border-slate-300/60"
+                  }`}
                 >
-                  <SelectValue placeholder="Select..." />
+                  <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Active">Public</SelectItem>
-                  <SelectItem value="Inactive">Private</SelectItem>
+                  <SelectItem value="Published">Public</SelectItem>
+                  <SelectItem value="Private">Private</SelectItem>
                 </SelectContent>
               </Select>
               {errors.status && (
