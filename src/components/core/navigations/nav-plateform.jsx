@@ -88,7 +88,7 @@ export function NavPlateform({ items }) {
                   >
                     <Link
                       to={item.url}
-                      className="flex items-center gap-3 w-full"
+                      className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                     >
                       {(isActive || hasActiveChild) && (
                         <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-app-primary2" />
@@ -96,7 +96,7 @@ export function NavPlateform({ items }) {
 
                       <div
                         className={cn(
-                          "flex size-5 items-center justify-center transition-all duration-300 group-data-[collapsible=icon]:ml-4",
+                          "flex size-5 items-center justify-center transition-all duration-300",
                           isActive || hasActiveChild
                             ? "text-app-primary2"
                             : "text-slate-400 hover:text-foreground/80",
@@ -107,7 +107,7 @@ export function NavPlateform({ items }) {
 
                       <span
                         className={cn(
-                          "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
+                          "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
                           isActive || hasActiveChild
                             ? "text-app-primary2 font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
@@ -131,7 +131,7 @@ export function NavPlateform({ items }) {
 
                       <ChevronRight
                         className={cn(
-                          "size-4 transition-transform duration-200 text-slate-400",
+                          "size-4 transition-transform duration-200 text-slate-400 group-data-[collapsible=icon]:hidden",
                           "group-data-[state=open]/collapsible:rotate-90",
                         )}
                       />
@@ -152,7 +152,7 @@ export function NavPlateform({ items }) {
                 >
                   <Link
                     to={item.url}
-                    className="flex items-center gap-3 w-full"
+                    className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                   >
                     {isActive && (
                       <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-app-primary2" />

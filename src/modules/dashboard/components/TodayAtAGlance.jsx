@@ -155,8 +155,8 @@ export function TodayAtAGlance({
               // Use compact number formatting for raw numeric values
               const displayValue =
                 !isNaN(stat.value) &&
-                typeof stat.value !== "boolean" &&
-                stat.value !== ""
+                  typeof stat.value !== "boolean" &&
+                  stat.value !== ""
                   ? formatCompactNumber(Number(stat.value))
                   : stat.value;
 
@@ -185,11 +185,10 @@ export function TodayAtAGlance({
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
                             <div
-                              className={`flex items-center gap-1 font-bold text-[10px] rounded-full py-1 px-2 shrink-0 transition-transform ${
-                                isRed
+                              className={`flex items-center gap-1 font-bold text-[10px] rounded-full py-1 px-2 shrink-0 transition-transform ${isRed
                                   ? "text-rose-600 bg-rose-50"
                                   : "text-emerald-600 bg-emerald-50"
-                              }`}
+                                }`}
                             >
                               {isTrendingUp ? (
                                 <IconTrendingUp size={12} stroke={3} />
@@ -212,7 +211,7 @@ export function TodayAtAGlance({
                               )}
                             </p>
                             {stat.tooltipData &&
-                            stat.tooltipData.type === "contribution" ? (
+                              stat.tooltipData.type === "contribution" ? (
                               <div className="space-y-1 mt-1">
                                 <div className="flex justify-between gap-4">
                                   <span className="text-slate-400">
@@ -291,7 +290,7 @@ export function TodayAtAGlance({
                                   >
                                     {stat.tooltipData.current -
                                       stat.tooltipData.previous >
-                                    0
+                                      0
                                       ? "+"
                                       : ""}
                                     {stat.tooltipData.isCurrency ? "$" : ""}
