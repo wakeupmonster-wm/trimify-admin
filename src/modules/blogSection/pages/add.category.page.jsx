@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Loader2, ArrowLeft, X } from "lucide-react";
+import { Save, UploadCloud, Loader2, ArrowLeft, X, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,7 +42,8 @@ const AddCategoryPage = () => {
   });
 
   const [isDragging, setIsDragging] = useState(false);
-
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [currentIcon, setCurrentIcon] = useState(null);
   useEffect(() => {
     if (isEdit && editData) {
       setFormData({
@@ -224,21 +225,41 @@ const AddCategoryPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
-              {formData.iconImage || (isEdit && editData?.icon && !removedExistingImage) ? (
+              {formData.iconImage ||
+              (isEdit && editData?.icon && !removedExistingImage) ? (
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
                   <img
-                    src={formData.iconImage ? URL.createObjectURL(formData.iconImage) : editData.icon}
+                    src={
+                      formData.iconImage
+                        ? URL.createObjectURL(formData.iconImage)
+                        : editData.icon
+                    }
                     alt="Category Icon"
                     className="w-full h-48 object-cover bg-slate-50"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const imgSrc = formData.iconImage
+                          ? URL.createObjectURL(formData.iconImage)
+                          : editData.icon;
+                        setCurrentIcon(imgSrc);
+                        setPreviewOpen(true);
+                      }}
+                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFormData((prev) => ({ ...prev, iconImage: null }));
                         if (isEdit) setRemovedExistingImage(true);
-                        if (errors.iconImage) setErrors((prev) => ({ ...prev, iconImage: "" }));
+                        if (errors.iconImage)
+                          setErrors((prev) => ({ ...prev, iconImage: "" }));
                       }}
                       className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
                     >
@@ -248,10 +269,11 @@ const AddCategoryPage = () => {
                 </div>
               ) : (
                 <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                    isDragging
                       ? "border-app-primary2 bg-blue-50"
                       : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                    }`}
+                  }`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}

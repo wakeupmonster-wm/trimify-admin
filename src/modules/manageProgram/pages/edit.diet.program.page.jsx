@@ -191,7 +191,7 @@ const EditDietProgramPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full">
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-4 w-full min-w-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
               {/* Choose Week */}
