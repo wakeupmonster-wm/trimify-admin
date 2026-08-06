@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Trash2, Loader2, Calendar, History, ChevronLeft } from "lucide-react";
+import { Trash2, Loader2, Calendar, History, ChevronLeft, LayoutDashboard, HeartPulse, Dumbbell, Activity, CreditCard, Settings } from "lucide-react";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
 import { TabPrograms } from "./TabPrograms";
@@ -123,13 +123,13 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
 }
 
 const TABS = [
-  { key: "overview", label: "Overview" },
-  { key: "health", label: "Health & Goals" },
-  { key: "programs", label: "Programs & Fitzone" },
-  { key: "activity", label: "Activity" },
-  // { key: "account", label: "Account" },
-  { key: "transactions", label: "Transactions" },
-  { key: "settings", label: "Settings" },
+  { key: "overview", label: "Overview", icon: LayoutDashboard },
+  { key: "health", label: "Health & Goals", icon: HeartPulse },
+  { key: "programs", label: "Programs & Fitzone", icon: Dumbbell },
+  { key: "activity", label: "Activity", icon: Activity },
+  // { key: "account", label: "Account", icon: User },
+  { key: "transactions", label: "Transactions", icon: CreditCard },
+  { key: "settings", label: "Settings", icon: Settings },
 ];
 
 /* =========================================================================
@@ -464,7 +464,8 @@ export default function UserProfileView({ user, onBack, loading }) {
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
             <div className="relative w-full overflow-hidden mb-6">
-              <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start no-scrollbar hide-scrollbar snap-x snap-mandatory shadow-sm">
+              {/* <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start shadow-sm"> */}
+              <TabsList className="hidden lg:flex items-center justify-between gap-1 p-1 bg-white backdrop-blur-md rounded-lg w-full border border-slate-200 h-auto overflow-x-auto flex-nowrap shadow-sm">
                 {TABS.map((t) => {
                   const isActive = tab === t.key;
                   return (
@@ -472,12 +473,19 @@ export default function UserProfileView({ user, onBack, loading }) {
                       key={t.key}
                       value={t.key}
                       className={cn(
-                        "relative h-10 rounded-lg px-4 sm:px-5 text-xs sm:text-sm font-semibold transition-all duration-300 border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-slate-900 snap-start shrink-0 whitespace-nowrap",
+                        "relative h-10 rounded-lg px-11 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-slate-900 snap-start shrink-0 whitespace-nowrap flex items-center gap-2",
                         isActive
                           ? "text-white hover:text-white"
                           : "text-slate-500",
                       )}
                     >
+                      {t.icon && (
+                        <t.icon
+                          className={`w-4 h-4 relative z-10 ${
+                            isActive ? "text-white" : "text-slate-400"
+                          }`}
+                        />
+                      )}
                       <span
                         className={`hidden sm:inline relative z-10 ${isActive ? "text-white" : "text-foreground/70"}`}
                       >
