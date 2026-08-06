@@ -13,12 +13,12 @@ const DashboardHead = ({
   caseType = false,
   subtitle,
   Icon,
-  iconColor = "text-blue-600", // Default color
-  iconBg = "bg-blue-50", // Default background
+  iconColor = "text-slate-600",
+  iconBg = "bg-slate-100/50",
   titlestyle,
-  iconSizeClass = "h-10 w-10",
+  iconSizeClass = "h-9 w-9",
   titleSizeClass = "text-[14px]",
-  iconInnerClass = "h-5 w-5",
+  iconInnerClass = "h-[18px] w-[18px]",
   tooltipText,
 }) => {
   return (

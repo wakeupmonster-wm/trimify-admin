@@ -57,7 +57,23 @@ export default function AccountsPage() {
       : format(date, "dd MMM, yyyy - h:mm a");
   };
 
-  const initials = account?.nickname
+  const localUserStr = localStorage.getItem("auth_user");
+  const localUser = localUserStr ? JSON.parse(localUserStr) : null;
+
+  const displayName = account?.nickname || account?.name || localUser?.nickname || localUser?.name || "Admin";
+  const displayEmail = account?.email || localUser?.email || "admin@example.com";
+  const initial = displayName.charAt(0).toUpperCase();
+
+  const displayAccount = {
+    ...localUser,
+    ...account,
+    name: displayName,
+    nickname: displayName,
+    email: displayEmail,
+    initial: initial,
+  };
+
+  const initials = displayName
     ?.split(" ")
     .map((n) => n[0])
     .join("")
@@ -99,14 +115,14 @@ export default function AccountsPage() {
             </div>
 
             <div className="px-6 sm:px-10 pb-10">
-              <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-end -mt-16 md:-mt-[75px] relative z-10 w-full">
+              <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-center md:items-end -mt-16 md:-mt-[75px] relative z-10 w-full">
                 {/* Avatar */}
                 <div className="relative group shrink-0">
                   <div className="absolute inset-0 bg-app-primary2 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Avatar className="relative h-40 w-40 md:h-44 md:w-44 ring-4 ring-white bg-white shadow-lg rounded-full overflow-hidden">
                     <AvatarImage
-                      src={account?.avatar?.url}
-                      alt={account?.nickname}
+                      src={displayAccount?.avatar?.url || displayAccount?.avatar}
+                      alt={displayName}
                       className="object-cover"
                     />
                     <AvatarFallback className="bg-gradient-to-br from-app-primary2 to-app-primary2 text-white text-5xl font-black">
@@ -116,28 +132,28 @@ export default function AccountsPage() {
                 </div>
 
                 {/* Identity Info */}
-                <div className="flex-1 text-center md:text-left space-y-1 mb-3 w-full">
+                <div className="flex-1 text-center md:text-left space-y-2 mb-5 w-full">
                   <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
                     <h1 className="text-3xl md:text-5xl font-black text-foreground/90 tracking-tight">
-                      {account?.nickname}
+                      {displayName}
                     </h1>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 md:gap-8 text-xs font-semibold text-foreground/50">
                     <span className="flex items-center gap-2">
                       <Calendar className="w-3.5 h-3.5 text-app-primary2" />
-                      Joined {formatDateSafe(account?.memberSince)}
+                      Joined {formatDateSafe(displayAccount?.memberSince)}
                     </span>
                     <span className="flex flex-row items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-app-primary2" />
-                      Last login {formatDateSafe(account?.lastLoginAt)}
+                      Last login {formatDateSafe(displayAccount?.lastLoginAt)}
                     </span>
                   </div>
                 </div>
 
                 {/* Action */}
                 <div className="mb-2 shrink-0 w-full md:w-auto mt-4 md:mt-0">
-                  <AdminEditDialog currentData={account}>
+                  <AdminEditDialog currentData={displayAccount}>
                     <Button className="h-10 w-full md:w-auto px-4 text-xs rounded-lg border border-slate-300/60 bg-white hover:bg-app-primary3 hover:border-app-primary2 font-medium hover:font-semibold gap-2 text-slate-500 hover:text-white transition-all duration-300">
                       <Edit3 className="w-3.5 h-3.5" strokeWidth={2} />
                       Configure Profile
@@ -176,8 +192,8 @@ export default function AccountsPage() {
                     }
                     bg="bg-blue-100"
                     label="Email Address"
-                    value={account?.email}
-                    verified={account?.verified?.email}
+                    value={displayAccount?.email}
+                    verified={displayAccount?.verified?.email}
                   />
                   <InfoItem
                     icon={
@@ -188,8 +204,8 @@ export default function AccountsPage() {
                     }
                     bg="bg-blue-100"
                     label="Phone Number"
-                    value={account?.phone}
-                    verified={account?.verified?.phone}
+                    value={displayAccount?.phone}
+                    verified={displayAccount?.verified?.phone}
                   />
                 </CardContent>
               </Card>
@@ -216,7 +232,7 @@ export default function AccountsPage() {
                     }
                     bg="bg-blue-100"
                     label="Member Since"
-                    value={formatDateSafe(account?.memberSince)}
+                    value={formatDateSafe(displayAccount?.memberSince)}
                   />
                   <InfoItem
                     icon={
@@ -227,7 +243,7 @@ export default function AccountsPage() {
                     }
                     bg="bg-blue-100"
                     label="Last Login"
-                    value={formatDateSafe(account?.lastLoginAt)}
+                    value={formatDateSafe(displayAccount?.lastLoginAt)}
                   />
 
                   <div className="flex items-center gap-5 p-2 px-4 rounded-lg bg-slate-50 group hover:bg-slate-100/50 transition-colors">
@@ -239,7 +255,7 @@ export default function AccountsPage() {
                         Unique Account ID
                       </p>
                       <p className="text-[11px] sm:text-xs font-mono font-bold text-slate-700 truncate break-all">
-                        {account?.id || "N/A"}
+                        {displayAccount?.id || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -252,7 +268,7 @@ export default function AccountsPage() {
               {/* Security Component wrapper to give it matching styles */}
               <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden">
                 <SecurityCredentials
-                  account={account}
+                  account={displayAccount}
                   loading={loading}
                   passwordSuccess={passwordSuccess}
                 />

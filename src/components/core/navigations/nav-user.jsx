@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
-  IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,15 +21,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link, useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
-// import { logout } from "@/modules/authentication/store/auth.slice";
 import { toast } from "sonner";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -61,15 +55,18 @@ export function NavUser({ user }) {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-app-primary2 hover:bg-slate-50"
               >
                 <Avatar className="h-9 w-9 rounded-full">
-                  <AvatarImage src={user.avatar} alt={"admin.webp"} />
-                  <AvatarFallback className="rounded-lg">
-                    {dummyImg}
+                  <AvatarImage
+                    src={user.avatar || dummyImg}
+                    alt={user.name || "Admin"}
+                  />
+                  <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">
+                    {user.initial || "A"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col text-left text-[13px] ml-1 leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
-                  <span className="text-foreground/40 font-medium text-[10px]">
-                    {/* {user.email} */}Admin
+                  <span className="text-foreground/50 font-medium text-[11px] capitalize">
+                    {user.role ? user.role.toLowerCase() : "Admin"}
                   </span>
                 </div>
                 <IconDotsVertical className="ml-auto size-4" />
@@ -84,9 +81,12 @@ export function NavUser({ user }) {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={"admin.webp"} />
-                    <AvatarFallback className="rounded-lg">
-                      {dummyImg}
+                    <AvatarImage
+                      src={user.avatar || dummyImg}
+                      alt={user.name || "Admin"}
+                    />
+                    <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">
+                      {user.initial || "A"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-[13px] leading-tight">

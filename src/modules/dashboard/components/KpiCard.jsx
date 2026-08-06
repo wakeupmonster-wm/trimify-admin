@@ -15,37 +15,37 @@ import {
 // produce the uneven gaps a two-block layout does.
 const TONE_STYLES = {
   default: {
-    iconBg: "bg-blue-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-app-primary2",
     border: "border-slate-200 hover:border-app-primary2",
   },
   emerald: {
-    iconBg: "bg-emerald-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-emerald-600",
     border: "border-slate-200 hover:border-emerald-300",
   },
   amber: {
-    iconBg: "bg-amber-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-amber-600",
     border: "border-slate-200 hover:border-amber-400",
   },
   rose: {
-    iconBg: "bg-rose-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-rose-600",
     border: "border-slate-200 hover:border-rose-400",
   },
   violet: {
-    iconBg: "bg-violet-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-violet-600",
     border: "border-slate-200 hover:border-violet-300",
   },
   cyan: {
-    iconBg: "bg-cyan-50",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-cyan-600",
     border: "border-slate-200 hover:border-cyan-300",
   },
   slate: {
-    iconBg: "bg-slate-100",
+    iconBg: "bg-slate-200/40",
     iconColor: "text-slate-600",
     border: "border-slate-200 hover:border-slate-400",
   },
@@ -106,24 +106,33 @@ const KpiCard = ({
       }}
       tabIndex={onClick ? 0 : undefined}
       className={cn(
-        "bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-200 hover:shadow-sm group flex flex-col justify-between min-h-[128px]",
+        "flex flex-row items-start gap-4 rounded-xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5",
         onClick &&
           "cursor-pointer hover:border-cyan-300/60 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
         isSelected && "border-app-primary2/60 shadow-app-primary2/10 shadow-md",
       )}
     >
-      <div className="flex flex-col gap-1">
+      {/* Icon Area */}
+      {Icon && (
+        <div
+          className={cn(
+            "p-3 rounded-full bg-slate-200/40 shadow-sm",
+            t.iconBg,
+            t.iconColor,
+          )}
+        >
+          <Icon className="w-6 h-6" strokeWidth={2} />
+        </div>
+      )}
+
+      {/* Content Area */}
+      <div className="min-w-0 flex-1 flex flex-col justify-center space-y-2">
         <div className="flex items-start justify-between gap-2 overflow-hidden">
-          <div className="flex items-center gap-2">
-            {Icon && (
-              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center shrink-0", t.iconBg, t.iconColor)}>
-                <Icon className="w-4 h-4" />
-              </div>
-            )}
-            <p className="text-xs font-semibold text-foreground/70 transition-colors">
-              {label}
-            </p>
-          </div>
+          <p className="truncate text-xs font-semibold text-foreground/70 capitalize tracking-wide">
+            {label}
+          </p>
+
+          {/* Trend Tooltip */}
           {trendValue ? (
             <TooltipProvider>
               <Tooltip delayDuration={200}>
@@ -218,7 +227,7 @@ const KpiCard = ({
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <div className="text-slate-400 hover:text-slate-600 cursor-pointer transition-colors mt-0.5 opacity-0">
-                    {/* Invisible trigger to keep height consistent if needed */}
+                    {/* Invisible trigger */}
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -294,17 +303,17 @@ const KpiCard = ({
             </TooltipProvider>
           ) : null}
         </div>
-        <h3 className="text-[28px] font-extrabold text-slate-900 tracking-tight leading-none mt-1">
+
+        <h4 className="text-[26px] font-extrabold text-slate-900 tracking-tight leading-none">
           {value}
-        </h3>
-      </div>
-      {description && (
-        <div className="mt-auto pt-2">
-          <p className="text-[11px] text-secondary-foreground font-medium truncate">
+        </h4>
+
+        {description && (
+          <p className="truncate text-[11px] font-medium text-slate-400">
             {description}
           </p>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

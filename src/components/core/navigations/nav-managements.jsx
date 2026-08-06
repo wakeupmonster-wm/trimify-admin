@@ -154,7 +154,7 @@ export function NavManagements({ items }) {
                       className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                     >
                       {isActive && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                       )}
 
                       <div
@@ -192,8 +192,8 @@ export function NavManagements({ items }) {
 
                       <ChevronRight
                         className={cn(
-                          "size-4 transition-transform duration-200 text-slate-400 group-data-[collapsible=icon]:hidden",
-                          "group-data-[state=open]:rotate-90",
+                          "size-4 transition-transform duration-300 text-slate-400 group-data-[collapsible=icon]:hidden",
+                          "group-data-[state=open]/collapsible:rotate-90",
                         )}
                       />
                     </Link>
@@ -216,7 +216,7 @@ export function NavManagements({ items }) {
                     className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                     )}
 
                     <div

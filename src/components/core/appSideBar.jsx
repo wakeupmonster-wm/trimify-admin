@@ -13,37 +13,37 @@ import {
 } from "@/components/ui/sidebar";
 import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
+import { NavUser } from "./navigations/nav-user";
 import navigationData from "@/app/data/navigation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { cn } from "@/lib/utils";
-import { LogOut, Loader2 } from "lucide-react";
-import ConfirmModal from "@/components/common/ConfirmModal";
-import { logout } from "@/modules/authentication/store/auth.slice";
 
 export function AppSidebar({ ...props }) {
-  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth?.user);
+
+  const localUserStr = localStorage.getItem("auth_user");
+  const localUser = localUserStr ? JSON.parse(localUserStr) : null;
+
+  const displayName =
+    user?.nickname ||
+    user?.name ||
+    localUser?.nickname ||
+    localUser?.name ||
+    "Admin";
+  const displayEmail = user?.email || localUser?.email || "admin@example.com";
+  const initial = displayName.charAt(0).toUpperCase();
+
+  const displayUser = {
+    ...user,
+    ...localUser,
+    name: displayName,
+    email: displayEmail,
+    initial: initial,
+  };
   const { open, isMobile, setOpenMobile } = useSidebar();
   const { pathname } = useLocation();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      // Artificial delay so the loading button state is visible to the user
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      dispatch(logout());
-    } catch (e) {
-      console.error("Logout failed", e);
-    } finally {
-      setIsLoggingOut(false);
-      navigate("/auth/login", { replace: true });
-    }
-  };
 
   useEffect(() => {
     if (isMobile) {
@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }) {
                   to="/admin/dashboard"
                   className="flex items-center gap-2 pl-2"
                 >
-                  <div className="flex items-center justify-center rounded-lg max-w-[4.5rem] h-8">
+                  <div className="flex items-center justify-center rounded-lg max-w-[90px] h-10">
                     <img
                       src={trimifyLogo}
                       alt="Logo"
@@ -114,37 +114,9 @@ export function AppSidebar({ ...props }) {
       </SidebarContent>
 
       {/* Add Here Logout  */}
-      <SidebarFooter className="border-t border-slate-300/60 px-3 py-5">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              onClick={() => setShowLogoutConfirm(true)}
-              disabled={isLoggingOut}
-              className="text-red-500 hover:text-white bg-red-100 hover:bg-red-500 w-full flex items-center gap-3 p-5 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isLoggingOut ? (
-                <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2} />
-              ) : (
-                <LogOut className="h-5 w-5 ml-0.5" strokeWidth={2} />
-              )}
-              <span className="font-bold text-sm">
-                {isLoggingOut ? "Logging out..." : "Logout"}
-              </span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarFooter className="border-t border-slate-300/60 p-3">
+        <NavUser user={displayUser} />
       </SidebarFooter>
-
-      <ConfirmModal
-        isOpen={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
-        onConfirm={handleLogout}
-        title="Logout from Trimify"
-        message="Are you sure you want to log out? You will need to enter your credentials to access the admin panel again."
-        confirmText="Logout"
-        type="danger"
-        loading={isLoggingOut}
-      />
     </Sidebar>
   );
 }

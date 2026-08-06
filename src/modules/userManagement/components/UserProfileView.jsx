@@ -140,19 +140,6 @@ export default function UserProfileView({ user, onBack, loading }) {
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyId = async () => {
-    if (!user?.id) return;
-    try {
-      await navigator.clipboard.writeText(user.id);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      toast.success("User ID Copied");
-    } catch (err) {
-      console.error("Failed to copy!", err);
-    }
-  };
 
   const derived = useMemo(() => {
     if (!user) return {};
@@ -481,8 +468,8 @@ export default function UserProfileView({ user, onBack, loading }) {
                     >
                       {t.icon && (
                         <t.icon
-                          className={`w-4 h-4 relative z-10 ${
-                            isActive ? "text-white" : "text-slate-400"
+                          className={`w-4 h-4 relative z-10 font-semibold ${
+                            isActive ? "text-white" : "text-slate-500"
                           }`}
                         />
                       )}
@@ -520,7 +507,10 @@ export default function UserProfileView({ user, onBack, loading }) {
                         value={t.key}
                         className="py-3 px-4 text-sm font-semibold text-slate-600 focus:bg-app-primary2/10 focus:text-app-primary2 rounded-lg cursor-pointer"
                       >
-                        {t.label}
+                        <span className="flex items-center gap-2">
+                          {t.icon && <t.icon className="w-4 h-4 opacity-70" />}
+                          <span>{t.label}</span>
+                        </span>
                       </SelectItem>
                     ))}
                   </SelectContent>

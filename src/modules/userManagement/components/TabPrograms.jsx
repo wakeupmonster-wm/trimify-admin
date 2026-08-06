@@ -1,5 +1,5 @@
 import React from "react";
-import { Target, Activity } from "lucide-react";
+import { Target, Activity, ClipboardList, Dumbbell } from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileShared";
 
 export function TabPrograms({ data }) {
@@ -11,6 +11,7 @@ export function TabPrograms({ data }) {
         <Card
           title="Enrolled Programs"
           subtitle="Active and past program enrollments"
+          icon={ClipboardList}
           right={
             <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
               {programs.length} Programs
@@ -20,51 +21,51 @@ export function TabPrograms({ data }) {
           {programs.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse min-w-[350px]">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                    Program
-                  </th>
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                    Duration
-                  </th>
-                  <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {programs.map((p) => (
-                  <tr
-                    key={p.program_id}
-                    className="border-b border-slate-50 last:border-b-0"
-                  >
-                    <td className="py-2.5 align-center">
-                      <div className="text-xs font-semibold text-slate-900">
-                        {p.title}
-                      </div>
-                      <div className="mt-0.5 text-[11px] text-slate-500">
-                        Assigned {fmtDate(p.assigned_at)}
-                      </div>
-                    </td>
-                    <td className="py-2.5 align-center text-xs">
-                      {p.start_date ? (
-                        `${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}`
-                      ) : (
-                        <span className="text-slate-500">Not scheduled</span>
-                      )}
-                    </td>
-                    <td className="py-2.5 align-center">
-                      <Pill
-                        tone={p.status === "Active" ? "success" : "neutral"}
-                      >
-                        {p.status}
-                      </Pill>
-                    </td>
+                <thead>
+                  <tr className="border-b border-slate-200">
+                    <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                      Program
+                    </th>
+                    <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                      Duration
+                    </th>
+                    <th className="pb-2 text-left text-[10px] font-bold uppercase tracking-wide text-slate-500">
+                      Status
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="h-22">
+                  {programs.map((p) => (
+                    <tr
+                      key={p.program_id}
+                      className="border-b border-slate-50 last:border-b-0"
+                    >
+                      <td className="py-2.5 align-center">
+                        <div className="text-xs font-semibold text-slate-900">
+                          {p.title}
+                        </div>
+                        <div className="mt-0.5 text-[11px] text-slate-500">
+                          Assigned {fmtDate(p.assigned_at)}
+                        </div>
+                      </td>
+                      <td className="py-2.5 align-center text-xs">
+                        {p.start_date ? (
+                          `${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}`
+                        ) : (
+                          <span className="text-slate-500">Not scheduled</span>
+                        )}
+                      </td>
+                      <td className="py-2.5 align-center">
+                        <Pill
+                          tone={p.status === "Active" ? "success" : "neutral"}
+                        >
+                          {p.status}
+                        </Pill>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ) : (
             <EmptyState
@@ -78,6 +79,7 @@ export function TabPrograms({ data }) {
         <Card
           title="Fitzone Assignments"
           subtitle="Active Fitzone sessions and assignments"
+          icon={Dumbbell}
           right={
             <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
               {fitzoneStatus.length} Fitzones

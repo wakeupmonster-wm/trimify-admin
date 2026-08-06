@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Activity, Footprints, Droplets, Utensils, Scale } from "lucide-react";
+import { Activity, Footprints, Droplets, Utensils, Weight, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
@@ -40,11 +40,11 @@ export function TabActivity({ data }) {
           { l: "Steps", d: as.steps || {}, icon: Footprints, tone: "emerald" },
           { l: "Water", d: as.water || {}, icon: Droplets, tone: "blue" },
           { l: "Food", d: as.food || {}, icon: Utensils, tone: "amber" },
-          { l: "Weight", d: as.weight || {}, icon: Scale, tone: "purple" },
+          { l: "Weight", d: as.weight || {}, icon: Weight, tone: "purple" },
         ].map((c) => {
           const type = TILE_TYPE[c.l];
           const isActive = filter === type;
-          
+
           const tones = {
             blue: "bg-blue-50/50 border-blue-100",
             purple: "bg-purple-50/50 border-purple-100",
@@ -74,7 +74,12 @@ export function TabActivity({ data }) {
             >
               <div className="flex items-start gap-5">
                 {Icon && (
-                  <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm", iconTones[c.tone] || iconTones.blue)}>
+                  <div
+                    className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm",
+                      iconTones[c.tone] || iconTones.blue,
+                    )}
+                  >
                     <Icon className="h-4 w-4" />
                   </div>
                 )}
@@ -100,6 +105,7 @@ export function TabActivity({ data }) {
       <Card
         title="Activity Log History"
         subtitle="Steps, water, food & weight entries, newest first"
+        icon={History}
         right={
           <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
             {filteredActivities.length} records

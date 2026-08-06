@@ -32,6 +32,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LuUser, LuUserRound } from "react-icons/lu";
 
 export function TabSettings({ data }) {
   const { user, handleCopy, initials, fmtDate, truncMid } = data;
@@ -108,9 +109,10 @@ export function TabSettings({ data }) {
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
         <Card
-          className="p-0 overflow-hidden"
+          className="p-0 overflow-hidden pb-0.5"
           title="Account Status"
           subtitle="Current status and security details"
+          icon={ShieldCheck}
         >
           <KV
             icon={ShieldCheck}
@@ -160,7 +162,11 @@ export function TabSettings({ data }) {
           />
         </Card>
 
-        <Card title="Managed By" subtitle="Assigned sub-admin details">
+        <Card
+          title="Device & Notifications"
+          subtitle="App settings and preferences"
+          icon={Smartphone}
+        >
           <KV
             icon={Bell}
             label="Notifications"
@@ -172,7 +178,7 @@ export function TabSettings({ data }) {
             value={user.timezone || "Not set"}
           />
 
-          <div className="flex items-center justify-between gap-2.5 py-2">
+          <div className="flex items-center justify-between gap-2.5 py-2.5">
             <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-500">
               <Smartphone className="h-4 w-4" />
               Device Token
@@ -190,7 +196,11 @@ export function TabSettings({ data }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        <Card title="Billing & Plan" subtitle="Payment methods and history">
+        <Card
+          title="Billing & Plan"
+          subtitle="Payment methods and history"
+          icon={CreditCard}
+        >
           <KV
             icon={CreditCard}
             label="Payment Status"
@@ -229,14 +239,18 @@ export function TabSettings({ data }) {
             label="Stripe ID"
             value={user.stripe_id || "Not linked"}
           />
-          {(!user.transactions || user.transactions.length === 0) && (
+          {/* {(!user.transactions || user.transactions.length === 0) && (
             <div className="pt-2">
               <EmptyState icon={CreditCard} title="No transactions yet" />
             </div>
-          )}
+          )} */}
         </Card>
 
-        <Card title="Managed By" subtitle="Assigned sub-admin details">
+        <Card
+          title="Managed By"
+          subtitle="Assigned sub-admin details"
+          icon={LuUserRound}
+        >
           {user.sub_admin ? (
             <>
               <div className="flex items-center gap-3">
@@ -277,6 +291,7 @@ export function TabSettings({ data }) {
         <Card
           title="Direct Administrative Messaging"
           subtitle="Dispatch warning letters, policy updates, or direct notifications"
+          icon={Send}
         >
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
