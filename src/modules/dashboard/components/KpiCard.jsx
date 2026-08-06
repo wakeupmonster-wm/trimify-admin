@@ -120,7 +120,7 @@ const KpiCard = ({
                 <Icon className="w-4 h-4" />
               </div>
             )}
-            <p className="text-xs font-semibold text-slate-600 transition-colors">
+            <p className="text-xs font-semibold text-foreground/70 transition-colors">
               {label}
             </p>
           </div>
@@ -300,7 +300,7 @@ const KpiCard = ({
       </div>
       {description && (
         <div className="mt-auto pt-2">
-          <p className="text-[11px] text-slate-500 font-medium truncate">
+          <p className="text-[11px] text-secondary-foreground font-medium truncate">
             {description}
           </p>
         </div>
