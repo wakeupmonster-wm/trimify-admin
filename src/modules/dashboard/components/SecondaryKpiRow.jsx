@@ -13,7 +13,7 @@ const fmtMoney = (n) => `$${Number(n || 0).toLocaleString()}`;
 const KPI_CONFIG = [
   {
     key: "totalRevenueAllTime",
-    label: "Total Revenue",
+    label: "Revenue",
     description: "All-time, all plans",
     tone: "emerald",
     trendValue: "12%",

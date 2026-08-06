@@ -106,45 +106,40 @@ const KpiCard = ({
       }}
       tabIndex={onClick ? 0 : undefined}
       className={cn(
-        "flex flex-row items-start gap-4 rounded-xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5",
-        // t.border,
+        "bg-white rounded-2xl p-5 transition-all duration-300 shadow-sm border border-slate-200 hover:shadow-sm group flex flex-col justify-between min-h-[128px]",
         onClick &&
-          "cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
+          "cursor-pointer hover:border-cyan-300/60 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
         isSelected && "border-app-primary2/60 shadow-app-primary2/10 shadow-md",
       )}
     >
-      {Icon && (
-        <div
-          className={cn(
-            "w-12 h-12 rounded-full flex items-center justify-center shrink-0",
-            t.iconBg,
-            t.iconColor
-          )}
-        >
-          <Icon className="w-6 h-6" />
-        </div>
-      )}
-      <div className="min-w-0 flex-1 flex flex-col justify-center">
+      <div className="flex flex-col gap-1">
         <div className="flex items-start justify-between gap-2 overflow-hidden">
-          <p className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wide">
-            {label}
-          </p>
+          <div className="flex items-center gap-2">
+            {Icon && (
+              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center shrink-0", t.iconBg, t.iconColor)}>
+                <Icon className="w-4 h-4" />
+              </div>
+            )}
+            <p className="text-xs font-semibold text-foreground/70 transition-colors">
+              {label}
+            </p>
+          </div>
           {trendValue ? (
             <TooltipProvider>
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <div
                     className={cn(
-                      "flex items-center gap-1 font-semibold text-[10px] 3xl:text-xs border rounded-full py-1 px-2.5 shrink-0 transition-transform cursor-pointer",
+                      "flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 transition-transform cursor-pointer",
                       !isPositive
-                        ? "text-rose-500 bg-rose-50 border-rose-200/80"
-                        : "text-emerald-500 bg-emerald-50 border-emerald-200/80",
+                        ? "text-rose-600 bg-rose-50 border-rose-200"
+                        : "text-emerald-600 bg-emerald-50 border-emerald-200",
                     )}
                   >
                     {isPositive ? (
-                      <IconTrendingUp size={12} stroke={2} />
+                      <IconTrendingUp size={12} stroke={3} />
                     ) : (
-                      <IconTrendingDown size={12} stroke={2} />
+                      <IconTrendingDown size={12} stroke={3} />
                     )}
                     <span>
                       {isPositive ? "+" : "-"}
@@ -299,15 +294,17 @@ const KpiCard = ({
             </TooltipProvider>
           ) : null}
         </div>
-        <h4 className="truncate text-2xl font-extrabold leading-tight text-slate-900 mt-1">
+        <h3 className="text-[28px] font-extrabold text-slate-900 tracking-tight leading-none mt-1">
           {value}
-        </h4>
-        {description && (
-          <p className="truncate text-[11px] font-medium text-slate-400 mt-1.5">
+        </h3>
+      </div>
+      {description && (
+        <div className="mt-auto pt-2">
+          <p className="text-[11px] text-secondary-foreground font-medium truncate">
             {description}
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -35,6 +35,7 @@ import { EcosystemAlerts } from "../components/EcosystemAlerts";
 import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
+import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
 import { useSocket } from "@/app/context/SocketContext";
@@ -299,12 +300,12 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 3xl:gap-6 pb-5 pt-3 px-4 lg:px-6 w-full">
-            <SecondaryKpiRow
-              data={displayExtras?.secondaryKpis}
-              title={displayExtras?.title}
-            />
-            <div className="pt-4 3xl:pt-2">
+          <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
+            <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
+              <SecondaryKpiRow
+                data={displayExtras?.secondaryKpis}
+                title={displayExtras?.title}
+              />
               <EcosystemAlerts
                 data={{ alerts: displayExtras?.alerts || [] }}
                 selectedDate={selectedDate}
@@ -409,22 +410,13 @@ export default function Dashboard() {
                   }))}
                   note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
                 />
-                <TrendChartCard
+                <ProgramEnrollmentCard
                   title="Program Enrollment Split"
-                  subtitle={`Top 10 ranked programs${extendedSubtitleSuffix}`}
+                  subtitle={`Top 5 ranked programs${extendedSubtitleSuffix}`}
                   Icon={TrendingUp}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
                   data={displayExtras?.trends?.popularPrograms || []}
-                  xKey="title"
-                  series={[
-                    {
-                      key: "total",
-                      label: "Users Enrolled",
-                      color: "#007FC0", // Primary Blue
-                      type: "bar",
-                    },
-                  ]}
                 />
 
                 <div className="w-full h-full min-h-[320px]">
@@ -536,7 +528,7 @@ export default function Dashboard() {
                 <div className="w-full">
                   <DashboardTableCard
                     title="Pending / Abandoned Checkouts"
-                    subtitle={`Signed up but haven't paid in 7+ days ${extendedSubtitleSuffix}`}
+                    subtitle={`Signed up but haven't paid in 7+ days`}
                     Icon={Wallet}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
