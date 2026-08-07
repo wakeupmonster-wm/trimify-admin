@@ -8,7 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Card, Pill, EmptyState } from "./UserProfileShared";
+import { Pill, EmptyState } from "./UserProfileShared";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -99,12 +99,7 @@ export function TabTransactions({ data }) {
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
                 {item.label}
               </span>
-              <div
-                className={cn(
-                  "font-black tracking-tight",
-                  item.valClass,
-                )}
-              >
+              <div className={cn("font-black tracking-tight", item.valClass)}>
                 {item.value}
               </div>
             </div>
@@ -114,7 +109,7 @@ export function TabTransactions({ data }) {
 
       {/* Transactions List */}
       <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:border-slate-300">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-slate-100 bg-slate-50/50">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border-b border-slate-200 bg-slate-50/50">
           <DashboardHead
             title="Payment Records"
             subtitle="Transaction history and invoices"
@@ -140,128 +135,152 @@ export function TabTransactions({ data }) {
           </Select>
         </div>
         <div className="p-0 bg-white">
-        {isLoading ? (
-          <div className="flex min-h-[200px] flex-col items-center justify-center gap-3 text-slate-400">
-            <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
-            <span className="text-xs font-medium">Loading transactions...</span>
-          </div>
-        ) : transactions.length > 0 ? (
-          <div className="flex flex-col w-full">
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left text-sm text-slate-600">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      SR.No
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Transaction ID
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Date
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Plan
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Amount
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Status
-                    </th>
-                    <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                      Invoice
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {transactions.map((tx, idx) => (
-                    <tr
-                      key={tx.id}
-                      className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
-                    >
-                      <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
-                        {((page || 1) - 1) * 10 + idx + 1}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[11px] font-semibold text-slate-900">
-                        {tx.transaction_id || "—"}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[11px] font-medium text-slate-600">
-                        {formatDate(tx.created_at)}
-                      </td>
-                      <td className="px-5 py-4 text-[11px] font-bold text-slate-700">
-                        {tx.plan_title || "—"}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-[12px] font-black text-slate-900">
-                        {formatCurrency(tx.amount)}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4">
-                        <Pill tone={getStatusTone(tx.status)}>{tx.status}</Pill>
-                        {tx.refund_reason && (
-                          <div className="mt-1 text-[10px] text-slate-400">
-                            {tx.refund_reason}
-                          </div>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap px-5 py-4">
-                        {tx.invoice_url ? (
-                          <a
-                            href={tx.invoice_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-wide text-app-primary2 bg-app-primary2/10 hover:bg-app-primary2 hover:text-white px-3 py-1.5 rounded-md transition-all uppercase"
-                          >
-                            <FileText className="h-3.5 w-3.5" />
-                            View
-                          </a>
-                        ) : (
-                          <span className="text-[11px] text-slate-400 font-medium">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {isLoading ? (
+            <div className="flex min-h-[200px] flex-col items-center justify-center gap-3 text-slate-400">
+              <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
+              <span className="text-xs font-medium">
+                Loading transactions...
+              </span>
             </div>
+          ) : transactions.length > 0 ? (
+            <div className="flex flex-col w-full">
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-sm text-slate-600">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="h-11 px-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        SR.No
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Transaction ID
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Date
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Plan
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Amount
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Status
+                      </th>
+                      <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        Invoice
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {transactions.map((tx, idx) => (
+                      <tr
+                        key={tx.id}
+                        className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
+                      >
+                        <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
+                          {((page || 1) - 1) * 10 + idx + 1}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[11px] font-semibold text-slate-900">
+                          {tx.transaction_id || "—"}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[11px] font-medium text-slate-600">
+                          {formatDate(tx.created_at)}
+                        </td>
+                        <td className="px-5 py-4">
+                          {(() => {
+                            const title = tx.plan_title;
+                            if (!title) return <span className="text-[11px] font-bold text-slate-700">—</span>;
+                            
+                            const lower = title.toLowerCase();
+                            let colorClass = "text-slate-600";
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-slate-200 px-6 py-4 bg-slate-50">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  Page {page} of {totalPages}
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() =>
-                      onTransactionsPageChange(Math.max(1, page - 1))
-                    }
-                    disabled={page === 1}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() =>
-                      onTransactionsPageChange(Math.min(totalPages, page + 1))
-                    }
-                    disabled={page === totalPages}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
+                            if (lower.includes("premium")) colorClass = "text-app-primary2";
+                            else if (lower.includes("basic") || lower.includes("starter"))
+                              colorClass = "text-app-primary3";
+
+                            return (
+                              <div
+                                className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                              >
+                                {title}
+                              </div>
+                            );
+                          })()}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4 text-[12px] font-black text-slate-900">
+                          {formatCurrency(tx.amount)}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4">
+                          <Pill tone={getStatusTone(tx.status)}>
+                            {tx.status}
+                          </Pill>
+                          {tx.refund_reason && (
+                            <div className="mt-1 text-[10px] text-slate-400">
+                              {tx.refund_reason}
+                            </div>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-4">
+                          {tx.invoice_url ? (
+                            <a
+                              href={tx.invoice_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center justify-center gap-1.5 text-[10px] font-bold tracking-wide text-app-primary2 bg-app-primary2/10 hover:bg-app-primary2 hover:text-white px-3 py-1.5 rounded-md transition-all uppercase"
+                            >
+                              <FileText className="h-3.5 w-3.5" />
+                              View
+                            </a>
+                          ) : (
+                            <span className="text-[11px] text-slate-400 font-medium">
+                              —
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="p-8 pb-12">
-            <EmptyState
-              icon={CreditCard}
-              title="No transactions found"
-              subtitle="This user hasn't made any transactions yet."
-            />
-          </div>
-        )}
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between border-t border-slate-200 px-6 py-4 bg-slate-50">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Page {page} of {totalPages}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() =>
+                        onTransactionsPageChange(Math.max(1, page - 1))
+                      }
+                      disabled={page === 1}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        onTransactionsPageChange(Math.min(totalPages, page + 1))
+                      }
+                      disabled={page === totalPages}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 shadow-sm"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="p-8 pb-12">
+              <EmptyState
+                icon={CreditCard}
+                title="No transactions found"
+                subtitle="This user hasn't made any transactions yet."
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

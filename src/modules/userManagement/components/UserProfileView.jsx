@@ -1,6 +1,18 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Trash2, Loader2, Calendar, History, ChevronLeft } from "lucide-react";
+import {
+  Trash2,
+  Loader2,
+  Calendar,
+  History,
+  ChevronLeft,
+  LayoutDashboard,
+  HeartPulse,
+  Dumbbell,
+  Activity,
+  CreditCard,
+  Settings,
+} from "lucide-react";
 import { TabOverview } from "./TabOverview";
 import { TabHealth } from "./TabHealth";
 import { TabPrograms } from "./TabPrograms";
@@ -15,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import {
   Select,
   SelectContent,
@@ -23,6 +36,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MdOutlineDateRange } from "react-icons/md";
+import { IconHistory } from "@tabler/icons-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 /* =========================================================================
    Helpers
@@ -123,13 +145,13 @@ function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
 }
 
 const TABS = [
-  { key: "overview", label: "Overview" },
-  { key: "health", label: "Health & Goals" },
-  { key: "programs", label: "Programs & Fitzone" },
-  { key: "activity", label: "Activity" },
-  // { key: "account", label: "Account" },
-  { key: "transactions", label: "Transactions" },
-  { key: "settings", label: "Settings" },
+  { key: "overview", label: "Overview", icon: LayoutDashboard },
+  { key: "health", label: "Health & Goals", icon: HeartPulse },
+  { key: "programs", label: "Programs & Fitzone", icon: Dumbbell },
+  { key: "activity", label: "Activity", icon: Activity },
+  // { key: "account", label: "Account", icon: User },
+  { key: "transactions", label: "Transactions", icon: CreditCard },
+  { key: "settings", label: "Settings", icon: Settings },
 ];
 
 /* =========================================================================
@@ -140,19 +162,7 @@ export default function UserProfileView({ user, onBack, loading }) {
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyId = async () => {
-    if (!user?.id) return;
-    try {
-      await navigator.clipboard.writeText(user.id);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      toast.success("User ID Copied");
-    } catch (err) {
-      console.error("Failed to copy!", err);
-    }
-  };
+  const [imageModal, setImageModal] = useState({ open: false, src: null });
 
   const derived = useMemo(() => {
     if (!user) return {};
@@ -386,43 +396,46 @@ export default function UserProfileView({ user, onBack, loading }) {
           <div className="mb-2 sm:mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between rounded-2xl bg-white p-4 sm:p-6 shadow-sm border border-slate-200">
             <div className="flex flex-row items-center w-full gap-4 sm:gap-6">
               <div className="relative shrink-0">
-                {user.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt="Avatar"
-                    className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-4 sm:ring-[6px] ring-slate-50 shadow-sm"
+                <div className="absolute inset-0 bg-app-primary2/10 rounded-full blur-xl opacity-50" />
+                <Avatar
+                  className="h-16 w-16 sm:h-20 sm:w-20 border-4 border-white shadow-sm relative z-10 cursor-pointer hover:ring-2 hover:ring-app-primary2/30 transition-all duration-200"
+                  onClick={() => {
+                    const imgSrc = user.avatar || null;
+                    if (imgSrc) {
+                      setImageModal({ open: true, src: imgSrc });
+                    }
+                  }}
+                >
+                  <AvatarImage
+                    src={user.avatar || dummyImg}
+                    alt={user?.name}
+                    className="object-cover"
                   />
-                ) : (
-                  <div className="flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full bg-blue-50 text-xl sm:text-3xl font-bold text-app-primary2 ring-4 sm:ring-[6px] ring-slate-50 shadow-sm">
+                  <AvatarFallback className="bg-slate-50 text-slate-400 text-2xl sm:text-3xl font-black">
                     {initials(user.name)}
-                  </div>
-                )}
+                  </AvatarFallback>
+                </Avatar>
               </div>
 
               <div className="flex flex-col items-start text-left flex-1 min-w-0 gap-1.5 sm:gap-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-slate-900 truncate max-w-full">
-                    {user.name}
+                  <h2 className="text-lg sm:text-xl capitalize font-bold text-slate-900 truncate">
+                    {user.name},{" "}
                     {age && (
-                      <span className="text-slate-500 text-sm lg:text-lg font-medium">
-                        , {age}
+                      <span className="text-foreground/60 font-medium text-base sm:text-lg">
+                        {age}
                       </span>
                     )}
-                  </h1>
+                  </h2>
 
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-emerald-700">
                       {user.status || "Active"}
                     </span>
-                    {/* {user.premium === "1" && (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-amber-600">
-                        ★ PRO
-                      </span>
-                    )} */}
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-start gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-medium text-slate-500">
+                {/* <div className="flex flex-col sm:flex-row items-start gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-medium text-slate-500">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
                     <span className="text-slate-400">Joined:</span>{" "}
@@ -437,6 +450,26 @@ export default function UserProfileView({ user, onBack, loading }) {
                       {fmtDate(user.updatedAt || user.updated_at)}
                     </span>
                   </span>
+                </div> */}
+
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-semibold text-xs text-slate-600">
+                  {/* Joined Date */}
+                  <div className="flex items-center gap-1 text-secondary-foreground/70 font-medium">
+                    <MdOutlineDateRange className="h-3.5 w-3.5" />
+                    <span>Joined:</span>
+                    <span className="text-secondary-foreground">
+                      {fmtDate(user.createdAt || user.created_at)}
+                    </span>
+                  </div>
+
+                  {/* Last Update Date */}
+                  <div className="flex items-center gap-1 font-medium text-secondary-foreground/70">
+                    <IconHistory className="h-3.5 w-3.5" />
+                    <span>Updated:</span>
+                    <span className="text-secondary-foreground">
+                      {fmtDate(user.updatedAt || user.updated_at)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -464,7 +497,8 @@ export default function UserProfileView({ user, onBack, loading }) {
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
             <div className="relative w-full overflow-hidden mb-6">
-              <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start no-scrollbar hide-scrollbar snap-x snap-mandatory shadow-sm">
+              {/* <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start shadow-sm"> */}
+              <TabsList className="hidden lg:flex items-center justify-between gap-1 p-1 bg-white backdrop-blur-md rounded-lg w-full border border-slate-200 h-auto overflow-x-auto flex-nowrap shadow-sm">
                 {TABS.map((t) => {
                   const isActive = tab === t.key;
                   return (
@@ -472,12 +506,19 @@ export default function UserProfileView({ user, onBack, loading }) {
                       key={t.key}
                       value={t.key}
                       className={cn(
-                        "relative h-10 rounded-lg px-4 sm:px-5 text-xs sm:text-sm font-semibold transition-all duration-300 border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-slate-900 snap-start shrink-0 whitespace-nowrap",
+                        "relative h-10 rounded-lg px-11 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 border-none shadow-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none hover:text-slate-900 snap-start shrink-0 whitespace-nowrap flex items-center gap-2",
                         isActive
                           ? "text-white hover:text-white"
                           : "text-slate-500",
                       )}
                     >
+                      {t.icon && (
+                        <t.icon
+                          className={`w-4 h-4 relative z-10 font-semibold ${
+                            isActive ? "text-white" : "text-slate-500"
+                          }`}
+                        />
+                      )}
                       <span
                         className={`hidden sm:inline relative z-10 ${isActive ? "text-white" : "text-foreground/70"}`}
                       >
@@ -512,7 +553,10 @@ export default function UserProfileView({ user, onBack, loading }) {
                         value={t.key}
                         className="py-3 px-4 text-sm font-semibold text-slate-600 focus:bg-app-primary2/10 focus:text-app-primary2 rounded-lg cursor-pointer"
                       >
-                        {t.label}
+                        <span className="flex items-center gap-2">
+                          {t.icon && <t.icon className="w-4 h-4 opacity-70" />}
+                          <span>{t.label}</span>
+                        </span>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -543,6 +587,28 @@ export default function UserProfileView({ user, onBack, loading }) {
             </TabsContent>
           </Tabs>
         </div>
+
+        {imageModal.open && (
+          <Dialog
+            open={imageModal.open}
+            onOpenChange={(open) =>
+              setImageModal((prev) => ({ ...prev, open }))
+            }
+          >
+            <DialogContent className="max-w-max p-0 border-none bg-black/95 overflow-hidden flex items-center justify-center">
+              <DialogHeader className="sr-only">
+                <DialogTitle>Profile Photo Preview</DialogTitle>
+              </DialogHeader>
+              <div className="w-full h-full">
+                <img
+                  src={imageModal.src || dummyImg}
+                  alt={`${user?.name}'s Profile Photo`}
+                  className="max-w-full max-h-[90vh] object-contain"
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </Container>
   );

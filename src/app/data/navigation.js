@@ -109,22 +109,23 @@ const navigationData = {
     //   badge: null,
     // },
     {
-      title: "Content Management",
-      url: "/admin/cms-management",
-      icon: IconDeviceDesktop,
-      badge: null,
-    },
-    {
       title: "Notification Management",
       url: "/admin/notification-manage",
       icon: IconBell,
       badge: null,
     },
+
+  ],
+  navPlateform: [
     {
-      title: "FAQ Management",
-      url: "/admin/faq-management",
-      icon: IconInfoCircle,
+      title: "Content Management",
+      url: "/admin/cms-management",
+      icon: IconDeviceDesktop,
       badge: null,
+      items: [
+        { title: "FAQ", url: "/admin/faq-management" },
+        { title: "CMS", url: "/admin/cms-management" },
+      ],
     },
     {
       title: "Account Settings",
@@ -133,7 +134,6 @@ const navigationData = {
       badge: null,
     },
   ],
-  navPlateform: [],
   navSecondary: [],
 };
 

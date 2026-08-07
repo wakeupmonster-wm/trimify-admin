@@ -1,5 +1,5 @@
 import React from "react";
-import { Droplet, Target, Flame, Footprints } from "lucide-react";
+import { Droplet, Target, Flame, Footprints, Scale, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, KV, EmptyState, Tag } from "./UserProfileShared";
 
@@ -50,6 +50,7 @@ export function TabHealth({ data }) {
           <Card
             title="Body Measurements"
             subtitle="Latest recorded height & weight"
+            icon={Scale}
           >
             <div className="grid grid-cols-2 gap-x-5 gap-y-2">
               <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
@@ -105,7 +106,7 @@ export function TabHealth({ data }) {
             </div>
           </Card>
 
-          <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals">
+          <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals" icon={Target}>
             <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <ActivityRing
                 icon={Droplet}
@@ -185,6 +186,7 @@ export function TabHealth({ data }) {
           <Card
             title="Fitness Profile"
             subtitle="Goal & body-shape preferences"
+            icon={Dumbbell}
           >
             {fitnessProfileSet.map(([l, v]) => (
               <KV key={l} label={l} value={v} noBorder={true} />

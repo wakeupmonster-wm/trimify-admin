@@ -120,7 +120,7 @@ export function NavManagements({ items }) {
       <SidebarGroupLabel className="px-6 h-8 text-[10px] mb-1 font-bold uppercase tracking-widest text-slate-500">
         Management
       </SidebarGroupLabel>
-      <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
           const isActive =
             isPathActive(location.pathname, item.url) ||
@@ -154,7 +154,7 @@ export function NavManagements({ items }) {
                       className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                     >
                       {isActive && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                       )}
 
                       <div
@@ -192,8 +192,8 @@ export function NavManagements({ items }) {
 
                       <ChevronRight
                         className={cn(
-                          "size-4 transition-transform duration-200 text-slate-400 group-data-[collapsible=icon]:hidden",
-                          "group-data-[state=open]:rotate-90",
+                          "size-4 transition-transform duration-300 text-slate-400 group-data-[collapsible=icon]:hidden",
+                          "group-data-[state=open]/collapsible:rotate-90",
                         )}
                       />
                     </Link>
@@ -216,7 +216,7 @@ export function NavManagements({ items }) {
                     className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-app-primary2" />
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                     )}
 
                     <div

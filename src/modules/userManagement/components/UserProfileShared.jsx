@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import DashboardHead from "@/components/shared/dashboard.head";
 
 const PILL_TONES = {
   success: "bg-emerald-50 text-emerald-600 border-emerald-200",
@@ -29,7 +30,7 @@ export function Tag({ children }) {
   );
 }
 
-export function Card({ title, subtitle, right, children, className }) {
+export function Card({ title, subtitle, right, children, className, icon: Icon, iconColor, iconBg, tooltipText }) {
   return (
     <div
       className={cn(
@@ -39,19 +40,17 @@ export function Card({ title, subtitle, right, children, className }) {
     >
       {(title || right) && (
         <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
-          <div>
-            {title && (
-              <div className="text-[13px] font-bold text-slate-900">
-                {title}
-              </div>
-            )}
-            {subtitle && (
-              <div className="mt-0.5 text-[11px] font-medium text-slate-500">
-                {subtitle}
-              </div>
-            )}
+          <div className="flex-1 min-w-0">
+            <DashboardHead
+              title={title}
+              subtitle={subtitle}
+              Icon={Icon}
+              iconColor={iconColor}
+              iconBg={iconBg}
+              tooltipText={tooltipText}
+            />
           </div>
-          {right}
+          {right && <div className="shrink-0">{right}</div>}
         </div>
       )}
       <div className="px-5 py-4">{children}</div>
@@ -146,7 +145,7 @@ export function GoalTile({ label, value, pct, colorClass = "bg-blue-500" }) {
 
 export function EmptyState({ icon: Icon, title, subtitle }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-1.5 py-6 text-center">
+    <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300 border border-slate-100">
         <Icon className="h-4 w-4" />
       </div>

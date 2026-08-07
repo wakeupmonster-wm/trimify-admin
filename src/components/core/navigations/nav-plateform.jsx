@@ -34,16 +34,19 @@ export function NavPlateform({ items }) {
     const lastSegment = segments[segments.length - 1];
 
     if (
-      lastSegment === "manage-subscribers" &&
-      currentPath.includes("/view-subscription")
+      lastSegment === "cms-management" &&
+      currentPath.includes("/privacy-policy")
     )
       return true;
     if (
-      lastSegment === "users-management" &&
-      currentPath.includes("/view-profile")
+      lastSegment === "cms-management" &&
+      currentPath.includes("/terms-conditions")
     )
       return true;
-    if (lastSegment === "support" && currentPath.includes("/view-ticket"))
+    if (
+      lastSegment === "cms-management" &&
+      currentPath.includes("/about-us")
+    )
       return true;
     if (lastSegment === "giveaway" && currentPath.includes("/view-campaign"))
       return true;
@@ -57,58 +60,61 @@ export function NavPlateform({ items }) {
 
   return (
     <SidebarGroup className="px-0">
-      <SidebarGroupLabel className="px-6 h-6 text-[9.5px] mb-0.5 font-bold uppercase tracking-widest text-slate-400">
+      <SidebarGroupLabel className="px-6 h-8 text-[10px] mb-1 font-bold uppercase tracking-widest text-slate-500">
         Platform
       </SidebarGroupLabel>
-      <SidebarMenu className="group-data-[collapsible=icon]:!items-start gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
-          const isActive = isPathActive(location.pathname, item.url);
+          const isActive =
+            isPathActive(location.pathname, item.url) ||
+            item.items?.some((subItem) =>
+              isPathActive(location.pathname, subItem.url, true),
+            );
           const Icon = item.icon;
           const hasChildren = item.items && item.items.length > 0;
           const hasActiveChild =
             hasChildren &&
-            item.items.some((subItem) =>
+            item.items?.some((subItem) =>
               isPathActive(location.pathname, subItem.url, true),
             );
 
           const content = (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem key={item.url || item.title}>
               {hasChildren ? (
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                      "relative w-full transition-all duration-300 h-11 px-6 rounded-none border-none",
                       "hover:bg-slate-100/50 active:scale-[0.98]",
                       "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
-                      (isActive || hasActiveChild) &&
-                        "bg-blue-100/50 hover:bg-blue-100/90",
+                      isActive && "bg-app-primary2/10 hover:bg-app-primary2/20",
                     )}
                   >
                     <Link
                       to={item.url}
                       className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                     >
-                      {(isActive || hasActiveChild) && (
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-app-primary2" />
+                      {isActive && (
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                       )}
 
                       <div
                         className={cn(
-                          "flex size-5 items-center justify-center transition-all duration-300",
-                          isActive || hasActiveChild
+                          "flex size-5 3xl:size-6 items-center justify-center transition-all duration-300",
+                          isActive
                             ? "text-app-primary2"
                             : "text-slate-400 hover:text-foreground/80",
                         )}
                       >
-                        <Icon className="size-5" />
+                        <Icon className="size-5 3xl:size-6" />
                       </div>
 
                       <span
                         className={cn(
-                          "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] tracking-tight transition-colors duration-300",
-                          isActive || hasActiveChild
+                          "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] 3xl:text-sm tracking-tight transition-colors duration-300",
+                          isActive
                             ? "text-app-primary2 font-bold"
                             : "text-slate-600 font-medium hover:text-foreground/80",
                         )}
@@ -119,10 +125,8 @@ export function NavPlateform({ items }) {
                       {item.badge && (
                         <div
                           className={cn(
-                            "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm group-data-[collapsible=icon]:hidden",
-                            isActive
-                              ? "bg-app-primary2 text-white"
-                              : "bg-slate-100 text-slate-500",
+                            "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm",
+                            getBadgeStyles(item.badge, isActive),
                           )}
                         >
                           {item.badge}
@@ -131,7 +135,7 @@ export function NavPlateform({ items }) {
 
                       <ChevronRight
                         className={cn(
-                          "size-4 transition-transform duration-200 text-slate-400 group-data-[collapsible=icon]:hidden",
+                          "size-4 transition-transform duration-300 text-slate-400 group-data-[collapsible=icon]:hidden",
                           "group-data-[state=open]/collapsible:rotate-90",
                         )}
                       />
@@ -144,10 +148,10 @@ export function NavPlateform({ items }) {
                   isActive={isActive}
                   tooltip={item.title}
                   className={cn(
-                    "relative h-11 w-full transition-all duration-300 px-6 rounded-none border-none",
+                    "relative w-full transition-all duration-300 h-11 px-6 rounded-none border-none",
                     "hover:bg-slate-100/50 active:scale-[0.98]",
                     "group-data-[collapsible=icon]:!w-16 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:!p-0",
-                    isActive && "!bg-blue-100/50 !hover:bg-blue-100/90",
+                    isActive && "!bg-blue-100/50 !hover:bg-blue-200/50",
                   )}
                 >
                   <Link
@@ -155,21 +159,23 @@ export function NavPlateform({ items }) {
                     className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center"
                   >
                     {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-app-primary2" />
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                     )}
 
                     <div
                       className={cn(
-                        "flex size-5 items-center justify-center transition-all duration-300",
-                        isActive ? "text-app-primary2" : "text-slate-400",
+                        "flex size-5 3xl:size-6 items-center justify-center transition-all duration-300",
+                        isActive
+                          ? "text-app-primary2"
+                          : "text-slate-400 hover:text-foreground/80",
                       )}
                     >
-                      <Icon className="size-5" />
+                      <Icon className="size-5 3xl:size-6" />
                     </div>
 
                     <span
                       className={cn(
-                        "flex-1 truncate text-[13px] tracking-tight transition-colors duration-300 group-data-[collapsible=icon]:hidden",
+                        "group-data-[collapsible=icon]:hidden flex-1 truncate text-[13px] 3xl:text-sm tracking-tight transition-colors duration-300",
                         isActive
                           ? "text-app-primary2 font-bold"
                           : "text-slate-600 font-medium hover:text-slate-900",
@@ -181,10 +187,8 @@ export function NavPlateform({ items }) {
                     {item.badge && (
                       <div
                         className={cn(
-                          "h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm group-data-[collapsible=icon]:hidden",
-                          isActive
-                            ? "bg-app-primary2 text-white"
-                            : "bg-slate-100 text-slate-500",
+                          "group-data-[collapsible=icon]:hidden h-5 min-w-[20px] px-1.5 flex items-center justify-center rounded-full text-[10px] font-black tracking-tighter shadow-sm",
+                          getBadgeStyles(item.badge, isActive),
                         )}
                       >
                         {item.badge}
@@ -204,14 +208,14 @@ export function NavPlateform({ items }) {
                         true,
                       );
                       return (
-                        <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubItem key={subItem.url || subItem.title}>
                           <SidebarMenuSubButton
                             asChild
                             isActive={isSubActive}
                             className={cn(
-                              "group relative h-9 w-full transition-all duration-200 px-4 rounded-none",
+                              "group relative h-10 w-full transition-all duration-200 px-6 rounded-none",
                               isSubActive
-                                ? "!text-app-primary2 font-semibold !bg-app-primary2"
+                                ? "!text-app-primary2 font-semibold !bg-blue-100/50"
                                 : "text-muted-foreground font-medium hover:text-foreground hover:bg-slate-50",
                             )}
                           >
@@ -221,9 +225,9 @@ export function NavPlateform({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-[3px] rounded-r-full bg-app-primary2" />
+                                <div className="absolute left-0 top-1 bottom-1 w-1 rounded-r-full bg-app-primary2" />
                               )}
-                              <span className="text-[12.5px] tracking-tight">
+                              <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}
                               </span>
                             </Link>
@@ -239,7 +243,7 @@ export function NavPlateform({ items }) {
 
           return hasChildren ? (
             <Collapsible
-              key={item.title}
+              key={item.url || item.title}
               asChild
               defaultOpen={hasActiveChild}
               className="group/collapsible"

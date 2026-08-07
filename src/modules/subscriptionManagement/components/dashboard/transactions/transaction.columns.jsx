@@ -214,7 +214,8 @@ export const getTransactionColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => {
       const txn = row.original;
-      const revokeDisabled = txn.status === "refunded" || txn.status === "failed";
+      const revokeDisabled =
+        txn.status === "refunded" || txn.status === "failed";
       return (
         <div className="flex justify-center">
           <DropdownMenu>

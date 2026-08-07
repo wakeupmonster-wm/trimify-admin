@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Activity,
-  ShieldCheck,
   CreditCard,
   Calendar,
   Target,
@@ -13,11 +12,17 @@ import {
   Mail,
   Phone,
   Star,
+  Droplets,
+  Utensils,
+  Scale,
+  Clock,
 } from "lucide-react";
+import { GiWeightLiftingUp } from "react-icons/gi";
 import { cn } from "@/lib/utils";
 import { Kpi, Card, KV, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
 import { LuUserRound } from "react-icons/lu";
+import { FaLink } from "react-icons/fa6";
 
 export function TabOverview({ data }) {
   const { user, es, cap, fmtDate, timeAgo, bmi, bmiCat, activeProgram } = data;
@@ -26,6 +31,25 @@ export function TabOverview({ data }) {
     if (valMatch && parseInt(valMatch[0], 10) === 0) return false;
     return true;
   });
+
+  const getFeatureIcon = (feature) => {
+    const f = (feature || "").toLowerCase();
+    if (f.includes("step")) return Footprints;
+    if (f.includes("water") || f.includes("hydration")) return Droplets;
+    if (f.includes("food") || f.includes("meal") || f.includes("diet"))
+      return Utensils;
+    if (f.includes("weight") || f.includes("scale")) return Scale;
+    if (
+      f.includes("fitzone") ||
+      f.includes("workout") ||
+      f.includes("exercise")
+    )
+      return Dumbbell;
+    if (f.includes("program")) return ClipboardList;
+    return Activity;
+  };
+
+  const FeatureIcon = getFeatureIcon(user.most_used_feature?.feature);
 
   return (
     <>
@@ -58,10 +82,7 @@ export function TabOverview({ data }) {
             />
           </div>
 
-          <Card
-            title="Recent Activity"
-            subtitle="Latest actions across the account"
-          >
+          <Card title="Recent Activity" subtitle="Latest actions across the account" icon={Activity}>
             {recentActivities.length > 0 ? (
               <div className="flex flex-col">
                 {recentActivities.slice(0, 6).map((a, i) => {
@@ -101,14 +122,11 @@ export function TabOverview({ data }) {
           </Card>
 
           {user.most_used_feature && (
-            <Card
-              title="Most Used Feature"
-              subtitle="Highest logged activity in this account"
-            >
+            <Card title="Most Used Feature" subtitle="Highest logged activity in this account" icon={Star}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
-                    <Activity className="h-5 w-5" />
+                    <FeatureIcon className="h-5 w-5" />
                   </div>
                   <div>
                     <div className="text-[13px] font-bold text-slate-900">
@@ -128,7 +146,7 @@ export function TabOverview({ data }) {
         </div>
 
         <div className="flex flex-col gap-3.5">
-          <Card title="Snapshot" subtitle="Quick summary across all areas">
+          <Card title="Snapshot" subtitle="Quick summary across all areas" icon={ClipboardList}>
             <KV
               icon={CreditCard}
               label="Plan"
@@ -180,7 +198,7 @@ export function TabOverview({ data }) {
               noBorder={true}
             />
             <KV
-              icon={ShieldCheck}
+              icon={GiWeightLiftingUp}
               label="BMI"
               value={
                 bmi ? (
@@ -215,7 +233,7 @@ export function TabOverview({ data }) {
             )}
           </Card>
 
-          <Card title="Account Connectivity" subtitle="Primary contact methods">
+          <Card title="Account Connectivity" subtitle="Primary contact details" icon={FaLink}>
             <KV
               icon={Mail}
               label="Email"
@@ -229,7 +247,7 @@ export function TabOverview({ data }) {
               noBorder={true}
             />
             <KV
-              icon={Activity}
+              icon={Clock}
               label="Last Login"
               value={user.last_login ? fmtDate(user.last_login) : "—"}
               noBorder={true}
@@ -255,7 +273,7 @@ export function TabOverview({ data }) {
             />
           </Card>
 
-          <Card title="Account Reports" subtitle="User standing & flags">
+          <Card title="Account Reports" subtitle="User standing & flags" icon={Flag}>
             <div className="p-4 rounded-lg bg-green-50/50 flex items-center gap-4 border border-green-100">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-600">
                 <ShieldCheck className="h-4 w-4" />
