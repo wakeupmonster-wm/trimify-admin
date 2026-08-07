@@ -37,6 +37,10 @@ const UsersManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState(
     location.state?.filterId || "",
   );
+  // Optional dateRange passed via navigation from Dashboard KPI cards
+  const [dateRangeFilter, setDateRangeFilter] = useState(
+    location.state?.dateRange || null,
+  );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
@@ -47,6 +51,10 @@ const UsersManagementPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         status: statusFilter,
+        // Backend expects 'preset', 'from', 'to' at the root query level, not nested
+        ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+        ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
+        ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
       }),
     );
   }, [
@@ -55,6 +63,7 @@ const UsersManagementPage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
     statusFilter,
+    dateRangeFilter,
   ]);
 
   const handleAction = useCallback((row, action) => {
@@ -215,6 +224,16 @@ const UsersManagementPage = () => {
       ],
       placeholder: "All Status",
     },
+    {
+      type: "dateRange",
+      id: "dateRangeFilter",
+      label: "Date",
+      value: location.state?.dateRange || null,
+      onChange: () => {
+        // Clear navigation state by replacing it without dateRange
+        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+      },
+    },
   ];
 
   return (
@@ -254,7 +273,12 @@ const UsersManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => handleStatusFilterChange("")}
+                onClearAll={() => {
+                  handleStatusFilterChange("");
+                  if (location.state?.dateRange) {
+                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  }
+                }}
               />
             }
           />

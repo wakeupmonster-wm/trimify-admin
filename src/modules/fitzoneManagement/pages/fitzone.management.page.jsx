@@ -4,7 +4,7 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import { Dumbbell, Plus, CheckCircle2, XCircle, ListVideo } from "lucide-react";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DataTable,
   DataTableFilters,
@@ -24,6 +24,7 @@ import { useDebounce } from "../../../hooks/useDebounce";
 
 const FitzoneManagementPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const {
     fitzones,
@@ -35,6 +36,8 @@ const FitzoneManagementPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
+  // Optional dateRange from Dashboard KPI navigation
+  const dateRangeFromDashboard = location.state?.dateRange || null;
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteModal, setDeleteModal] = useState({
     open: false,
@@ -55,6 +58,9 @@ const FitzoneManagementPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         status: statusFilter,
+        ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
+        ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
+        ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
       }),
     );
   }, [
@@ -155,6 +161,16 @@ const FitzoneManagementPage = () => {
         { label: "Inactive", value: "Inactive" },
       ],
       placeholder: "All Status",
+    },
+    {
+      type: "dateRange",
+      id: "dateRangeFilter",
+      label: "Date",
+      value: dateRangeFromDashboard,
+      onChange: () => {
+        // Clear navigation state by replacing it without dateRange
+        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+      },
     },
   ];
 
@@ -258,7 +274,12 @@ const FitzoneManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setStatusFilter("")}
+                onClearAll={() => {
+                  setStatusFilter("");
+                  if (dateRangeFromDashboard) {
+                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  }
+                }}
               />
             }
           />

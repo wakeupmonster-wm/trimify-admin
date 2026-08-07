@@ -1,9 +1,13 @@
-import React from "react";
-import { Target, Activity, ClipboardList, Dumbbell } from "lucide-react";
+import React, { useState } from "react";
+import { Target, Activity, ClipboardList, Dumbbell, Pencil } from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileShared";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import EditFitzoneDialogForm from "./profile/EditFitzoneDialogForm";
 
 export function TabPrograms({ data }) {
   const { programs, fitzoneStatus, fmtDate } = data;
+  const [editFitzoneOpen, setEditFitzoneOpen] = useState(false);
+  const [selectedFitzone, setSelectedFitzone] = useState(null);
 
   return (
     <>
@@ -101,9 +105,16 @@ export function TabPrograms({ data }) {
                       Since {fmtDate(f.assigned_at)}
                     </div>
                   </div>
-                  <Pill tone={f.status === "Active" ? "success" : "neutral"}>
-                    {f.status}
-                  </Pill>
+                  <button
+                    onClick={() => {
+                      setSelectedFitzone(f);
+                      setEditFitzoneOpen(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+                  >
+                    <Pencil className="w-3 h-3 text-slate-500" />
+                    Edit
+                  </button>
                 </div>
               ))}
             </div>
@@ -116,6 +127,15 @@ export function TabPrograms({ data }) {
           )}
         </Card>
       </div>
+
+      <Dialog open={editFitzoneOpen} onOpenChange={setEditFitzoneOpen}>
+        <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
+          <EditFitzoneDialogForm
+            data={selectedFitzone}
+            onClose={() => setEditFitzoneOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

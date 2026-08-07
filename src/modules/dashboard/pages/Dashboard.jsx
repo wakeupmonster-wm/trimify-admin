@@ -305,6 +305,8 @@ export default function Dashboard() {
               <SecondaryKpiRow
                 data={displayExtras?.secondaryKpis}
                 title={displayExtras?.title}
+                dateRange={selectedDate}
+                contextLabel={dashboardMeta?.contextLabel}
               />
               <EcosystemAlerts
                 data={{ alerts: displayExtras?.alerts || [] }}

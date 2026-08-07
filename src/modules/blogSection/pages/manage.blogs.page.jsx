@@ -5,7 +5,7 @@ import { FileText, Plus, CheckCircle, EyeOff, Flame } from "lucide-react";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import Header from "@/components/common/header";
 import React, { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DataTable,
   DataTableFilters,
@@ -25,8 +25,9 @@ import { LuNewspaper } from "react-icons/lu";
 
 const ManageBlogsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
-  const { posts, postsLoading, postsPagination } = useSelector(
+  const { posts, postsLoading, postsPagination, postsKpis } = useSelector(
     (state) => state.blogSection,
   );
   const [postFilter, setPostFilter] = useState("");
@@ -36,6 +37,8 @@ const ManageBlogsPage = () => {
     pageSize: postsPagination.limit || 10,
   });
   const [statusFilter, setStatusFilter] = useState("");
+  // Optional dateRange from Dashboard KPI navigation
+  const dateRangeFromDashboard = location.state?.dateRange || null;
   const [deleteModal, setDeleteModal] = useState({
     open: false,
     rowData: null,
@@ -48,6 +51,9 @@ const ManageBlogsPage = () => {
         page: postPage.pageIndex + 1,
         limit: postPage.pageSize,
         search: debouncedPostFilter,
+        ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
+        ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
+        ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
       }),
     );
   }, [dispatch, postPage.pageIndex, postPage.pageSize, debouncedPostFilter]);
@@ -135,6 +141,16 @@ const ManageBlogsPage = () => {
       ],
       placeholder: "All Status",
     },
+    {
+      type: "dateRange",
+      id: "dateRangeFilter",
+      label: "Date",
+      value: dateRangeFromDashboard,
+      onChange: () => {
+        // Clear navigation state by replacing it without dateRange
+        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+      },
+    },
   ];
 
   const isPostManual = !!(postsPagination && postsPagination.total > 0);
@@ -145,14 +161,14 @@ const ManageBlogsPage = () => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const total = postsPagination?.total || list.length;
-    const published = list.filter(
+    const total = postsKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
+    const published = postsKpis?.publishedBlogs ?? list.filter(
       (p) => String(p.visibility_status).toLowerCase() === "publish",
     ).length;
-    const drafts = list.filter(
+    const drafts = postsKpis?.draftBlogs ?? list.filter(
       (p) => String(p.visibility_status).toLowerCase() !== "publish",
     ).length;
-    const recent = list.filter(
+    const recent = postsKpis?.recentBlogs ?? list.filter(
       (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
     ).length;
 
@@ -212,7 +228,7 @@ const ManageBlogsPage = () => {
         isSelected: statusFilter === "Recent",
       },
     ];
-  }, [posts, postsPagination?.total, statusFilter]);
+  }, [posts, postsPagination?.total, postsKpis, statusFilter]);
 
   return (
     <Container>
@@ -265,7 +281,12 @@ const ManageBlogsPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setStatusFilter("")}
+                onClearAll={() => {
+                  setStatusFilter("");
+                  if (dateRangeFromDashboard) {
+                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  }
+                }}
               />
             }
           />

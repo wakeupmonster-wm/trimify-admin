@@ -65,7 +65,7 @@ export const getManageDietProgramColumns = (handleAction) => [
         Food
       </div>
     ),
-    size: 300,
+    size: 160,
     cell: ({ row }) => (
       <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
         {row.original.diet_meal_data?.Meal_title || "-"}

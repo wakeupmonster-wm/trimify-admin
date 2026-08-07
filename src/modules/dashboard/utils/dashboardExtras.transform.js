@@ -112,7 +112,10 @@ export const buildSecondaryKpis = (summary) => {
     totalPublishedBlogs: summary.totalPublishedBlogs || 0,
     totalSubAdmins: summary.totalSubAdmins || 0,
     missedStepGoals: summary.missedStepGoals || 0,
-    missedDietWaterLogs: summary.missedDietWaterLogs || 0,
+    missedDietLogs: summary.missedDietLogs || 0,
+    missedWaterLogs: summary.missedWaterLogs || 0,
+    // Pass through the real trend objects from the backend
+    trends: summary.trends || null,
   };
 };
 
