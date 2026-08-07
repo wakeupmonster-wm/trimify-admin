@@ -189,13 +189,22 @@ export function TabTransactions({ data }) {
                         <td className="px-5 py-4">
                           {(() => {
                             const title = tx.plan_title;
-                            if (!title) return <span className="text-[11px] font-bold text-slate-700">—</span>;
-                            
+                            if (!title)
+                              return (
+                                <span className="text-[11px] font-bold text-slate-700">
+                                  —
+                                </span>
+                              );
+
                             const lower = title.toLowerCase();
                             let colorClass = "text-slate-600";
 
-                            if (lower.includes("premium")) colorClass = "text-app-primary2";
-                            else if (lower.includes("basic") || lower.includes("starter"))
+                            if (lower.includes("premium"))
+                              colorClass = "text-app-primary2";
+                            else if (
+                              lower.includes("basic") ||
+                              lower.includes("starter")
+                            )
                               colorClass = "text-app-primary3";
 
                             return (
