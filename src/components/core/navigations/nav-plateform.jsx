@@ -59,11 +59,11 @@ export function NavPlateform({ items }) {
   }
 
   return (
-     <SidebarGroup className="px-0">
+    <SidebarGroup className="px-0">
       <SidebarGroupLabel className="px-6 h-8 text-[10px] mb-1 font-bold uppercase tracking-widest text-slate-500">
         Platform
       </SidebarGroupLabel>
-      <SidebarMenu className="group-data-[collapsible=icon]:pl-1 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
+      <SidebarMenu className="group-data-[collapsible=icon]:pl-0 group-data-[collapsible=icon]:gap-2.5 group-data-[collapsible=icon]:!items-start gap-3 2xl:gap-0.5">
         {items.map((item) => {
           const isActive =
             isPathActive(location.pathname, item.url) ||

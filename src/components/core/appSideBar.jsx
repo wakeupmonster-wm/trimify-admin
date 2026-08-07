@@ -87,8 +87,8 @@ export function AppSidebar({ ...props }) {
             {/* 3. Trigger button hamesha dikhega, collapsed mode mein center */}
             <SidebarTrigger
               className={cn(
-                "-ml-1 mr-2 text-slate-500 hover:bg-slate-100",
-                !open && "mx-auto ml-0", // Collapsed hone par center align karne ke liye
+                "text-slate-500 hover:bg-slate-100",
+                !open && "mx-auto", // Collapsed hone par center align karne ke liye
               )}
             />
           </SidebarMenuItem>
