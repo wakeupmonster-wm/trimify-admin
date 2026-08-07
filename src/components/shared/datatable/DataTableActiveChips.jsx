@@ -25,7 +25,7 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
                   ? matched.label
                   : matched
                 : filter.value;
-              return lbl.toString().replace("_", " ").replace("-", " ");
+              return String(lbl || "").replace(/_/g, " ").replace(/-/g, " ");
             })(),
         onClear: () => filter.onChange(""),
       });
@@ -48,6 +48,17 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
             });
           }
         });
+      });
+    }
+
+    if (filter.type === "dateRange" && filter.value) {
+      activeChips.push({
+        id: filter.id,
+        label: filter.label,
+        displayValue: filter.value.preset === "custom" 
+          ? `${filter.value.from} to ${filter.value.to}`
+          : String(filter.value.preset || "").replace(/_/g, " "),
+        onClear: () => filter.onChange(null),
       });
     }
   });

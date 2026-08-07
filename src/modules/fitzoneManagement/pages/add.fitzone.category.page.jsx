@@ -214,10 +214,10 @@ const AddFitzoneCategoryPage = () => {
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
 
-              {isEdit && iconPreview && !iconFile && (
+              {iconPreview && (
                 <div className="mb-4">
                   <Label className="text-xs font-bold text-slate-800 block mb-2">
-                    Current Uploaded Icon
+                    {iconFile ? "New Icon Preview" : "Current Uploaded Icon"}
                   </Label>
                   <div className="w-16 h-16 rounded-md bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
                     <img

@@ -53,18 +53,63 @@ const KPI_CONFIG = [
     isPositive: false,
     format: (data) => data?.missedStepGoals?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate) => navigate("/admin/users"),
+    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_step_goals", dateRange } }),
   },
   {
-    key: "missedDietWaterLogs",
-    label: "Missed Diet/Water",
-    description: "Users missing logs",
+    key: "missedDietLogs",
+    label: "Missed Diet Logs",
+    description: "Users missing food logs",
     tone: "amber",
     trendValue: "1%",
     isPositive: false,
-    format: (data) => data?.missedDietWaterLogs?.toLocaleString() || "0",
+    format: (data) => data?.missedDietLogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate) => navigate("/admin/users"),
+    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_diet_logs", dateRange } }),
+  },
+  {
+    key: "missedWaterLogs",
+    label: "Missed Water Logs",
+    description: "Users missing water logs",
+    tone: "cyan",
+    trendValue: "1%",
+    isPositive: false,
+    format: (data) => data?.missedWaterLogs?.toLocaleString() || "0",
+    isCurrency: false,
+    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_water_logs", dateRange } }),
+  },
+  {
+    key: "totalPrograms",
+    label: "Total Programs",
+    description: "Tap to manage",
+    tone: "violet",
+    trendValue: "4%",
+    isPositive: true,
+    format: (data) => data?.totalPrograms?.toLocaleString() || "0",
+    isCurrency: false,
+    onClick: (navigate, dateRange) => navigate("/admin/manage-program", { state: { dateRange } }),
+  },
+
+  {
+    key: "totalBlogs",
+    label: "Total Blogs",
+    description: "Tap to manage",
+    tone: "cyan",
+    trendValue: "3%",
+    isPositive: true,
+    format: (data) => data?.totalBlogs?.toLocaleString() || "0",
+    isCurrency: false,
+    onClick: (navigate, dateRange) => navigate("/admin/blog-section", { state: { dateRange } }),
+  },
+  {
+    key: "totalFitzoneSessions",
+    label: "Fitzone Sessions",
+    description: "Tap to manage",
+    tone: "rose",
+    trendValue: "15%",
+    isPositive: true,
+    format: (data) => data?.totalFitzoneSessions?.toLocaleString() || "0",
+    isCurrency: false,
+    onClick: (navigate, dateRange) => navigate("/admin/fitzone-management", { state: { dateRange } }),
   },
   {
     key: "expiringSoon",
@@ -80,53 +125,20 @@ const KPI_CONFIG = [
         state: { filterId: "expiring_soon" },
       }),
   },
-  {
-    key: "totalPrograms",
-    label: "Total Programs",
-    description: "Tap to manage",
-    tone: "violet",
-    trendValue: "4%",
-    isPositive: true,
-    format: (data) => data?.totalPrograms?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate) => navigate("/admin/manage-program"),
-  },
-  {
-    key: "totalFitzoneSessions",
-    label: "Fitzone Sessions",
-    description: "Tap to manage",
-    tone: "rose",
-    trendValue: "15%",
-    isPositive: true,
-    format: (data) => data?.totalFitzoneSessions?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate) => navigate("/admin/fitzone-management"),
-  },
-  {
-    key: "totalBlogs",
-    label: "Total Blogs",
-    description: "Tap to manage",
-    tone: "cyan",
-    trendValue: "3%",
-    isPositive: true,
-    format: (data) => data?.totalBlogs?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate) => navigate("/admin/blog-section"),
-  },
-  {
-    key: "totalPublishedBlogs",
-    label: "Published Blogs",
-    description: "Live on the app",
-    tone: "emerald",
-    trendValue: "1%",
-    isPositive: true,
-    format: (data) => data?.totalPublishedBlogs?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate) => navigate("/admin/blog-section/manage-blogs"),
-  },
+  // {
+  //   key: "totalPublishedBlogs",
+  //   label: "Published Blogs",
+  //   description: "Live on the app",
+  //   tone: "emerald",
+  //   trendValue: "1%",
+  //   isPositive: true,
+  //   format: (data) => data?.totalPublishedBlogs?.toLocaleString() || "0",
+  //   isCurrency: false,
+  //   onClick: (navigate) => navigate("/admin/blog-section/manage-blogs"),
+  // },
 ];
 
-const SecondaryKpiRow = ({ data, title }) => {
+const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
   const navigate = useNavigate();
   if (!data) return null;
 
@@ -158,53 +170,50 @@ const SecondaryKpiRow = ({ data, title }) => {
                 : (100 + trendPct) / 100;
               const previous = rawVal * multiplier;
 
-              return (
-                <KpiCard
-                  key={idx}
-                  label={kpi.label}
-                  value={kpi.value}
-                  description={kpi.sub}
-                  tone={kpi.color}
-                  trendValue={kpi.trend}
-                  isPositive={kpi.isPositive}
-                  tooltipData={{
-                    current: rawVal,
-                    previous,
-                    isCurrency,
-                  }}
-                  onClick={() => {
-                    if (config?.onClick) config.onClick(navigate);
-                  }}
-                />
-              );
-            })
+            return (
+              <KpiCard
+                key={idx}
+                label={kpi.label}
+                value={kpi.value}
+                description={kpi.sub}
+                tone={kpi.color}
+                trendValue={kpi.trend}
+                isPositive={kpi.isPositive}
+                tooltipData={{
+                  current: rawVal,
+                  previous,
+                  isCurrency,
+                }}
+                onClick={() => {
+                  if (config?.onClick) config.onClick(navigate, dateRange);
+                }}
+              />
+            );
+          })
           : KPI_CONFIG.map((kpi) => {
-              const val = data[kpi.key] || 0;
-              // Simple mock formula to generate a "previous" value so tooltips look realistic
-              const multiplier = kpi.isPositive
-                ? (100 - parseInt(kpi.trendValue)) / 100
-                : (100 + parseInt(kpi.trendValue)) / 100;
-              const previous = val * multiplier;
+            const val = data[kpi.key] || 0;
+            const trendObj = data.trends?.[kpi.key];
+            const trendStr = trendObj?.trend;
 
-              return (
-                <KpiCard
-                  key={kpi.key}
-                  label={kpi.label}
-                  value={kpi.format(data)}
-                  description={kpi.description}
-                  tone={kpi.tone}
-                  trendValue={kpi.trendValue}
-                  isPositive={kpi.isPositive}
-                  trendExplanation={kpi.trendExplanation}
-                  tooltipData={{
-                    current: val,
-                    previous,
-                    isCurrency: kpi.isCurrency,
-                  }}
-                  onClick={() => kpi.onClick(navigate)}
-                />
-              );
-            })}
+            const dynamicDescription = contextLabel
+              ? contextLabel.replace(/^vs\s+/i, "Compared to ")
+              : kpi.description;
+
+            return (
+              <KpiCard
+                key={kpi.key}
+                label={kpi.label}
+                value={kpi.format(data)}
+                description={dynamicDescription}
+                tone={kpi.tone}
+                trendValue={trendStr}
+                isPositive={kpi.isPositive}
+                trendExplanation={kpi.trendExplanation}
+                tooltipData={trendObj || null}
+                onClick={() => kpi.onClick(navigate, dateRange)}
+              />
+            );
+          })}
       </div>
     </div>
   );

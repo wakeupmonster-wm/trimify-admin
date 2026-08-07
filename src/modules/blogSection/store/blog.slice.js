@@ -50,6 +50,7 @@ export const fetchBlogPosts = createAsyncThunk(
         const pag = response.pagination || {};
         return {
           posts: response.blogs || response.data || response.posts || [],
+          kpis: response.kpis || null,
           pagination: {
             page: pag.current_page || 1,
             limit: pag.per_page || 10,
@@ -217,6 +218,7 @@ const blogSectionSlice = createSlice({
     categoriesPagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
     
     posts: [],
+    postsKpis: null,
     postsLoading: false,
     postsError: null,
     postsPagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
@@ -259,6 +261,7 @@ const blogSectionSlice = createSlice({
       .addCase(fetchBlogPosts.fulfilled, (state, action) => {
         state.postsLoading = false;
         state.posts = action.payload.posts;
+        state.postsKpis = action.payload.kpis;
         state.postsPagination = action.payload.pagination;
       })
       .addCase(fetchBlogPosts.rejected, (state, action) => {

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, ArrowLeft, Save, CheckCircle2, XCircle } from "lucide-react";
+import { Sparkles, ArrowLeft, Save, CheckCircle2, XCircle, Trash2 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import Header from "@/components/common/header";
@@ -55,11 +55,13 @@ const AiFoodUploadPage = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const visibleItems = useMemo(
-    () => items.filter((item) => item.status !== "approved"),
+    () => [...items].filter((item) => item.status !== "approved").sort((a, b) => b.id - a.id),
     [items],
   );
 
@@ -133,6 +135,24 @@ const AiFoodUploadPage = () => {
       });
   };
 
+  const handleConfirmBulkDelete = () => {
+    setIsBulkDeleting(true);
+    const promises = selectedIds.map(id => dispatch(deleteAiFoodItem(id)).unwrap());
+    
+    Promise.allSettled(promises)
+      .then((results) => {
+        const failedCount = results.filter(r => r.status === 'rejected').length;
+        if (failedCount === 0) {
+          toast.success("Selected items removed.");
+        } else {
+          toast.error(`${failedCount} item(s) failed to remove.`);
+        }
+        setBulkDeleteConfirmOpen(false);
+        setSelectedIds([]);
+      })
+      .finally(() => setIsBulkDeleting(false));
+  };
+
   const columns = useMemo(
     () =>
       getAiFoodColumns({
@@ -174,8 +194,22 @@ const AiFoodUploadPage = () => {
                 <span className="whitespace-nowrap">Back</span>
               </Button>
               <Button
+                onClick={() => setBulkDeleteConfirmOpen(true)}
+                disabled={selectedIds.length === 0 || isBulkDeleting || saveLoading}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+              >
+                {isBulkDeleting ? (
+                  <Spinner className="w-4 h-4 shrink-0" />
+                ) : (
+                  <Trash2 className="w-4 h-4 shrink-0" />
+                )}
+                <span className="whitespace-nowrap">
+                  Delete Selected ({selectedIds.length})
+                </span>
+              </Button>
+              <Button
                 onClick={() => setConfirmOpen(true)}
-                disabled={selectedIds.length === 0 || saveLoading}
+                disabled={selectedIds.length === 0 || saveLoading || isBulkDeleting}
                 className="flex-1 bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
               >
                 {saveLoading ? (
@@ -301,6 +335,17 @@ const AiFoodUploadPage = () => {
         confirmText="Delete"
         type="danger"
         loading={isDeleting}
+      />
+
+      <ConfirmModal
+        isOpen={bulkDeleteConfirmOpen}
+        onClose={() => setBulkDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmBulkDelete}
+        title="Delete Selected Items"
+        message={`Are you sure you want to remove ${selectedIds.length} generated item${selectedIds.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+        confirmText="Delete Selected"
+        type="danger"
+        loading={isBulkDeleting}
       />
     </Container>
   );

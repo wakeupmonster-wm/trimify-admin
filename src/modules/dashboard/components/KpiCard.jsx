@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { IconTrendingDown, IconTrendingUp, IconMinus } from "@tabler/icons-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -95,6 +95,13 @@ const KpiCard = ({
     dynamicExplanation = `${isPositive ? "Increase" : "Decrease"} compared to previous period`;
   }
 
+  const trendNum = trendValue ? parseFloat(String(trendValue).replace(/[^0-9.\-]/g, "")) : 0;
+  const isTrendZero = trendNum === 0;
+  const isTrendUp = trendNum > 0;
+  const isTrendDown = trendNum < 0;
+  // The user requested consistent colors: positive is always green, negative is always red, regardless of the metric type.
+  const isTrendGood = isTrendZero ? null : isTrendUp;
+
   return (
     <div
       onClick={onClick}
@@ -140,19 +147,23 @@ const KpiCard = ({
                   <div
                     className={cn(
                       "flex items-center gap-1 font-bold text-[10px] border rounded-full py-1 px-2 shrink-0 transition-transform cursor-pointer",
-                      !isPositive
-                        ? "text-rose-600 bg-rose-50 border-rose-200"
-                        : "text-emerald-600 bg-emerald-50 border-emerald-200",
+                      isTrendZero
+                        ? "text-slate-500 bg-slate-50 border-slate-200"
+                        : isTrendGood
+                          ? "text-emerald-600 bg-emerald-50 border-emerald-200"
+                          : "text-rose-600 bg-rose-50 border-rose-200",
                     )}
                   >
-                    {isPositive ? (
+                    {isTrendZero ? (
+                      <IconMinus size={12} stroke={3} />
+                    ) : isTrendUp ? (
                       <IconTrendingUp size={12} stroke={3} />
                     ) : (
                       <IconTrendingDown size={12} stroke={3} />
                     )}
                     <span>
-                      {isPositive ? "+" : "-"}
-                      {trendValue.replace(/^[+-]/, "")}
+                      {isTrendZero ? "" : isTrendUp ? "+" : ""}
+                      {String(trendValue).replace(/^[+-]/, isTrendDown ? "-" : "")}
                     </span>
                   </div>
                 </TooltipTrigger>
@@ -198,7 +209,7 @@ const KpiCard = ({
                         <span>Difference:</span>
                         <span
                           className={
-                            !isPositive ? "text-rose-400" : "text-emerald-400"
+                            isTrendZero ? "text-slate-400" : isTrendGood ? "text-emerald-400" : "text-rose-400"
                           }
                         >
                           {tooltipData.current - tooltipData.previous > 0
@@ -277,7 +288,7 @@ const KpiCard = ({
                         <span>Difference:</span>
                         <span
                           className={
-                            !isPositive ? "text-rose-400" : "text-emerald-400"
+                            isTrendZero ? "text-slate-400" : isTrendGood ? "text-emerald-400" : "text-rose-400"
                           }
                         >
                           {tooltipData.current - tooltipData.previous > 0

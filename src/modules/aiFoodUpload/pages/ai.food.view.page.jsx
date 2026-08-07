@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import {
   Eye,
   ClipboardList,
   Bot,
+  Save,
 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -52,6 +53,7 @@ import {
   regenerateAiFoodImageFromAudio,
   deleteAiFoodItem,
   generateAiFood,
+  saveAiFoodItems,
 } from "../store/ai.food.slice";
 import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 import { getNutritionListAPI } from "@/modules/dataManagement/services/nutrition.services";
@@ -133,6 +135,7 @@ const AiFoodViewPage = () => {
   const isBusy = useSelector((state) =>
     state.aiFood.itemActionIds.includes(itemId),
   );
+  const saveLoading = useSelector((state) => state.aiFood.saveLoading);
 
   const [fields, setFields] = useState(() => (item ? buildFields(item) : {}));
   const [syncedStatus, setSyncedStatus] = useState(item?.status);
@@ -155,13 +158,30 @@ const AiFoodViewPage = () => {
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAutoRegenConfirmOpen, setIsAutoRegenConfirmOpen] = useState(false);
+  const [hideOverlay, setHideOverlay] = useState(false);
 
   useEffect(() => {
     if (item && item.status !== "processing") {
       setImageRegenerating(false);
       setIsPromptModalOpen(false);
+      setHideOverlay(false);
     }
   }, [item?.status]);
+
+  const isDirty = useMemo(() => {
+    if (!item) return false;
+    const originalFields = buildFields(item);
+    return Object.keys(fields).some(
+      (key) => {
+        let val1 = fields[key];
+        let val2 = originalFields[key];
+        if (typeof val1 === "string" && typeof val2 === "string") {
+          return val1.trim() !== val2.trim();
+        }
+        return val1 !== val2;
+      }
+    );
+  }, [fields, item]);
 
   if (!item) {
     return (
@@ -185,41 +205,58 @@ const AiFoodViewPage = () => {
   }
 
   const statusMeta = STATUS_META[item.status] || STATUS_META.draft;
+
+  const isImageProcessing =
+    imageRegenerating ||
+    (item.status === "processing" && item.nutrition_status === "success");
+
+  const showImageOverlay = isImageProcessing && !hideOverlay;
+
   const isInFlight =
-    (item.status === "draft" || item.status === "processing") &&
-    !imageRegenerating;
-  const showReviewForm =
-    item.status === "pending_review" ||
-    (item.status === "processing" && imageRegenerating);
+    item.status === "draft" ||
+    (item.status === "processing" && item.nutrition_status !== "success");
+
+  const showReviewForm = !isInFlight;
 
   const handleChange = (name, value) => {
     setFields((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleBlurSave = (name, originalValue) => {
-    let value = fields[name];
-    if (value === (originalValue ?? "")) return;
+  const handleSaveEdits = () => {
+    const originalFields = buildFields(item);
+    const data = {};
+    let hasChanges = false;
 
-    let payloadValue = value;
-    if (name === "Meal_ingredients" || name === "Meal_instructions") {
-      payloadValue = stringifyList(value);
-      if (payloadValue === (originalValue ?? "")) return;
-    }
-    if (
-      [
-        "Meal_Protien_In_gm",
-        "Meal_Carbs_In_gm",
-        "Meal_Calories_In_gm",
-        "Meal_Fats_In_gm",
-        "Meal_Serving",
-      ].includes(name)
-    ) {
-      payloadValue = value === "" ? "" : Number(value);
-    }
+    Object.keys(fields).forEach(key => {
+      let val1 = fields[key];
+      let val2 = originalFields[key];
+      const isString = typeof val1 === "string" && typeof val2 === "string";
+      if ((isString && val1.trim() !== val2.trim()) || (!isString && val1 !== val2)) {
+        let value = fields[key];
+        if (key === "Meal_ingredients" || key === "Meal_instructions") {
+          value = stringifyList(value);
+        } else if (
+          [
+            "Meal_Protien_In_gm",
+            "Meal_Carbs_In_gm",
+            "Meal_Calories_In_gm",
+            "Meal_Fats_In_gm",
+            "Meal_Serving",
+          ].includes(key)
+        ) {
+          value = value === "" ? "" : Number(value);
+        }
+        data[key] = value;
+        hasChanges = true;
+      }
+    });
 
-    dispatch(updateAiFoodItem({ id: item.id, data: { [name]: payloadValue } }))
+    if (!hasChanges) return;
+
+    dispatch(updateAiFoodItem({ id: item.id, data }))
       .unwrap()
-      .catch((error) => toast.error(error || "Failed to save change."));
+      .then(() => toast.success("Changes saved successfully."))
+      .catch((error) => toast.error(error || "Failed to save changes."));
   };
 
   const handleRetry = () => {
@@ -244,9 +281,6 @@ const AiFoodViewPage = () => {
     handleRegenerateImage();
   };
 
-  // Fire-and-forget, same as the plain regenerate button — the response
-  // doesn't carry the new image yet, useAiFoodPolling picks it up once the
-  // item flips back out of "processing".
   const handleGenerateFromPrompt = (prompt) => {
     setImageRegenerating(true);
     dispatch(regenerateAiFoodImage({ id: item.id, imagePrompt: prompt }))
@@ -265,20 +299,14 @@ const AiFoodViewPage = () => {
       .then(() => toast.success("Regenerating image from your recording…"))
       .catch((error) => {
         setImageRegenerating(false);
-        toast.error(
-          error || "Couldn't process that recording — please try again.",
-        );
+        toast.error(error || "Couldn't process that recording — please try again.");
       });
   };
 
-  // Doesn't cancel the backend job (fire-and-forget, no cancel endpoint) —
-  // just stops blocking this screen on it. useAiFoodPolling still picks up
-  // the result whenever it's ready, cancelled or not.
   const handleCancelRegenerate = () => {
     setImageRegenerating(false);
-    toast.info(
-      "Stopped waiting — the image will still update automatically once it's ready.",
-    );
+    setHideOverlay(true);
+    toast.info("Stopped waiting — the image will still update automatically once it's ready.");
   };
 
   const handleRemove = () => {
@@ -363,7 +391,7 @@ const AiFoodViewPage = () => {
                     variant="outline"
                     className={`${statusMeta.className} mt-0.5`}
                   >
-                    {isInFlight && (
+                    {(isInFlight || isImageProcessing) && (
                       <Loader2 className="w-3 h-3 mr-1 animate-spin" />
                     )}
                     {item.status === "pending_review" && (
@@ -384,6 +412,20 @@ const AiFoodViewPage = () => {
                 <ArrowLeft className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Back </span>
               </Button>
+              {item.status !== "approved" && !isInFlight && (
+                <Button
+                  onClick={handleSaveEdits}
+                  disabled={isBusy || !isDirty}
+                  className="flex-1 bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                >
+                  {isBusy ? (
+                    <Spinner className="w-4 h-4 shrink-0" />
+                  ) : (
+                    <Save className="w-4 h-4 shrink-0" />
+                  )}
+                  <span className="whitespace-nowrap">Save</span>
+                </Button>
+              )}
             </div>
           </div>
         </Header>
@@ -558,7 +600,7 @@ const AiFoodViewPage = () => {
                         <img
                           src={item.Meal_Image_url}
                           alt={item.food_name}
-                          className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${imageRegenerating ? "opacity-30 blur-sm" : ""}`}
+                          className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${showImageOverlay ? "opacity-30 blur-sm" : ""}`}
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
                           <Eye className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
@@ -576,7 +618,7 @@ const AiFoodViewPage = () => {
                         <button
                           type="button"
                           className="absolute bottom-4 right-4 w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center text-[#1d5284] hover:bg-slate-50 transition-colors z-10"
-                          disabled={isBusy || imageRegenerating}
+                          disabled={isBusy || isImageProcessing}
                         >
                           <Bot className="w-5 h-5" />
                         </button>
@@ -605,13 +647,13 @@ const AiFoodViewPage = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-                    {imageRegenerating && (
+                    {showImageOverlay && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/60 backdrop-blur-[2px] z-20">
                         <div className="bg-white p-4 rounded-full shadow-lg">
                           <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
                         </div>
                         <p className="text-xs font-bold text-slate-700 bg-white/80 px-3 py-1 rounded-full">
-                          Regenerating image…
+                          {imageRegenerating ? "Regenerating image…" : "Generating image…"}
                         </p>
                         <button
                           type="button"
@@ -657,32 +699,24 @@ const AiFoodViewPage = () => {
                     name="Meal_Protien_In_gm"
                     fields={fields}
                     onChange={handleChange}
-                    onBlurSave={handleBlurSave}
-                    original={item.Meal_Protien_In_gm}
                   />
                   <NumberField
                     label="Carbs (gm)"
                     name="Meal_Carbs_In_gm"
                     fields={fields}
                     onChange={handleChange}
-                    onBlurSave={handleBlurSave}
-                    original={item.Meal_Carbs_In_gm}
                   />
                   <NumberField
                     label="Calories (kcal)"
                     name="Meal_Calories_In_gm"
                     fields={fields}
                     onChange={handleChange}
-                    onBlurSave={handleBlurSave}
-                    original={item.Meal_Calories_In_gm}
                   />
                   <NumberField
                     label="Fats (gm)"
                     name="Meal_Fats_In_gm"
                     fields={fields}
                     onChange={handleChange}
-                    onBlurSave={handleBlurSave}
-                    original={item.Meal_Fats_In_gm}
                   />
                 </div>
 
@@ -693,21 +727,7 @@ const AiFoodViewPage = () => {
                     </label>
                     <Select
                       value={fields.Meal_Type}
-                      onValueChange={(val) => {
-                        handleChange("Meal_Type", val);
-                        if (val !== (item.Meal_Type ?? "")) {
-                          dispatch(
-                            updateAiFoodItem({
-                              id: item.id,
-                              data: { Meal_Type: val },
-                            }),
-                          )
-                            .unwrap()
-                            .catch((error) =>
-                              toast.error(error || "Failed to save change."),
-                            );
-                        }
-                      }}
+                      onValueChange={(val) => handleChange("Meal_Type", val)}
                     >
                       <SelectTrigger className="h-10 text-sm border-slate-300/60">
                         <SelectValue placeholder="Select type" />
@@ -723,8 +743,6 @@ const AiFoodViewPage = () => {
                     name="Meal_Serving"
                     fields={fields}
                     onChange={handleChange}
-                    onBlurSave={handleBlurSave}
-                    original={item.Meal_Serving}
                     large
                   />
                 </div>
@@ -734,8 +752,6 @@ const AiFoodViewPage = () => {
                   name="Meal_Description"
                   fields={fields}
                   onChange={handleChange}
-                  onBlurSave={handleBlurSave}
-                  original={item.Meal_Description}
                   rows={3}
                 />
                 <TextField
@@ -743,8 +759,6 @@ const AiFoodViewPage = () => {
                   name="Meal_ingredients"
                   fields={fields}
                   onChange={handleChange}
-                  onBlurSave={handleBlurSave}
-                  original={parseJsonList(item.Meal_ingredients)}
                   rows={4}
                 />
                 <TextField
@@ -752,8 +766,6 @@ const AiFoodViewPage = () => {
                   name="Meal_instructions"
                   fields={fields}
                   onChange={handleChange}
-                  onBlurSave={handleBlurSave}
-                  original={parseJsonList(item.Meal_instructions)}
                   rows={4}
                 />
               </div>
@@ -805,7 +817,7 @@ const AiFoodViewPage = () => {
           handleGenerateFromAudio(audio);
           setIsPromptModalOpen(false);
         }}
-        busy={isBusy || imageRegenerating}
+        busy={isBusy || isImageProcessing}
       />
 
       <ConfirmModal
@@ -826,7 +838,7 @@ const AiFoodViewPage = () => {
         title="Auto Regenerate Image"
         message="Are you sure you want to auto regenerate this image? This will replace the current image with a newly generated one."
         confirmText="Regenerate"
-        loading={isBusy || imageRegenerating}
+        loading={isBusy || isImageProcessing}
         type="brand"
       />
     </Container>
@@ -838,8 +850,6 @@ const NumberField = ({
   name,
   fields,
   onChange,
-  onBlurSave,
-  original,
 }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
@@ -849,7 +859,6 @@ const NumberField = ({
       min="0"
       value={fields[name]}
       onChange={(e) => onChange(name, e.target.value)}
-      onBlur={() => onBlurSave(name, original)}
       className="h-10 text-sm border-slate-300/60"
     />
   </div>
@@ -860,8 +869,6 @@ const TextField = ({
   name,
   fields,
   onChange,
-  onBlurSave,
-  original,
   rows,
 }) => (
   <div className="space-y-1.5">
@@ -869,7 +876,6 @@ const TextField = ({
     <Textarea
       value={fields[name]}
       onChange={(e) => onChange(name, e.target.value)}
-      onBlur={() => onBlurSave(name, original)}
       rows={rows}
       className="text-sm resize-y border-slate-300/60"
     />

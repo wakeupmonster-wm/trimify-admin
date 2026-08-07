@@ -48,6 +48,8 @@ const ManageProgramPage = () => {
   const [statusFilter, setStatusFilter] = useState(
     location.state?.filterId || "",
   );
+  // Optional dateRange from Dashboard KPI navigation
+  const dateRangeFromDashboard = location.state?.dateRange || null;
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -67,6 +69,9 @@ const ManageProgramPage = () => {
           search: debouncedSearchTerm,
           duration: durationFilter,
           status: statusFilter,
+          ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
+          ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
+          ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
         }),
       );
       const total = result?.payload?.pagination?.total;
@@ -209,6 +214,16 @@ const ManageProgramPage = () => {
       ],
       placeholder: "All Status",
     },
+    {
+      type: "dateRange",
+      id: "dateRangeFilter",
+      label: "Date",
+      value: dateRangeFromDashboard,
+      onChange: () => {
+        // Clear navigation state by replacing it without dateRange
+        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+      },
+    },
   ];
 
   const localKpis = useMemo(() => {
@@ -323,6 +338,9 @@ const ManageProgramPage = () => {
                 onClearAll={() => {
                   setDurationFilter("");
                   setStatusFilter("");
+                  if (dateRangeFromDashboard) {
+                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  }
                 }}
               />
             }
