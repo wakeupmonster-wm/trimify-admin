@@ -6,7 +6,6 @@ import {
   Wallet,
   Trophy,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import ErrorState from "@/components/shared/ErrorState";
 import DashboardOverviewSkeleton from "./DashboardOverviewSkeleton";
 // Moved here from the main Dashboard — plan/revenue breakdowns belong with
@@ -190,7 +189,14 @@ export default function OverviewView({
             Icon={PieChartIcon}
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
-            data={dashboardExtras?.pieCharts?.planType || []}
+            data={
+              dashboardExtras?.pieCharts?.planType?.length > 0
+                ? dashboardExtras.pieCharts.planType
+                : [
+                    { label: "Premium", value: 0, color: "#007FC0" },
+                    { label: "Basic", value: 0, color: "#3399D1" },
+                  ]
+            }
             footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
           />
           <DonutStatCard

@@ -135,12 +135,12 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       .filter(Boolean).length;
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-5 sm:py-6 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 overflow-hidden">
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 overflow-hidden">
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Left Section: Inputs */}
-      <div className="flex-1 w-full flex flex-col justify-center space-y-5 z-10">
+      <div className="flex-1 w-full flex flex-col justify-center space-y-3.5 z-10">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-app-primary2/10 flex items-center justify-center shrink-0">
@@ -193,6 +193,9 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
               disabled={loading}
             />
           </div>
+          <p className="text-[10px] text-slate-400 font-medium mt-1.5 px-1">
+            * Comma also works to separate names.
+          </p>
 
           {showSuggestions &&
             (suggestions.length > 0 || loadingSuggestions) && (
@@ -237,15 +240,12 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
             )}
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-          <p className="text-[11px] text-slate-400 font-medium">
-            * Comma also works to separate names.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-end gap-3">
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={loading || pendingCount === 0}
-            className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 font-semibold shadow-md shadow-app-primary2/20 transition-all shrink-0 w-full sm:w-auto"
+            // disabled={loading || pendingCount === 0}
+            className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 border-none font-semibold shadow-none transition-all shrink-0 w-full sm:w-auto"
           >
             {loading ? (
               <Spinner className="w-4 h-4" />
@@ -258,11 +258,11 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       </div>
 
       {/* Right Section: AI Robot Image */}
-      <div className="hidden md:flex shrink-0 w-56 lg:w-64 items-center justify-center z-10">
+      <div className="hidden md:flex shrink-0 w-56 lg:w-52 items-center justify-center z-10">
         <img
           src={AiRobotImg}
           alt="AI Assistant"
-          className="w-full h-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-500 ease-out"
+          className="w-full h-full object-cover drop-shadow-lg hover:scale-105 transition-transform duration-500 ease-out"
         />
       </div>
     </div>

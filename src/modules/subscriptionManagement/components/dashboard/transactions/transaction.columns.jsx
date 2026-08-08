@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Ellipsis, Eye, Undo2 } from "lucide-react";
+import { Ellipsis, Eye, Undo2, Mail } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,7 +93,8 @@ export const getTransactionColumns = (onAction) => [
     size: 160,
     minSize: 150,
     cell: ({ row }) => (
-      <div className="min-w-0">
+      <div className="flex items-center gap-1.5 min-w-0">
+        <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
         <p className="text-[11px] text-slate-600 font-medium truncate">
           {row.original.user_email || "-"}
         </p>
@@ -148,7 +149,7 @@ export const getTransactionColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),

@@ -17,6 +17,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { LuUserRoundPlus } from "react-icons/lu";
+import CTAButton from "@/components/common/CTAButton";
 
 const AddSubAdminPage = () => {
   const dispatch = useDispatch();
@@ -130,14 +131,11 @@ const AddSubAdminPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
-                onClick={() => navigate("/admin/sub-admin-management")}
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
+                onClick={() => navigate(-1)}
+              />
             </div>
           </div>
         </Header>
@@ -158,7 +156,7 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.name && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -178,7 +176,7 @@ const AddSubAdminPage = () => {
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -197,7 +195,7 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Hospital/Clinic name"
                   value={formData.hospital}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.hospital && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -215,7 +213,7 @@ const AddSubAdminPage = () => {
                   name="location"
                   value={formData.location}
                   disabled
-                  className="h-11 sm:h-10 text-sm bg-slate-100 text-slate-500 font-medium border-slate-300/60 cursor-not-allowed"
+                  className="h-11 sm:h-10 text-sm bg-slate-100 text-slate-500 placeholder:font-normal font-medium border-slate-300/60 cursor-not-allowed"
                 />
               </div>
 
@@ -230,7 +228,7 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -311,7 +309,7 @@ const AddSubAdminPage = () => {
                   placeholder="Enter Designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.designation && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -332,7 +330,7 @@ const AddSubAdminPage = () => {
                     placeholder="Enter Password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium pr-10 ${errors.password ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium pr-10 ${errors.password ? "border-red-500" : "border-slate-300/60"}`}
                   />
                   <button
                     type="button"
@@ -360,9 +358,9 @@ const AddSubAdminPage = () => {
                 </Label>
                 <Select value={formData.role} onValueChange={handleRoleChange}>
                   <SelectTrigger
-                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-normal ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
                   >
-                    <SelectValue placeholder="Select Role" />
+                    <SelectValue placeholder="Select Role" className="font-medium"/>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Sub-Admin User">

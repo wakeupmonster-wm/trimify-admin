@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -14,6 +15,7 @@ import {
   updateFitzoneCategory,
 } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddFitzoneCategoryPage = () => {
   const { id, categoryId } = useParams();
@@ -36,6 +38,8 @@ const AddFitzoneCategoryPage = () => {
   const [htmlContent, setHtmlContent] = useState(editData?.description || "");
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -81,7 +85,7 @@ const AddFitzoneCategoryPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!categoryName.trim())
@@ -97,6 +101,15 @@ const AddFitzoneCategoryPage = () => {
       return;
     }
 
+    if (isEdit) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("fitzone_id", id);
     formData.append("title", categoryName);
@@ -125,6 +138,8 @@ const AddFitzoneCategoryPage = () => {
     } else {
       toast.error(resultAction.payload || "An error occurred");
     }
+    setIsSubmitting(false);
+    setIsConfirmModalOpen(false);
   };
 
   return (
@@ -148,14 +163,11 @@ const AddFitzoneCategoryPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -178,7 +190,7 @@ const AddFitzoneCategoryPage = () => {
                     setErrors({ ...errors, categoryName: null });
                 }}
                 placeholder="Enter Title Here"
-                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
+                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.categoryName && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -200,7 +212,7 @@ const AddFitzoneCategoryPage = () => {
                     setErrors((prev) => ({ ...prev, categoryDetails: null }));
                 }}
                 placeholder="e.g. 20 min , 182 kcal"
-                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium ${errors.categoryDetails ? "border-red-500" : "border-slate-300/60"}`}
+                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.categoryDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.categoryDetails && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -280,7 +292,7 @@ const AddFitzoneCategoryPage = () => {
                   }}
                   placeholder="Enter Description"
                   maxLength={500}
-                  className={`w-full px-4 py-3 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors font-medium resize-y min-h-[100px] pb-8 ${errors.htmlContent ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`w-full px-4 py-3 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-y min-h-[100px] pb-8 ${errors.htmlContent ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {htmlContent.length} / 500
@@ -305,9 +317,9 @@ const AddFitzoneCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
-                {loading ? (
+                {isSubmitting || loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                     {isEdit ? "Updating..." : "Saving..."}
@@ -323,6 +335,17 @@ const AddFitzoneCategoryPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this category's details?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting || loading}
+      />
     </Container>
   );
 };

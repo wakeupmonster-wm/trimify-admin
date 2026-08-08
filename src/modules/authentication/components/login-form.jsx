@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/auth.schemas";
 // import { loginThunk } from "../store/auth.slice";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import { ROLES } from "@/constants/roles";
 import { useState } from "react";
 import { toast } from "sonner";
 import { loginThunk } from "../store/auth.slice";

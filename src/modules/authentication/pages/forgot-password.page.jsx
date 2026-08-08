@@ -1,5 +1,5 @@
 import React from "react";
-import loginImg from "@/assets/web/LoginImg.webp";
+import loginImg from "@/assets/web/LoginImg2.png";
 import { Outlet } from "react-router";
 
 export default function ForgotPasswordPage() {
@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
         <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl shadow-slate-200/50">
           {/* Background Image Layer */}
           <div
-            className="absolute inset-0 bg-cover transition-transform duration-700 hover:scale-105"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
             style={{
               backgroundImage: `url(${loginImg})`,
             }}

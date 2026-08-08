@@ -14,6 +14,8 @@ import {
   addProgramIntro,
 } from "../store/intro.slice";
 import { toast } from "sonner";
+import CTAButton from "@/components/common/CTAButton";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const EditIntroProgramPage = () => {
   const { id } = useParams();
@@ -21,6 +23,7 @@ const EditIntroProgramPage = () => {
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { programIntros, loading } = useSelector((state) => state.manageIntro);
 
@@ -38,7 +41,11 @@ const EditIntroProgramPage = () => {
     }
   }, [existingIntro]);
 
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
     try {
       const payload = { program_id: id, content: content };
       let resultAction;
@@ -63,6 +70,8 @@ const EditIntroProgramPage = () => {
       }
     } catch (error) {
       toast.error("An error occurred while saving the introduction.");
+    } finally {
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -81,14 +90,11 @@ const EditIntroProgramPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -121,7 +127,7 @@ const EditIntroProgramPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto text-white rounded-md px-4 h-10 text-xs font-semibold flex items-center justify-center gap-2 transition-all"
               >
                 {loading ? (
                   <>
@@ -139,6 +145,17 @@ const EditIntroProgramPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this introduction?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

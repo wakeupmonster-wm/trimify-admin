@@ -1,5 +1,3 @@
-import { RevenueTrendChart } from "@/components/shared/RevenueTrendChart";
-import { ChartUserDistribution } from "@/components/shared/chart-user-distribution";
 import { RecentUsersTable } from "@/components/shared/recent-users-table";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,10 +21,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserGrowthChart } from "../components/UserGrowthChart";
-import { RevenueBreakdown } from "../components/RevenueBreakdown";
-import { LiveActivity } from "../components/LiveActivity";
-import { ActivityHeatmap } from "../components/ActivityHeatmap";
 import { ContentPerformance } from "@/components/shared/ContentPerformance";
 import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { ConversionFunnel } from "../components/ConversionFunnel";
@@ -38,13 +32,11 @@ import TrendChartCard from "../components/TrendChartCard";
 import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
-import { useSocket } from "@/app/context/SocketContext";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
 import { ACCENT_COLORS, APP_COLORS } from "@/config/theme.config.js";
 
 export default function Dashboard() {
-  const socket = useSocket();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -58,15 +50,12 @@ export default function Dashboard() {
   } = useSelector((state) => state.dashboard);
   const displayExtras = dashboardExtras;
 
-  // console.log("displayExtras: ", displayExtras);
-
   const [selectedDate, setSelectedDate] = useState(
     dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
 
   // --- Unified Brand Palette imported from theme.config.js ---
-
   const mapChartColors = (dataArray) => {
     if (!dataArray) return [];
     return dataArray.map((item, i) => ({
@@ -549,7 +538,7 @@ export default function Dashboard() {
                         width: "w-[10%]",
                         align: "left",
                         render: (_, idx) => (
-                          <span className="text-slate-500 px-2 font-medium">
+                          <span className="text-slate-500 text-left px-0 font-medium">
                             {idx + 1}
                           </span>
                         ),
@@ -581,7 +570,9 @@ export default function Dashboard() {
                         label: "Days Since",
                         width: "w-[15%]",
                         align: "left",
-                        render: (r) => `${r.days_since_signup}d`,
+                        render: (r) => (
+                          <span className="px-1">{`${r.days_since_signup}d`}</span>
+                        ),
                       },
                       {
                         key: "main_goal",
@@ -589,7 +580,7 @@ export default function Dashboard() {
                         width: "w-[15%]",
                         align: "left",
                         render: (r) => (
-                          <span className="capitalize">{r.main_goal}</span>
+                          <span className="capitalize px-1">{r.main_goal}</span>
                         ),
                       },
                       {
@@ -598,7 +589,7 @@ export default function Dashboard() {
                         width: "w-[15%]",
                         align: "left",
                         render: (r) => (
-                          <span className="capitalize">{r.gender}</span>
+                          <span className="capitalize px-1">{r.gender}</span>
                         ),
                       },
                     ]}

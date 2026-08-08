@@ -1,4 +1,5 @@
 import { Container } from "@/components/common/container";
+import CTAButton from "@/components/common/CTAButton";
 import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -29,6 +30,7 @@ import {
   updateBlogPost,
   fetchBlogCategoryDropdown,
 } from "../store/blog.slice";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddPostPage = () => {
   const navigate = useNavigate();
@@ -39,12 +41,11 @@ const AddPostPage = () => {
   const isEdit = Boolean(id);
   const editData = location.state?.editData || null;
 
-  console.log("editData : ", editData);
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -68,7 +69,7 @@ const AddPostPage = () => {
           "",
         description: editData.description || "",
         status: currentStatus, // Ensure correct mapping
-        bannerImage: null,
+        bannerImage: editData?.image || null,
       });
     }
   }, [isEdit, editData]);
@@ -121,7 +122,7 @@ const AddPostPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Post Title is required";
@@ -139,6 +140,15 @@ const AddPostPage = () => {
       return;
     }
     setErrors({});
+
+    if (isEdit) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
     setLoading(true);
     try {
       const payload = new FormData();
@@ -148,7 +158,7 @@ const AddPostPage = () => {
       payload.append("status", formData.status);
       // payload.append("status", "Active");
 
-      if (formData.bannerImage) {
+      if (formData.bannerImage && typeof formData.bannerImage !== "string") {
         payload.append("image", formData.bannerImage);
       }
 
@@ -164,6 +174,7 @@ const AddPostPage = () => {
       toast.error(error || "An error occurred while saving the post");
     } finally {
       setLoading(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -186,14 +197,11 @@ const AddPostPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -214,7 +222,7 @@ const AddPostPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.title && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -236,7 +244,10 @@ const AddPostPage = () => {
                 <SelectTrigger
                   className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.category ? "border-red-500" : "border-slate-300/60"}`}
                 >
-                  <SelectValue placeholder="Select Category" />
+                  <SelectValue
+                    placeholder="Select Category"
+                    className="placeholder:font-normal"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
@@ -289,9 +300,12 @@ const AddPostPage = () => {
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
                   <img
                     src={
-                      formData.bannerImage
+                      formData.bannerImage instanceof File ||
+                      formData.bannerImage instanceof Blob
                         ? URL.createObjectURL(formData.bannerImage)
-                        : editData.image
+                        : typeof formData.bannerImage === "string"
+                          ? formData.bannerImage
+                          : editData?.image
                     }
                     alt="Featured"
                     className="w-full h-48 object-cover bg-slate-50"
@@ -364,7 +378,10 @@ const AddPostPage = () => {
                     errors.status ? "border-red-500" : "border-slate-300/60"
                   }`}
                 >
-                  <SelectValue placeholder="Select Status" />
+                  <SelectValue
+                    placeholder="Select Status"
+                    className="placeholder:font-normal"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Published">Public</SelectItem>
@@ -391,7 +408,7 @@ const AddPostPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 transition-all"
               >
                 {loading ? (
                   <>
@@ -409,6 +426,17 @@ const AddPostPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this post's details?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

@@ -1,6 +1,7 @@
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import CTAButton from "@/components/common/CTAButton";
 import { LuUserRoundCheck, LuUserRoundCog, LuUsersRound } from "react-icons/lu";
 import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import {
@@ -170,7 +171,7 @@ const SubAdminManagementPage = () => {
       icon: LuUserRoundCheck,
       label: "Active Accounts",
       value: (kpis?.active ?? 0).toLocaleString(),
-      description: "Tap to filter",
+      description: "Currently active accounts",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
       isSelected: statusFilter === "Active",
@@ -179,7 +180,7 @@ const SubAdminManagementPage = () => {
       icon: Shield,
       label: "Sub-Admin Users",
       value: (kpis?.subAdminUsers ?? 0).toLocaleString(),
-      description: "Tap to filter",
+      description: "Total sub-admin users",
       tone: "indigo",
       onClick: () => setRoleFilter(roleFilter === "0" ? "" : "0"),
       isSelected: roleFilter === "0",
@@ -188,7 +189,7 @@ const SubAdminManagementPage = () => {
       icon: ShieldAlert,
       label: "WhiteListing Users",
       value: (kpis?.whiteListingUsers ?? 0).toLocaleString(),
-      description: "Tap to filter",
+      description: "Total whitelisted users",
       tone: "rose",
       onClick: () => setRoleFilter(roleFilter === "1" ? "" : "1"),
       isSelected: roleFilter === "1",
@@ -367,21 +368,18 @@ const SubAdminManagementPage = () => {
             </div>
 
             <div className="flex flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                variant="outline"
+                label="Add Sub Admin"
                 onClick={() => navigate("/admin/sub-admin-management/add")}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3.5 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Add Sub Admin</span>
-              </Button>
-              <Button
+              />
+              <CTAButton
+                icon={Download}
+                label="Export CSV"
                 variant="outline"
                 onClick={handleExportCSV}
-                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-3.5 flex items-center justify-center gap-1.5"
-              >
-                <Download className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Export CSV</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>

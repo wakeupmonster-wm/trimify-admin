@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import CTAButton from "@/components/common/CTAButton";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import {
   Select,
@@ -123,26 +124,7 @@ function bmiCategory(bmi) {
    Small UI primitives
 ========================================================================= */
 
-function ActionButton({ icon: Icon, label, variant = "outline", onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-md border px-4 text-xs font-semibold shadow-sm transition-all duration-200",
-        variant === "primary" &&
-          "border-app-primary2 bg-app-primary2 text-white hover:bg-app-primary5 hover:border-app-primary5",
-        variant === "danger" &&
-          "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700",
-        variant === "outline" &&
-          "border-slate-300/60 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-      )}
-    >
-      <Icon className="h-4 w-4 shrink-0" />
-      {label}
-    </button>
-  );
-}
+
 
 const TABS = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
@@ -475,7 +457,7 @@ export default function UserProfileView({ user, onBack, loading }) {
             </div>
 
             <div className="flex flex-row items-center justify-end shrink-0 w-full lg:w-auto mt-0 pt-4 lg:pt-0 border-t border-slate-100 lg:border-t-0">
-              <ActionButton
+              <CTAButton
                 icon={isDeleting ? Loader2 : Trash2}
                 label={isDeleting ? "Deleting..." : "Delete User"}
                 variant="danger"

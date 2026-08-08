@@ -180,7 +180,7 @@ export default function SubscribersView() {
         value: kpiCounts.total || 0,
         icon: LuUsersRound,
         tone: "blue",
-        description: "Tap to clear filters",
+        description: "All subscribers",
         onClick: () => {
           setStatusFilter("");
           setPlanFilter("");
@@ -205,7 +205,7 @@ export default function SubscribersView() {
         value: kpiCounts.expired || 0,
         icon: CalendarOff,
         tone: "amber",
-        description: "Tap to filter",
+        description: "Expired subscriptions",
         onClick: () => {
           setStatusFilter("expired");
           setPagination((p) => ({ ...p, pageIndex: 0 }));
@@ -217,7 +217,7 @@ export default function SubscribersView() {
         value: kpiCounts.revoked || 0,
         icon: ShieldOff,
         tone: "rose",
-        description: "Tap to filter",
+        description: "Revoked subscriptions",
         onClick: () => {
           setStatusFilter("revoked");
           setPagination((p) => ({ ...p, pageIndex: 0 }));

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -148,14 +149,11 @@ const AddDietProgramPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -180,7 +178,7 @@ const AddDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Week" />
+                    <SelectValue placeholder="Select Week" className="placeholder:font-normal" />
                   </SelectTrigger>
                   <SelectContent>
                     {weeksOptions.map((w) => (
@@ -211,7 +209,7 @@ const AddDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Day" />
+                    <SelectValue placeholder="Select Day" className="placeholder:font-normal" />
                   </SelectTrigger>
                   <SelectContent>
                     {DAYS_OF_WEEK.map((d) => (
@@ -242,7 +240,7 @@ const AddDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Meal" />
+                    <SelectValue placeholder="Select Meal" className="placeholder:font-normal" />
                   </SelectTrigger>
                   <SelectContent>
                     {MEAL_TYPES.map((m) => (
@@ -290,7 +288,7 @@ const AddDietProgramPage = () => {
                   <Input
                     type="text"
                     placeholder="Search Food..."
-                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
@@ -339,7 +337,7 @@ const AddDietProgramPage = () => {
                 Cancel
               </Button>
               <Button
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 transition-all"
                 type="submit"
                 disabled={loading}
               >

@@ -77,7 +77,7 @@ export const getViewUserProgramColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),
@@ -88,7 +88,7 @@ export const getViewUserProgramColumns = (onAction) => [
       const style =
         STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-start">
           <Badge
             variant="outline"
             className={cn(
@@ -106,7 +106,7 @@ export const getViewUserProgramColumns = (onAction) => [
   {
     accessorKey: "start_date",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Started
       </div>
     ),
@@ -118,7 +118,7 @@ export const getViewUserProgramColumns = (onAction) => [
         return <div className="text-center text-slate-500 text-[11px]">—</div>;
       }
       return (
-        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+        <div className="text-left text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
           {format(new Date(dateValue), "dd MMM yyyy")}
         </div>
       );
@@ -127,7 +127,7 @@ export const getViewUserProgramColumns = (onAction) => [
   {
     accessorKey: "end_date",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Expired
       </div>
     ),
@@ -139,7 +139,7 @@ export const getViewUserProgramColumns = (onAction) => [
         return <div className="text-center text-slate-500 text-[11px]">—</div>;
       }
       return (
-        <div className="text-center text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
+        <div className="text-left text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
           {format(new Date(dateValue), "dd MMM yyyy")}
         </div>
       );

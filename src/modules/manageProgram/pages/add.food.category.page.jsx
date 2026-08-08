@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -12,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddFoodCategoryPage = () => {
   const navigate = useNavigate();
@@ -32,6 +34,8 @@ const AddFoodCategoryPage = () => {
   const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -67,7 +71,7 @@ const AddFoodCategoryPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!categoryName.trim())
@@ -82,6 +86,15 @@ const AddFoodCategoryPage = () => {
 
     setErrors({});
 
+    if (isEditMode) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
+    setIsSubmitting(true);
     // Create FormData for file upload
     const formData = new FormData();
     formData.append("name", categoryName);
@@ -95,7 +108,10 @@ const AddFoodCategoryPage = () => {
         updateFoodCategory({ id: categoryId, data: formData }),
       );
       if (updateFoodCategory.fulfilled.match(resultAction)) {
-        toast.success(resultAction.payload?.message || "Food category updated successfully!");
+        toast.success(
+          resultAction.payload?.message ||
+            "Food category updated successfully!",
+        );
         navigate(-1);
       } else {
         toast.error(resultAction.payload || "Failed to update food category.");
@@ -103,19 +119,23 @@ const AddFoodCategoryPage = () => {
     } else {
       const resultAction = await dispatch(addFoodCategory(formData));
       if (addFoodCategory.fulfilled.match(resultAction)) {
-        toast.success(resultAction.payload?.message || "Food category added successfully!");
+        toast.success(
+          resultAction.payload?.message || "Food category added successfully!",
+        );
         navigate(-1);
       } else {
         toast.error(resultAction.payload || "Failed to add food category.");
       }
     }
+    setIsSubmitting(false);
+    setIsConfirmModalOpen(false);
   };
 
   return (
     <Container>
       <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading="Manage Food Category"
@@ -130,19 +150,19 @@ const AddFoodCategoryPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
 
-        <form onSubmit={(e) => handleSubmit(e)} className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form
+          onSubmit={(e) => handleSubmit(e)}
+          className="bg-white rounded-xl shadow-sm px-4 sm:px-6 pt-5 pb-6 border border-slate-300/60 overflow-hidden mx-auto w-full"
+        >
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
@@ -150,7 +170,7 @@ const AddFoodCategoryPage = () => {
               </Label>
               <Input
                 placeholder="Enter Category Name"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
                 value={categoryName}
                 onChange={(e) => {
                   setCategoryName(e.target.value);
@@ -173,7 +193,7 @@ const AddFoodCategoryPage = () => {
                 <Textarea
                   placeholder="Enter Category Description"
                   maxLength={500}
-                  className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-y min-h-[100px] pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-y min-h-[100px] pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
                   value={description}
                   onChange={(e) => {
                     setDescription(e.target.value);
@@ -216,10 +236,11 @@ const AddFoodCategoryPage = () => {
                 {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
+                }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -267,11 +288,11 @@ const AddFoodCategoryPage = () => {
               Cancel
             </Button>
             <Button
-              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto text-white rounded-md px-6 h-10 text-sm font-semibold flex items-center justify-center gap-2 transition-all"
               type="submit"
               disabled={loading}
             >
-              {loading ? (
+              {isSubmitting || loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                   {isEditMode ? "Updating..." : "Saving..."}
@@ -286,6 +307,17 @@ const AddFoodCategoryPage = () => {
           </div>
         </form>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this food category?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting || loading}
+      />
     </Container>
   );
 };

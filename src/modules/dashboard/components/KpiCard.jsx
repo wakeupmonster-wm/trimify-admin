@@ -49,6 +49,16 @@ const TONE_STYLES = {
     iconColor: "text-slate-600",
     border: "border-slate-200 hover:border-slate-400",
   },
+  email: {
+    iconBg: "bg-[#F5EFE6]",
+    iconColor: "text-[#8A5A2B]",
+    border: "border-slate-200 hover:border-[#8A5A2B]/40",
+  },
+  push: {
+    iconBg: "bg-[#F5F3FF]",
+    iconColor: "text-[#6D28D9]",
+    border: "border-slate-200 hover:border-[#6D28D9]/40",
+  },
 };
 
 const KpiCard = ({

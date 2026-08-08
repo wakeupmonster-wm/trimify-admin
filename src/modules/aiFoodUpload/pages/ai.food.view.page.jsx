@@ -20,6 +20,7 @@ import {
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import Header from "@/components/common/header";
+import CTAButton from "@/components/common/CTAButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -38,13 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import {
   updateAiFoodItem,
@@ -53,11 +48,9 @@ import {
   regenerateAiFoodImageFromAudio,
   deleteAiFoodItem,
   generateAiFood,
-  saveAiFoodItems,
 } from "../store/ai.food.slice";
 import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 import { getNutritionListAPI } from "@/modules/dataManagement/services/nutrition.services";
-import AiFoodImagePromptPanel from "../components/AiFoodImagePromptPanel";
 import AiFoodCustomRegenerateModal from "../components/AiFoodCustomRegenerateModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -171,16 +164,14 @@ const AiFoodViewPage = () => {
   const isDirty = useMemo(() => {
     if (!item) return false;
     const originalFields = buildFields(item);
-    return Object.keys(fields).some(
-      (key) => {
-        let val1 = fields[key];
-        let val2 = originalFields[key];
-        if (typeof val1 === "string" && typeof val2 === "string") {
-          return val1.trim() !== val2.trim();
-        }
-        return val1 !== val2;
+    return Object.keys(fields).some((key) => {
+      let val1 = fields[key];
+      let val2 = originalFields[key];
+      if (typeof val1 === "string" && typeof val2 === "string") {
+        return val1.trim() !== val2.trim();
       }
-    );
+      return val1 !== val2;
+    });
   }, [fields, item]);
 
   if (!item) {
@@ -227,11 +218,14 @@ const AiFoodViewPage = () => {
     const data = {};
     let hasChanges = false;
 
-    Object.keys(fields).forEach(key => {
+    Object.keys(fields).forEach((key) => {
       let val1 = fields[key];
       let val2 = originalFields[key];
       const isString = typeof val1 === "string" && typeof val2 === "string";
-      if ((isString && val1.trim() !== val2.trim()) || (!isString && val1 !== val2)) {
+      if (
+        (isString && val1.trim() !== val2.trim()) ||
+        (!isString && val1 !== val2)
+      ) {
         let value = fields[key];
         if (key === "Meal_ingredients" || key === "Meal_instructions") {
           value = stringifyList(value);
@@ -299,14 +293,18 @@ const AiFoodViewPage = () => {
       .then(() => toast.success("Regenerating image from your recording…"))
       .catch((error) => {
         setImageRegenerating(false);
-        toast.error(error || "Couldn't process that recording — please try again.");
+        toast.error(
+          error || "Couldn't process that recording — please try again.",
+        );
       });
   };
 
   const handleCancelRegenerate = () => {
     setImageRegenerating(false);
     setHideOverlay(true);
-    toast.info("Stopped waiting — the image will still update automatically once it's ready.");
+    toast.info(
+      "Stopped waiting — the image will still update automatically once it's ready.",
+    );
   };
 
   const handleRemove = () => {
@@ -383,35 +381,35 @@ const AiFoodViewPage = () => {
           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
-                heading={item.food_name}
+                heading={
+                  <div className="flex items-center gap-3">
+                    <span>{item.food_name}</span>
+                    <Badge
+                      variant="outline"
+                      className={`${statusMeta.className}`}
+                    >
+                      {(isInFlight || isImageProcessing) && (
+                        <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      )}
+                      {item.status === "pending_review" && (
+                        <CheckCircle2 className="w-3 h-3 mr-1" />
+                      )}
+                      {statusMeta.label}
+                    </Badge>
+                  </div>
+                }
                 icon={<Sparkles className="w-6 h-6 text-white shrink-0" />}
                 variant="primary"
-                subheading={
-                  <Badge
-                    variant="outline"
-                    className={`${statusMeta.className} mt-0.5`}
-                  >
-                    {(isInFlight || isImageProcessing) && (
-                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                    )}
-                    {item.status === "pending_review" && (
-                      <CheckCircle2 className="w-3 h-3 mr-1" />
-                    )}
-                    {statusMeta.label}
-                  </Badge>
-                }
               />
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
                 type="button"
                 onClick={() => navigate(BACK_TO_LIST)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back </span>
-              </Button>
+                icon={ArrowLeft}
+                label="Back"
+              />
               {item.status !== "approved" && !isInFlight && (
                 <Button
                   onClick={handleSaveEdits}
@@ -446,7 +444,7 @@ const AiFoodViewPage = () => {
                       variant="outline"
                       onClick={handleViewExisting}
                       disabled={viewingExisting}
-                      className="border-amber-300 text-amber-700 hover:bg-amber-100 hover:text-amber-800 h-8 px-3 text-xs"
+                      className="border-[#F5C542]/50 hover:border-[#F5C542] rounded-md text-[#F5C542] hover:bg-[#F5C542]/10 h-8 px-3 text-xs"
                     >
                       {viewingExisting ? (
                         <Spinner className="w-3 h-3 mr-1" />
@@ -464,7 +462,7 @@ const AiFoodViewPage = () => {
               variant="outline"
               onClick={() => setIsDeleteModalOpen(true)}
               disabled={isBusy}
-              className="border-red-200 text-red-600 hover:bg-red-50"
+              className="border-[#E54848]/30 hover:border-[#E54848] text-[#E54848] hover:text-white hover:bg-[#E54848]"
             >
               {isBusy ? (
                 <Spinner className="w-4 h-4" />
@@ -498,7 +496,7 @@ const AiFoodViewPage = () => {
                     type="button"
                     onClick={submitRename}
                     disabled={isBusy || !nameDraft.trim()}
-                    className="bg-red-600 hover:bg-red-700 text-white"
+                    className="bg-[#E54848] hover:bg-[#E54848]/90 text-white"
                   >
                     {isBusy ? (
                       <Spinner className="w-4 h-4" />
@@ -518,21 +516,21 @@ const AiFoodViewPage = () => {
               </div>
             ) : (
               <div className="flex flex-wrap items-center gap-2">
-                <Button
+                <CTAButton
                   type="button"
-                  variant="outline"
                   onClick={startEditingName}
                   disabled={isBusy}
-                  className="border-red-200 text-red-700 hover:bg-red-100 hover:text-red-800"
-                >
-                  <Pencil className="w-4 h-4" />
-                  Edit name
-                </Button>
+                  variant="outline"
+                  className="flex-none text-red-700 hover:bg-red-50 hover:text-red-800 border-red-200 hover:border-red-400"
+                  icon={Pencil}
+                  label="Edit name"
+                />
                 <Button
                   type="button"
                   onClick={handleRetry}
                   disabled={isBusy}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  variant="outline"
+                  className="bg-[#E54848] hover:bg-[#E54848]/90 text-white border-none rounded-md"
                 >
                   {isBusy ? (
                     <Spinner className="w-4 h-4" />
@@ -541,16 +539,14 @@ const AiFoodViewPage = () => {
                   )}
                   Retry
                 </Button>
-                <Button
+                <CTAButton
                   type="button"
-                  variant="ghost"
                   onClick={() => setIsDeleteModalOpen(true)}
                   disabled={isBusy}
-                  className="text-slate-400 hover:text-red-600 ml-auto"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Remove
-                </Button>
+                  className="flex-none ml-auto border-none bg-transparent hover:bg-red-50 text-slate-400 hover:text-red-600 shadow-none"
+                  icon={Trash2}
+                  label="Remove"
+                />
               </div>
             )}
           </div>
@@ -653,7 +649,9 @@ const AiFoodViewPage = () => {
                           <Loader2 className="w-6 h-6 text-app-primary2 animate-spin" />
                         </div>
                         <p className="text-xs font-bold text-slate-700 bg-white/80 px-3 py-1 rounded-full">
-                          {imageRegenerating ? "Regenerating image…" : "Generating image…"}
+                          {imageRegenerating
+                            ? "Regenerating image…"
+                            : "Generating image…"}
                         </p>
                         <button
                           type="button"
@@ -699,24 +697,28 @@ const AiFoodViewPage = () => {
                     name="Meal_Protien_In_gm"
                     fields={fields}
                     onChange={handleChange}
+                    placeholder="e.g. 25.5"
                   />
                   <NumberField
                     label="Carbs (gm)"
                     name="Meal_Carbs_In_gm"
                     fields={fields}
                     onChange={handleChange}
+                    placeholder="e.g. 45.0"
                   />
                   <NumberField
                     label="Calories (kcal)"
                     name="Meal_Calories_In_gm"
                     fields={fields}
                     onChange={handleChange}
+                    placeholder="e.g. 350"
                   />
                   <NumberField
                     label="Fats (gm)"
                     name="Meal_Fats_In_gm"
                     fields={fields}
                     onChange={handleChange}
+                    placeholder="e.g. 12.0"
                   />
                 </div>
 
@@ -729,8 +731,8 @@ const AiFoodViewPage = () => {
                       value={fields.Meal_Type}
                       onValueChange={(val) => handleChange("Meal_Type", val)}
                     >
-                      <SelectTrigger className="h-10 text-sm border-slate-300/60">
-                        <SelectValue placeholder="Select type" />
+                      <SelectTrigger className="h-10 text-xs border-slate-300/60 font-medium placeholder:text-xs">
+                        <SelectValue placeholder="Select meal type..." />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="recipes">Recipes</SelectItem>
@@ -743,6 +745,7 @@ const AiFoodViewPage = () => {
                     name="Meal_Serving"
                     fields={fields}
                     onChange={handleChange}
+                    placeholder="e.g. 2"
                     large
                   />
                 </div>
@@ -753,6 +756,7 @@ const AiFoodViewPage = () => {
                   fields={fields}
                   onChange={handleChange}
                   rows={3}
+                  placeholder="Brief description of the meal..."
                 />
                 <TextField
                   label="Ingredients (one per line)"
@@ -760,6 +764,7 @@ const AiFoodViewPage = () => {
                   fields={fields}
                   onChange={handleChange}
                   rows={4}
+                  placeholder={"e.g. 1 cup almond milk\n1 banana"}
                 />
                 <TextField
                   label="Instructions (one per line)"
@@ -767,6 +772,7 @@ const AiFoodViewPage = () => {
                   fields={fields}
                   onChange={handleChange}
                   rows={4}
+                  placeholder={"e.g. Blend all ingredients\nServe chilled"}
                 />
               </div>
             </div>
@@ -845,12 +851,7 @@ const AiFoodViewPage = () => {
   );
 };
 
-const NumberField = ({
-  label,
-  name,
-  fields,
-  onChange,
-}) => (
+const NumberField = ({ label, name, fields, onChange, placeholder }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Input
@@ -859,25 +860,21 @@ const NumberField = ({
       min="0"
       value={fields[name]}
       onChange={(e) => onChange(name, e.target.value)}
-      className="h-10 text-sm border-slate-300/60"
+      placeholder={placeholder}
+      className="h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs"
     />
   </div>
 );
 
-const TextField = ({
-  label,
-  name,
-  fields,
-  onChange,
-  rows,
-}) => (
+const TextField = ({ label, name, fields, onChange, rows, placeholder }) => (
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-700">{label}</label>
     <Textarea
       value={fields[name]}
       onChange={(e) => onChange(name, e.target.value)}
       rows={rows}
-      className="text-sm resize-y border-slate-300/60"
+      placeholder={placeholder}
+      className="text-xs resize-y border-slate-300/60 placeholder:font-normal placeholder:text-xs"
     />
   </div>
 );

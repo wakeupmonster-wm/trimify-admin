@@ -16,7 +16,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
-import { LuUserRoundMinus, LuUserRoundPen } from "react-icons/lu";
+import { LuUserRoundPen } from "react-icons/lu";
+import CTAButton from "@/components/common/CTAButton";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const EditSubAdminPage = () => {
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ const EditSubAdminPage = () => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   useEffect(() => {
     if (!editData) {
@@ -105,10 +108,14 @@ const EditSubAdminPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
     setIsSubmitting(true);
 
     try {
@@ -131,6 +138,7 @@ const EditSubAdminPage = () => {
       }
     } finally {
       setIsSubmitting(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -151,14 +159,11 @@ const EditSubAdminPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -179,7 +184,7 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.name ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.name && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -199,7 +204,7 @@ const EditSubAdminPage = () => {
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.email ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -218,7 +223,7 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Hospital/Clinic name"
                   value={formData.hospital}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.hospital ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.hospital && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -236,7 +241,7 @@ const EditSubAdminPage = () => {
                   name="location"
                   value={formData.location}
                   disabled
-                  className="h-11 sm:h-10 text-sm bg-slate-100 text-slate-500 font-medium border-slate-300/60 cursor-not-allowed"
+                  className="h-11 sm:h-10 text-sm bg-slate-100 text-slate-500 placeholder:font-normal font-medium border-slate-300/60 cursor-not-allowed"
                 />
               </div>
 
@@ -251,7 +256,7 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.phone ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -270,7 +275,7 @@ const EditSubAdminPage = () => {
                   placeholder="Enter Designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.designation && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -291,7 +296,7 @@ const EditSubAdminPage = () => {
                     placeholder="Leave blank to keep current"
                     value={formData.password}
                     onChange={handleChange}
-                    className="h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 pr-10"
+                    className="h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60 pr-10"
                   />
                   <button
                     type="button"
@@ -317,9 +322,12 @@ const EditSubAdminPage = () => {
                   onValueChange={handleRoleChange}
                 >
                   <SelectTrigger
-                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-normal ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
                   >
-                    <SelectValue placeholder="Select Role" />
+                    <SelectValue
+                      placeholder="Select Role"
+                      className="font-medium"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Sub-Admin User">
@@ -368,6 +376,17 @@ const EditSubAdminPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this sub-administrator's details?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting}
+      />
     </Container>
   );
 };

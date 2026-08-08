@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Ellipsis, Edit, Copy, Trash2 } from "lucide-react";
+import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,7 +77,7 @@ export const getManageProgramColumns = (onAction) => [
         <Button
           variant="outline"
           onClick={() => onAction && onAction(row.original, "view-user")}
-          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:border-none hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           View User
         </Button>
@@ -98,7 +98,7 @@ export const getManageProgramColumns = (onAction) => [
         <Button
           variant="outline"
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:border-none hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           Open Program
         </Button>
@@ -124,7 +124,7 @@ export const getManageProgramColumns = (onAction) => [
             onCheckedChange={(checked) =>
               onAction && onAction(row.original, "toggle-status", checked)
             }
-            className="data-[state=checked]:bg-app-primary2"
+            className="data-[state=checked]:bg-app-cardGreen"
           />
         </div>
       );
@@ -152,7 +152,7 @@ export const getManageProgramColumns = (onAction) => [
               onAction &&
               onAction(row.original, "toggle-food-visibility", checked)
             }
-            className="data-[state=checked]:bg-app-primary2"
+            className="data-[state=checked]:bg-app-cardGreen"
           />
         </div>
       );

@@ -85,7 +85,7 @@ export default function CampaignHistory({
         label: "Emails Dispatched",
         value: pagination?.emailCount || 0,
         icon: IconMail,
-        tone: "indigo",
+        tone: "email",
         description: "Email communications",
         onClick: () => handleKpiClick("email"),
         isSelected: channelFilter === "email",
@@ -94,7 +94,7 @@ export default function CampaignHistory({
         label: "Pushes Dispatched",
         value: pagination?.pushCount || 0,
         icon: IconDeviceMobile,
-        tone: "emerald",
+        tone: "push",
         description: "Mobile notifications",
         onClick: () => handleKpiClick("push"),
         isSelected: channelFilter === "push",
@@ -113,9 +113,9 @@ export default function CampaignHistory({
   return (
     <div className="space-y-4">
       {/* Overview Card */}
-      <Card className="bg-white gap-5 border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <Card className="bg-white gap-5 border border-slate-200 rounded-xl shadow-sm overflow-hidden py-2">
         {/* Section Header */}
-        <div className="px-6 space-y-1 py-4">
+        <div className="px-6 space-y-1 py-3">
           <h2 className="text-lg font-bold text-slate-900 tracking-tight">
             Campaign History Overview
           </h2>

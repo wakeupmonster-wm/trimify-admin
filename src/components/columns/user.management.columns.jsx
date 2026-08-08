@@ -54,7 +54,7 @@ export const getUserManagementColumns = (onAction) => [
   {
     accessorKey: "email",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Email Address
       </div>
     ),
@@ -62,7 +62,8 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 120,
     cell: ({ row }) => {
       const email = row.original.email;
-      if (!email) return <div className="text-slate-400 text-[11px] italic">-</div>;
+      if (!email)
+        return <div className="text-slate-400 text-[11px] italic">-</div>;
       return (
         <div
           className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight"
@@ -85,7 +86,8 @@ export const getUserManagementColumns = (onAction) => [
     minSize: 100,
     cell: ({ row }) => {
       const phone = row.original.mobileNo;
-      if (!phone) return <div className="text-slate-400 text-[11px] italic">-</div>;
+      if (!phone)
+        return <div className="text-slate-400 text-[11px] italic">-</div>;
       return (
         <div className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
           <Phone className="w-3 h-3 text-slate-500 shrink-0" />
@@ -97,7 +99,7 @@ export const getUserManagementColumns = (onAction) => [
   {
     accessorKey: "plan",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Active Plan
       </div>
     ),
@@ -106,14 +108,23 @@ export const getUserManagementColumns = (onAction) => [
     cell: ({ row }) => {
       const plan = row.original?.plan?.title;
       const isNoPlan = !plan || plan === "No-Active Plan";
+      const planLower = plan?.toLowerCase() || "";
+
+      let colorClass = "bg-emerald-500/10 text-emerald-600";
+      if (isNoPlan) {
+        colorClass = "bg-slate-500/10 text-slate-600";
+      } else if (planLower.includes("premium")) {
+        colorClass = "bg-amber-50 text-amber-600";
+      } else if (planLower.includes("basic") || planLower.includes("starter")) {
+        colorClass = "bg-slate-100 text-slate-800";
+      }
+
       return (
         <Badge
           variant="outline"
           className={cn(
             "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
-            isNoPlan
-              ? "bg-slate-500/10 text-slate-600"
-              : "bg-emerald-500/10 text-emerald-600",
+            colorClass,
           )}
         >
           <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
@@ -125,7 +136,7 @@ export const getUserManagementColumns = (onAction) => [
   {
     accessorKey: "sub_admin",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Added By
       </div>
     ),
@@ -145,19 +156,19 @@ export const getUserManagementColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),
-    size: 80,
-    minSize: 75,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => {
       let status = row.original.status || "Active";
       if (row.original.revoked_at) status = "Revoked";
       const style =
         STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (
-        <div className="flex justify-center">
+        <div className="flex justify-left">
           <Badge
             variant="outline"
             className={cn(
@@ -176,7 +187,7 @@ export const getUserManagementColumns = (onAction) => [
     id: "boughtOn",
     accessorFn: (row) => row.transactions?.[0]?.created_at || null,
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Started
       </div>
     ),
@@ -197,7 +208,7 @@ export const getUserManagementColumns = (onAction) => [
   {
     accessorKey: "plan_expiry",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Expired
       </div>
     ),
@@ -247,7 +258,7 @@ export const getUserManagementColumns = (onAction) => [
               Actions
             </DropdownMenuLabel>
             <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
+              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
               onClick={() => onAction && onAction(row.original, "view")}
             >
               <Eye className="w-3.5 h-3.5" />

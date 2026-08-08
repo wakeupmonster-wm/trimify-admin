@@ -5,10 +5,8 @@ import {
   IconDatabaseCog,
   IconNews,
   IconCreditCard,
-  IconReceipt,
   IconDeviceDesktop,
   IconBell,
-  IconInfoCircle,
   IconSettings,
 } from "@tabler/icons-react";
 import { LuUsersRound } from "react-icons/lu";
@@ -27,12 +25,6 @@ const navigationData = {
       url: "/admin/dashboard",
       icon: IconLayoutDashboard,
       badge: null,
-      // items: [
-      //   {
-      //     title: "Sample Dashbaord",
-      //     url: "/admin/dashboard/sample-dashboard",
-      //   },
-      // ]
     },
     {
       title: "Sub Admin Management",
@@ -102,24 +94,17 @@ const navigationData = {
         { title: "Transactions", url: "/admin/subscription-management/transactions" },
       ],
     },
-    // {
-    //   title: "Transaction Management",
-    //   url: "/admin/transaction-management",
-    //   icon: IconReceipt,
-    //   badge: null,
-    // },
     {
       title: "Notification Management",
       url: "/admin/notification-manage",
       icon: IconBell,
       badge: null,
     },
-
   ],
   navPlateform: [
     {
       title: "Content Management",
-      url: "/admin/cms-management",
+      url: "/admin/faq-management",
       icon: IconDeviceDesktop,
       badge: null,
       items: [

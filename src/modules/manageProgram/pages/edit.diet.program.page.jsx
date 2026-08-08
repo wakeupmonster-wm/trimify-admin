@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -20,9 +21,9 @@ import { toast } from "sonner";
 import {
   getProgramDuration,
   searchFood,
-  updateDietMeal,
   getDietMeals,
 } from "../store/diet.slice";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const DAYS_OF_WEEK = [
   "Sunday",
@@ -49,6 +50,7 @@ const EditDietProgramPage = () => {
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -118,7 +120,7 @@ const EditDietProgramPage = () => {
     setSelectedMeals(selectedMeals.filter((m) => m.id !== mealId));
   };
 
-  const handleUpdateDietMeal = async () => {
+  const handleUpdateDietMeal = () => {
     const newErrors = {};
     if (!selectedWeek) newErrors.selectedWeek = "Please select a week.";
     if (!selectedDay) newErrors.selectedDay = "Please select a day.";
@@ -132,6 +134,10 @@ const EditDietProgramPage = () => {
       return;
     }
 
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
     const payload = {
       program_id: id,
       week: selectedWeek,
@@ -150,6 +156,7 @@ const EditDietProgramPage = () => {
     } else {
       toast.error(resultAction.payload || "Failed to update diet meal.");
     }
+    setIsConfirmModalOpen(false);
   };
 
   const maxWeeks = programDuration ? parseInt(programDuration, 10) : 8;
@@ -179,14 +186,11 @@ const EditDietProgramPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -208,7 +212,10 @@ const EditDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Week" />
+                    <SelectValue
+                      placeholder="Select Week"
+                      className="placeholder:font-normal"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {weeksOptions.map((w) => (
@@ -239,7 +246,10 @@ const EditDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Day" />
+                    <SelectValue
+                      placeholder="Select Day"
+                      className="placeholder:font-normal"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {DAYS_OF_WEEK.map((d) => (
@@ -270,7 +280,10 @@ const EditDietProgramPage = () => {
                   }}
                 >
                   <SelectTrigger className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus:ring-1 focus:ring-app-primary2 transition-colors bg-white font-medium">
-                    <SelectValue placeholder="Select Meal" />
+                    <SelectValue
+                      placeholder="Select Meal"
+                      className="placeholder:font-normal"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {MEAL_TYPES.map((m) => (
@@ -318,7 +331,7 @@ const EditDietProgramPage = () => {
                   <Input
                     type="text"
                     placeholder="Search Food..."
-                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
+                    className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
                     value={searchQuery}
                     onChange={handleSearchChange}
                   />
@@ -367,7 +380,7 @@ const EditDietProgramPage = () => {
                 Cancel
               </Button>
               <Button
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto text-white rounded-md px-6 h-10 text-xs font-semibold flex items-center justify-center gap-2 transition-all"
                 onClick={handleUpdateDietMeal}
                 disabled={loading}
               >
@@ -387,6 +400,17 @@ const EditDietProgramPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this diet meal?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

@@ -15,18 +15,18 @@ export const getNotificationColumns = ({
   {
     id: "sno",
     header: () => (
-      <div className="w-16 text-center text-[10px] font-bold uppercase tracking-wider">
+      <div className="w-8 text-left text-[10px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
     size: 60,
-    minSize: 60,
+    minSize: 50,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-16 text-center font-bold text-[11px] text-foreground/90">
+        <div className="w-9 text-left font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -58,11 +58,11 @@ export const getNotificationColumns = ({
   {
     accessorKey: "channel",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Channel
       </div>
     ),
-    size: 100,
+    size: 120,
     minSize: 100,
     cell: ({ row }) => {
       const channel = row.original.channel || "Push";
@@ -71,8 +71,10 @@ export const getNotificationColumns = ({
           className={cn(
             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
             channel.toLowerCase() === "email"
-              ? "bg-indigo-50 text-app-primary2"
-              : "bg-app-primary/10 text-app-primary2",
+              ? "bg-[#F5EFE6] text-[#8A5A2B]"
+              : "bg-[#F5F3FF] text-[#6D28D9]",
+            // ? "bg-indigo-50 text-app-primary2"
+            // : "bg-emerald-600/10 text-emerald-600",
           )}
         >
           {channel}
@@ -88,7 +90,7 @@ export const getNotificationColumns = ({
       </div>
     ),
     size: 250,
-    minSize: 200,
+    minSize: 180,
     cell: ({ row }) => {
       const campaignName =
         row.original.campaignName ||
@@ -99,7 +101,7 @@ export const getNotificationColumns = ({
         row.original.message || row.original.title || "No description";
       const subtitle = stripHtml(rawSubtitle);
       return (
-        <div className="flex flex-col max-w-xs whitespace-nowrap">
+        <div className="flex flex-col max-w-72 whitespace-nowrap">
           <span
             className="text-[13px] font-bold text-slate-800 truncate"
             title={campaignName}
@@ -107,7 +109,7 @@ export const getNotificationColumns = ({
             {campaignName}
           </span>
           <span
-            className="text-[11px] font-medium text-slate-500 line-clamp-1"
+            className="text-[11px] font-medium text-slate-500 line-clamp-1 truncate"
             title={subtitle}
           >
             {subtitle}
@@ -185,8 +187,8 @@ export const getNotificationColumns = ({
         Status
       </div>
     ),
-    size: 120,
-    minSize: 120,
+    size: 140,
+    minSize: 100,
     cell: ({ row }) => {
       const status = row.original.status || "Pending";
       return (

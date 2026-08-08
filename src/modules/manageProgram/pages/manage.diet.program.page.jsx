@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -122,17 +123,15 @@ const ManageDietProgramPage = () => {
               />
             </div>
             <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                label="Add Diet & Meal"
                 onClick={() =>
                   navigate(
                     `/admin/manage-program/manage/diet-plan/add-diet/${id}`,
                   )
                 }
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Add Diet & Meal</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>

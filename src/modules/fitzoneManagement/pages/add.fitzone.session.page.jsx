@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -35,6 +36,7 @@ import {
 } from "../store/fitzone.session.slice";
 import { getFitzoneCategories } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddFitzoneSessionPage = () => {
   const { id, sessionId } = useParams();
@@ -57,6 +59,8 @@ const AddFitzoneSessionPage = () => {
   const [stepDescription, setStepDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -122,7 +126,7 @@ const AddFitzoneSessionPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!sessionTitle.trim())
@@ -141,6 +145,15 @@ const AddFitzoneSessionPage = () => {
       return;
     }
 
+    if (isEdit) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("fitzone_id", id);
     formData.append("title", sessionTitle);
@@ -181,6 +194,8 @@ const AddFitzoneSessionPage = () => {
     } else {
       toast.error(resultAction.payload || "An error occurred");
     }
+    setIsSubmitting(false);
+    setIsConfirmModalOpen(false);
   };
 
   return (
@@ -202,14 +217,11 @@ const AddFitzoneSessionPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -232,7 +244,7 @@ const AddFitzoneSessionPage = () => {
                     setErrors((prev) => ({ ...prev, sessionTitle: null }));
                 }}
                 placeholder="Enter Title Here"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionTitle ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.sessionTitle ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.sessionTitle && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -254,7 +266,7 @@ const AddFitzoneSessionPage = () => {
                     setErrors((prev) => ({ ...prev, sessionDetails: null }));
                 }}
                 placeholder="Enter Details Here"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionDetails ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.sessionDetails ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.sessionDetails && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -324,7 +336,7 @@ const AddFitzoneSessionPage = () => {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="Enter Video URL here"
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
             </div>
 
@@ -341,7 +353,7 @@ const AddFitzoneSessionPage = () => {
                     setErrors((prev) => ({ ...prev, duration: null }));
                 }}
                 placeholder="Enter Video Duration"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.duration ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.duration ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.duration && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -374,7 +386,10 @@ const AddFitzoneSessionPage = () => {
                   <SelectTrigger
                     className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}
                   >
-                    <SelectValue placeholder="Select a category" />
+                    <SelectValue
+                      placeholder="Select a category"
+                      className="placeholder:font-normal"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.map((cat) => (
@@ -402,7 +417,10 @@ const AddFitzoneSessionPage = () => {
               ) : (
                 <Select key="disabled-select" disabled>
                   <SelectTrigger className="h-10 text-sm border-slate-300/60 font-medium opacity-50">
-                    <SelectValue placeholder="Loading categories..." />
+                    <SelectValue
+                      placeholder="Loading categories..."
+                      className="placeholder:font-normal"
+                    />
                   </SelectTrigger>
                 </Select>
               )}
@@ -444,7 +462,7 @@ const AddFitzoneSessionPage = () => {
                   }}
                   placeholder="Enter description"
                   maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.stepDescription ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.stepDescription ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {stepDescription.length} / 500
@@ -469,9 +487,9 @@ const AddFitzoneSessionPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-6 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
-                {loading ? (
+                {isSubmitting || loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                     {isEdit ? "Updating..." : "Saving..."}
@@ -487,6 +505,17 @@ const AddFitzoneSessionPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this session's details?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting || loading}
+      />
     </Container>
   );
 };

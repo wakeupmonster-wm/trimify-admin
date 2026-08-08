@@ -1,8 +1,17 @@
 import React, { useMemo, useState } from "react";
+import FloatingActionBar from "@/components/common/FloatingActionBar";
+import CTAButton from "@/components/common/CTAButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Sparkles, ArrowLeft, Save, CheckCircle2, XCircle, Trash2 } from "lucide-react";
+import {
+  Sparkles,
+  ArrowLeft,
+  Save,
+  CheckCircle2,
+  XCircle,
+  Trash2,
+} from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import Header from "@/components/common/header";
@@ -61,7 +70,10 @@ const AiFoodUploadPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const visibleItems = useMemo(
-    () => [...items].filter((item) => item.status !== "approved").sort((a, b) => b.id - a.id),
+    () =>
+      [...items]
+        .filter((item) => item.status !== "approved")
+        .sort((a, b) => b.id - a.id),
     [items],
   );
 
@@ -137,11 +149,15 @@ const AiFoodUploadPage = () => {
 
   const handleConfirmBulkDelete = () => {
     setIsBulkDeleting(true);
-    const promises = selectedIds.map(id => dispatch(deleteAiFoodItem(id)).unwrap());
-    
+    const promises = selectedIds.map((id) =>
+      dispatch(deleteAiFoodItem(id)).unwrap(),
+    );
+
     Promise.allSettled(promises)
       .then((results) => {
-        const failedCount = results.filter(r => r.status === 'rejected').length;
+        const failedCount = results.filter(
+          (r) => r.status === "rejected",
+        ).length;
         if (failedCount === 0) {
           toast.success("Selected items removed.");
         } else {
@@ -170,7 +186,8 @@ const AiFoodUploadPage = () => {
 
   return (
     <Container>
-      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0">
+      <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0 relative">
+        {/* <div className="sticky top-0 z-40 bg-slate-50/90 backdrop-blur-md pt-4 pb-2 -mt-4 -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8"> */}
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -183,47 +200,17 @@ const AiFoodUploadPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() =>
                   navigate("/admin/data-management/nutrition-food")
                 }
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
-              <Button
-                onClick={() => setBulkDeleteConfirmOpen(true)}
-                disabled={selectedIds.length === 0 || isBulkDeleting || saveLoading}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                {isBulkDeleting ? (
-                  <Spinner className="w-4 h-4 shrink-0" />
-                ) : (
-                  <Trash2 className="w-4 h-4 shrink-0" />
-                )}
-                <span className="whitespace-nowrap">
-                  Delete Selected ({selectedIds.length})
-                </span>
-              </Button>
-              <Button
-                onClick={() => setConfirmOpen(true)}
-                disabled={selectedIds.length === 0 || saveLoading || isBulkDeleting}
-                className="flex-1 bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                {saveLoading ? (
-                  <Spinner className="w-4 h-4 shrink-0" />
-                ) : (
-                  <Save className="w-4 h-4 shrink-0" />
-                )}
-                <span className="whitespace-nowrap">
-                  Save Selected ({selectedIds.length})
-                </span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
+        {/* </div> */}
 
         <AiFoodNameInput
           onGenerate={handleGenerate}
@@ -257,31 +244,16 @@ const AiFoodUploadPage = () => {
         </div>
       </div>
 
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Add {selectedIds.length} item{selectedIds.length !== 1 ? "s" : ""}{" "}
-              to the food catalog?
-            </DialogTitle>
-            <DialogDescription>
-              These items will become visible in the live app immediately after
-              saving.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmSave}
-              className="bg-app-primary2 hover:bg-app-primary3 text-white"
-            >
-              Confirm & Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message={`Are you sure you want to add ${selectedIds.length} item${selectedIds.length !== 1 ? "s" : ""} to the food catalog? These items will become visible in the live app immediately after saving.`}
+        confirmText="Confirm & Save"
+        type="brand"
+        loading={saveLoading}
+      />
 
       <Dialog open={resultsOpen} onOpenChange={setResultsOpen}>
         <DialogContent>
@@ -342,11 +314,39 @@ const AiFoodUploadPage = () => {
         onClose={() => setBulkDeleteConfirmOpen(false)}
         onConfirm={handleConfirmBulkDelete}
         title="Delete Selected Items"
-        message={`Are you sure you want to remove ${selectedIds.length} generated item${selectedIds.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+        message={`Are you sure you want to remove ${selectedIds.length} generated item${selectedIds.length !== 1 ? "s" : ""}? This action cannot be undone.`}
         confirmText="Delete Selected"
         type="danger"
         loading={isBulkDeleting}
       />
+
+      {/* Floating Action Bar */}
+      <FloatingActionBar selectedCount={selectedIds.length}>
+        <Button
+          onClick={() => setBulkDeleteConfirmOpen(true)}
+          disabled={isBulkDeleting || saveLoading}
+          className="h-9 px-4 rounded-lg gap-2 text-xs font-bold shadow-sm bg-[#E54848] hover:bg-[#E54848]/90 text-white border-none"
+        >
+          {isBulkDeleting ? (
+            <Spinner className="w-4 h-4 shrink-0" />
+          ) : (
+            <Trash2 className="w-4 h-4 shrink-0" />
+          )}
+          Delete
+        </Button>
+        <Button
+          onClick={() => setConfirmOpen(true)}
+          disabled={saveLoading || isBulkDeleting}
+          className="h-9 px-4 rounded-lg bg-app-primary2 hover:bg-app-primary3 text-white gap-2 text-xs font-bold shadow-sm"
+        >
+          {saveLoading ? (
+            <Spinner className="w-4 h-4 shrink-0" />
+          ) : (
+            <Save className="w-4 h-4 shrink-0" />
+          )}
+          Save
+        </Button>
+      </FloatingActionBar>
     </Container>
   );
 };

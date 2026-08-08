@@ -35,7 +35,7 @@ export default function SubscriptionTransactionsPage() {
                 variant="outline"
                 onClick={onExportClick}
                 disabled={exportLoading}
-                className="h-9 3xl:h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white text-xs font-medium transition-all active:scale-95"
+                className="h-10 hover:border-none rounded-md bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white text-xs font-medium transition-all active:scale-95"
               >
                 {exportLoading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
