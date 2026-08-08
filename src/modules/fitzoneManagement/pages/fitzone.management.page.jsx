@@ -38,7 +38,9 @@ const FitzoneManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   // Optional dateRange from Dashboard KPI navigation
-  const dateRangeFromDashboard = location.state?.dateRange || null;
+  const [dateRangeFilter, setDateRangeFilter] = useState(
+    location.state?.dateRange || null,
+  );
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteModal, setDeleteModal] = useState({
     open: false,
@@ -59,9 +61,9 @@ const FitzoneManagementPage = () => {
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
         status: statusFilter,
-        ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
-        ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
-        ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
+        ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+        ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
+        ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
       }),
     );
   }, [
@@ -70,6 +72,7 @@ const FitzoneManagementPage = () => {
     pagination.pageSize,
     debouncedSearchTerm,
     statusFilter,
+    dateRangeFilter,
   ]);
 
   const handleAction = async (row, action, value) => {
@@ -167,10 +170,13 @@ const FitzoneManagementPage = () => {
       type: "dateRange",
       id: "dateRangeFilter",
       label: "Date",
-      value: dateRangeFromDashboard,
-      onChange: () => {
+      value: dateRangeFilter,
+      onChange: (val) => {
+        setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
-        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        if (location.state?.dateRange) {
+          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        }
       },
     },
   ];
@@ -275,8 +281,9 @@ const FitzoneManagementPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   setStatusFilter("");
-                  if (dateRangeFromDashboard) {
-                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  setDateRangeFilter(null);
+                  if (location.state) {
+                    navigate(".", { replace: true, state: null });
                   }
                 }}
               />

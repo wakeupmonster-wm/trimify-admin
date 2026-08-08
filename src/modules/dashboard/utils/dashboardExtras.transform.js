@@ -77,10 +77,10 @@ export const toLabeledPie = (items = []) =>
 export const buildFunnel = (data) => {
   if (!data) return { stages: [], insight: "" };
   const { totalSignups = 0, paidUsers = 0, notPaidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
-  
+
   const safeConversionRate = Number.isNaN(Number(conversionRate)) ? 0 : Number(conversionRate);
   const safeDropOffRate = Number.isNaN(Number(dropOffRate)) ? 0 : Number(dropOffRate);
-  
+
   return {
     subtitle: "Signup → Payment, this period",
     notPaidUsers,
@@ -156,17 +156,10 @@ export const buildAlerts = (alerts = {}) => {
 
   const stagnation = alerts?.contentStagnation;
   if (stagnation && (stagnation.needsAttention === true || stagnation.needsAttention === "true" || stagnation.needsAttention === 1)) {
-    const staleItems = [];
-    if (stagnation.programs?.stale) staleItems.push("programs");
-    if (stagnation.blogs?.stale) staleItems.push("blogs");
-    if (stagnation.fitzoneCategories?.stale) staleItems.push("fitzone sessions");
-
-    const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
-
     result.push({
       id: "stalled",
       label: "Content Stagnation",
-      value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
+      value: `${stagnation.staleProgramsCount || 0} programs haven't been updated in over ${stagnation.thresholdDays || 14} days`,
       route: "/admin/manage-program",
       filterId: "stale_content"
     });

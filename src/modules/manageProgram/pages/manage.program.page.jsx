@@ -50,7 +50,9 @@ const ManageProgramPage = () => {
     location.state?.filterId || "",
   );
   // Optional dateRange from Dashboard KPI navigation
-  const dateRangeFromDashboard = location.state?.dateRange || null;
+  const [dateRangeFilter, setDateRangeFilter] = useState(
+    location.state?.dateRange || null,
+  );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -70,15 +72,9 @@ const ManageProgramPage = () => {
           search: debouncedSearchTerm,
           duration: durationFilter,
           status: statusFilter,
-          ...(dateRangeFromDashboard?.preset
-            ? { preset: dateRangeFromDashboard.preset }
-            : {}),
-          ...(dateRangeFromDashboard?.from
-            ? { from: dateRangeFromDashboard.from }
-            : {}),
-          ...(dateRangeFromDashboard?.to
-            ? { to: dateRangeFromDashboard.to }
-            : {}),
+          ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+          ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
+          ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
         }),
       );
       const total = result?.payload?.pagination?.total;
@@ -94,6 +90,7 @@ const ManageProgramPage = () => {
     debouncedSearchTerm,
     durationFilter,
     statusFilter,
+    dateRangeFilter,
   ]);
 
   const handleAction = async (row, action, value) => {
@@ -225,13 +222,13 @@ const ManageProgramPage = () => {
       type: "dateRange",
       id: "dateRangeFilter",
       label: "Date",
-      value: dateRangeFromDashboard,
-      onChange: () => {
+      value: dateRangeFilter,
+      onChange: (val) => {
+        setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
-        navigate(".", {
-          replace: true,
-          state: { ...location.state, dateRange: null },
-        });
+        if (location.state?.dateRange) {
+          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        }
       },
     },
   ];
@@ -341,11 +338,9 @@ const ManageProgramPage = () => {
                 onClearAll={() => {
                   setDurationFilter("");
                   setStatusFilter("");
-                  if (dateRangeFromDashboard) {
-                    navigate(".", {
-                      replace: true,
-                      state: { ...location.state, dateRange: null },
-                    });
+                  setDateRangeFilter(null);
+                  if (location.state) {
+                    navigate(".", { replace: true, state: null });
                   }
                 }}
               />

@@ -41,15 +41,11 @@ const TrendChartCard = ({
   const chartConfig = Object.fromEntries(
     series.map((s) => [s.key, { label: s.label, color: s.color }]),
   );
-  // NOTE: an "all series values are 0" check was tried here so a single
-  // all-zero point (e.g. a day with 0 sessions) would also show "No data",
-  // not just a genuinely empty array. Reverted — it assumes each series'
-  // `key` matches the backend's actual field name exactly, which isn't
-  // confirmed for every TrendChartCard consumer (e.g. Active vs Churned
-  // Users), and a mismatch there made the check see "all zero" for real,
-  // non-zero data and hide it. Length-only is the safe baseline until
-  // every series key is verified against its live response.
-  const hasData = data.length > 0;
+  // Ensure we actually have non-zero data to plot, not just a padded zero-value array
+  // which can happen for single-day periods like 'Yesterday' or 'Today'.
+  const hasData = data.length > 0 && data.some(point => 
+    series.some(s => Number(point[s.key]) > 0)
+  );
 
   return (
     <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
@@ -220,9 +216,9 @@ const TrendChartCard = ({
           </ChartContainer>
         ) : (
           <div
-            className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium`}
+            className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl`}
           >
-            No data for this period.
+            No data available
           </div>
         )}
       </div>

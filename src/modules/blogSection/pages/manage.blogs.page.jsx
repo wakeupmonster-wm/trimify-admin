@@ -39,7 +39,9 @@ const ManageBlogsPage = () => {
   });
   const [statusFilter, setStatusFilter] = useState("");
   // Optional dateRange from Dashboard KPI navigation
-  const dateRangeFromDashboard = location.state?.dateRange || null;
+  const [dateRangeFilter, setDateRangeFilter] = useState(
+    location.state?.dateRange || null,
+  );
   const [deleteModal, setDeleteModal] = useState({
     open: false,
     rowData: null,
@@ -52,12 +54,12 @@ const ManageBlogsPage = () => {
         page: postPage.pageIndex + 1,
         limit: postPage.pageSize,
         search: debouncedPostFilter,
-        ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
-        ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
-        ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
+        ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+        ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
+        ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
       }),
     );
-  }, [dispatch, postPage.pageIndex, postPage.pageSize, debouncedPostFilter]);
+  }, [dispatch, postPage.pageIndex, postPage.pageSize, debouncedPostFilter, dateRangeFilter]);
 
   const handlePostAction = async (row, action, value) => {
     if (action === "change-status") {
@@ -146,10 +148,13 @@ const ManageBlogsPage = () => {
       type: "dateRange",
       id: "dateRangeFilter",
       label: "Date",
-      value: dateRangeFromDashboard,
-      onChange: () => {
+      value: dateRangeFilter,
+      onChange: (val) => {
+        setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
-        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        if (location.state?.dateRange) {
+          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        }
       },
     },
   ];
@@ -282,8 +287,9 @@ const ManageBlogsPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   setStatusFilter("");
-                  if (dateRangeFromDashboard) {
-                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  setDateRangeFilter(null);
+                  if (location.state) {
+                    navigate(".", { replace: true, state: null });
                   }
                 }}
               />

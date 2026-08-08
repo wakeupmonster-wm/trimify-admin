@@ -66,7 +66,7 @@ export const fetchDashboardExtrasForSubscription = createAsyncThunk(
       const expiringSoon = expiringRes.status === "fulfilled" && expiringRes.value?.success ? expiringRes.value.data : null;
 
       return {
-        totalRevenue: summary?.totalRevenueAllTime || 0,
+        todaysRevenue: summary?.todaysRevenue || 0,
         churn: { count: summary?.churnCount || 0, rate: `${summary?.churnRate ?? 0}%` },
         failedTransactions: { count: summary?.failedTransactions || 0 },
         refundedTransactions: { count: summary?.refundedTransactions || 0, amount: summary?.refundedAmount || 0 },

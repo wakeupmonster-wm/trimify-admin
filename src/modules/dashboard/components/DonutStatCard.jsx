@@ -119,6 +119,7 @@ const DonutStatCard = ({
         </div>
 
         <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
+          {hasData ? (
           <div className="divide-y divide-slate-100">
             {data.map((item, idx) => {
               const pct =
@@ -149,6 +150,11 @@ const DonutStatCard = ({
               );
             })}
           </div>
+          ) : (
+          <div className="flex items-center justify-center h-full min-h-[80px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+            No data available
+          </div>
+          )}
         </div>
       </div>
     </div>

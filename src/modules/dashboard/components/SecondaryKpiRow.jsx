@@ -108,8 +108,7 @@ const KPI_CONFIG = [
     isPositive: true,
     format: (data) => data?.totalBlogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) =>
-      navigate("/admin/blog-section", { state: { dateRange } }),
+    onClick: (navigate, dateRange) => navigate("/admin/blog-section/manage-blogs", { state: { dateRange } }),
   },
   {
     key: "totalFitzoneSessions",

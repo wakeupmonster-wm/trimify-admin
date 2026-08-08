@@ -15,7 +15,11 @@
           "admin_id": 1,
           "email": "admin@example.com"
         },
-        "status_codes": [200, 401, 422],
+        "status_codes": [
+          200,
+          401,
+          422
+        ],
         "edge_cases": "401 if email not registered or incorrect password. 422 for validation errors."
       },
       {
@@ -35,7 +39,12 @@
             "email": "admin@example.com"
           }
         },
-        "status_codes": [200, 400, 401, 422],
+        "status_codes": [
+          200,
+          400,
+          401,
+          422
+        ],
         "edge_cases": "400 for invalid/expired OTP. 401 if email not found."
       },
       {
@@ -46,7 +55,9 @@
           "message": "Successfully logged out",
           "status": 200
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Requires Bearer token in header."
       }
     ]
@@ -72,7 +83,12 @@
             "updated_at": "2026-06-10T11:09:50.000000Z"
           }
         },
-        "status_codes": [200, 401, 403, 422],
+        "status_codes": [
+          200,
+          401,
+          403,
+          422
+        ],
         "edge_cases": "401 if old password is incorrect. 403 if unauthorized."
       },
       {
@@ -85,7 +101,10 @@
           "status": "success",
           "message": "OTP has been sent to your email."
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "422 if new email is same as current email."
       },
       {
@@ -99,7 +118,11 @@
           "status": "success",
           "message": "Email updated successfully. Please log in again."
         },
-        "status_codes": [200, 400, 422],
+        "status_codes": [
+          200,
+          400,
+          422
+        ],
         "edge_cases": "400 if OTP is invalid."
       }
     ]
@@ -137,7 +160,10 @@
             "updated_at": "2026-06-10T11:09:50.000000Z"
           }
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Email uniqueness is validated."
       },
       {
@@ -171,7 +197,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Returns paginated data (50 per page)."
       },
       {
@@ -192,7 +220,10 @@
           "status": "success",
           "message": "Sub-admin updated successfully."
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if SubAdmin not found."
       },
       {
@@ -206,7 +237,10 @@
           "message": "Status updated successfully",
           "updated_status": "Inactive"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if ID not found."
       },
       {
@@ -217,7 +251,10 @@
           "status": "success",
           "message": "Sub-admin deleted successfully"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if user not found."
       }
     ]
@@ -243,7 +280,10 @@
             "updated_at": "2026-06-10T11:01:59.000000Z"
           }
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Length validations for question and answer."
       },
       {
@@ -268,7 +308,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Returns paginated data (50 items)."
       },
       {
@@ -289,7 +331,11 @@
             "updated_at": "2026-06-10T11:01:59.000000Z"
           }
         },
-        "status_codes": [200, 404, 422],
+        "status_codes": [
+          200,
+          404,
+          422
+        ],
         "edge_cases": "404 if FAQ not found."
       },
       {
@@ -303,7 +349,10 @@
           "message": "Status Updated! The Faq is now Active!",
           "updated_status": "Active"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if FAQ not found."
       },
       {
@@ -314,7 +363,10 @@
           "status": "success",
           "message": "Faq deleted successfully"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if FAQ not found."
       }
     ]
@@ -339,7 +391,10 @@
             "updated_at": "2026-06-10T11:01:59.000000Z"
           }
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Dispatches jobs to send bulk push notifications."
       },
       {
@@ -363,7 +418,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Paginated 50 items."
       }
     ]
@@ -393,7 +450,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Paginated list."
       },
       {
@@ -406,7 +465,10 @@
         "response": {
           "message": "Page content updated successfully."
         },
-        "status_codes": [200, 500],
+        "status_codes": [
+          200,
+          500
+        ],
         "edge_cases": "500 if database save fails."
       },
       {
@@ -420,7 +482,10 @@
           "message": "Status updated successfully",
           "updated_status": "Inactive"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if CMS page not found."
       }
     ]
@@ -449,7 +514,10 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "File upload validation."
       },
       {
@@ -475,7 +543,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Paginated list."
       },
       {
@@ -489,7 +559,10 @@
           "message": "Status Updated! The blog category is now Active!",
           "updated_status": "Active"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if category not found."
       },
       {
@@ -500,7 +573,10 @@
           "status": "success",
           "message": "Blog Category deleted successfully"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if not found."
       },
       {
@@ -524,7 +600,11 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422, 404],
+        "status_codes": [
+          200,
+          422,
+          404
+        ],
         "edge_cases": "Deletes old icon if new is provided."
       },
       {
@@ -552,7 +632,10 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Handles image upload."
       },
       {
@@ -589,7 +672,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Returns blogs with category relation."
       },
       {
@@ -617,7 +702,11 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422, 404],
+        "status_codes": [
+          200,
+          422,
+          404
+        ],
         "edge_cases": "Handles old image replacement."
       },
       {
@@ -628,7 +717,10 @@
           "status": "success",
           "message": "Blog deleted successfully"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if not found."
       }
     ]
@@ -660,7 +752,10 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Image upload logic."
       },
       {
@@ -687,7 +782,11 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422, 404],
+        "status_codes": [
+          200,
+          422,
+          404
+        ],
         "edge_cases": "Updates image if provided, deletes old one."
       },
       {
@@ -715,7 +814,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Paginated list."
       },
       {
@@ -726,7 +827,10 @@
           "status": "success",
           "message": "Program deleted successfully"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if program not found."
       },
       {
@@ -740,7 +844,10 @@
           "message": "Status Updated! The program is now Active!",
           "updated_status": "Active"
         },
-        "status_codes": [200, 404],
+        "status_codes": [
+          200,
+          404
+        ],
         "edge_cases": "404 if program not found."
       },
       {
@@ -752,7 +859,11 @@
           "message": "Food visibility status updated successfully!",
           "new_status": true
         },
-        "status_codes": [200, 404, 500],
+        "status_codes": [
+          200,
+          404,
+          500
+        ],
         "edge_cases": "Toggles boolean field is_approve_nonapproved_foods_show."
       },
       {
@@ -774,7 +885,11 @@
             "updated_at": "2026-06-10T11:01:59.000000Z"
           }
         },
-        "status_codes": [200, 404, 400],
+        "status_codes": [
+          200,
+          404,
+          400
+        ],
         "edge_cases": "Duplicates program and related intro, food, and diet plans."
       }
     ]
@@ -813,7 +928,10 @@
             "total": 1
           }
         },
-        "status_codes": [200, 500],
+        "status_codes": [
+          200,
+          500
+        ],
         "edge_cases": "Fetches DietMealData where status is active."
       },
       {
@@ -853,7 +971,10 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Converts multiline strings to JSON arrays for ingredients/instructions."
       },
       {
@@ -891,7 +1012,11 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422, 404],
+        "status_codes": [
+          200,
+          422,
+          404
+        ],
         "edge_cases": "Replaces existing values."
       },
       {
@@ -905,7 +1030,11 @@
           "message": "Nutrition data uploaded successfully",
           "status": "success"
         },
-        "status_codes": [200, 422, 400],
+        "status_codes": [
+          200,
+          422,
+          400
+        ],
         "edge_cases": "Bulk upload loop. Checks if title exists before creating."
       }
     ]
@@ -945,7 +1074,10 @@
             "total": 1
           }
         },
-        "status_codes": [200, 500],
+        "status_codes": [
+          200,
+          500
+        ],
         "edge_cases": "Returns users with relations (subAdmin, plan, transactions)."
       }
     ]
@@ -962,7 +1094,9 @@
           "subadminCount": 10,
           "subadmin": []
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Returns subadmin counts."
       },
       {
@@ -974,7 +1108,9 @@
           "usersCount": 50,
           "users": []
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Returns user counts."
       }
     ]
@@ -1007,7 +1143,10 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422],
+        "status_codes": [
+          200,
+          422
+        ],
         "edge_cases": "Handles image upload."
       },
       {
@@ -1035,7 +1174,9 @@
             "total": 1
           }
         },
-        "status_codes": [200],
+        "status_codes": [
+          200
+        ],
         "edge_cases": "Paginated list."
       }
     ]
@@ -1054,7 +1195,7 @@
               "transaction_id": "TX123",
               "amount": "99.99",
               "status": "Success",
-              "invoice_url": "https://apibackend.trimify.com.au/public/invoice.pdf",
+              "invoice_url": "https://testbackend.trimify.com.au/public/invoice.pdf",
               "user_id": 1,
               "plan_id": 1,
               "created_at": "2026-06-10T11:01:59.000000Z",
@@ -1078,7 +1219,10 @@
             "total": 1
           }
         },
-        "status_codes": [200, 500],
+        "status_codes": [
+          200,
+          500
+        ],
         "edge_cases": "Appends API_URL to invoice_url if exists."
       },
       {
@@ -1102,7 +1246,10 @@
             "total": 1
           }
         },
-        "status_codes": [200, 500],
+        "status_codes": [
+          200,
+          500
+        ],
         "edge_cases": "Returns subscription plans."
       },
       {
@@ -1123,7 +1270,11 @@
           },
           "status": "success"
         },
-        "status_codes": [200, 422, 404],
+        "status_codes": [
+          200,
+          422,
+          404
+        ],
         "edge_cases": "Updates price and features for a plan."
       }
     ]

@@ -76,9 +76,9 @@ export default function OverviewView({
       {overview && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard
-            label="Total Revenue"
-            value={`$${Number(dashboardExtras?.totalRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
-            description="All-time, all plans"
+            label="Today's Revenue"
+            value={`$${Number(dashboardExtras?.todaysRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
+            description="Revenue collected today"
             onClick={() =>
               navigate("/admin/subscription-management/transactions")
             }
@@ -86,7 +86,7 @@ export default function OverviewView({
           <KpiCard
             label="MRR"
             value={`$${Number(overview.mrr || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
-            description="Monthly recurring revenue"
+            description="Current monthly recurring revenue"
             tone="amber"
             onClick={() =>
               navigate("/admin/subscription-management/transactions")
@@ -95,7 +95,7 @@ export default function OverviewView({
           <KpiCard
             label="Active Subscribers"
             value={(overview.activeSubscribers || 0).toLocaleString()}
-            description="Not revoked, not expired"
+            description="Currently active subscribers"
             tone="emerald"
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
@@ -106,7 +106,7 @@ export default function OverviewView({
           <KpiCard
             label="Churn"
             value={(dashboardExtras?.churn?.count || 0).toLocaleString()}
-            description={`${dashboardExtras?.churn?.rate || "0%"} churn rate`}
+            description={`Expired plan subscribers (${dashboardExtras?.churn?.rate || "0%"} rate)`}
             tone="rose"
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
@@ -134,7 +134,7 @@ export default function OverviewView({
             value={(
               dashboardExtras?.refundedTransactions?.count || 0
             ).toLocaleString()}
-            description={`$${Number(dashboardExtras?.refundedTransactions?.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} refunded`}
+            description={`$${Number(dashboardExtras?.refundedTransactions?.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} refunded in ${rangeLabel ? rangeLabel.toLowerCase() : "selected period"}`}
             tone="violet"
             onClick={() =>
               navigate("/admin/subscription-management/transactions", {
@@ -160,7 +160,7 @@ export default function OverviewView({
           <KpiCard
             label="Expiring Soon"
             value={(dashboardExtras?.expiringSoonCount || 0).toLocaleString()}
-            description="Plans renewing soon"
+            description="Within next 7 days"
             tone="cyan"
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {

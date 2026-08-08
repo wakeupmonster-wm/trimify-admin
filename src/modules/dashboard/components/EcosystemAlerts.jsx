@@ -138,8 +138,6 @@ export function EcosystemAlerts({ data, selectedDate }) {
                       state: {
                         id: alert.id,
                         badge: alert.badge,
-                        preset: selectedDate?.preset,
-                        dateRange: resolvedDateRange,
                         filterId: alert.filterId,
                       },
                     },

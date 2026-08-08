@@ -74,9 +74,11 @@ const DashboardTableCard = ({
               <TableRow>
                 <TableCell
                   colSpan={columns.length + (actionLabel ? 1 : 0)}
-                  className="h-24 text-center text-xs text-slate-400 font-medium"
+                  className="h-32 text-center"
                 >
-                  {emptyMessage}
+                  <div className="flex items-center justify-center h-full text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl mx-4 my-2 min-h-[80px]">
+                    {emptyMessage}
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (

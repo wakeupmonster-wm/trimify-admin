@@ -3154,7 +3154,7 @@ Required — Bearer Token
       "transaction_id": "TX123",
       "amount": "99.99",
       "status": "Success",
-      "invoice_url": "https://apibackend.trimify.com.au/public/invoice.pdf",
+      "invoice_url": "https://testbackend.trimify.com.au/public/invoice.pdf",
       "user_id": 1,
       "plan_id": 1,
       "created_at": "2026-06-10T11:01:59.000000Z",

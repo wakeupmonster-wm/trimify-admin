@@ -299,6 +299,9 @@ export default function SubscribersView() {
             onClearAll={() => {
               setStatusFilter("");
               setPlanFilter("");
+              if (location.state) {
+                navigate(".", { replace: true, state: null });
+              }
             }}
           />
         }
