@@ -77,10 +77,10 @@ export const toLabeledPie = (items = []) =>
 export const buildFunnel = (data) => {
   if (!data) return { stages: [], insight: "" };
   const { totalSignups = 0, paidUsers = 0, notPaidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
-
+  
   const safeConversionRate = Number.isNaN(Number(conversionRate)) ? 0 : Number(conversionRate);
   const safeDropOffRate = Number.isNaN(Number(dropOffRate)) ? 0 : Number(dropOffRate);
-
+  
   return {
     subtitle: "Signup → Payment, this period",
     notPaidUsers,
