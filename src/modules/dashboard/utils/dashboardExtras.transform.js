@@ -156,17 +156,10 @@ export const buildAlerts = (alerts = {}) => {
 
   const stagnation = alerts?.contentStagnation;
   if (stagnation && (stagnation.needsAttention === true || stagnation.needsAttention === "true" || stagnation.needsAttention === 1)) {
-    const staleItems = [];
-    if (stagnation.programs?.stale) staleItems.push("programs");
-    if (stagnation.blogs?.stale) staleItems.push("blogs");
-    if (stagnation.fitzoneCategories?.stale) staleItems.push("fitzone sessions");
-
-    const itemString = staleItems.length > 0 ? staleItems.join(", ") : "content";
-
     result.push({
       id: "stalled",
       label: "Content Stagnation",
-      value: `No new ${itemString} published in over ${stagnation.thresholdDays || 14} days`,
+      value: `${stagnation.staleProgramsCount || 0} programs haven't been updated in over ${stagnation.thresholdDays || 14} days`,
       route: "/admin/manage-program",
       filterId: "stale_content"
     });
