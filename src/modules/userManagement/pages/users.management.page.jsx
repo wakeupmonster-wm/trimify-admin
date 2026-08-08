@@ -216,7 +216,7 @@ const UsersManagementPage = () => {
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
         { label: "Ghosted", value: "ghosted" },
-        { label: "Zero Engagement", value: "zero_engagement" },
+        // { label: "Zero Engagement", value: "zero_engagement" },
         { label: "New Signups Today", value: "new_today" },
         { label: "Missed Step Goals", value: "missed_step_goals" },
         { label: "Missed Diet Logs", value: "missed_diet_logs" },
