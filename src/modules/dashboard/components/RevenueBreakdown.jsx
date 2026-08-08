@@ -144,40 +144,46 @@ export function RevenueBreakdown({ data, revenueChartsData }) {
         </div>
 
         <div className="flex-1 w-full space-y-6">
-          {categories.map((item, idx) => (
-            <div key={idx} className="flex flex-col gap-1.5">
-              <div className="flex items-center gap-2 mb-0.5">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                />
-                <span className="text-xs font-bold text-slate-800 tracking-tight">
-                  {item.label}
-                </span>
-              </div>
+          {hasData ? (
+            categories.map((item, idx) => (
+              <div key={idx} className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-xs font-bold text-slate-800 tracking-tight">
+                    {item.label}
+                  </span>
+                </div>
 
-              {/* Middle Row: Value (Left) + Percentage (Right) */}
-              <div className="flex items-end justify-between">
-                <span className="text-xs font-bold text-slate-900 leading-none">
-                  {item.displayValue}
-                </span>
-                <span className="text-xs font-bold text-slate-400">
-                  {item.percentage}%
-                </span>
-              </div>
+                {/* Middle Row: Value (Left) + Percentage (Right) */}
+                <div className="flex items-end justify-between">
+                  <span className="text-xs font-bold text-slate-900 leading-none">
+                    {item.displayValue}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400">
+                    {item.percentage}%
+                  </span>
+                </div>
 
-              {/* Bottom Row: Progress Bar */}
-              <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-1000 ease-in-out"
-                  style={{
-                    backgroundColor: item.color,
-                    width: `${item.percentage}%`,
-                  }}
-                />
+                {/* Bottom Row: Progress Bar */}
+                <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000 ease-in-out"
+                    style={{
+                      backgroundColor: item.color,
+                      width: `${item.percentage}%`,
+                    }}
+                  />
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-full min-h-[80px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+              No data available
             </div>
-          ))}
+          )}
         </div>
 
         {/* Insight Box */}

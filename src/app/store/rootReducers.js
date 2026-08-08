@@ -25,7 +25,7 @@ import cmsManagementReducer from "@/modules/cmsManagement/store/cms.management.s
 import aiFoodReducer from "@/modules/aiFoodUpload/store/ai.food.slice";
 import accountSettingsReducer from "@/modules/accountSettings/store/account.settings.slice";
 
-export const rootReducer = combineReducers({
+const appReducer = combineReducers({
   auth: authReducer,
   // users: usersReducer,
   account: accountReducer,
@@ -52,3 +52,14 @@ export const rootReducer = combineReducers({
   aiFood: aiFoodReducer,
   accountSettings: accountSettingsReducer,
 });
+
+export const rootReducer = (state, action) => {
+  if (action.type === "auth/logout") {
+    // Reset the state to initial state
+    state = undefined;
+    
+    // Also clear the persisted state from localStorage
+    localStorage.removeItem("persist:root");
+  }
+  return appReducer(state, action);
+};

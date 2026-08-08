@@ -18,10 +18,9 @@ const COLORS = ["#6366f1", "#06b6d4", "#f59e0b", "#10b981"];
 export default function PlatformPieChart({ data }) {
   if (!data || data.length === 0)
     return (
-      <EmptyState
-        title="No Data"
-        description="No platform distribution available."
-      />
+      <div className="flex items-center justify-center h-full min-h-[200px] w-full text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+        No data available
+      </div>
     );
 
   return (

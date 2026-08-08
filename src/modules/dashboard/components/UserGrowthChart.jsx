@@ -143,10 +143,9 @@ export function UserGrowthChart({ data, selectedDate }) {
             </BarChart>
           </ChartContainer>
         ) : (
-          <EmptyState
-            title="No Activity"
-            description="No user growth data found for the selected period."
-          />
+          <div className="flex items-center justify-center h-full min-h-[200px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+            No data available
+          </div>
         )}
       </div>
 

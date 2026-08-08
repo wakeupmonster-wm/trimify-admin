@@ -228,10 +228,13 @@ const UsersManagementPage = () => {
       type: "dateRange",
       id: "dateRangeFilter",
       label: "Date",
-      value: location.state?.dateRange || null,
-      onChange: () => {
+      value: dateRangeFilter,
+      onChange: (val) => {
+        setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
-        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        if (location.state?.dateRange) {
+          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        }
       },
     },
   ];
@@ -275,8 +278,9 @@ const UsersManagementPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   handleStatusFilterChange("");
-                  if (location.state?.dateRange) {
-                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                  setDateRangeFilter(null);
+                  if (location.state) {
+                    navigate(".", { replace: true, state: null });
                   }
                 }}
               />

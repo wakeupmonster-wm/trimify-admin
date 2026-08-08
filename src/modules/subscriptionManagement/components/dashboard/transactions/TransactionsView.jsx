@@ -365,6 +365,9 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
               setStatusFilter("");
               setPlanFilter("");
               setDateRange(null);
+              if (location.state) {
+                navigate(".", { replace: true, state: null });
+              }
             }}
           />
         }

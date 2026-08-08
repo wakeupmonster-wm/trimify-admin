@@ -28,10 +28,9 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function PlanBarChart({ data }) {
   if (!data || data.length === 0)
     return (
-      <EmptyState
-        title="No Data"
-        description="No plan performance data found."
-      />
+      <div className="flex items-center justify-center h-full min-h-[200px] w-full text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+        No data available
+      </div>
     );
 
   // Formatting revenue for labels

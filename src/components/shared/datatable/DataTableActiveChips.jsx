@@ -56,7 +56,12 @@ export function DataTableActiveChips({ filterConfig = [], onClearAll }) {
         id: filter.id,
         label: filter.label,
         displayValue: filter.value.preset === "custom" 
-          ? `${filter.value.from} to ${filter.value.to}`
+          ? `${new Date(filter.value.from).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} to ${new Date(filter.value.to).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`
+          : filter.value.preset === "last7" ? "Last 7 Days"
+          : filter.value.preset === "last30" ? "Last 30 Days"
+          : filter.value.preset === "last90" ? "Last 90 Days"
+          : filter.value.preset === "lastYear" ? "Last 12 Months"
+          : filter.value.preset === "allTime" ? "All Time"
           : String(filter.value.preset || "").replace(/_/g, " "),
         onClear: () => filter.onChange(null),
       });
