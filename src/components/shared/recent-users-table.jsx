@@ -234,7 +234,7 @@ export function RecentUsersTable({ recentActivityData }) {
                         }
                         className="even:bg-slate-50/30 hover:bg-slate-50/80 transition-colors cursor-pointer group border-slate-300/60 last:border-0"
                       >
-                        <TableCell className="py-2.5 px-6 text-xs font-semibold text-slate-500">
+                        <TableCell className="py-2.5 px-2 text-left text-xs font-semibold text-slate-500">
                           {idx + 1}
                         </TableCell>
                         {/* User */}

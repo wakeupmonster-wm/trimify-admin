@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -113,13 +114,11 @@ const ManageFitzoneCategoryPage = () => {
               />
             </div>
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                label="Add Session Category"
                 onClick={openAddModal}
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Add Session Category</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -146,7 +145,7 @@ const ManageFitzoneCategoryPage = () => {
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => !deleteLoading && setDeleteTarget(null)}
+        onClose={() => !isDeleting && setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.title}"? This action cannot be undone.`}

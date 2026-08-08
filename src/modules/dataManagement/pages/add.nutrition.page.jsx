@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { addNutrition, updateNutrition } from "../store/nutrition.slice";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddNutritionPage = () => {
   const dispatch = useDispatch();
@@ -35,6 +37,7 @@ const AddNutritionPage = () => {
   const { loading } = useSelector((state) => state.nutrition);
 
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     image: "",
@@ -110,15 +113,23 @@ const AddNutritionPage = () => {
     const newErrors = {};
     if (!formData.title?.trim()) newErrors.title = "Food title is required";
     if (!formData.image?.trim()) newErrors.image = "Image URL is required";
-    if (formData.protein === "" || formData.protein === null) newErrors.protein = "Proteins are required";
-    if (formData.carbs === "" || formData.carbs === null) newErrors.carbs = "Carbs are required";
-    if (formData.calories === "" || formData.calories === null) newErrors.calories = "Calories are required";
-    if (formData.fats === "" || formData.fats === null) newErrors.fats = "Fats are required";
-    if (!formData.description?.trim()) newErrors.description = "Description is required";
+    if (formData.protein === "" || formData.protein === null)
+      newErrors.protein = "Proteins are required";
+    if (formData.carbs === "" || formData.carbs === null)
+      newErrors.carbs = "Carbs are required";
+    if (formData.calories === "" || formData.calories === null)
+      newErrors.calories = "Calories are required";
+    if (formData.fats === "" || formData.fats === null)
+      newErrors.fats = "Fats are required";
+    if (!formData.description?.trim())
+      newErrors.description = "Description is required";
     if (!formData.Meal_Type) newErrors.Meal_Type = "Meal Type is required";
-    if (!formData.meal_description?.trim()) newErrors.meal_description = "Meal Instructions are required";
-    if (!formData.meal_ingredients?.trim()) newErrors.meal_ingredients = "Meal Ingredients are required";
-    if (formData.Meal_Serving === "" || formData.Meal_Serving === null) newErrors.Meal_Serving = "Meal Serving is required";
+    if (!formData.meal_description?.trim())
+      newErrors.meal_description = "Meal Instructions are required";
+    if (!formData.meal_ingredients?.trim())
+      newErrors.meal_ingredients = "Meal Ingredients are required";
+    if (formData.Meal_Serving === "" || formData.Meal_Serving === null)
+      newErrors.Meal_Serving = "Meal Serving is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -126,6 +137,14 @@ const AddNutritionPage = () => {
     }
     setErrors({});
 
+    if (isEdit) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = () => {
     const payloadData = {
       ...formData,
       protein: Number(formData.protein),
@@ -153,6 +172,9 @@ const AddNutritionPage = () => {
           `Failed to ${isEdit ? "update" : "add"} nutrition:`,
           error,
         );
+      })
+      .finally(() => {
+        setIsConfirmModalOpen(false);
       });
   };
 
@@ -175,14 +197,11 @@ const AddNutritionPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -206,7 +225,7 @@ const AddNutritionPage = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Enter Food Title"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.title && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -245,7 +264,7 @@ const AddNutritionPage = () => {
                   value={formData.image}
                   onChange={handleChange}
                   placeholder="Enter Image URL"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.image && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -270,7 +289,7 @@ const AddNutritionPage = () => {
                   value={formData.protein}
                   onChange={handleChange}
                   placeholder="Enter Proteins"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.protein ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.protein ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.protein && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -295,7 +314,7 @@ const AddNutritionPage = () => {
                   value={formData.carbs}
                   onChange={handleChange}
                   placeholder="Enter Carbs"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.carbs ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.carbs ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.carbs && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -320,7 +339,7 @@ const AddNutritionPage = () => {
                   value={formData.calories}
                   onChange={handleChange}
                   placeholder="Enter Calories"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.calories ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.calories ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.calories && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -345,7 +364,7 @@ const AddNutritionPage = () => {
                   value={formData.fats}
                   onChange={handleChange}
                   placeholder="Enter Fats"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.fats ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.fats ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.fats && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -370,7 +389,7 @@ const AddNutritionPage = () => {
                   onChange={handleChange}
                   placeholder="Enter Description"
                   maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.description?.length || 0} / 500
@@ -399,7 +418,10 @@ const AddNutritionPage = () => {
                 <SelectTrigger
                   className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.Meal_Type ? "border-red-500" : "border-slate-300/60"}`}
                 >
-                  <SelectValue placeholder="Select Meal Type" />
+                  <SelectValue
+                    placeholder="Select Meal Type"
+                    className="placeholder:font-normal"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ingredients">Ingredients</SelectItem>
@@ -445,7 +467,8 @@ const AddNutritionPage = () => {
                   onChange={handleChange}
                   placeholder="Enter Meal Instructions"
                   maxLength={1000}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.meal_description ? "border-red-500" : "border-slate-300/60"}`}
+                  rows={10}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.meal_description ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.meal_description?.length || 0} / 1000
@@ -490,7 +513,8 @@ const AddNutritionPage = () => {
                   onChange={handleChange}
                   placeholder="Enter ingredients"
                   maxLength={1000}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.meal_ingredients ? "border-red-500" : "border-slate-300/60"}`}
+                  rows={10}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.meal_ingredients ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.meal_ingredients?.length || 0} / 1000
@@ -518,7 +542,7 @@ const AddNutritionPage = () => {
                 value={formData.Meal_Serving}
                 onChange={handleChange}
                 placeholder="Enter Meal Serving"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.Meal_Serving ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.Meal_Serving ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.Meal_Serving && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -541,7 +565,7 @@ const AddNutritionPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
                 {loading ? (
                   <>
@@ -559,6 +583,17 @@ const AddNutritionPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this nutrition item's details?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

@@ -78,7 +78,7 @@ export const getAiFoodColumns = ({
   {
     id: "sno",
     header: () => (
-      <div className="w-[30px] text-center text-[10px] font-bold uppercase tracking-wider">
+      <div className="w-[30px] text-left text-[10px] font-bold uppercase tracking-wider">
         SR.No
       </div>
     ),
@@ -90,7 +90,7 @@ export const getAiFoodColumns = ({
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
       return (
-        <div className="w-[30px] text-center font-bold text-[11px] text-foreground/90">
+        <div className="w-8 px-1 text-left font-bold text-[11px] text-foreground/90">
           {serialNumber}
         </div>
       );
@@ -141,7 +141,7 @@ export const getAiFoodColumns = ({
   {
     accessorKey: "status",
     header: () => (
-      <div className="w-[110px] text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="w-[110px] px-1 text-[10px] font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),

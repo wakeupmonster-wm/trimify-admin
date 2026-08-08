@@ -147,7 +147,6 @@ export function CalendarDateRangePicker({
         <PopoverTrigger asChild>
           <Button
             id="date"
-            variant={"outline"}
             className={cn(
               "w-full justify-between group text-left shadow-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 border border-slate-300/60 transition-all duration-300 rounded-md px-4 focus-visible:outline-none focus-visible:border-app-primary2 focus-visible:ring-0",
               compact ? "h-8 text-xs px-2 gap-2" : "h-10 text-xs gap-3",
@@ -157,7 +156,7 @@ export function CalendarDateRangePicker({
             <div className="flex items-center gap-2.5">
               <CalendarIcon
                 className={cn(
-                  "text-slate-400 shrink-0",
+                  "text-slate-400 group-hover:text-slate-600 transition-colors shrink-0",
                   compact ? "h-3.5 w-3.5" : "h-4 w-4",
                 )}
               />

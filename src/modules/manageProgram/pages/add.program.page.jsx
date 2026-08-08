@@ -1,4 +1,5 @@
 import { Container } from "@/components/common/container";
+import CTAButton from "@/components/common/CTAButton";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import React, { useState } from "react";
@@ -18,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddProgramPage = () => {
   const navigate = useNavigate();
@@ -26,6 +28,7 @@ const AddProgramPage = () => {
   const editData = location.state?.editData;
   const isEditMode = !!editData;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
@@ -81,7 +84,7 @@ const AddProgramPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -97,6 +100,14 @@ const AddProgramPage = () => {
       return;
     }
 
+    if (isEditMode) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleSaveOrUpdate();
+    }
+  };
+
+  const handleSaveOrUpdate = async () => {
     setIsSubmitting(true);
 
     const durationStr = formData.duration
@@ -129,6 +140,7 @@ const AddProgramPage = () => {
       toast.error(error || "An error occurred");
     } finally {
       setIsSubmitting(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -136,7 +148,7 @@ const AddProgramPage = () => {
     <Container>
       <div className="w-full flex flex-col space-y-6 min-w-0">
         <Header>
-           <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
+          <div className="flex-1 min-w-0 flex flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
               <PageHeader
                 heading={isEditMode ? "Edit Program" : "Add Program"}
@@ -151,14 +163,11 @@ const AddProgramPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -177,7 +186,7 @@ const AddProgramPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.title && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -198,7 +207,7 @@ const AddProgramPage = () => {
                   value={formData.description}
                   onChange={handleChange}
                   maxLength={500}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3 pb-8"
+                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60 resize-none p-3 pb-8"
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.description.length} / 500
@@ -214,13 +223,16 @@ const AddProgramPage = () => {
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                {isEditMode ? "Replace Uploaded Banner Image" : "Upload Banner Image"}
+                {isEditMode
+                  ? "Replace Uploaded Banner Image"
+                  : "Upload Banner Image"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${isDragging
+                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/80 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
+                }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -229,7 +241,7 @@ const AddProgramPage = () => {
                 <input
                   id="banner-upload"
                   type="file"
-                  className="hidden"
+                  className="hidden placeholder:font-normal"
                   accept="image/*"
                   onChange={handleFileSelect}
                 />
@@ -274,8 +286,11 @@ const AddProgramPage = () => {
                 value={formData.duration}
                 onValueChange={handleDurationChange}
               >
-                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60">
-                  <SelectValue placeholder="Select..." />
+                <SelectTrigger className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-normal border-slate-300/60">
+                  <SelectValue
+                    placeholder="Select..."
+                    className="placeholder:font-normal"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="4 Weeks">4 Weeks</SelectItem>
@@ -303,7 +318,7 @@ const AddProgramPage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="w-full sm:w-auto text-white rounded-md px-4 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -321,6 +336,17 @@ const AddProgramPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleSaveOrUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this program's details?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting}
+      />
     </Container>
   );
 };

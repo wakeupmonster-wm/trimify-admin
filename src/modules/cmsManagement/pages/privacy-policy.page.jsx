@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { htmlContent } from "@/constants/htmlContent";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCmsPages, updateCmsContent } from "../store/cms.management.slice";
+import CTAButton from "@/components/common/CTAButton";
 
 export default function PrivacyAndPolicyPage() {
   const dispatch = useDispatch();
@@ -92,18 +93,16 @@ export default function PrivacyAndPolicyPage() {
               />
             </div>
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Eye}
+                label="Preview"
                 onClick={handleViewPreview}
-                className="w-full sm:w-auto flex-1 sm:flex-none h-10 px-4 group shadow-sm bg-white text-slate-500 border border-slate-300/60 transition-all duration-300 font-semibold text-xs uppercase tracking-wider rounded-md hover:bg-slate-50 hover:text-slate-600 flex items-center justify-center gap-2"
-              >
-                <Eye className="h-4 w-4 text-slate-400 transition-colors duration-300 shrink-0" />
-                <span className="whitespace-nowrap">Preview</span>
-              </Button>
-
+              />
               <Button
+                variant="outline"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary3 text-white font-semibold text-sm sm:text-xs gap-2 h-10 px-4 shadow-sm rounded-md transition-all border-none flex items-center justify-center"
+                className="w-full sm:w-auto flex-1 sm:flex-none bg-app-primary2 hover:bg-app-primary3 text-white hover:text-white font-semibold text-sm sm:text-xs gap-2 h-10 px-4 shadow-sm rounded-md transition-all border-none flex items-center justify-center"
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 mr-1 animate-spin shrink-0" />

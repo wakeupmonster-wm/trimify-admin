@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -15,6 +16,7 @@ import {
   addFitzoneIntro,
 } from "../store/fitzone.intro.slice";
 import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const EditFitzoneIntroPage = () => {
   const { id } = useParams();
@@ -24,6 +26,7 @@ const EditFitzoneIntroPage = () => {
   const [heading, setHeading] = useState("");
   const [subheading, setSubheading] = useState("");
   const [content, setContent] = useState("");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { intro, loading } = useSelector((state) => state.fitzoneIntro);
 
@@ -41,7 +44,11 @@ const EditFitzoneIntroPage = () => {
     }
   }, [intro]);
 
-  const handleUpdate = async () => {
+  const handleUpdate = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
     try {
       const payload = {
         fitzone_id: id,
@@ -78,6 +85,8 @@ const EditFitzoneIntroPage = () => {
       }
     } catch (error) {
       toast.error("An error occurred while saving the introduction.");
+    } finally {
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -97,14 +106,11 @@ const EditFitzoneIntroPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -121,7 +127,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Begin Your Path to Better Health"
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
               />
             </div>
             <div className="space-y-1.5">
@@ -133,7 +139,7 @@ const EditFitzoneIntroPage = () => {
                 placeholder="Embrace a healthier lifestyle with our tailored fitness programs"
                 value={subheading}
                 onChange={(e) => setSubheading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium"
+                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
               />
             </div>
 
@@ -163,7 +169,7 @@ const EditFitzoneIntroPage = () => {
               <Button
                 onClick={handleUpdate}
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
                 <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
                 {loading ? "Updating..." : "Update"}
@@ -172,6 +178,17 @@ const EditFitzoneIntroPage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this introduction?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

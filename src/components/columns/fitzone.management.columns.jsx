@@ -62,7 +62,7 @@ export const getFitzoneManagementColumns = (onAction) => [
         <Button
           variant="outline"
           onClick={() => onAction && onAction(row.original, "open-program")}
-          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 border-app-primary2/30 hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
+          className="h-8 px-3.5 text-[11px] font-semibold text-app-primary2 hover:border-none hover:bg-app-primary2 hover:text-white transition-all rounded-sm shadow-sm"
         >
           Open Fitzone
         </Button>
@@ -139,7 +139,7 @@ export const getFitzoneManagementColumns = (onAction) => [
             onCheckedChange={(checked) =>
               onAction && onAction(row.original, "toggle-status", checked)
             }
-            className="data-[state=checked]:bg-app-primary2"
+            className="data-[state=checked]:bg-app-cardGreen"
           />
         </div>
       );

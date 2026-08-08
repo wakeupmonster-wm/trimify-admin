@@ -143,7 +143,7 @@ export const getManageFoodItemsColumns = (handleAction) => [
             onCheckedChange={(val) =>
               handleAction && handleAction(row.original, "toggle", val)
             }
-            className="data-[state=checked]:bg-app-primary2"
+            className="data-[state=checked]:bg-app-cardGreen"
           />
         </div>
       );

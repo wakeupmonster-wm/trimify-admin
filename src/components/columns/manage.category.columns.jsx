@@ -82,7 +82,7 @@ export const getManageCategoryColumns = (onAction) => [
             onCheckedChange={(checked) =>
               onAction && onAction(row.original, "toggle-status", checked)
             }
-            className="data-[state=checked]:bg-app-primary2"
+            className="data-[state=checked]:bg-app-cardGreen"
           />
         </div>
       );

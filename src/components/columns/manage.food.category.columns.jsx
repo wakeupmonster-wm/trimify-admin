@@ -123,10 +123,11 @@ export const getManageFoodCategoryColumns = (handleAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         <Button
+          variant="outline"
           onClick={() =>
             handleAction && handleAction(row.original, "manage-food")
           }
-          className="bg-white hover:bg-app-primary2 text-app-primary2 hover:text-white border border-app-primary2 h-7 px-4 text-[10px] font-medium rounded shadow-sm"
+          className="bg-white hover:bg-app-primary2 text-app-primary2 hover:text-white border hover:border-none h-7 px-4 text-[10px] font-medium rounded shadow-sm"
         >
           Manage Food
         </Button>

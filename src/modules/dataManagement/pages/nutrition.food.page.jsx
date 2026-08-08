@@ -11,6 +11,7 @@ import { getNutritionFoodColumns } from "@/components/columns/nutrition.food.col
 import { fetchNutritionList } from "../store/nutrition.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
+import CTAButton from "@/components/common/CTAButton";
 
 const NutritionFoodPage = () => {
   const dispatch = useDispatch();
@@ -84,23 +85,18 @@ const NutritionFoodPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                label="Add Food"
                 onClick={() => navigate("/admin/data-management/add-nutrition")}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-3.5 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Add Food</span>
-              </Button>
-              <Button
-                variant="outline"
+              />
+              <CTAButton
+                icon={UploadCloud}
+                label="Upload Food"
                 onClick={() =>
                   navigate("/admin/data-management/ai-food-upload")
                 }
-                className="flex-1 h-10 border-slate-300/60 bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white hover:border-app-primary2 text-xs font-medium transition-all active:scale-95 px-3.5 flex items-center justify-center gap-1.5"
-              >
-                <UploadCloud className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Upload Food</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>

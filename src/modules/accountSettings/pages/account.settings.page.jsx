@@ -306,9 +306,10 @@ const AccountSettingsPage = () => {
                     Clear
                   </Button>
                   <Button
+                    variant="outline"
                     onClick={handlePasswordSubmit}
                     disabled={loading}
-                    className="bg-app-primary2 hover:bg-app-primary3 text-white font-semibold px-5 h-10 text-[11px] 3xl:text-xs rounded-md transition-all active:scale-[0.99]"
+                    className="bg-app-primary2 hover:bg-app-primary3 text-white hover:text-white border-none font-semibold px-5 h-10 text-[11px] 3xl:text-xs rounded-md transition-all active:scale-[0.99]"
                   >
                     {loading ? (
                       <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
@@ -383,9 +384,10 @@ const AccountSettingsPage = () => {
                   </Button>
 
                   <Button
+                    variant="outline"
                     onClick={showOtpField ? handleOtpSubmit : handleEmailSubmit}
                     disabled={loading}
-                    className="bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold transition-all active:scale-[0.99]"
+                    className="bg-app-primary2 hover:bg-app-primary3 text-white border-none hover:text-white rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold transition-all active:scale-[0.99]"
                   >
                     {loading ? (
                       <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />

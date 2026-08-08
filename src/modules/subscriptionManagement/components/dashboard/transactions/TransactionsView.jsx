@@ -192,7 +192,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         value: `$${Number(kpiSummary.grossRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
         icon: DollarSign,
         color: "blue",
-        description: "Tap to clear filters",
+        description: "Total gross revenue",
         onClick: () => {
           setStatusFilter("");
           setPlanFilter("");
@@ -205,7 +205,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         value: kpiSummary.totalTransactions || 0,
         icon: Receipt,
         color: "emerald",
-        description: "Tap to clear filters",
+        description: "All transactions",
         onClick: () => {
           setStatusFilter("");
           setPlanFilter("");
@@ -229,7 +229,9 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
       txn?.user_id || txn?.userId || txn?.user?.id || txn?.user?.user_id;
     if (!userId) {
       console.warn("Transaction is missing a linkable user id:", txn);
-      toast.error("Couldn't open this user's profile — no user ID on this transaction.");
+      toast.error(
+        "Couldn't open this user's profile — no user ID on this transaction.",
+      );
       return;
     }
     navigate(`/admin/users/view-user/${userId}`, {

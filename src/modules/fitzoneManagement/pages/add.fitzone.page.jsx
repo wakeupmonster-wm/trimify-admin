@@ -1,4 +1,5 @@
 import { Container } from "@/components/common/container";
+import CTAButton from "@/components/common/CTAButton";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Save, UploadCloud, Activity, Loader2, ArrowLeft } from "lucide-react";
@@ -12,6 +13,7 @@ import { addFitzone, updateFitzone } from "../store/fitzone.slice";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddFitzonePage = () => {
   const navigate = useNavigate();
@@ -32,6 +34,7 @@ const AddFitzonePage = () => {
   const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +74,7 @@ const AddFitzonePage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Title is required";
@@ -89,6 +92,14 @@ const AddFitzonePage = () => {
       return;
     }
 
+    if (isEditMode) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
     setIsSubmitting(true);
 
     const payload = new FormData();
@@ -115,6 +126,7 @@ const AddFitzonePage = () => {
       toast.error(error || "An error occurred");
     } finally {
       setIsSubmitting(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -137,14 +149,11 @@ const AddFitzonePage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -166,7 +175,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Title"
                     value={formData.title}
                     onChange={handleChange}
-                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
                   />
                   {errors.title && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -184,7 +193,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Workout Heading"
                     value={formData.workoutHeading}
                     onChange={handleChange}
-                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.workoutHeading ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.workoutHeading ? "border-red-500" : "border-slate-300/60"}`}
                   />
                   {errors.workoutHeading && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -204,7 +213,7 @@ const AddFitzonePage = () => {
                   placeholder="Enter Workout Description"
                   value={formData.workoutDescription}
                   onChange={handleChange}
-                  className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium ${errors.workoutDescription ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.workoutDescription ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 {errors.workoutDescription && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -225,7 +234,7 @@ const AddFitzonePage = () => {
                     value={formData.description}
                     onChange={handleChange}
                     maxLength={500}
-                    className={`w-full min-h-[120px] p-4 pb-8 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors font-medium resize-none ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                    className={`w-full min-h-[120px] p-4 pb-8 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-none ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
                   />
                   <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                     {formData.description.length} / 500
@@ -321,7 +330,7 @@ const AddFitzonePage = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
                 {isSubmitting ? (
                   <>
@@ -339,6 +348,17 @@ const AddFitzonePage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this fitzone's details?"
+        confirmText="Update"
+        type="brand"
+        loading={isSubmitting}
+      />
     </Container>
   );
 };

@@ -1,4 +1,5 @@
 import { Container } from "@/components/common/container";
+import CTAButton from "@/components/common/CTAButton";
 import React, { useState, useEffect } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -20,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
 import { TbCategoryPlus } from "react-icons/tb";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddCategoryPage = () => {
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ const AddCategoryPage = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -90,7 +93,7 @@ const AddCategoryPage = () => {
     setFormData((prev) => ({ ...prev, status: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const newErrors = {};
     if (!formData.title.trim()) newErrors.title = "Category Title is required";
@@ -107,6 +110,15 @@ const AddCategoryPage = () => {
       return;
     }
     setErrors({});
+
+    if (isEdit) {
+      setIsConfirmModalOpen(true);
+    } else {
+      handleConfirmUpdate();
+    }
+  };
+
+  const handleConfirmUpdate = async () => {
     setLoading(true);
     try {
       const payload = new FormData();
@@ -134,6 +146,7 @@ const AddCategoryPage = () => {
       toast.error(error || "An error occurred while saving the category");
     } finally {
       setLoading(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -158,14 +171,11 @@ const AddCategoryPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -186,7 +196,7 @@ const AddCategoryPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
               />
               {errors.title && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -207,7 +217,7 @@ const AddCategoryPage = () => {
                   value={formData.description}
                   onChange={handleChange}
                   maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.description.length} / 500
@@ -314,7 +324,10 @@ const AddCategoryPage = () => {
                 <SelectTrigger
                   className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.status ? "border-red-500" : "border-slate-300/60"}`}
                 >
-                  <SelectValue placeholder="Select..." />
+                  <SelectValue
+                    placeholder="Select..."
+                    className="placeholder:font-normal"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Active">Active</SelectItem>
@@ -341,7 +354,7 @@ const AddCategoryPage = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm transition-all"
+                className="w-full sm:w-auto text-white rounded-md px-5 h-10 text-xs 3xl:text-sm font-semibold flex items-center justify-center gap-2 transition-all"
               >
                 {loading ? (
                   <>
@@ -376,6 +389,17 @@ const AddCategoryPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmUpdate}
+        title="Confirm Update"
+        message="Are you sure you want to update this category's details?"
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

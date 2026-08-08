@@ -15,7 +15,7 @@ export const getCmsManagementColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[10px] 3xl:text-xs font-bold text-foreground">
+      <div className="w-8 text-left text-[10px] 3xl:text-xs font-bold text-foreground">
         SR.No
       </div>
     ),
@@ -26,7 +26,7 @@ export const getCmsManagementColumns = (onAction) => [
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-14 text-left font-medium text-[10px] 3xl:text-xs text-slate-700">
+        <div className="w-9 px-1 text-left font-medium text-[10px] 3xl:text-xs text-slate-700">
           {serialNumber}
         </div>
       );
@@ -103,7 +103,7 @@ export const getCmsManagementColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-center text-[10px] 3xl:text-xs font-bold text-foreground">
+      <div className="text-left px-1 text-[10px] 3xl:text-xs font-bold text-foreground">
         Status
       </div>
     ),

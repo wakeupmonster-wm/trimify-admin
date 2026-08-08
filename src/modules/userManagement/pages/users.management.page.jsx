@@ -127,7 +127,7 @@ const UsersManagementPage = () => {
       icon: LuUsersRound,
       label: "Total Users",
       value: localKpis?.totalUsers?.toLocaleString() || "0",
-      description: "Tap to view all",
+      description: "All registered users",
       onClick: () => {
         setStatusFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
@@ -138,7 +138,7 @@ const UsersManagementPage = () => {
       icon: LuUserRoundCheck,
       label: "Active Users",
       value: localKpis?.activeUsers?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently active users",
       tone: "emerald",
       onClick: () => {
         setStatusFilter("Active");
@@ -150,7 +150,7 @@ const UsersManagementPage = () => {
       icon: LuUserRoundX,
       label: "Inactive Users",
       value: localKpis?.inactiveUsers?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently inactive users",
       tone: "rose",
       onClick: () => {
         setStatusFilter("Inactive");
@@ -162,7 +162,7 @@ const UsersManagementPage = () => {
       icon: LuUserRoundPlus,
       label: "New Signups",
       value: localKpis?.newSignupsToday?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Signups from today",
       tone: "violet",
       onClick: () => {
         setStatusFilter("new_today");

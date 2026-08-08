@@ -29,15 +29,20 @@ import {
 import { getManageFoodItemsColumns } from "@/components/columns/manage.food.items.columns";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { IoFastFoodOutline } from "react-icons/io5";
+import CTAButton from "@/components/common/CTAButton";
 
 const ManageFoodItemsPage = () => {
   const { programId, categoryId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { foods, foodsPagination, dropdownCategories, foodSearchResults, loading } = useSelector(
-    (state) => state.manageFood,
-  );
+  const {
+    foods,
+    foodsPagination,
+    dropdownCategories,
+    foodSearchResults,
+    loading,
+  } = useSelector((state) => state.manageFood);
 
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -72,7 +77,9 @@ const ManageFoodItemsPage = () => {
   if (categoryId !== prevCategoryId) {
     setPrevCategoryId(categoryId);
     setFormData((prev) => ({ ...prev, category_id: categoryId || "" }));
-    setPagination((prev) => (prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 }));
+    setPagination((prev) =>
+      prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 },
+    );
   }
 
   const standardUnits = [
@@ -102,11 +109,20 @@ const ManageFoodItemsPage = () => {
         getFoodList({
           programId,
           categoryId,
-          params: { page: pagination.pageIndex + 1, limit: pagination.pageSize },
+          params: {
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+          },
         }),
       );
     }
-  }, [dispatch, programId, categoryId, pagination.pageIndex, pagination.pageSize]);
+  }, [
+    dispatch,
+    programId,
+    categoryId,
+    pagination.pageIndex,
+    pagination.pageSize,
+  ]);
 
   const resetForm = () => {
     setIsEditing(false);
@@ -308,19 +324,19 @@ const ManageFoodItemsPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
-                type="button"
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
                 onClick={() => navigate(-1)}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-2.5 h-10 flex items-center justify-center gap-1 text-xs font-semibold shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Back</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
 
-        <form onSubmit={(e) => handleAddOrUpdateFood(e)} className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full">
+        <form
+          onSubmit={(e) => handleAddOrUpdateFood(e)}
+          className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden mx-auto w-full"
+        >
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-5">
             {/* Approval Status */}
             <div className="space-y-1.5 pb-2">
@@ -394,7 +410,8 @@ const ManageFoodItemsPage = () => {
                     if (
                       !isEditing &&
                       formData.title.trim().length >= 2 &&
-                      foodSearchResults && foodSearchResults.length > 0
+                      foodSearchResults &&
+                      foodSearchResults.length > 0
                     ) {
                       setShowSuggestions(true);
                     }
@@ -429,7 +446,8 @@ const ManageFoodItemsPage = () => {
                                   formData.title,
                                 food_id: item.id,
                                 category_id:
-                                  item.category_id?.toString() || formData.category_id,
+                                  item.category_id?.toString() ||
+                                  formData.category_id,
                                 quantity: item.quantity || formData.quantity,
                                 unit: item.unit || formData.unit,
                                 type: item.type || formData.type,

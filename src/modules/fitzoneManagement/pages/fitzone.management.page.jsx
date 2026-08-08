@@ -1,4 +1,5 @@
 import { Container } from "@/components/common/container";
+import CTAButton from "@/components/common/CTAButton";
 import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { Dumbbell, Plus, CheckCircle2, XCircle, ListVideo } from "lucide-react";
@@ -196,7 +197,7 @@ const FitzoneManagementPage = () => {
       icon: Dumbbell,
       label: "Total Fitzones",
       value: localKpis?.totalFitzones?.toLocaleString() || "0",
-      description: "Tap to view all",
+      description: "All fitzones",
       onClick: () => setStatusFilter(""),
       isSelected: statusFilter === "",
     },
@@ -204,7 +205,7 @@ const FitzoneManagementPage = () => {
       icon: CheckCircle2,
       label: "Active Fitzones",
       value: localKpis?.activeFitzones?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently active fitzones",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
       isSelected: statusFilter === "Active",
@@ -213,7 +214,7 @@ const FitzoneManagementPage = () => {
       icon: XCircle,
       label: "Inactive Fitzones",
       value: localKpis?.inactiveFitzones?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently inactive fitzones",
       tone: "rose",
       onClick: () => setStatusFilter("Inactive"),
       isSelected: statusFilter === "Inactive",
@@ -241,13 +242,11 @@ const FitzoneManagementPage = () => {
               />
             </div>
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                label="Create Fitzone"
                 onClick={() => navigate("add-fitzone")}
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Create Fitzone</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -289,7 +288,7 @@ const FitzoneManagementPage = () => {
       <ConfirmModal
         isOpen={deleteModal.open}
         onClose={() =>
-          !deleteLoading && setDeleteModal({ open: false, rowData: null })
+          !isDeleting && setDeleteModal({ open: false, rowData: null })
         }
         onConfirm={handleConfirmDelete}
         title="Confirm Deletion"
@@ -299,7 +298,7 @@ const FitzoneManagementPage = () => {
       <ConfirmModal
         isOpen={toggleModal.open}
         onClose={() =>
-          !toggleLoading &&
+          !isUpdating &&
           setToggleModal({ open: false, rowData: null, targetStatus: false })
         }
         onConfirm={handleConfirmToggle}

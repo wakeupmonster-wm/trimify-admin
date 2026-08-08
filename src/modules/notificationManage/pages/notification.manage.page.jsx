@@ -200,13 +200,13 @@ const NotificationManagePage = () => {
               {/* LEFT: MESSAGE DETAILS */}
               <div className="lg:col-span-7">
                 <div className="border border-slate-300/60 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <div className="px-4 sm:px-6 py-4 md:py-5 border-b border-slate-300/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="px-4 sm:px-6 py-4 md:py-5 border-b border-slate-300/60">
                     <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                       Campaign Details
                     </h2>
-                    <span className="text-xs sm:text-sm font-medium text-slate-400">
+                    <p className="text-[13px] font-medium text-slate-400 mt-1">
                       Configure and dispatch engagement notifications
-                    </span>
+                    </p>
                   </div>
 
                   <div className="px-4 sm:px-6 py-6 space-y-6">

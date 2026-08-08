@@ -53,7 +53,10 @@ const KPI_CONFIG = [
     isPositive: false,
     format: (data) => data?.missedStepGoals?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_step_goals", dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/users", {
+        state: { filterId: "missed_step_goals", dateRange },
+      }),
   },
   {
     key: "missedDietLogs",
@@ -64,7 +67,10 @@ const KPI_CONFIG = [
     isPositive: false,
     format: (data) => data?.missedDietLogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_diet_logs", dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/users", {
+        state: { filterId: "missed_diet_logs", dateRange },
+      }),
   },
   {
     key: "missedWaterLogs",
@@ -75,7 +81,10 @@ const KPI_CONFIG = [
     isPositive: false,
     format: (data) => data?.missedWaterLogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/users", { state: { filterId: "missed_water_logs", dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/users", {
+        state: { filterId: "missed_water_logs", dateRange },
+      }),
   },
   {
     key: "totalPrograms",
@@ -86,7 +95,8 @@ const KPI_CONFIG = [
     isPositive: true,
     format: (data) => data?.totalPrograms?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/manage-program", { state: { dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/manage-program", { state: { dateRange } }),
   },
 
   {
@@ -98,7 +108,8 @@ const KPI_CONFIG = [
     isPositive: true,
     format: (data) => data?.totalBlogs?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/blog-section", { state: { dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/blog-section", { state: { dateRange } }),
   },
   {
     key: "totalFitzoneSessions",
@@ -109,7 +120,8 @@ const KPI_CONFIG = [
     isPositive: true,
     format: (data) => data?.totalFitzoneSessions?.toLocaleString() || "0",
     isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/fitzone-management", { state: { dateRange } }),
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/fitzone-management", { state: { dateRange } }),
   },
   {
     key: "expiringSoon",
@@ -170,50 +182,50 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
                 : (100 + trendPct) / 100;
               const previous = rawVal * multiplier;
 
-            return (
-              <KpiCard
-                key={idx}
-                label={kpi.label}
-                value={kpi.value}
-                description={kpi.sub}
-                tone={kpi.color}
-                trendValue={kpi.trend}
-                isPositive={kpi.isPositive}
-                tooltipData={{
-                  current: rawVal,
-                  previous,
-                  isCurrency,
-                }}
-                onClick={() => {
-                  if (config?.onClick) config.onClick(navigate, dateRange);
-                }}
-              />
-            );
-          })
+              return (
+                <KpiCard
+                  key={idx}
+                  label={kpi.label}
+                  value={kpi.value}
+                  description={kpi.sub}
+                  tone={kpi.color}
+                  trendValue={kpi.trend}
+                  isPositive={kpi.isPositive}
+                  tooltipData={{
+                    current: rawVal,
+                    previous,
+                    isCurrency,
+                  }}
+                  onClick={() => {
+                    if (config?.onClick) config.onClick(navigate, dateRange);
+                  }}
+                />
+              );
+            })
           : KPI_CONFIG.map((kpi) => {
-            const val = data[kpi.key] || 0;
-            const trendObj = data.trends?.[kpi.key];
-            const trendStr = trendObj?.trend;
+              const val = data[kpi.key] || 0;
+              const trendObj = data.trends?.[kpi.key];
+              const trendStr = trendObj?.trend;
 
-            const dynamicDescription = contextLabel
-              ? contextLabel.replace(/^vs\s+/i, "Compared to ")
-              : kpi.description;
+              const dynamicDescription = contextLabel
+                ? contextLabel.replace(/^vs\s+/i, "Compared to ")
+                : kpi.description;
 
-            return (
-              <KpiCard
-                key={kpi.key}
-                label={kpi.label}
-                value={kpi.format(data)}
-                description={dynamicDescription}
-                tone={kpi.tone}
-                trendValue={trendStr}
-                isPositive={kpi.isPositive}
-                trendExplanation={kpi.trendExplanation}
-                tooltipData={trendObj || null}
-                onClick={() => kpi.onClick(navigate, dateRange)}
-              />
-            );
-          })}
+              return (
+                <KpiCard
+                  key={kpi.key}
+                  label={kpi.label}
+                  value={kpi.format(data)}
+                  description={dynamicDescription}
+                  tone={kpi.tone}
+                  trendValue={trendStr}
+                  isPositive={kpi.isPositive}
+                  trendExplanation={kpi.trendExplanation}
+                  tooltipData={trendObj || null}
+                  onClick={() => kpi.onClick(navigate, dateRange)}
+                />
+              );
+            })}
       </div>
     </div>
   );

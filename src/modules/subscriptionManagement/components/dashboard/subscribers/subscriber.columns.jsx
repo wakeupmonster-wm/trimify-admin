@@ -75,7 +75,7 @@ export const getSubscriberColumns = (onAction) => [
   {
     accessorKey: "email",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Email
       </div>
     ),
@@ -98,7 +98,7 @@ export const getSubscriberColumns = (onAction) => [
   {
     accessorKey: "plan_title",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Plan
       </div>
     ),
@@ -125,7 +125,7 @@ export const getSubscriberColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+      <div className="text-[10px] px-1 font-bold uppercase tracking-wider text-left">
         Status
       </div>
     ),

@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
+import CTAButton from "@/components/common/CTAButton";
 
 const ManageProgramPage = () => {
   const navigate = useNavigate();
@@ -69,9 +70,15 @@ const ManageProgramPage = () => {
           search: debouncedSearchTerm,
           duration: durationFilter,
           status: statusFilter,
-          ...(dateRangeFromDashboard?.preset ? { preset: dateRangeFromDashboard.preset } : {}),
-          ...(dateRangeFromDashboard?.from ? { from: dateRangeFromDashboard.from } : {}),
-          ...(dateRangeFromDashboard?.to ? { to: dateRangeFromDashboard.to } : {}),
+          ...(dateRangeFromDashboard?.preset
+            ? { preset: dateRangeFromDashboard.preset }
+            : {}),
+          ...(dateRangeFromDashboard?.from
+            ? { from: dateRangeFromDashboard.from }
+            : {}),
+          ...(dateRangeFromDashboard?.to
+            ? { to: dateRangeFromDashboard.to }
+            : {}),
         }),
       );
       const total = result?.payload?.pagination?.total;
@@ -221,7 +228,10 @@ const ManageProgramPage = () => {
       value: dateRangeFromDashboard,
       onChange: () => {
         // Clear navigation state by replacing it without dateRange
-        navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+        navigate(".", {
+          replace: true,
+          state: { ...location.state, dateRange: null },
+        });
       },
     },
   ];
@@ -237,11 +247,6 @@ const ManageProgramPage = () => {
         pinnedTotalPrograms ?? serverPagination?.total ?? all.length,
       activePrograms: active,
       inactivePrograms: all.length - active,
-      // The list API doesn't return a per-program `assigned_users_count`,
-      // and there's no cross-program aggregate endpoint yet (see the
-      // Backend TODO in program.slice.js) — so there's no real number to
-      // fall back to here. Leave it null so ModuleKpiRow shows "—"
-      // instead of a fake 0 until the backend ships `kpis.totalAssignedUsers`.
       totalAssignedUsers: null,
     };
   }, [kpis, programs, serverPagination, pinnedTotalPrograms]);
@@ -251,7 +256,7 @@ const ManageProgramPage = () => {
       icon: ClipboardCheck,
       label: "Total Programs",
       value: localKpis?.totalPrograms?.toLocaleString() || "0",
-      description: "Tap to view all",
+      description: "All programs",
       onClick: () => setStatusFilter(""),
       isSelected: statusFilter === "",
     },
@@ -259,7 +264,7 @@ const ManageProgramPage = () => {
       icon: CheckCircle2,
       label: "Active Programs",
       value: localKpis?.activePrograms?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently active programs",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
       isSelected: statusFilter === "Active",
@@ -268,7 +273,7 @@ const ManageProgramPage = () => {
       icon: XCircle,
       label: "Inactive Programs",
       value: localKpis?.inactivePrograms?.toLocaleString() || "0",
-      description: "Tap to filter",
+      description: "Currently inactive programs",
       tone: "rose",
       onClick: () => setStatusFilter("Inactive"),
       isSelected: statusFilter === "Inactive",
@@ -302,13 +307,11 @@ const ManageProgramPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
-              <Button
+              <CTAButton
+                icon={Plus}
+                label="Create Program"
                 onClick={() => navigate("add-program")}
-                className="flex-1 bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-              >
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="whitespace-nowrap">Create Program</span>
-              </Button>
+              />
             </div>
           </div>
         </Header>
@@ -339,7 +342,10 @@ const ManageProgramPage = () => {
                   setDurationFilter("");
                   setStatusFilter("");
                   if (dateRangeFromDashboard) {
-                    navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+                    navigate(".", {
+                      replace: true,
+                      state: { ...location.state, dateRange: null },
+                    });
                   }
                 }}
               />
