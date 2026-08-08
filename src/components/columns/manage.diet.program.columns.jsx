@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { minLength, minSize } from "zod";
 
 const DAYS_OF_WEEK = [
   "Sunday",
@@ -28,6 +29,7 @@ export const getManageDietProgramColumns = (handleAction) => [
       </div>
     ),
     size: 60,
+    minSize: 50,
     cell: ({ row }) => (
       <div className="text-left px-1 font-bold text-[11px] text-foreground/90">
         {row.index + 1}
@@ -41,7 +43,8 @@ export const getManageDietProgramColumns = (handleAction) => [
         Create Date
       </div>
     ),
-    size: 130,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => {
       const date =
         row.original.created_at || row.original.updated_at
@@ -65,9 +68,10 @@ export const getManageDietProgramColumns = (handleAction) => [
         Food
       </div>
     ),
-    size: 160,
+    size: 200,
+    minSize: 140,
     cell: ({ row }) => (
-      <span className="font-semibold text-slate-700 text-[11px] tracking-tight">
+      <span className="font-semibold text-slate-700 text-[11px] tracking-tight line-clamp-1">
         {row.original.diet_meal_data?.Meal_title || "-"}
       </span>
     ),
@@ -80,6 +84,7 @@ export const getManageDietProgramColumns = (handleAction) => [
       </div>
     ),
     size: 100,
+    minSize: 60,
     cell: ({ row }) => {
       const hasImage = !!row.original.diet_meal_data?.Meal_Image_url;
       return (
@@ -96,7 +101,8 @@ export const getManageDietProgramColumns = (handleAction) => [
         Week
       </div>
     ),
-    size: 90,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
         Week {row.original.week || "-"}
@@ -111,6 +117,7 @@ export const getManageDietProgramColumns = (handleAction) => [
       </div>
     ),
     size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
         {row.original.meal || "-"}
@@ -125,6 +132,7 @@ export const getManageDietProgramColumns = (handleAction) => [
       </div>
     ),
     size: 100,
+    minSize: 80,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
         {row.original.day || "-"}
@@ -138,7 +146,8 @@ export const getManageDietProgramColumns = (handleAction) => [
         Status
       </div>
     ),
-    size: 80,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => {
       const isActive =
         row.original.status === "Active" ||
@@ -164,7 +173,8 @@ export const getManageDietProgramColumns = (handleAction) => [
         Action
       </div>
     ),
-    size: 80,
+    size: 100,
+    minSize: 80,
     cell: ({ row }) => {
       return (
         <div className="flex justify-center items-center">

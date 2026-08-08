@@ -72,7 +72,9 @@ const ManageProgramPage = () => {
           search: debouncedSearchTerm,
           duration: durationFilter,
           status: statusFilter,
-          ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+          ...(dateRangeFilter?.preset
+            ? { preset: dateRangeFilter.preset }
+            : {}),
           ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
           ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
         }),
@@ -227,7 +229,10 @@ const ManageProgramPage = () => {
         setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
         if (location.state?.dateRange) {
-          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+          navigate(".", {
+            replace: true,
+            state: { ...location.state, dateRange: null },
+          });
         }
       },
     },
