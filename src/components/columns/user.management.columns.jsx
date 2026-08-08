@@ -108,14 +108,23 @@ export const getUserManagementColumns = (onAction) => [
     cell: ({ row }) => {
       const plan = row.original?.plan?.title;
       const isNoPlan = !plan || plan === "No-Active Plan";
+      const planLower = plan?.toLowerCase() || "";
+
+      let colorClass = "bg-emerald-500/10 text-emerald-600";
+      if (isNoPlan) {
+        colorClass = "bg-slate-500/10 text-slate-600";
+      } else if (planLower.includes("premium")) {
+        colorClass = "bg-amber-50 text-amber-600";
+      } else if (planLower.includes("basic") || planLower.includes("starter")) {
+        colorClass = "bg-slate-100 text-slate-800";
+      }
+
       return (
         <Badge
           variant="outline"
           className={cn(
             "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
-            isNoPlan
-              ? "bg-slate-500/10 text-slate-600"
-              : "bg-emerald-500/10 text-emerald-600",
+            colorClass,
           )}
         >
           <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
