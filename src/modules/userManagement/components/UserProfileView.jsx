@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import {
   Trash2,
   Loader2,
-  Calendar,
-  History,
   ChevronLeft,
   LayoutDashboard,
   HeartPulse,
@@ -123,9 +121,6 @@ function bmiCategory(bmi) {
 /* =========================================================================
    Small UI primitives
 ========================================================================= */
-
-
-
 const TABS = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "health", label: "Health & Goals", icon: HeartPulse },

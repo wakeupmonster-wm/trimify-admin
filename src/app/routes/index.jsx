@@ -662,16 +662,6 @@ export const router = createBrowserRouter([
         ],
       },
 
-      /*====================== Transaction Management Module ======================*/
-      // {
-      //   path: "transaction-management",
-      //   element: (
-      //     <Suspense fallback={<PreLoader />}>
-      //       <TransactionManagementPage />
-      //     </Suspense>
-      //   ),
-      // },
-
       /*====================== CMS Management Module ======================*/
       {
         path: "cms-management",
@@ -727,16 +717,6 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PreLoader />}>
             <FaqManagementPage />
-          </Suspense>
-        ),
-      },
-
-      /*====================== Account Settings Module ======================*/
-      {
-        path: "account-settings",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <AccountSettingsPage />
           </Suspense>
         ),
       },

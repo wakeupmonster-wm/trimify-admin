@@ -30,7 +30,17 @@ export function Tag({ children }) {
   );
 }
 
-export function Card({ title, subtitle, right, children, className, icon: Icon, iconColor, iconBg, tooltipText }) {
+export function Card({
+  title,
+  subtitle,
+  right,
+  children,
+  className,
+  icon: Icon,
+  iconColor,
+  iconBg,
+  tooltipText,
+}) {
   return (
     <div
       className={cn(
@@ -62,51 +72,55 @@ export function KV({ icon: Icon, label, value, noBorder }) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-2.5 py-2",
+        "flex items-center justify-between py-2.5 group",
         !noBorder && "border-b border-slate-50 last:border-b-0 last:pb-0",
       )}
     >
-      <span className="flex items-center gap-2 text-[12px] font-medium text-slate-500">
-        {Icon && <Icon className="h-4 w-4" />}
-        {label}
-      </span>
-      <span className="max-w-[60%] break-words text-right text-[11.5px] font-semibold text-slate-900">
+      <div className="flex items-center gap-4">
+        <div className="p-1.5 bg-slate-100/50 rounded-lg text-slate-400 group-hover:text-slate-600 transition-colors">
+          {Icon && <Icon className="h-4 w-4" />}
+        </div>
+        <p className="text-[13px] font-semibold text-slate-600">{label}</p>
+      </div>
+      <div className="text-[13px] font-bold text-slate-600 max-w-[60%] break-words text-right">
         {value}
-      </span>
+      </div>
     </div>
   );
 }
 
 export function Kpi({ icon: Icon, label, value, tone = "blue" }) {
-  const tones = {
-    blue: "bg-blue-50/50 border-blue-100",
-    purple: "bg-purple-50/50 border-purple-100",
-    emerald: "bg-emerald-50/50 border-emerald-100",
-    amber: "bg-amber-50/50 border-amber-100",
+  const textTones = {
+    blue: "text-blue-500",
+    purple: "text-purple-500",
+    emerald: "text-emerald-500",
+    amber: "text-amber-500",
   };
-  const iconTones = {
-    blue: "bg-blue-100 text-blue-600",
-    purple: "bg-purple-100 text-purple-600",
-    emerald: "bg-emerald-100 text-emerald-600",
-    amber: "bg-amber-100 text-amber-600",
+  const borderTones = {
+    blue: "border-b-blue-500",
+    purple: "border-b-purple-500",
+    emerald: "border-b-emerald-500",
+    amber: "border-b-amber-500",
   };
+
   return (
-    <div className={cn("rounded-xl border p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5", tones[tone] || tones.blue)}>
-      <div className="flex flex-col gap-3">
-        {Icon && (
-          <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm", iconTones[tone] || iconTones.blue)}>
-            <Icon className="h-4 w-4" />
-          </div>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center px-6 py-4 rounded-2xl border border-slate-300/80 bg-white border-b-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md",
+        borderTones[tone] || borderTones.blue,
+      )}
+    >
+      <div
+        className={cn(
+          "text-3xl font-black mb-1 transition-transform duration-300",
+          textTones[tone] || textTones.blue,
         )}
-        <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-            {label}
-          </div>
-          <div className="text-2xl font-black tracking-tight tabular-nums text-slate-900 leading-none">
-            {value}
-          </div>
-        </div>
+      >
+        {value}
       </div>
+      <p className="text-[13px] font-bold text-slate-600 tracking-tight">
+        {label}
+      </p>
     </div>
   );
 }

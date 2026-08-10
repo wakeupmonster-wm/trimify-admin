@@ -4,7 +4,7 @@ import { ShieldAlert, ArrowLeft, LayoutDashboard } from "lucide-react";
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen bg-[#F8FDFF] flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
       {/* Decorative Brand Background Orbs */}
       <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full bg-aqua-gradient blur-[100px] opacity-20" />
       <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] rounded-full bg-[#E6FFFD] blur-[100px] opacity-40" />
@@ -16,8 +16,8 @@ export default function NotFoundPage() {
             <ShieldAlert className="w-20 h-20 text-app-primary2 animate-pulse" />
             <div className="absolute top-0 right-1">
               <span className="flex h-6 w-6">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#46C7CD] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-6 w-6 bg-[#46C7CD] border-2 border-white"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-app-primary2 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-6 w-6 bg-app-primary2 border-2 border-white"></span>
               </span>
             </div>
           </div>
@@ -31,25 +31,25 @@ export default function NotFoundPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-[#212121]">
             Page Not Found
           </h2>
-          <p className="text-[#606060] text-sm md:text-base font-semibold leading-relaxed">
+          <p className="text-slate-600 text-sm md:text-sm font-semibold leading-relaxed">
             The administrative page or resource you are looking for does not
             exist, has been moved, or is temporarily unavailable.
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
           <Button
             variant="outline"
-            className="border-[#46C7CD] text-app-primary2 hover:bg-[#46C7CD]/5 hover:text-[#46C7CD] h-12 px-8 rounded-full font-bold transition-all"
+            className="border-app-primary2 text-app-primary2 hover:bg-[#46C7CD]/5 hover:text-app-primary3 h-12 px-8 rounded-full font-bold transition-all"
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Go Back
           </Button>
 
           <Button
-            className="bg-[#46C7CD] hover:bg-[#3bb1b6] text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105"
-            onClick={() => (window.location.href = "/")}
+            className="bg-app-primary2 hover:bg-app-primary3 text-white h-12 px-8 rounded-full font-bold shadow-lg shadow-[#46C7CD]/20 transition-all transform hover:scale-105"
+            onClick={() => (window.location.href = "/admin/dashboard")}
           >
             <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
           </Button>
@@ -57,7 +57,7 @@ export default function NotFoundPage() {
 
         {/* Branding Subtext */}
         <div className="pt-8 flex items-center justify-center gap-2 text-[#8D8D8D] font-bold text-xs uppercase tracking-wider">
-          <span>Admin Control Panel</span>
+          <span>Trimify Admin Control Panel</span>
         </div>
       </main>
     </div>

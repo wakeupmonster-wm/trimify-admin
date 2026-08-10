@@ -5,9 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AdminEditDialog from "../components/AdminEditDialog";
-import { fetchProfile, resetPasswordStatus } from "../store/account.slice";
+import {
+  fetchProfile,
+  resetPasswordStatus,
+  updateEmail,
+  verifyEmailOtp,
+} from "../store/account.slice";
 import {
   Calendar,
   Clock,
@@ -17,6 +24,7 @@ import {
   LogOut,
   Mail,
   Phone,
+  Loader2,
 } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";
 import SecurityCredentials from "../components/security.credentials";
@@ -37,6 +45,66 @@ export default function AccountsPage() {
   );
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Email state
+  const [emailForm, setEmailForm] = useState({
+    email: "",
+    otp: "",
+  });
+  const [emailErrors, setEmailErrors] = useState({});
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+
+  const handleEmailSubmit = async () => {
+    let errors = {};
+    if (!emailForm.email) errors.email = "Email address is required";
+
+    setEmailErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setEmailLoading(true);
+    try {
+      const res = await dispatch(
+        updateEmail({ email: emailForm.email }),
+      ).unwrap();
+      toast.success(res?.message || "OTP has been sent to your email.");
+      setShowOtpField(true);
+    } catch (error) {
+      toast.error(error?.message || "Failed to send OTP.");
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async () => {
+    let errors = {};
+    if (!emailForm.otp) errors.otp = "OTP is required";
+    else if (emailForm.otp.length !== 6) errors.otp = "OTP must be 6 digits";
+
+    setEmailErrors((prev) => ({ ...prev, ...errors }));
+    if (Object.keys(errors).length > 0) return;
+
+    setEmailLoading(true);
+    try {
+      const res = await dispatch(
+        verifyEmailOtp({
+          email: emailForm.email,
+          otp: emailForm.otp,
+        }),
+      ).unwrap();
+
+      toast.success(
+        res?.message || "Email updated successfully. Please log in again.",
+      );
+      setShowOtpField(false);
+      setEmailForm({ email: "", otp: "" });
+      setEmailErrors({});
+    } catch (error) {
+      toast.error(error?.message || "Failed to verify OTP.");
+    } finally {
+      setEmailLoading(false);
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -60,8 +128,14 @@ export default function AccountsPage() {
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName = account?.nickname || account?.name || localUser?.nickname || localUser?.name || "Admin";
-  const displayEmail = account?.email || localUser?.email || "admin@example.com";
+  const displayName =
+    account?.nickname ||
+    account?.name ||
+    localUser?.nickname ||
+    localUser?.name ||
+    "Admin";
+  const displayEmail =
+    account?.email || localUser?.email || "admin@example.com";
   const initial = displayName.charAt(0).toUpperCase();
 
   const displayAccount = {
@@ -121,7 +195,9 @@ export default function AccountsPage() {
                   <div className="absolute inset-0 bg-app-primary2 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Avatar className="relative h-40 w-40 md:h-44 md:w-44 ring-4 ring-white bg-white shadow-lg rounded-full overflow-hidden">
                     <AvatarImage
-                      src={displayAccount?.avatar?.url || displayAccount?.avatar}
+                      src={
+                        displayAccount?.avatar?.url || displayAccount?.avatar
+                      }
                       alt={displayName}
                       className="object-cover"
                     />
@@ -171,7 +247,7 @@ export default function AccountsPage() {
               {/* Contact Details Card */}
               <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
-                  <div className="pb-2 px-5 border-b border-slate-300/60/50">
+                  <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
                       title="Contact Details"
                       // subtitle="Keep your admin account safe with a strong password."
@@ -182,7 +258,7 @@ export default function AccountsPage() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="px-5">
+                <CardContent className="px-4">
                   <InfoItem
                     icon={
                       <Mail
@@ -213,7 +289,7 @@ export default function AccountsPage() {
               {/* Meta Data Card */}
               <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
-                  <div className="pb-2 px-5 border-b border-slate-300/60/50">
+                  <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
                       title="Account Metadata"
                       Icon={Globe}
@@ -222,7 +298,7 @@ export default function AccountsPage() {
                     />
                   </div>
                 </CardHeader>
-                <CardContent className="px-5">
+                <CardContent className="px-4">
                   <InfoItem
                     icon={
                       <Calendar
@@ -245,20 +321,6 @@ export default function AccountsPage() {
                     label="Last Login"
                     value={formatDateSafe(displayAccount?.lastLoginAt)}
                   />
-
-                  <div className="flex items-center gap-5 p-2 px-4 rounded-lg bg-slate-50 group hover:bg-slate-100/50 transition-colors">
-                    <div className="p-2 rounded-lg bg-blue-100 shadow-sm text-slate-700 group-hover:scale-110 transition-transform">
-                      <Hash className="w-5 h-5" strokeWidth={2.5} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wide mb-0.5">
-                        Unique Account ID
-                      </p>
-                      <p className="text-[11px] sm:text-xs font-mono font-bold text-slate-700 truncate break-all">
-                        {displayAccount?.id || "N/A"}
-                      </p>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -272,6 +334,115 @@ export default function AccountsPage() {
                   loading={loading}
                   passwordSuccess={passwordSuccess}
                 />
+              </div>
+
+              {/* Email Component wrapper to give it matching styles */}
+              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden mt-4">
+                <Card className="mx-auto border-none gap-0 shadow-none bg-transparent overflow-hidden font-sans w-full">
+                  <CardHeader className="p-0">
+                    <div className="pb-4 px-4 border-b border-slate-300/60 pt-0">
+                      <DashboardHead
+                        title="Change Email Address"
+                        subtitle="Update your contact email and verify it via OTP."
+                        Icon={Mail}
+                        iconColor="text-slate-600"
+                        iconBg="bg-slate-100/50"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="px-5 py-1 space-y-4">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold text-slate-800">
+                          New Email
+                        </Label>
+                        <Input
+                          type="email"
+                          placeholder="Enter new email address"
+                          value={emailForm.email}
+                          onChange={(e) => {
+                            setEmailForm({
+                              ...emailForm,
+                              email: e.target.value,
+                            });
+                            if (emailErrors.email)
+                              setEmailErrors({ ...emailErrors, email: null });
+                          }}
+                          disabled={showOtpField}
+                          className={`h-10 text-sm font-normal ${
+                            emailErrors.email
+                              ? "border-red-500 focus-visible:ring-red-500"
+                              : "border-slate-300/60"
+                          }`}
+                        />
+                        {emailErrors.email && (
+                          <span className="text-red-500 text-[11px] mt-1 block">
+                            {emailErrors.email}
+                          </span>
+                        )}
+                      </div>
+
+                      {showOtpField && (
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold text-slate-800">
+                            Enter OTP
+                          </Label>
+                          <Input
+                            type="text"
+                            maxLength={6}
+                            placeholder="Enter 6-digit OTP"
+                            value={emailForm.otp}
+                            onChange={(e) => {
+                              setEmailForm({
+                                ...emailForm,
+                                otp: e.target.value,
+                              });
+                              if (emailErrors.otp)
+                                setEmailErrors({ ...emailErrors, otp: null });
+                            }}
+                            className={`h-10 text-sm font-normal ${
+                              emailErrors.otp
+                                ? "border-red-500 focus-visible:ring-red-500"
+                                : "border-slate-300/60"
+                            }`}
+                          />
+                          {emailErrors.otp && (
+                            <span className="text-red-500 text-[11px] mt-1 block">
+                              {emailErrors.otp}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="flex justify-end gap-3 pt-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setEmailForm({ email: "", otp: "" });
+                            setEmailErrors({});
+                            setShowOtpField(false);
+                          }}
+                          className="text-slate-600 border border-slate-300 rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold"
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={
+                            showOtpField ? handleOtpSubmit : handleEmailSubmit
+                          }
+                          disabled={emailLoading}
+                          className="bg-app-primary2 hover:bg-app-primary3 text-white border-none hover:text-white rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold transition-all active:scale-[0.99]"
+                        >
+                          {emailLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+                          ) : null}
+                          {showOtpField ? "Verify OTP" : "Update Email"}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Logout button */}

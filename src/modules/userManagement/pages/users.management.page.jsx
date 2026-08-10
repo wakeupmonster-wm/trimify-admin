@@ -66,13 +66,16 @@ const UsersManagementPage = () => {
     dateRangeFilter,
   ]);
 
-  const handleAction = useCallback((row, action) => {
-    if (action === "view") {
-      navigate(`/admin/users/view-user/${row.id}`, {
-        state: { userData: row },
-      });
-    }
-  }, [navigate]);
+  const handleAction = useCallback(
+    (row, action) => {
+      if (action === "view") {
+        navigate(`/admin/users/view-user/${row.id}`, {
+          state: { userData: row },
+        });
+      }
+    },
+    [navigate],
+  );
 
   const isUnfiltered = !statusFilter && !debouncedSearchTerm;
   const [pinnedKpis, setPinnedKpis] = useState(null);
@@ -109,7 +112,10 @@ const UsersManagementPage = () => {
       });
   }, [kpis, pinnedKpis]);
 
-  const columns = useMemo(() => getUserManagementColumns(handleAction), [handleAction]);
+  const columns = useMemo(
+    () => getUserManagementColumns(handleAction),
+    [handleAction],
+  );
 
   const localKpis = useMemo(() => {
     if (pinnedKpis) return pinnedKpis;
@@ -233,7 +239,10 @@ const UsersManagementPage = () => {
         setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
         if (location.state?.dateRange) {
-          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+          navigate(".", {
+            replace: true,
+            state: { ...location.state, dateRange: null },
+          });
         }
       },
     },

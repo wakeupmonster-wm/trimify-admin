@@ -2,7 +2,9 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getAdminAccountAPI,
   patchAdminAccountAPI,
-  postChangeAdminPasswordAPI,
+  changePasswordAPI,
+  updateEmailAPI,
+  verifyEmailOtpAPI,
 } from "../services/account.service";
 
 export const fetchProfile = createAsyncThunk(
@@ -42,22 +44,47 @@ export const updateAdminAccount = createAsyncThunk(
 
 export const changePassword = createAsyncThunk(
   "admin/changePassword",
-  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
-    const payload = {
-      currentPassword,
-      newPassword,
-    };
+  async (data, { rejectWithValue }) => {
     try {
-      const response = await postChangeAdminPasswordAPI(payload);
-      if (response && response.success) {
-        return response; // Return the object directly
+      const response = await changePasswordAPI(data);
+      if (response?.status === "success") {
+        return response;
       }
-
-      return rejectWithValue(response.message || "Failed to change password");
+      return rejectWithValue(response);
     } catch (error) {
-      return rejectWithValue(error.message || "Network error");
+      return rejectWithValue(error.response?.data || error.response || error);
     }
-  },
+  }
+);
+
+export const updateEmail = createAsyncThunk(
+  "admin/updateEmail",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await updateEmailAPI(data);
+      if (response?.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.response || error);
+    }
+  }
+);
+
+export const verifyEmailOtp = createAsyncThunk(
+  "admin/verifyEmailOtp",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await verifyEmailOtpAPI(data);
+      if (response?.status === "success") {
+        return response;
+      }
+      return rejectWithValue(response);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.response || error);
+    }
+  }
 );
 
 const accountSlice = createSlice({
@@ -141,6 +168,30 @@ const accountSlice = createSlice({
       .addCase(changePassword.rejected, (state, action) => {
         state.updating = false;
         state.passwordSuccess = false;
+        state.error = action.payload;
+      })
+      // Update Email
+      .addCase(updateEmail.pending, (state) => {
+        state.updating = true;
+        state.error = null;
+      })
+      .addCase(updateEmail.fulfilled, (state) => {
+        state.updating = false;
+      })
+      .addCase(updateEmail.rejected, (state, action) => {
+        state.updating = false;
+        state.error = action.payload;
+      })
+      // Verify OTP
+      .addCase(verifyEmailOtp.pending, (state) => {
+        state.updating = true;
+        state.error = null;
+      })
+      .addCase(verifyEmailOtp.fulfilled, (state) => {
+        state.updating = false;
+      })
+      .addCase(verifyEmailOtp.rejected, (state, action) => {
+        state.updating = false;
         state.error = action.payload;
       });
   },

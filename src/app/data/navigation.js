@@ -112,12 +112,12 @@ const navigationData = {
         { title: "CMS", url: "/admin/cms-management" },
       ],
     },
-    {
-      title: "Account Settings",
-      url: "/admin/account-settings",
-      icon: IconSettings,
-      badge: null,
-    },
+    // {
+    //   title: "Account Settings",
+    //   url: "/admin/account-settings",
+    //   icon: IconSettings,
+    //   badge: null,
+    // },
   ],
   navSecondary: [],
 };

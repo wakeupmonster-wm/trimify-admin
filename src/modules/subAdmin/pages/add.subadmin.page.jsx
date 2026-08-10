@@ -36,27 +36,15 @@ const AddSubAdminPage = () => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [existingDesignations, setExistingDesignations] = useState([]);
-  // const [isCustomDesignation, setIsCustomDesignation] = useState(false);
-  // const { subAdmins } = useSelector((state) => state.subAdmin);
+  const [isCustomDesignation, setIsCustomDesignation] = useState(false);
 
-  // useEffect(() => {
-  //   if (subAdmins.length === 0) {
-  //     dispatch(fetchSubAdminList({ limit: 100 }));
-  //   }
-  // }, [dispatch, subAdmins.length]);
-
-  // useEffect(() => {
-  //   if (subAdmins.length > 0) {
-  //     const designations = new Set();
-  //     subAdmins.forEach((admin) => {
-  //       if (admin.designation && admin.designation !== "-") {
-  //         designations.add(admin.designation);
-  //       }
-  //     });
-  //     setExistingDesignations(Array.from(designations).sort());
-  //   }
-  // }, [subAdmins]);
+  const fitnessDesignations = [
+    "Fitness Trainer",
+    "Nutritionist",
+    "Health Coach",
+    "Wellness Advisor",
+    "Gym Manager",
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -242,7 +230,7 @@ const AddSubAdminPage = () => {
                 <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Designation
                 </Label>
-                {/* 
+
                 {!isCustomDesignation ? (
                   <Select
                     value={formData.designation}
@@ -263,7 +251,7 @@ const AddSubAdminPage = () => {
                       <SelectValue placeholder="Select Designation" />
                     </SelectTrigger>
                     <SelectContent>
-                      {existingDesignations.map((desig) => (
+                      {fitnessDesignations.map((desig) => (
                         <SelectItem key={desig} value={desig}>
                           {desig}
                         </SelectItem>
@@ -272,7 +260,7 @@ const AddSubAdminPage = () => {
                         value="CUSTOM_ADD_NEW"
                         className="text-app-primary2 font-semibold"
                       >
-                        + Add Custom Designation
+                        + Other (Enter Manually)
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -301,16 +289,6 @@ const AddSubAdminPage = () => {
                     </Button>
                   </div>
                 )}
-                */}
-
-                {/* Reverted Original Input */}
-                <Input
-                  name="designation"
-                  placeholder="Enter Designation"
-                  value={formData.designation}
-                  onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
-                />
                 {errors.designation && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.designation}
@@ -360,7 +338,10 @@ const AddSubAdminPage = () => {
                   <SelectTrigger
                     className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-normal ${errors.role ? "border-red-500" : "border-slate-300/60"}`}
                   >
-                    <SelectValue placeholder="Select Role" className="font-medium"/>
+                    <SelectValue
+                      placeholder="Select Role"
+                      className="font-medium"
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Sub-Admin User">
