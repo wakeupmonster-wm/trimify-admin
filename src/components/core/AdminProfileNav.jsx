@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/tooltip";
 
 export function AdminProfileNav() {
-  const navigate = useNavigate();
   // Get the authenticated user data from the auth slice
   const { user } = useSelector((state) => state.auth);
 

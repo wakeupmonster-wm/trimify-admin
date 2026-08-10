@@ -1,22 +1,20 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { IconEye, IconEyeOff, IconLock } from "@tabler/icons-react";
-import { AlertCircle, Badge, Check, Loader2, ShieldCheck } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { Label } from "recharts";
 import { changePassword } from "../store/account.slice";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import DashboardHead from "@/components/shared/dashboard.head";
+import { useDispatch } from "react-redux";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
+  const dispatch = useDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -54,15 +52,18 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
   const passwordsMismatch =
     form.confirmPassword && form.newPassword !== form.confirmPassword;
 
-  const onSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
     if (form.newPassword !== form.confirmPassword) return;
+    setIsModalOpen(true);
+  };
 
+  const confirmUpdatePassword = async () => {
     try {
       const result = await dispatch(
         changePassword({
-          currentPassword: form.currentPassword,
-          newPassword: form.newPassword,
+          old_password: form.currentPassword,
+          new_password: form.newPassword,
         }),
       ).unwrap();
       toast.success(result.message || "Success", {
@@ -73,8 +74,10 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
         newPassword: "",
         confirmPassword: "",
       });
+      setIsModalOpen(false);
     } catch (err) {
-      toast.error(err || "Failed to update password");
+      toast.error(err?.message || err?.error || "Failed to update password");
+      setIsModalOpen(false);
     }
   };
 
@@ -83,14 +86,13 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
     setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  // 2. Helper for the eye icon button (Updated with correct component name)
   const EyeToggle = ({ isVisible, onToggle }) => (
     <button
       type="button"
       onClick={onToggle}
-      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800"
     >
-      {isVisible ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+      {isVisible ? <IconEyeOff size={16} /> : <IconEye size={16} />}
     </button>
   );
 
@@ -102,21 +104,9 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
   ];
 
   return (
-    <Card className="mx-auto border-none gap-4 shadow-none bg-transparent overflow-hidden font-sans w-full">
+    <Card className="mx-auto border-none gap-3 shadow-none bg-transparent overflow-hidden pb-5 font-sans w-full">
       <CardHeader className="p-0">
-        {/* <div className="flex items-center gap-5">
-          <div className="p-4 bg-app-primary2 rounded-2xl text-app-primary2 ring-4 ring-app-primary2">
-            <IconLock size={32} stroke={2.5} />
-          </div>
-          <div className="space-y-1">
-            <CardTitle className="text-2xl font-black text-slate-900 tracking-tight">
-              Security Credentials
-            </CardTitle>
-            <CardDescription className="text-slate-500 font-medium text-sm"></CardDescription>
-          </div>
-        </div> */}
-
-        <div className="pb-4 px-5 border-b border-slate-300/60">
+        <div className="pb-4 px-4 border-b border-slate-300/60">
           <DashboardHead
             title="Security Credentials"
             subtitle="Keep your admin account safe with a strong password."
@@ -127,17 +117,17 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="px-8 pb-10 space-y-6">
-        <form onSubmit={onSubmit} className="grid gap-6">
+      <CardContent className="px-5 py-1 space-y-6">
+        <form onSubmit={handleFormSubmit} className="grid gap-4">
           {/* Current Password - Full Width */}
-          <div className="space-y-3 group">
-            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+          <div className="space-y-2">
+            <Label className="text-xs font-bold text-slate-800">
               Current Password
             </Label>
             <div className="relative">
               <Input
                 type={showPasswords.current ? "text" : "password"}
-                className="h-12 border-slate-300/60 placeholder:text-slate-400 bg-slate-50/30 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
+                className="pr-10 h-10 text-sm font-normal border-slate-300/60"
                 value={form.currentPassword}
                 onChange={(e) =>
                   setForm({ ...form, currentPassword: e.target.value })
@@ -152,15 +142,15 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
           </div>
 
           {/* New Passwords Grid */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3 group">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-slate-800">
                 New Password
               </Label>
               <div className="relative">
                 <Input
                   type={showPasswords.new ? "text" : "password"}
-                  className="h-12 border-slate-300/60 placeholder:text-slate-400 bg-slate-50 pr-12 rounded-lg text-base focus-visible:border-slate-500 transition-[background-color,border-color] duration-300"
+                  className="pr-10 h-10 text-sm font-normal border-slate-300/60"
                   value={form.newPassword}
                   onChange={(e) =>
                     setForm({ ...form, newPassword: e.target.value })
@@ -174,21 +164,18 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               </div>
             </div>
 
-            <div className="space-y-3 group">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 ml-1">
-                Confirm New Password
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-slate-800">
+                Confirm Password
               </Label>
               <div className="relative">
                 <Input
                   type={showPasswords.confirm ? "text" : "password"}
-                  className={cn(
-                    "h-12 rounded-lg pr-12 text-base transition-all border-slate-300/60 bg-slate-50 duration-300 focus-visible:outline-none",
-                    passwordsMatch && form.confirmPassword
-                      ? "border-slate-500 focus-visible:border-slate-500"
-                      : passwordsMismatch
-                        ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/10"
-                        : "border-slate-300/60 focus-visible:border-slate-500",
-                  )}
+                  className={`pr-10 h-10 text-sm font-normal ${
+                    passwordsMismatch
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-slate-300/60"
+                  }`}
                   value={form.confirmPassword}
                   onChange={(e) =>
                     setForm({ ...form, confirmPassword: e.target.value })
@@ -201,61 +188,59 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                 />
               </div>
               {passwordsMismatch && (
-                <p className="text-[11px] text-red-600 font-bold flex items-center gap-1.5 mt-1 animate-in slide-in-from-left-2">
-                  <AlertCircle className="w-3.5 h-3.5" /> Passwords do not match
-                </p>
+                <span className="text-red-500 text-[11px] mt-1 block">
+                  Passwords do not match
+                </span>
               )}
             </div>
           </div>
 
           {/* Password Strength Section */}
           {form.newPassword && (
-            <div className="p-5 bg-slate-50/80 rounded-lg border border-slate-100 space-y-4 animate-in fade-in zoom-in-95">
+            <div className="p-4 space-y-3 animate-in fade-in zoom-in-95 border rounded-md">
               <div className="flex justify-between items-center">
-                <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">
-                  Security Strength
+                <span className="text-xs font-semibold text-slate-500">
+                  Password strength
                 </span>
-                <Badge
+                <span
                   className={cn(
-                    "text-[10px] font-black uppercase px-2 py-0.5 rounded-md",
+                    "text-[11px] font-bold uppercase tracking-wider",
                     strength.color
                       ?.replace("bg-", "text-")
-                      .replace("-500", "-700"),
-                    strength.color?.replace("bg-", "bg-") + "/10",
+                      .replace("-500", "-600") || "text-slate-500",
                   )}
                 >
                   {strength.label}
-                </Badge>
+                </span>
               </div>
 
-              <div className="flex gap-2 h-2">
+              <div className="flex gap-1.5 h-1">
                 {[1, 2, 3, 4, 5].map((step) => (
                   <div
                     key={step}
-                    className={`h-full flex-1 rounded-full transition-all duration-700 ${
+                    className={`h-full flex-1 rounded-full transition-all duration-500 ${
                       step <= strength.score ? strength.color : "bg-slate-200"
                     }`}
                   />
                 ))}
               </div>
 
-              <ul className="grid grid-cols-2 gap-y-2 gap-x-4">
+              <ul className="grid grid-cols-2 gap-y-2 gap-x-4 pt-1">
                 {checks.map((c) => (
                   <li
                     key={c.label}
                     className={cn(
-                      "flex items-center gap-2 text-[11px] font-bold transition-all",
-                      c.pass ? "text-emerald-600" : "text-slate-400",
+                      "flex items-center gap-1.5 text-[11px] font-medium transition-colors duration-300",
+                      c.pass ? "text-slate-700" : "text-slate-400",
                     )}
                   >
-                    <div
+                    <Check
                       className={cn(
-                        "p-0.5 rounded-full",
-                        c.pass ? "bg-emerald-100" : "bg-slate-100",
+                        "w-3.5 h-3.5 transition-colors",
+                        c.pass ? "text-emerald-500" : "text-slate-300",
                       )}
-                    >
-                      <Check className="w-2.5 h-2.5" strokeWidth={4} />
-                    </div>
+                      strokeWidth={3}
+                    />
                     {c.label}
                   </li>
                 ))}
@@ -263,29 +248,51 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
             </div>
           )}
 
-          <Button
-            type="submit"
-            disabled={
-              loading ||
-              form.newPassword !== form.confirmPassword ||
-              !form.newPassword
-            }
-            className="h-11 w-full bg-app-primary2 hover:bg-brand-hoverAqua disabled:opacity-50 disabled:hover:bg-app-primary3 text-white font-semibold text-[13px] capitalize tracking-wide rounded-lg shadow-md shadow-app-primary2 transition-all duration-300"
-          >
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <Loader2 size={18} className="animate-spin" />
-                <span>Securing Account...</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={18} strokeWidth={2.5} />
-                <span>Update Credentials</span>
-              </div>
-            )}
-          </Button>
+          <div className="flex justify-end gap-3 pt-1">
+            <Button
+              variant="outline"
+              type="button"
+              className="text-slate-600 border border-slate-300 rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold"
+              onClick={() => {
+                setForm({
+                  currentPassword: "",
+                  newPassword: "",
+                  confirmPassword: "",
+                });
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              variant="outline"
+              type="submit"
+              disabled={
+                loading ||
+                form.newPassword !== form.confirmPassword ||
+                !form.newPassword
+              }
+              className="bg-app-primary2 hover:bg-app-primary3 text-white hover:text-white border-none font-semibold px-5 h-10 text-[11px] 3xl:text-xs rounded-md transition-all active:scale-[0.99]"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+              ) : null}
+              Update Password
+            </Button>
+          </div>
         </form>
       </CardContent>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => !loading && setIsModalOpen(false)}
+        onConfirm={confirmUpdatePassword}
+        title="Update Password?"
+        message="Are you sure you want to update your password? You will need to use the new password on your next login."
+        confirmText="Update"
+        type="brand"
+        loading={loading}
+        success={passwordSuccess}
+      />
     </Card>
   );
 };

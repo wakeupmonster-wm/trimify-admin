@@ -12,27 +12,25 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-// const DESIGNATION_COLORS = [
-//   "bg-emerald-500/10 text-emerald-600",
-//   "bg-blue-500/10 text-blue-600",
-//   "bg-amber-500/10 text-amber-600",
-//   "bg-purple-500/10 text-purple-600",
-//   "bg-rose-500/10 text-rose-600",
-//   "bg-indigo-500/10 text-indigo-600",
-//   "bg-cyan-500/10 text-cyan-600",
-//   "bg-pink-500/10 text-pink-600",
-// ];
+const DESIGNATION_COLOR_MAP = {
+  "Fitness Trainer": "bg-amber-500/15 text-amber-600",
+  "Nutritionist": "bg-emerald-500/15 text-emerald-600",
+  "Health Coach": "bg-teal-500/15 text-teal-600",
+  "Wellness Advisor": "bg-blue-500/15 text-blue-600",
+  "Gym Manager": "bg-purple-500/15 text-purple-600",
+};
 
-// const getDesignationColor = (designation) => {
-//   if (!designation || designation === "-")
-//     return "bg-slate-500/10 text-slate-600";
-//   let hash = 0;
-//   for (let i = 0; i < designation.length; i++) {
-//     hash = designation.charCodeAt(i) + ((hash << 5) - hash);
-//   }
-//   const index = Math.abs(hash) % DESIGNATION_COLORS.length;
-//   return DESIGNATION_COLORS[index];
-// };
+const getDesignationColor = (designation) => {
+  if (!designation || designation === "-")
+    return "bg-slate-500/10 text-slate-600";
+    
+  if (DESIGNATION_COLOR_MAP[designation]) {
+    return DESIGNATION_COLOR_MAP[designation];
+  }
+  
+  // Default for custom designations not in the main list
+  return "bg-app-primary2/15 text-app-primary2";
+};
 
 export const getSubAdminColumns = (onAction) => [
   {
@@ -124,16 +122,13 @@ export const getSubAdminColumns = (onAction) => [
     cell: ({ row }) => {
       const designation = row.original.designation;
       const isMissing = !designation || designation === "-";
-      // const colorClass = getDesignationColor(designation);
+      const colorClass = getDesignationColor(designation);
       return (
         <Badge
           variant="outline"
           className={cn(
             "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
-            // colorClass,
-            isMissing
-              ? "bg-slate-500/10 text-slate-600"
-              : "bg-emerald-500/10 text-emerald-600"
+            colorClass
           )}
         >
           <span className="w-1 h-1 shrink-0 rounded-full bg-current" />

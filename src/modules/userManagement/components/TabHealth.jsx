@@ -1,7 +1,19 @@
 import React from "react";
-import { Droplet, Target, Flame, Footprints, Scale, Dumbbell } from "lucide-react";
+import { Droplet, Target, Flame, Footprints, Scale, Dumbbell, Activity, Calendar, Utensils } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, KV, EmptyState, Tag } from "./UserProfileShared";
+import { LuUserRound } from "react-icons/lu";
+
+const getFitnessIcon = (label) => {
+  const l = (label || "").toLowerCase();
+  if (l.includes("weight goal")) return Scale;
+  if (l.includes("main goal")) return Target;
+  if (l.includes("current body shape") || l.includes("goal body shape")) return LuUserRound;
+  if (l.includes("timeline")) return Calendar;
+  if (l.includes("fitness level")) return Dumbbell;
+  if (l.includes("diet")) return Utensils;
+  return Activity;
+};
 
 function ActivityRing({ value, max, label, unit, icon: Icon, colorClass, textClass, bgLightClass }) {
   const pct = Math.min(100, Math.max(0, (value / (max || 1)) * 100));
@@ -189,7 +201,7 @@ export function TabHealth({ data }) {
             icon={Dumbbell}
           >
             {fitnessProfileSet.map(([l, v]) => (
-              <KV key={l} label={l} value={v} noBorder={true} />
+              <KV key={l} icon={getFitnessIcon(l)} label={l} value={v} noBorder={true} />
             ))}
             {fitnessProfileMissing.length === fitnessProfileFields.length ? (
               <EmptyState

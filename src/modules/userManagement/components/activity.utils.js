@@ -1,7 +1,7 @@
 import { Activity, Footprints, Droplet, Scale, Utensils, Dumbbell, ClipboardList } from "lucide-react";
 
 export const ACTIVITY_META = {
-  step_log: { label: "Step", icon: Footprints, className: "bg-blue-50 text-blue-600" },
+  step_log: { label: "Step", icon: Footprints, className: "bg-app-primary2/5 text-app-primary2" },
   water_log: { label: "Water", icon: Droplet, className: "bg-sky-50 text-sky-600" },
   weight_log: { label: "Weight", icon: Scale, className: "bg-amber-50 text-amber-600" },
   food_log: { label: "Food", icon: Utensils, className: "bg-emerald-50 text-emerald-600" },

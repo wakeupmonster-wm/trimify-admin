@@ -32,7 +32,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LuUser, LuUserRound } from "react-icons/lu";
+import { LuUserRound } from "react-icons/lu";
 
 export function TabSettings({ data }) {
   const { user, handleCopy, initials, fmtDate, truncMid } = data;
@@ -150,52 +150,8 @@ export function TabSettings({ data }) {
             label="Revoked"
             value={user.revoked_at ? fmtDate(user.revoked_at) : "No"}
           />
-          <KV
-            icon={Calendar}
-            label="Created"
-            value={fmtDate(user.created_at)}
-          />
-          <KV
-            icon={Calendar}
-            label="Updated"
-            value={fmtDate(user.updated_at)}
-          />
         </Card>
 
-        <Card
-          title="Device & Notifications"
-          subtitle="App settings and preferences"
-          icon={Smartphone}
-        >
-          <KV
-            icon={Bell}
-            label="Notifications"
-            value={user.notification_status ? "Enabled" : "Disabled"}
-          />
-          <KV
-            icon={Globe}
-            label="Timezone"
-            value={user.timezone || "Not set"}
-          />
-
-          <div className="flex items-center justify-between gap-2.5 py-2.5">
-            <span className="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-500">
-              <Smartphone className="h-4 w-4" />
-              Device Token
-            </span>
-            <button
-              type="button"
-              title={user.device_token}
-              onClick={() => handleCopy(user.device_token, "Device token")}
-              className="font-mono text-[10.5px] font-semibold text-slate-900 transition-colors hover:text-app-primary2"
-            >
-              {truncMid(user.device_token, 10, 6)}
-            </button>
-          </div>
-        </Card>
-      </div>
-
-      <div className="flex flex-col gap-4">
         <Card
           title="Billing & Plan"
           subtitle="Payment methods and history"
@@ -214,10 +170,14 @@ export function TabSettings({ data }) {
                 <div className="flex items-center gap-2">
                   <div
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-bold tracking-wide",
-                      user.paid
-                        ? "bg-amber-50 text-amber-600"
-                        : "bg-slate-100 text-slate-600",
+                      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide",
+                      !user.paid
+                        ? "bg-slate-100 text-slate-600"
+                        : String(user.plan.title || user.plan)
+                              .toLowerCase()
+                              .includes("premium")
+                          ? "bg-amber-100/50 text-amber-600"
+                          : "bg-blue-50 text-app-primary2",
                     )}
                   >
                     {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
@@ -244,6 +204,40 @@ export function TabSettings({ data }) {
               <EmptyState icon={CreditCard} title="No transactions yet" />
             </div>
           )} */}
+        </Card>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Card
+          title="Device & Notifications"
+          subtitle="App settings and preferences"
+          icon={Smartphone}
+        >
+          <KV
+            icon={Bell}
+            label="Notifications"
+            value={user.notification_status ? "Enabled" : "Disabled"}
+          />
+          <KV
+            icon={Globe}
+            label="Timezone"
+            value={user.timezone || "Not set"}
+          />
+
+          <KV
+            icon={Smartphone}
+            label="Device Token"
+            value={
+              <button
+                type="button"
+                title={user.device_token}
+                onClick={() => handleCopy(user.device_token, "Device token")}
+                className="font-mono font-bold transition-colors hover:text-app-primary2"
+              >
+                {truncMid(user.device_token, 10, 6)}
+              </button>
+            }
+          />
         </Card>
 
         <Card

@@ -41,6 +41,15 @@ const EditSubAdminPage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isCustomDesignation, setIsCustomDesignation] = useState(false);
+
+  const fitnessDesignations = [
+    "Fitness Trainer",
+    "Nutritionist",
+    "Health Coach",
+    "Wellness Advisor",
+    "Gym Manager",
+  ];
 
   useEffect(() => {
     if (!editData) {
@@ -49,13 +58,21 @@ const EditSubAdminPage = () => {
       return;
     }
 
+    const initialDesignation = editData.designation || "";
+    if (
+      initialDesignation &&
+      !fitnessDesignations.includes(initialDesignation)
+    ) {
+      setIsCustomDesignation(true);
+    }
+
     setFormData({
       name: editData.name || editData.userName || "",
       email: editData.email || editData.emailId || "",
       hospital: editData.hospital || editData.hospitalName || "",
       location: editData.location || editData.country || "Australia",
       phone: editData.phone || "",
-      designation: editData.designation || "",
+      designation: initialDesignation,
       password: "", // Leave blank unless they want to update it
       role:
         editData.role === 1 ||
@@ -270,13 +287,66 @@ const EditSubAdminPage = () => {
                 <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Designation
                 </Label>
-                <Input
-                  name="designation"
-                  placeholder="Enter Designation"
-                  value={formData.designation}
-                  onChange={handleChange}
-                  className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
-                />
+
+                {!isCustomDesignation ? (
+                  <Select
+                    key={formData.designation || "desig-placeholder"}
+                    value={formData.designation || undefined}
+                    onValueChange={(val) => {
+                      if (val === "CUSTOM_ADD_NEW") {
+                        setIsCustomDesignation(true);
+                        setFormData((prev) => ({ ...prev, designation: "" }));
+                      } else {
+                        setFormData((prev) => ({ ...prev, designation: val }));
+                      }
+                      if (errors.designation)
+                        setErrors((prev) => ({ ...prev, designation: null }));
+                    }}
+                  >
+                    <SelectTrigger
+                      className={`h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
+                    >
+                      <SelectValue placeholder="Select Designation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fitnessDesignations.map((desig) => (
+                        <SelectItem key={desig} value={desig}>
+                          {desig}
+                        </SelectItem>
+                      ))}
+                      <SelectItem
+                        value="CUSTOM_ADD_NEW"
+                        className="text-app-primary2 font-semibold"
+                      >
+                        + Other (Enter Manually)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      name="designation"
+                      placeholder="Enter Custom Designation"
+                      value={formData.designation}
+                      onChange={handleChange}
+                      className={`flex-1 h-11 sm:h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.designation ? "border-red-500" : "border-slate-300/60"}`}
+                      autoFocus
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsCustomDesignation(false);
+                        setFormData((prev) => ({ ...prev, designation: "" }));
+                        if (errors.designation)
+                          setErrors((prev) => ({ ...prev, designation: null }));
+                      }}
+                      className="h-11 sm:h-10 px-3"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )}
                 {errors.designation && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                     {errors.designation}
