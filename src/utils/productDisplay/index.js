@@ -16,14 +16,14 @@ export const getProductDisplayName = (productInput) => {
   if (typeof productInput === "object") {
     if (productInput.displayName) return productInput.displayName;
     if (productInput.customDisplayName) return productInput.customDisplayName;
-    
+
     // Check nested objects if API passes { product: { ... } }
     const nested = productInput.product || productInput.subscription;
     if (nested && typeof nested === "object") {
       if (nested.displayName) return nested.displayName;
       if (nested.customDisplayName) return nested.customDisplayName;
     }
-    
+
     // Extract raw identifier for fallback
     rawString = productInput.productId || productInput.planType || productInput.id || productInput._id;
   } else if (typeof productInput === "string") {

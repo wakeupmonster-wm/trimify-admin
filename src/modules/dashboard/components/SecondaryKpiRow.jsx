@@ -12,13 +12,16 @@ const fmtMoney = (n) => `$${Number(n || 0).toLocaleString()}`;
  */
 const KPI_CONFIG = [
   {
-    key: "totalRevenueAllTime",
+    key: "totalRevenue",
     label: "Revenue",
     description: "All-time, all plans",
     tone: "emerald",
     trendValue: "12%",
     isPositive: true,
-    format: (data) => fmtMoney(data?.totalRevenueAllTime),
+    format: (data) => {
+      const val = data?.totalRevenue;
+      return fmtMoney(typeof val === 'object' && val !== null ? val.current : val);
+    },
     isCurrency: true,
     onClick: (navigate) =>
       navigate("/admin/subscription-management/transactions"),

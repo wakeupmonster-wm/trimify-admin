@@ -22,6 +22,7 @@ import {
 } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { getFitzoneManagementAPI } from "../services/fitzone.services";
 
 const FitzoneManagementPage = () => {
   const navigate = useNavigate();
@@ -53,6 +54,41 @@ const FitzoneManagementPage = () => {
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [globalKpisData, setGlobalKpisData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchGlobalKpis = async () => {
+      try {
+        const response = await getFitzoneManagementAPI({ limit: 1 });
+        if (isMounted && response && (response.success || response.status === "success")) {
+          if (response.kpis) {
+            setGlobalKpisData(response.kpis);
+          } else {
+            const all = response.fitzones || response.data || [];
+            const active = all.filter(
+              (fz) => String(fz.status || "Active").toLowerCase() === "active"
+            ).length;
+            setGlobalKpisData({
+              totalFitzones: response.pagination?.total || all.length,
+              activeFitzones: active,
+              inactiveFitzones: all.length - active,
+              totalSessions: all.reduce(
+                (sum, fz) => sum + (fz.sessions?.length || fz.session_count || 0),
+                0
+              ),
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch global KPIs", error);
+      }
+    };
+    fetchGlobalKpis();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(
@@ -182,6 +218,7 @@ const FitzoneManagementPage = () => {
   ];
 
   const localKpis = useMemo(() => {
+    if (globalKpisData) return globalKpisData;
     if (kpis) return kpis;
     const all = fitzones || [];
     const active = all.filter(
@@ -196,7 +233,7 @@ const FitzoneManagementPage = () => {
         0,
       ),
     };
-  }, [kpis, fitzones, serverPagination]);
+  }, [globalKpisData, kpis, fitzones, serverPagination]);
 
   const kpiItems = [
     {

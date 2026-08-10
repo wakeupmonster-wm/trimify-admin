@@ -153,7 +153,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
                     size={24}
                     strokeWidth={2}
                   />
-                </div>
+                </div>  
 
                 {/* Content */}
                 <div className="flex-1 min-w-0 gap-0.5">

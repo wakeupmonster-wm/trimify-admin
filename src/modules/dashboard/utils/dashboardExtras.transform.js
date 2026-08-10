@@ -77,10 +77,10 @@ export const toLabeledPie = (items = []) =>
 export const buildFunnel = (data) => {
   if (!data) return { stages: [], insight: "" };
   const { totalSignups = 0, paidUsers = 0, notPaidUsers = 0, conversionRate = 0, dropOffRate = 0 } = data;
-  
+
   const safeConversionRate = Number.isNaN(Number(conversionRate)) ? 0 : Number(conversionRate);
   const safeDropOffRate = Number.isNaN(Number(dropOffRate)) ? 0 : Number(dropOffRate);
-  
+
   return {
     subtitle: "Signup → Payment, this period",
     notPaidUsers,
@@ -103,7 +103,7 @@ export const buildSecondaryKpis = (summary) => {
   return {
     newSignupsToday: summary.newSignupsToday || 0,
     expiringSoon: summary.expiringSoonCount || 0,
-    totalRevenueAllTime: summary.totalRevenueAllTime || 0,
+    totalRevenue: summary.trends?.totalRevenue || 0,
     inactiveUsers: summary.inactiveUsers || 0,
     totalUsersAllTime: summary.totalUsersAllTime || 0,
     totalPrograms: summary.totalPrograms || 0,
@@ -132,27 +132,27 @@ export const buildAlerts = (alerts = {}) => {
     });
   }
 
-  const zeroEng = alerts?.newSignupsZeroEngagement;
-  if (zeroEng && (zeroEng.needsAttention === true || zeroEng.needsAttention === "true" || zeroEng.needsAttention === 1)) {
-    result.push({
-      id: "reported",
-      label: "Zero Engagement",
-      value: `${zeroEng.count || 0} new signups have 0 activity in ${zeroEng.thresholdDays || 7} days`,
-      route: "/admin/users",
-      filterId: "zero_engagement"
-    });
-  }
+  // const zeroEng = alerts?.newSignupsZeroEngagement;
+  // if (zeroEng && (zeroEng.needsAttention === true || zeroEng.needsAttention === "true" || zeroEng.needsAttention === 1)) {
+  //   result.push({
+  //     id: "reported",
+  //     label: "Zero Engagement",
+  //     value: `${zeroEng.count || 0} new signups have 0 activity in ${zeroEng.thresholdDays || 7} days`,
+  //     route: "/admin/users",
+  //     filterId: "zero_engagement"
+  //   });
+  // }
 
-  const incomplete = alerts?.incompleteProfiles;
-  if (incomplete && (incomplete.needsAttention === true || incomplete.needsAttention === "true" || incomplete.needsAttention === 1)) {
-    result.push({
-      id: "kyc",
-      label: "Incomplete Profiles",
-      value: `${incomplete.incompleteCount || 0} profiles are missing information`,
-      route: "/admin/users",
-      filterId: "incomplete"
-    });
-  }
+  // const incomplete = alerts?.incompleteProfiles;
+  // if (incomplete && (incomplete.needsAttention === true || incomplete.needsAttention === "true" || incomplete.needsAttention === 1)) {
+  //   result.push({
+  //     id: "kyc",
+  //     label: "Incomplete Profiles",
+  //     value: `${incomplete.incompleteCount || 0} profiles are missing information`,
+  //     route: "/admin/users",
+  //     filterId: "incomplete"
+  //   });
+  // }
 
   const stagnation = alerts?.contentStagnation;
   if (stagnation && (stagnation.needsAttention === true || stagnation.needsAttention === "true" || stagnation.needsAttention === 1)) {

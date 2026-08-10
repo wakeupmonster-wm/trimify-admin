@@ -26,6 +26,7 @@ import {
   deleteProgram,
   replicateProgram,
 } from "../store/program.slice";
+import { getProgramManagementAPI } from "../services/program.services";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -59,13 +60,44 @@ const ManageProgramPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [pinnedTotalPrograms, setPinnedTotalPrograms] = useState(null);
+  const [globalKpisData, setGlobalKpisData] = useState(null);
 
   useEffect(() => {
-    const noFiltersApplied =
-      !debouncedSearchTerm && !durationFilter && !statusFilter;
+    let isMounted = true;
+    const fetchGlobalKpis = async () => {
+      try {
+        // Fetch with minimum limit just to get the top-level kpis object from the backend
+        const response = await getProgramManagementAPI({ limit: 1 });
+        if (isMounted && response && response.status === "success") {
+          if (response.kpis) {
+            setGlobalKpisData(response.kpis);
+          } else {
+            // Fallback if kpis object is missing from backend
+            const allProgs = response.programs || [];
+            const active = allProgs.filter(
+              (p) => String(p.status || "Active").toLowerCase() === "active"
+            ).length;
+            setGlobalKpisData({
+              totalPrograms: response.pagination?.total ?? allProgs.length,
+              activePrograms: active,
+              inactivePrograms: allProgs.length - active,
+              totalAssignedUsers: 0,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch global KPIs", error);
+      }
+    };
+    fetchGlobalKpis();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const loadPrograms = async () => {
-      const result = await dispatch(
+      await dispatch(
         fetchProgramList({
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
@@ -79,10 +111,6 @@ const ManageProgramPage = () => {
           ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
         }),
       );
-      const total = result?.payload?.pagination?.total;
-      if (noFiltersApplied && total != null) {
-        setPinnedTotalPrograms(total);
-      }
     };
     loadPrograms();
   }, [
@@ -239,25 +267,28 @@ const ManageProgramPage = () => {
   ];
 
   const localKpis = useMemo(() => {
+    // Always prefer the dedicated unfiltered KPI data over filtered table data
+    // so that KPIs remain stable regardless of dashboard navigation filters.
+    if (globalKpisData) return globalKpisData;
     if (kpis) return kpis;
-    const all = programs || [];
-    const active = all.filter(
-      (p) => String(p.status || "Active").toLowerCase() === "active",
-    ).length;
+
+    // Fallback: only used when neither source is available yet (brief loading state)
     return {
-      totalPrograms:
-        pinnedTotalPrograms ?? serverPagination?.total ?? all.length,
-      activePrograms: active,
-      inactivePrograms: all.length - active,
+      totalPrograms: null,
+      activePrograms: null,
+      inactivePrograms: null,
       totalAssignedUsers: null,
     };
-  }, [kpis, programs, serverPagination, pinnedTotalPrograms]);
+  }, [globalKpisData, kpis]);
 
   const kpiItems = [
     {
       icon: ClipboardCheck,
       label: "Total Programs",
-      value: localKpis?.totalPrograms?.toLocaleString() || "0",
+      value:
+        localKpis?.totalPrograms != null
+          ? localKpis.totalPrograms.toLocaleString()
+          : undefined,
       description: "All programs",
       onClick: () => setStatusFilter(""),
       isSelected: statusFilter === "",
@@ -265,7 +296,10 @@ const ManageProgramPage = () => {
     {
       icon: CheckCircle2,
       label: "Active Programs",
-      value: localKpis?.activePrograms?.toLocaleString() || "0",
+      value:
+        localKpis?.activePrograms != null
+          ? localKpis.activePrograms.toLocaleString()
+          : undefined,
       description: "Currently active programs",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
@@ -274,7 +308,10 @@ const ManageProgramPage = () => {
     {
       icon: XCircle,
       label: "Inactive Programs",
-      value: localKpis?.inactivePrograms?.toLocaleString() || "0",
+      value:
+        localKpis?.inactivePrograms != null
+          ? localKpis.inactivePrograms.toLocaleString()
+          : undefined,
       description: "Currently inactive programs",
       tone: "rose",
       onClick: () => setStatusFilter("Inactive"),
@@ -286,7 +323,7 @@ const ManageProgramPage = () => {
       value:
         localKpis?.totalAssignedUsers != null
           ? localKpis.totalAssignedUsers.toLocaleString()
-          : undefined,
+          : "0",
       description: "Across all programs",
       tone: "violet",
     },

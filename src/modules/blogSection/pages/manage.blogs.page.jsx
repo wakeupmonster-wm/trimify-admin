@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LuNewspaper } from "react-icons/lu";
 import CTAButton from "@/components/common/CTAButton";
+import { getBlogPostsAPI } from "../services/blog.services";
 
 const ManageBlogsPage = () => {
   const navigate = useNavigate();
@@ -47,6 +48,38 @@ const ManageBlogsPage = () => {
     rowData: null,
   });
   const [isDeleting, setIsDeleting] = useState(false);
+  const [globalKpisData, setGlobalKpisData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchGlobalKpis = async () => {
+      try {
+        const response = await getBlogPostsAPI({ limit: 1 });
+        if (isMounted && response && (response.success || response.status === "success")) {
+          if (response.kpis) {
+            setGlobalKpisData(response.kpis);
+          } else {
+            const list = response.blogs || response.data || response.posts || [];
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            setGlobalKpisData({
+              totalBlogs: response.pagination?.total ?? list.length,
+              publishedBlogs: list.filter((p) => String(p.visibility_status).toLowerCase() === "publish").length,
+              draftBlogs: list.filter((p) => String(p.visibility_status).toLowerCase() !== "publish").length,
+              recentBlogs: list.filter((p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo).length,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch global KPIs", error);
+      }
+    };
+    fetchGlobalKpis();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(
@@ -167,14 +200,16 @@ const ManageBlogsPage = () => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const total = postsKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
-    const published = postsKpis?.publishedBlogs ?? list.filter(
+    const localKpis = globalKpisData || postsKpis;
+
+    const total = localKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
+    const published = localKpis?.publishedBlogs ?? list.filter(
       (p) => String(p.visibility_status).toLowerCase() === "publish",
     ).length;
-    const drafts = postsKpis?.draftBlogs ?? list.filter(
+    const drafts = localKpis?.draftBlogs ?? list.filter(
       (p) => String(p.visibility_status).toLowerCase() !== "publish",
     ).length;
-    const recent = postsKpis?.recentBlogs ?? list.filter(
+    const recent = localKpis?.recentBlogs ?? list.filter(
       (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
     ).length;
 
@@ -234,7 +269,7 @@ const ManageBlogsPage = () => {
         isSelected: statusFilter === "Recent",
       },
     ];
-  }, [posts, postsPagination?.total, postsKpis, statusFilter]);
+  }, [posts, postsPagination?.total, postsKpis, globalKpisData, statusFilter]);
 
   return (
     <Container>
