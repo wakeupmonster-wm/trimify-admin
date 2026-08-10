@@ -18,6 +18,8 @@ import StatusPill from "@/modules/dashboard/components/StatusPill";
 import { useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
 import { APP_COLORS } from "@/config/theme.config";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const DUMMY_EXPIRING_USERS = [
   {
@@ -397,29 +399,30 @@ export default function OverviewView({
                   label: "Plan",
                   width: "w-[25%]",
                   render: (r) => {
-                    const title =
-                      r.plan?.title || r.plan_title || "Unknown Plan";
-                    const lower = title.toLowerCase();
-                    let colorClass = "text-slate-600";
+                    const plan = r.plan?.title || r.plan_title || "Unknown Plan";
+                    const isNoPlan = !plan || plan === "No-Active Plan";
+                    const planLower = plan?.toLowerCase() || "";
 
-                    if (lower.includes("premium"))
-                      colorClass = "text-app-primary2";
-                    else if (
-                      lower.includes("basic") ||
-                      lower.includes("starter")
-                    )
-                      colorClass = "text-app-primary3";
-                    else if (lower.includes("super"))
-                      colorClass = "text-orange-500";
-                    else if (lower.includes("pro") || lower.includes("plus"))
-                      colorClass = "text-purple-500";
+                    let colorClass = "bg-emerald-500/10 text-emerald-600";
+                    if (isNoPlan || plan === "Unknown Plan") {
+                      colorClass = "bg-slate-500/10 text-slate-600";
+                    } else if (planLower.includes("premium")) {
+                      colorClass = "bg-amber-50 text-amber-600";
+                    } else if (planLower.includes("basic") || planLower.includes("starter")) {
+                      colorClass = "bg-slate-100 text-slate-800";
+                    }
 
                     return (
-                      <div
-                        className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+                          colorClass,
+                        )}
                       >
-                        {title}
-                      </div>
+                        <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                        <span className="truncate">{isNoPlan ? "No-Active Plan" : plan}</span>
+                      </Badge>
                     );
                   },
                 },

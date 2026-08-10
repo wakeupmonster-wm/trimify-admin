@@ -1,5 +1,15 @@
 import React from "react";
-import { Droplet, Target, Flame, Footprints, Scale, Dumbbell, Activity, Calendar, Utensils } from "lucide-react";
+import {
+  Droplet,
+  Target,
+  Flame,
+  Footprints,
+  Scale,
+  Dumbbell,
+  Activity,
+  Calendar,
+  Utensils,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, KV, EmptyState, Tag } from "./UserProfileShared";
 import { LuUserRound } from "react-icons/lu";
@@ -8,14 +18,24 @@ const getFitnessIcon = (label) => {
   const l = (label || "").toLowerCase();
   if (l.includes("weight goal")) return Scale;
   if (l.includes("main goal")) return Target;
-  if (l.includes("current body shape") || l.includes("goal body shape")) return LuUserRound;
+  if (l.includes("current body shape") || l.includes("goal body shape"))
+    return LuUserRound;
   if (l.includes("timeline")) return Calendar;
   if (l.includes("fitness level")) return Dumbbell;
   if (l.includes("diet")) return Utensils;
   return Activity;
 };
 
-function ActivityRing({ value, max, label, unit, icon: Icon, colorClass, textClass, bgLightClass }) {
+function ActivityRing({
+  value,
+  max,
+  label,
+  unit,
+  icon: Icon,
+  colorClass,
+  textClass,
+  bgLightClass,
+}) {
   const pct = Math.min(100, Math.max(0, (value / (max || 1)) * 100));
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
@@ -24,25 +44,52 @@ function ActivityRing({ value, max, label, unit, icon: Icon, colorClass, textCla
   return (
     <div className="flex flex-col items-center justify-center p-4 rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-200">
       <div className="relative flex items-center justify-center h-24 w-24 mb-3">
-        <svg className="h-full w-full -rotate-90 transform drop-shadow-sm" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r={radius} className="stroke-slate-100" strokeWidth="9" fill="none" />
-          <circle 
-            cx="50" cy="50" r={radius} 
-            className={cn("transition-all duration-1000 ease-out drop-shadow-sm", textClass)} 
-            stroke="currentColor" strokeWidth="9" fill="none" 
+        <svg
+          className="h-full w-full -rotate-90 transform drop-shadow-sm"
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            className="stroke-slate-100"
+            strokeWidth="9"
+            fill="none"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            className={cn(
+              "transition-all duration-1000 ease-out drop-shadow-sm",
+              textClass,
+            )}
+            stroke="currentColor"
+            strokeWidth="9"
+            fill="none"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
           />
         </svg>
-        <div className={cn("absolute inset-0 flex items-center justify-center rounded-full m-6", bgLightClass)}>
-           <Icon className={cn("w-5 h-5", textClass)} />
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center rounded-full m-6",
+            bgLightClass,
+          )}
+        >
+          <Icon className={cn("w-5 h-5", textClass)} />
         </div>
       </div>
       <div className="text-center w-full">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">{label}</div>
+        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+          {label}
+        </div>
         <div className="text-[13px] font-black tabular-nums text-slate-900 leading-tight">
-          {value.toLocaleString()} <span className="text-[10px] font-bold text-slate-400">/ {max.toLocaleString()} {unit}</span>
+          {value.toLocaleString()}{" "}
+          <span className="text-[10px] font-bold text-slate-400">
+            / {max.toLocaleString()} {unit}
+          </span>
         </div>
       </div>
     </div>
@@ -51,8 +98,20 @@ function ActivityRing({ value, max, label, unit, icon: Icon, colorClass, textCla
 
 export function TabHealth({ data }) {
   const {
-    user, waterGoal, caloriesGoal, targetSteps, height, weight, bmi, bmiCat, bmiPct, macroTotal,
-    macros, fitnessProfileSet, fitnessProfileMissing, fitnessProfileFields,
+    user,
+    waterGoal,
+    caloriesGoal,
+    targetSteps,
+    height,
+    weight,
+    bmi,
+    bmiCat,
+    bmiPct,
+    macroTotal,
+    macros,
+    fitnessProfileSet,
+    fitnessProfileMissing,
+    fitnessProfileFields,
   } = data;
 
   return (
@@ -65,7 +124,7 @@ export function TabHealth({ data }) {
             icon={Scale}
           >
             <div className="grid grid-cols-2 gap-x-5 gap-y-2">
-              <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
+              <div className="flex items-center justify-between py-1.5">
                 <span className="text-xs font-medium text-slate-500">
                   Height
                 </span>
@@ -73,7 +132,7 @@ export function TabHealth({ data }) {
                   {height || "—"} cm
                 </span>
               </div>
-              <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
+              <div className="flex items-center justify-between py-1.5">
                 <span className="text-xs font-medium text-slate-500">
                   Weight
                 </span>
@@ -118,7 +177,11 @@ export function TabHealth({ data }) {
             </div>
           </Card>
 
-          <Card title="Daily Targets" subtitle="Nutrition, hydration & step goals" icon={Target}>
+          <Card
+            title="Daily Targets"
+            subtitle="Nutrition, hydration & step goals"
+            icon={Target}
+          >
             <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <ActivityRing
                 icon={Droplet}
@@ -149,10 +212,10 @@ export function TabHealth({ data }) {
               />
             </div>
 
-            <div className="mb-2 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
+            <div className="mb-3 text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
               Macro split (per meal)
             </div>
-            <div className="mb-2.5 flex h-2 overflow-hidden rounded-full border border-slate-100 bg-slate-100">
+            <div className="mb-3 flex h-2 overflow-hidden rounded-full border border-slate-100 bg-slate-100">
               {macros.map((m) => (
                 <div
                   key={m.label}
@@ -163,7 +226,8 @@ export function TabHealth({ data }) {
                 />
               ))}
             </div>
-            <div className="flex flex-wrap gap-3.5">
+
+            <div className="flex flex-wrap gap-3.5 pb-4">
               {macros.map((m) => (
                 <div
                   key={m.label}
@@ -177,20 +241,6 @@ export function TabHealth({ data }) {
                 </div>
               ))}
             </div>
-            <div className="mt-3.5 pb-3">
-              <KV
-                icon={Droplet}
-                label="Fluid Restriction"
-                value={
-                  user.fluid_restrictions
-                    ? user.fluid_quantity
-                      ? `${user.fluid_quantity} ml/day`
-                      : "Restricted (quantity not set)"
-                    : "None"
-                }
-                noBorder={true}
-              />
-            </div>
           </Card>
         </div>
 
@@ -201,7 +251,13 @@ export function TabHealth({ data }) {
             icon={Dumbbell}
           >
             {fitnessProfileSet.map(([l, v]) => (
-              <KV key={l} icon={getFitnessIcon(l)} label={l} value={v} noBorder={true} />
+              <KV
+                key={l}
+                icon={getFitnessIcon(l)}
+                label={l}
+                value={v}
+                noBorder={true}
+              />
             ))}
             {fitnessProfileMissing.length === fitnessProfileFields.length ? (
               <EmptyState
@@ -221,6 +277,33 @@ export function TabHealth({ data }) {
                 </div>
               </>
             ) : null}
+          </Card>
+
+          <Card
+            title="Medical Constraints"
+            subtitle="Fluid restrictions and special requirements"
+            icon={Activity}
+            className={"gap-0"}
+          >
+            <div className="flex items-center justify-between group p-4 bg-slate-100/60 rounded-xl border border-slate-200/50">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-slate-200/50 rounded-full text-slate-400 group-hover:text-slate-600 transition-colors">
+                  <Droplet className="w-5 h-5"/>
+                </div>
+                <p className="text-[15px] font-semibold text-muted-foreground">
+                  Fluid Restriction
+                </p>
+              </div>
+              <p className="text-[13px] font-semibold text-foreground/70 mt-1 capitalize">
+                {user.fluid_restrictions == 1 ||
+                user.fluid_restrictions === true ||
+                user.fluid_restrictions === "Yes"
+                  ? user.fluid_quantity
+                    ? `${user.fluid_quantity} ml/day`
+                    : "Restricted (quantity not set)"
+                  : "None"}
+              </p>
+            </div>
           </Card>
         </div>
       </div>

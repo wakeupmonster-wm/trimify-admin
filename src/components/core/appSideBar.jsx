@@ -22,22 +22,20 @@ import { cn } from "@/lib/utils";
 
 export function AppSidebar({ ...props }) {
   const user = useSelector((state) => state.auth?.user);
+  const account = useSelector((state) => state.account?.account);
 
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName =
-    user?.nickname ||
-    user?.name ||
-    localUser?.nickname ||
-    localUser?.name ||
-    "Admin";
-  const displayEmail = user?.email || localUser?.email || "admin@example.com";
+  const displayName = account?.name || user?.name || localUser?.name || "Admin";
+  const displayEmail =
+    account?.email || user?.email || localUser?.email || "admin@example.com";
   const initial = displayName.charAt(0).toUpperCase();
 
   const displayUser = {
-    ...user,
     ...localUser,
+    ...user,
+    ...account,
     name: displayName,
     email: displayEmail,
     initial: initial,

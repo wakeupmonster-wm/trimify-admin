@@ -3,13 +3,13 @@ import { apiConnector } from "@/services/axios/axios.connector";
 import { ACCOUNT_SETTING } from "@/services/api-endpoints/account-settings.endpoints";
 
 export const getAdminAccountAPI = () => {
-//   return apiConnector("GET", ACCOUNTENDPOINTS.GET_ACCOUNT);
+  return apiConnector("GET", ACCOUNT_SETTING.ACCOUNT_PROFILE);
 };
 
 export const patchAdminAccountAPI = (payload) => {
-//   return apiConnector("PATCH", ACCOUNTENDPOINTS.PATCH_ACCOUNT, payload, {
-//     "Content-Type": "multipart/form-data",
-//   });
+  return apiConnector("POST", ACCOUNT_SETTING.ACCOUNT_PROFILE_UPDATE, payload, {
+    "Content-Type": "multipart/form-data",
+  });
 };
 
 export const changePasswordAPI = async (data) => {

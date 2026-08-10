@@ -20,7 +20,6 @@ import {
   Clock,
   Edit3,
   Globe,
-  Hash,
   LogOut,
   Mail,
   Phone,
@@ -128,12 +127,7 @@ export default function AccountsPage() {
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName =
-    account?.nickname ||
-    account?.name ||
-    localUser?.nickname ||
-    localUser?.name ||
-    "Admin";
+  const displayName = account?.name || localUser?.name || "Admin";
   const displayEmail =
     account?.email || localUser?.email || "admin@example.com";
   const initial = displayName.charAt(0).toUpperCase();
@@ -142,7 +136,6 @@ export default function AccountsPage() {
     ...localUser,
     ...account,
     name: displayName,
-    nickname: displayName,
     email: displayEmail,
     initial: initial,
   };

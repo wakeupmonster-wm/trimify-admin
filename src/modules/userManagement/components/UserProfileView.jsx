@@ -358,7 +358,7 @@ export default function UserProfileView({ user, onBack, loading }) {
           <div className="flex items-center gap-3 self-end sm:self-auto">
             <button
               onClick={() => handleCopy(user.id, "ID")}
-              className="group flex md:flex-none items-center justify-center md:justify-start gap-1 bg-white text-xs sm:text-[10px] font-semibold text-muted-foreground px-3 py-2 sm:py-1.5 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:border-app-primary2/30"
+              className="group flex md:flex-none items-center justify-center md:justify-start gap-1 bg-white text-xs sm:text-[10px] font-semibold text-muted-foreground px-2 py-1.5 sm:py-1 rounded-md border border-slate-200 transition-all active:scale-95 shadow-sm hover:border-app-primary2/30"
             >
               <span className="text-app-primary2/60 shrink-0">ID:</span>
               <span className="truncate max-w-[200px] md:max-w-none">
@@ -371,7 +371,7 @@ export default function UserProfileView({ user, onBack, loading }) {
         <div className="flex flex-col gap-4">
           {/* Hero Header */}
           <div className="mb-2 sm:mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between rounded-2xl bg-white p-4 sm:p-6 shadow-sm border border-slate-200">
-            <div className="flex flex-row items-center w-full gap-4 sm:gap-6">
+            <div className="flex flex-row items-center w-full gap-4">
               <div className="relative shrink-0">
                 <div className="absolute inset-0 bg-app-primary2/10 rounded-full blur-xl opacity-50" />
                 <Avatar
@@ -384,12 +384,12 @@ export default function UserProfileView({ user, onBack, loading }) {
                   }}
                 >
                   <AvatarImage
-                    src={user.avatar || dummyImg}
+                    src={user?.avatar || undefined}
                     alt={user?.name}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-slate-50 text-slate-400 text-2xl sm:text-3xl font-black">
-                    {initials(user.name)}
+                  <AvatarFallback className="bg-slate-100 text-slate-400 text-2xl sm:text-3xl font-black">
+                    {initials(user?.name).substring(0, 1)}
                   </AvatarFallback>
                 </Avatar>
               </div>

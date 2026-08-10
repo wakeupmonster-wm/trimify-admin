@@ -92,7 +92,7 @@ export default function AdminEditDialog({ children, currentData }) {
     setLoading(true);
     setSuccess(false);
     const data = new FormData();
-    data.append("nickname", formData.nickname);
+    data.append("name", formData.nickname);
     // data.append("about", formData.about);
     data.append("phone", formData.phone);
 

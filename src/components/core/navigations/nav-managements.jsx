@@ -282,7 +282,7 @@ export function NavManagements({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-1 rounded-r-full bg-app-primary2" />
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                               )}
                               <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}

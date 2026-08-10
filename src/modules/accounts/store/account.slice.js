@@ -12,9 +12,15 @@ export const fetchProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAdminAccountAPI();
-
-      if (response && response.success) {
-        return { account: response.data || [] };
+      if (response && response.status === "success") {
+        return { 
+          account: {
+            ...response.data,
+            nickname: response.data.name,
+            memberSince: response.data.member_since,
+            lastLoginAt: response.data.last_login_at
+          } 
+        };
       }
       return rejectWithValue(response.message || "Failed to fetch account");
     } catch (e) {
@@ -32,8 +38,13 @@ export const updateAdminAccount = createAsyncThunk(
       // formData is the FormData object containing nickname, about, and avatar
       const res = await patchAdminAccountAPI(formData);
 
-      if (res.success) {
-        return res.data; // This is the structured response data
+      if (res && res.status === "success") {
+        return {
+          ...res.data,
+          nickname: res.data.name,
+          memberSince: res.data.member_since,
+          lastLoginAt: res.data.last_login_at
+        };
       }
       return rejectWithValue(res.message || "Update failed");
     } catch (err) {
