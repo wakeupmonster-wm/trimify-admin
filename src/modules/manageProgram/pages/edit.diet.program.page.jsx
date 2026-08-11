@@ -22,6 +22,7 @@ import {
   getProgramDuration,
   searchFood,
   getDietMeals,
+  updateDietMeal,
 } from "../store/diet.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
 

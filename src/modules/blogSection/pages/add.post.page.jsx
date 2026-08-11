@@ -141,11 +141,7 @@ const AddPostPage = () => {
     }
     setErrors({});
 
-    if (isEdit) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleConfirmUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmUpdate = async () => {
@@ -431,9 +427,13 @@ const AddPostPage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this post's details?"
-        confirmText="Update"
+        title={isEdit ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEdit
+            ? "Are you sure you want to update this post's details?"
+            : "Are you sure you want to create this new post?"
+        }
+        confirmText={isEdit ? "Update" : "Create"}
         type="brand"
         loading={loading}
       />

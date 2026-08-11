@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,6 +52,7 @@ const AddDietProgramPage = () => {
   const [selectedMeals, setSelectedMeals] = useState([]); // Store array of selected meal objects
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const searchTimeoutRef = useRef(null);
 
@@ -105,6 +107,10 @@ const AddDietProgramPage = () => {
       return;
     }
 
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmAdd = async () => {
     const payload = {
       program_id: id,
       week: selectedWeek,
@@ -120,6 +126,7 @@ const AddDietProgramPage = () => {
     } else {
       toast.error(resultAction.payload || "Failed to add diet meal.");
     }
+    setIsConfirmModalOpen(false);
   };
 
   const maxWeeks = programDuration ? parseInt(programDuration, 10) : 8;
@@ -357,6 +364,17 @@ const AddDietProgramPage = () => {
           </div>
         </form>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmAdd}
+        title="Confirm Creation"
+        message="Are you sure you want to create this new diet plan?"
+        confirmText="Create"
+        type="brand"
+        loading={loading}
+      />
     </Container>
   );
 };

@@ -375,7 +375,7 @@ export default function UserProfileView({ user, onBack, loading }) {
               <div className="relative shrink-0">
                 <div className="absolute inset-0 bg-app-primary2/10 rounded-full blur-xl opacity-50" />
                 <Avatar
-                  className="h-16 w-16 sm:h-20 sm:w-20 border-4 border-white shadow-sm relative z-10 cursor-pointer hover:ring-2 hover:ring-app-primary2/30 transition-all duration-200"
+                  className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-white shadow-sm relative z-10 cursor-pointer transition-all duration-200"
                   onClick={() => {
                     const imgSrc = user.avatar || null;
                     if (imgSrc) {

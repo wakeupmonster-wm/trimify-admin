@@ -31,8 +31,7 @@ const REVOKED_REASON_STYLE = {
   "Inconsistent state": "text-amber-500",
 };
 
-const humanizeReason = (value) =>
-  value || "";
+const humanizeReason = (value) => value || "";
 
 export const getSubscriberColumns = (onAction) => [
   {
@@ -83,7 +82,8 @@ export const getSubscriberColumns = (onAction) => [
     minSize: 120,
     cell: ({ row }) => {
       const email = row.original.email;
-      if (!email) return <span className="text-slate-400 text-[11px] italic">-</span>;
+      if (!email)
+        return <span className="text-slate-400 text-[11px] italic">-</span>;
       return (
         <div
           className="flex items-center gap-2 w-full text-[11px] font-medium text-slate-600 tracking-tight"
@@ -113,7 +113,7 @@ export const getSubscriberColumns = (onAction) => [
             "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
             isPremium
               ? "bg-amber-50 text-amber-600"
-              : "bg-slate-100 text-slate-600"
+              : "bg-app-primary2/5 text-app-primary2",
           )}
         >
           <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
@@ -146,16 +146,23 @@ export const getSubscriberColumns = (onAction) => [
             <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
             <span className="truncate">{status}</span>
           </Badge>
-          {status === "Revoked" && revoked_reason && revoked_reason !== "Inconsistent state" && (
-            <span className={cn(
-              "text-[10px] font-medium pl-0.5",
-              REVOKED_REASON_STYLE[revoked_reason] || "text-slate-400"
-            )}>
-              {humanizeReason(revoked_reason)}
-            </span>
-          )}
+          {status === "Revoked" &&
+            revoked_reason &&
+            revoked_reason !== "Inconsistent state" && (
+              <span
+                className={cn(
+                  "text-[10px] font-medium pl-0.5",
+                  REVOKED_REASON_STYLE[revoked_reason] || "text-slate-400",
+                )}
+              >
+                {humanizeReason(revoked_reason)}
+              </span>
+            )}
           {status === "Revoked" && revoked_detail && (
-            <span className="text-[9px] font-medium text-slate-400 pl-0.5 italic max-w-[140px] truncate" title={revoked_detail}>
+            <span
+              className="text-[9px] font-medium text-slate-400 pl-0.5 italic max-w-[140px] truncate"
+              title={revoked_detail}
+            >
               "{revoked_detail}"
             </span>
           )}
@@ -229,7 +236,7 @@ export const getSubscriberColumns = (onAction) => [
                 <Eye className="w-3.5 h-3.5" />
                 View User
               </DropdownMenuItem>
-              
+
               {/* <DropdownMenuItem
                 className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-app-primary2/10 focus:text-app-primary2 font-semibold text-xs"
                 onClick={() => onAction(sub, "upgrade")}
@@ -253,7 +260,6 @@ export const getSubscriberColumns = (onAction) => [
                 <ShieldOff className="w-3.5 h-3.5" />
                 Revoke Access
               </DropdownMenuItem>
-             
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

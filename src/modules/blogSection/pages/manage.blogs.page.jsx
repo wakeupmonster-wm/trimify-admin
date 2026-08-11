@@ -18,7 +18,6 @@ import {
   toggleBlogPostVisibility,
   deleteBlogPost,
 } from "../store/blog.slice";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LuNewspaper } from "react-icons/lu";
@@ -114,20 +113,17 @@ const ManageBlogsPage = () => {
     }
   };
 
-  const postColumns = useMemo(
-    () => getManageBlogsColumns(handlePostAction),
-    [],
-  );
+  const postColumns = useMemo(() => getManageBlogsColumns(handlePostAction), []);
 
   const displayPosts = useMemo(() => {
     let list = posts && posts.length > 0 ? posts : [];
     if (statusFilter === "Publish") {
-      list = list.filter(
-        (p) => String(p.visibility_status).toLowerCase().startsWith("publish")
+      list = list.filter((p) =>
+        String(p.visibility_status).toLowerCase().startsWith("publish"),
       );
     } else if (statusFilter === "Draft") {
       list = list.filter(
-        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish")
+        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish"),
       );
     } else if (statusFilter === "Recent") {
       const thirtyDaysAgo = new Date();
@@ -183,13 +179,13 @@ const ManageBlogsPage = () => {
       postsKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
     const published =
       postsKpis?.publishedBlogs ??
-      list.filter(
-        (p) => String(p.visibility_status).toLowerCase().startsWith("publish")
+      list.filter((p) =>
+        String(p.visibility_status).toLowerCase().startsWith("publish"),
       ).length;
     const drafts =
       postsKpis?.draftBlogs ??
       list.filter(
-        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish")
+        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish"),
       ).length;
     const recent =
       postsKpis?.recentBlogs ??
@@ -202,7 +198,7 @@ const ManageBlogsPage = () => {
         label: "Total Blogs",
         value: total,
         icon: FileText,
-        tone: statusFilter === "" ? "blue" : "slate",
+        tone: "blue",
         description: "All platform blogs",
         onClick: () => setStatusFilter(""),
         isSelected: statusFilter === "",
@@ -211,12 +207,7 @@ const ManageBlogsPage = () => {
         label: "Published Blogs",
         value: published,
         icon: CheckCircle,
-        tone:
-          statusFilter === "Publish"
-            ? "emerald"
-            : statusFilter === ""
-              ? "emerald"
-              : "slate",
+        tone: "emerald",
         description: "Live on app",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Publish" ? "" : "Publish")),
@@ -226,12 +217,7 @@ const ManageBlogsPage = () => {
         label: "Draft / Hidden",
         value: drafts,
         icon: EyeOff,
-        tone:
-          statusFilter === "Draft"
-            ? "amber"
-            : statusFilter === ""
-              ? "amber"
-              : "slate",
+        tone: "amber",
         description: "Not visible to users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Draft" ? "" : "Draft")),
@@ -241,12 +227,7 @@ const ManageBlogsPage = () => {
         label: "Recently Updated",
         value: recent,
         icon: Flame,
-        tone:
-          statusFilter === "Recent"
-            ? "rose"
-            : statusFilter === ""
-              ? "rose"
-              : "slate",
+        tone: "rose",
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),

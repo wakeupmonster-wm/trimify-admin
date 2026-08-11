@@ -11,6 +11,7 @@ import { htmlContent } from "@/constants/htmlContent";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCmsPages, updateCmsContent } from "../store/cms.management.slice";
 import CTAButton from "@/components/common/CTAButton";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 export default function PrivacyAndPolicyPage() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function PrivacyAndPolicyPage() {
 
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   // Find the page ID and initial content from Redux state
   const pageData = data?.find((page) =>
@@ -36,11 +38,14 @@ export default function PrivacyAndPolicyPage() {
     }
   }, [pageData]);
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!content.trim()) {
       return toast.error("Content cannot be empty.");
     }
+    setIsConfirmModalOpen(true);
+  };
 
+  const handleConfirmSave = async () => {
     if (!pageData?.id) {
       return toast.error("Page ID not found. Cannot save.");
     }
@@ -57,9 +62,11 @@ export default function PrivacyAndPolicyPage() {
 
       toast.success("Privacy Policy saved successfully.");
     } catch (error) {
-      toast.error(error || "Failed to save content.");
+      console.error(error);
+      toast.error(error?.message || "Failed to save content.");
     } finally {
       setIsSaving(false);
+      setIsConfirmModalOpen(false);
     }
   };
 
@@ -127,6 +134,17 @@ export default function PrivacyAndPolicyPage() {
           </div>
         </div>
       </div>
+      
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Are you sure you want to save the changes to the Privacy Policy?"
+        confirmText="Save Changes"
+        type="brand"
+        loading={isSaving}
+      />
     </Container>
   );
 }

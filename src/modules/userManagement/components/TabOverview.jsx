@@ -23,6 +23,7 @@ import { GiWeightLiftingUp } from "react-icons/gi";
 import { cn } from "@/lib/utils";
 import { Kpi, Card, KV, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
+import { Badge } from "@/components/ui/badge";
 import { LuUserRound } from "react-icons/lu";
 import { FaLink } from "react-icons/fa6";
 
@@ -90,13 +91,13 @@ export function TabOverview({ data }) {
             icon={Activity}
           >
             {recentActivities.length > 0 ? (
-              <div className="flex flex-col max-h-[485px] overflow-y-auto pr-1">
+              <div className="flex flex-col max-h-[485px] overflow-y-auto">
                 {recentActivities.map((a, i) => {
                   const { icon: Icon, className } = activityMeta(a.type);
                   return (
                     <div
-                      key={i}
-                      className="flex items-center gap-3 border-b border-slate-50 py-2.5 last:border-b-0 last:pb-0"
+                      key={`${a.id}-${i}`}
+                      className="flex items-center gap-3 py-1.5 last:border-b-0 last:pb-0"
                     >
                       <div
                         className={cn(
@@ -169,23 +170,23 @@ export function TabOverview({ data }) {
               value={
                 user.plan ? (
                   <div className="flex items-center justify-end gap-2">
-                    <div
+                    <Badge
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide",
+                        "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
                         !user.paid
                           ? "bg-slate-100 text-slate-600"
                           : String(user.plan.title || user.plan)
                                 .toLowerCase()
                                 .includes("premium")
-                            ? "bg-amber-100/50 text-amber-600"
-                            : "bg-blue-50 text-app-primary2",
+                            ? "bg-amber-50 text-amber-600"
+                            : "bg-app-primary2/5 text-app-primary2",
                       )}
                     >
-                      {user.paid && (
-                        <Star className="h-2.5 w-2.5 fill-current" />
-                      )}
-                      {String(user.plan.title || user.plan).toUpperCase()}
-                    </div>
+                      <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                      <span className="truncate">
+                        {String(user.plan.title || user.plan)}
+                      </span>
+                    </Badge>
                   </div>
                 ) : (
                   "No active plan"

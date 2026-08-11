@@ -148,6 +148,7 @@ const FaqManagementPage = () => {
       if (toggleFaqStatus.fulfilled.match(res)) {
         toast.success(`FAQ marked as ${newStatus}`);
         setToggleModal({ open: false, rowData: null, targetStatus: false });
+        refetchFaqs();
       } else {
         toast.error("Failed to update FAQ status");
       }
@@ -165,6 +166,7 @@ const FaqManagementPage = () => {
     try {
       const res = await dispatch(deleteFaq(deleteModal.rowData.id)).unwrap();
       toast.success(res?.message || "FAQ deleted successfully");
+      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "Failed to delete FAQ");
     } finally {
@@ -225,7 +227,7 @@ const FaqManagementPage = () => {
         label: "Total FAQs",
         value: total,
         icon: MessageCircle,
-        tone: statusFilter === "" ? "blue" : "slate",
+        tone: "blue",
         description: "All questions & answers",
         onClick: () => setStatusFilter(""),
         isSelected: statusFilter === "",
@@ -234,12 +236,7 @@ const FaqManagementPage = () => {
         label: "Active FAQs",
         value: active,
         icon: CheckCircle,
-        tone:
-          statusFilter === "Active"
-            ? "emerald"
-            : statusFilter === ""
-              ? "emerald"
-              : "slate",
+        tone: "emerald",
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
@@ -249,12 +246,7 @@ const FaqManagementPage = () => {
         label: "Inactive FAQs",
         value: inactive,
         icon: EyeOff,
-        tone:
-          statusFilter === "Inactive"
-            ? "amber"
-            : statusFilter === ""
-              ? "amber"
-              : "slate",
+        tone: "amber",
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
@@ -264,12 +256,7 @@ const FaqManagementPage = () => {
         label: "Recently Updated",
         value: recent,
         icon: RefreshCw,
-        tone:
-          statusFilter === "Recent"
-            ? "indigo"
-            : statusFilter === ""
-              ? "indigo"
-              : "slate",
+        tone: "indigo",
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),

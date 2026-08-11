@@ -16,7 +16,6 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { Info } from "lucide-react";
 
 /**
  * Reusable trend widget — one series renders as a plain line/bar (no legend
@@ -43,9 +42,9 @@ const TrendChartCard = ({
   );
   // Ensure we actually have non-zero data to plot, not just a padded zero-value array
   // which can happen for single-day periods like 'Yesterday' or 'Today'.
-  const hasData = data.length > 0 && data.some(point => 
-    series.some(s => Number(point[s.key]) > 0)
-  );
+  const hasData =
+    data.length > 0 &&
+    data.some((point) => series.some((s) => Number(point[s.key]) > 0));
 
   return (
     <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
@@ -172,7 +171,7 @@ const TrendChartCard = ({
                   fill: "transparent",
                 }}
               />
-              <ChartLegend content={<ChartLegendContent />} />
+              {series.length > 1 && <ChartLegend content={<ChartLegendContent />} />}
               {series.map((s) => {
                 const effectiveType = data.length === 1 ? "bar" : s.type;
                 if (effectiveType === "bar") {

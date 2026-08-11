@@ -259,6 +259,7 @@ const ManageProgramPage = () => {
       label: "Total Programs",
       value: localKpis?.totalPrograms?.toLocaleString() || "0",
       description: "All programs",
+      tone: "blue",
       onClick: () => setStatusFilter(""),
       isSelected: statusFilter === "",
     },

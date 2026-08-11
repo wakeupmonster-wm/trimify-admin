@@ -77,7 +77,7 @@ const ConfirmModal = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 bg-white min-h-[100px] flex items-center">
+        <div className="p-6 bg-white min-h-[90px] flex items-center">
           <p className="text-slate-600 font-medium text-[14px] leading-relaxed w-full">
             {message}
           </p>

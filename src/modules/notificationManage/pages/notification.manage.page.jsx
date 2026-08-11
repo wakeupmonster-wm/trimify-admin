@@ -200,11 +200,11 @@ const NotificationManagePage = () => {
               {/* LEFT: MESSAGE DETAILS */}
               <div className="lg:col-span-7">
                 <div className="border border-slate-300/60 pt-2 shadow-sm rounded-xl overflow-hidden bg-white">
-                  <div className="px-4 sm:px-6 py-4 md:py-5 border-b border-slate-300/60">
-                    <h2 className="text-lg sm:text-xl font-bold text-slate-900">
+                  <div className="px-4 sm:px-6 py-4 border-b border-slate-300/60">
+                    <h2 className="text-lg font-bold text-slate-900">
                       Campaign Details
                     </h2>
-                    <p className="text-[13px] font-medium text-slate-400 mt-1">
+                    <p className="text-xs font-medium text-slate-500">
                       Configure and dispatch engagement notifications
                     </p>
                   </div>
@@ -214,7 +214,7 @@ const NotificationManagePage = () => {
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 text-app-primary2">
                         <Monitor className="w-5 h-5" />
-                        <h3 className="text-sm font-bold">Channel Type</h3>
+                        <h3 className="text-xs font-bold">Channel Type</h3>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -551,7 +551,7 @@ const NotificationManagePage = () => {
         loading={isSending}
         confirmText="Yes, Send Now"
         message={
-          <div className="space-y-3 mt-2 text-left">
+          <div className="space-y-3 text-left">
             <p>
               Are you sure you want to send this{" "}
               <strong>
@@ -559,7 +559,7 @@ const NotificationManagePage = () => {
               </strong>{" "}
               campaign?
             </p>
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+            {/* <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
               <p className="flex justify-between items-center">
                 <strong className="text-slate-800">Name:</strong>
                 <span className="font-medium">{campaignName}</span>
@@ -572,7 +572,7 @@ const NotificationManagePage = () => {
             <p className="text-red-500 font-medium text-[11.5px] pt-2">
               This action cannot be undone. Notifications will be queued
               immediately.
-            </p>
+            </p> */}
           </div>
         }
       />

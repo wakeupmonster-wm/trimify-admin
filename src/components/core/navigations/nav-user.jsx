@@ -24,8 +24,11 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useDispatch } from "react-redux";
+import { logout } from "@/modules/authentication/store/auth.slice";
 
 export function NavUser({ user }) {
+  const dispatch = useDispatch();
   const { isMobile } = useSidebar();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -35,7 +38,7 @@ export function NavUser({ user }) {
     setIsLoggingOut(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      // dispatch(logout());
+      dispatch(logout());
       navigate("/auth/login");
       toast.success("Logout successful.");
     } finally {

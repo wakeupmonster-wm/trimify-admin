@@ -12,6 +12,7 @@ import { Pill, EmptyState } from "./UserProfileShared";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -96,10 +97,10 @@ export function TabTransactions({ data }) {
               <item.icon className="h-6 w-6" />
             </div>
             <div className="flex flex-col items-start justify-between">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
                 {item.label}
               </span>
-              <div className={cn("font-black tracking-tight", item.valClass)}>
+              <div className={cn("font-bold tracking-tight", item.valClass)}>
                 {item.value}
               </div>
             </div>
@@ -121,7 +122,7 @@ export function TabTransactions({ data }) {
             value={status}
             onValueChange={(val) => onTransactionsStatusChange(val)}
           >
-            <SelectTrigger className="h-10 w-32 rounded-lg border border-slate-200 bg-white text-xs ml-auto sm:ml-0 font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
+            <SelectTrigger className="h-10 w-26 rounded-lg border border-slate-200 bg-white text-xs ml-auto sm:ml-0 font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
@@ -196,23 +197,21 @@ export function TabTransactions({ data }) {
                                 </span>
                               );
 
-                            const lower = title.toLowerCase();
-                            let colorClass = "text-slate-600";
-
-                            if (lower.includes("premium"))
-                              colorClass = "text-app-primary2";
-                            else if (
-                              lower.includes("basic") ||
-                              lower.includes("starter")
-                            )
-                              colorClass = "text-app-primary3";
-
+                            const isPremium = title
+                              .toLowerCase()
+                              .includes("premium");
                             return (
-                              <div
-                                className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                              <Badge
+                                className={cn(
+                                  "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
+                                  isPremium
+                                    ? "bg-amber-50 text-amber-600"
+                                    : "bg-app-primary2/5 text-app-primary2",
+                                )}
                               >
-                                {title}
-                              </div>
+                                <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                                <span className="truncate">{title}</span>
+                              </Badge>
                             );
                           })()}
                         </td>

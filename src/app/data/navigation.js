@@ -7,7 +7,6 @@ import {
   IconCreditCard,
   IconDeviceDesktop,
   IconBell,
-  IconSettings,
 } from "@tabler/icons-react";
 import { LuUsersRound } from "react-icons/lu";
 import { PiUsersThree } from "react-icons/pi";
@@ -89,7 +88,7 @@ const navigationData = {
       badge: null,
       items: [
         { title: "Dashboard", url: "/admin/subscription-management" },
-        { title: "Products", url: "/admin/subscription-management/products" },
+        { title: "Plans", url: "/admin/subscription-management/products" },
         { title: "Subscribers", url: "/admin/subscription-management/subscribers" },
         { title: "Transactions", url: "/admin/subscription-management/transactions" },
       ],
