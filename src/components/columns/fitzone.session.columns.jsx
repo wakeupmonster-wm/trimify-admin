@@ -78,6 +78,37 @@ export const getManageFitzoneSessionColumns = (onAction) => [
     },
   },
   {
+    accessorKey: "icon",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Icon
+      </div>
+    ),
+    size: 80,
+    minSize: 80,
+    cell: ({ row }) => {
+      const iconUrl = row.original.workoutsession?.icon;
+      return (
+        <div className="flex items-center">
+          {iconUrl ? (
+            <img
+              src={iconUrl}
+              alt="Icon"
+              className="w-10 h-10 object-contain p-1 bg-slate-50 rounded border"
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
+            />
+          ) : (
+            <span className="font-medium text-slate-400 text-[11px] italic">
+              No Icon
+            </span>
+          )}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "video",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-left">

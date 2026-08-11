@@ -86,11 +86,24 @@ export const getManageDietProgramColumns = (handleAction) => [
     size: 100,
     minSize: 60,
     cell: ({ row }) => {
-      const hasImage = !!row.original.diet_meal_data?.Meal_Image_url;
+      const imageUrl = row.original.diet_meal_data?.Meal_Image_url;
       return (
-        <span className="font-medium text-slate-600 text-[11px]">
-          {hasImage ? "Available" : "No Image"}
-        </span>
+        <div className="flex items-center">
+          {imageUrl ? (
+            <img 
+              src={imageUrl} 
+              alt="Meal" 
+              className="w-10 h-10 object-cover rounded shadow-sm bg-slate-100"
+              onError={(e) => {
+                e.target.style.display = 'none';
+              }}
+            />
+          ) : (
+            <span className="font-medium text-slate-400 text-[11px] italic">
+              No Image
+            </span>
+          )}
+        </div>
       );
     },
   },
