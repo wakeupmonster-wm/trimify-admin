@@ -344,7 +344,7 @@ const FaqManagementPage = () => {
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
+                  className="h-11 text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
@@ -357,7 +357,7 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
+                  className="min-h-[120px] text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
@@ -401,9 +401,11 @@ const FaqManagementPage = () => {
             columns={columns}
             data={displayFaqs}
             rowCount={
-              serverPagination
-                ? serverPagination.total
-                : displayFaqs?.length || 0
+              statusFilter
+                ? displayFaqs?.length || 0
+                : serverPagination
+                  ? serverPagination.total
+                  : displayFaqs?.length || 0
             }
             pagination={pagination}
             onPaginationChange={setPagination}

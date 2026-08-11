@@ -143,15 +143,17 @@ const FitzoneManagementPage = () => {
   // If serverPagination.total exists, it's server-paginated.
   const isManual = !!(serverPagination && serverPagination.total > 0);
 
-  // Local fallback filtering in case the backend ignores the `status` parameter
   const displayData = useMemo(() => {
-    if (isManual || !statusFilter) return fitzones || [];
-    return (fitzones || []).filter(
-      (fz) =>
-        String(fz.status || "Active").toLowerCase() ===
-        statusFilter.toLowerCase(),
-    );
-  }, [fitzones, statusFilter, isManual]);
+    let data = fitzones || [];
+    if (statusFilter) {
+      data = data.filter(
+        (fz) =>
+          String(fz.status || "Active").toLowerCase() ===
+          statusFilter.toLowerCase(),
+      );
+    }
+    return data;
+  }, [fitzones, statusFilter]);
 
   const filterConfig = [
     {
@@ -264,7 +266,11 @@ const FitzoneManagementPage = () => {
             columns={columns}
             data={displayData}
             rowCount={
-              isManual ? serverPagination.total : displayData?.length || 0
+              statusFilter
+                ? displayData?.length || 0
+                : isManual
+                  ? serverPagination.total
+                  : displayData?.length || 0
             }
             pagination={pagination}
             onPaginationChange={setPagination}

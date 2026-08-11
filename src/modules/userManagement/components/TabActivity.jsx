@@ -53,13 +53,13 @@ export function TabActivity({ data }) {
           const isActive = filter === type;
 
           const borderTones = {
-            blue: "border-b-blue-500",
+            blue: "border-b-app-primary2",
             purple: "border-b-purple-500",
             emerald: "border-b-emerald-500",
             amber: "border-b-amber-500",
           };
           const textTones = {
-            blue: "text-blue-500",
+            blue: "text-app-primary2",
             purple: "text-purple-500",
             emerald: "text-emerald-500",
             amber: "text-amber-500",

@@ -90,8 +90,8 @@ export function TabOverview({ data }) {
             icon={Activity}
           >
             {recentActivities.length > 0 ? (
-              <div className="flex flex-col">
-                {recentActivities.slice(0, 6).map((a, i) => {
+              <div className="flex flex-col max-h-[485px] overflow-y-auto pr-1">
+                {recentActivities.map((a, i) => {
                   const { icon: Icon, className } = activityMeta(a.type);
                   return (
                     <div

@@ -274,9 +274,11 @@ const ManageCategoryPage = () => {
             columns={categoryColumns}
             data={displayCategories}
             rowCount={
-              isCategoryManual
-                ? categoriesPagination.total
-                : displayCategories?.length || 0
+              statusFilter
+                ? displayCategories?.length || 0
+                : isCategoryManual
+                  ? categoriesPagination.total
+                  : displayCategories?.length || 0
             }
             pagination={categoryPage}
             onPaginationChange={setCategoryPageState}
