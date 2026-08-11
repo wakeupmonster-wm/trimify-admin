@@ -61,7 +61,14 @@ export const addFoodCategory = createAsyncThunk(
       if (response && response.status !== "error" && response.status !== false) return response;
       return rejectWithValue(response.message || "Failed to add food category");
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Failed to add food category");
+      const errData = error.response?.data;
+      // Laravel validation errors come as { errors: { field: ["msg"] } }
+      if (errData?.errors) {
+        const firstField = Object.keys(errData.errors)[0];
+        const firstMsg = errData.errors[firstField]?.[0];
+        if (firstMsg) return rejectWithValue(firstMsg);
+      }
+      return rejectWithValue(errData?.message || "Failed to add food category");
     }
   }
 );

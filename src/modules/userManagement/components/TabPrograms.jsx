@@ -5,15 +5,27 @@ import {
   ClipboardList,
   Dumbbell,
   Pencil,
+  Plus,
 } from "lucide-react";
 import { Card, Pill, EmptyState } from "./UserProfileShared";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import EditFitzoneDialogForm from "./profile/EditFitzoneDialogForm";
+import AddFitzoneDialogForm from "./profile/AddFitzoneDialogForm";
+import { useDispatch } from "react-redux";
+import { fetchSingleUserProfile } from "../store/user.slice";
 
 export function TabPrograms({ data }) {
-  const { programs, fitzoneStatus, fmtDate } = data;
+  const { user, programs, fitzoneStatus, fmtDate } = data;
+  const dispatch = useDispatch();
   const [editFitzoneOpen, setEditFitzoneOpen] = useState(false);
+  const [addFitzoneOpen, setAddFitzoneOpen] = useState(false);
   const [selectedFitzone, setSelectedFitzone] = useState(null);
+
+  const handleSuccess = () => {
+    if (user?.id) {
+      dispatch(fetchSingleUserProfile(user.id));
+    }
+  };
 
   return (
     <>
@@ -23,9 +35,17 @@ export function TabPrograms({ data }) {
           subtitle="Active Fitzone sessions and assignments"
           icon={Dumbbell}
           right={
-            <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
-              {fitzoneStatus.length} Fitzones
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
+                {fitzoneStatus.length} Fitzones
+              </span>
+              <button
+                onClick={() => setAddFitzoneOpen(true)}
+                className="inline-flex items-center justify-center rounded-md border border-app-primary2/30 bg-app-primary2/10 px-2 py-1 text-[11px] font-semibold text-app-primary2 hover:bg-app-primary2 hover:text-white transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add
+              </button>
+            </div>
           }
         >
           {fitzoneStatus.length > 0 ? (
@@ -181,7 +201,19 @@ export function TabPrograms({ data }) {
         <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
           <EditFitzoneDialogForm
             data={selectedFitzone}
+            userId={user?.id}
             onClose={() => setEditFitzoneOpen(false)}
+            onSuccess={handleSuccess}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={addFitzoneOpen} onOpenChange={setAddFitzoneOpen}>
+        <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
+          <AddFitzoneDialogForm
+            userId={user?.id}
+            onClose={() => setAddFitzoneOpen(false)}
+            onSuccess={handleSuccess}
           />
         </DialogContent>
       </Dialog>
