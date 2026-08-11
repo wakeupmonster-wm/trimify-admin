@@ -43,7 +43,7 @@ const TrendChartCard = ({
   );
   // Ensure we actually have non-zero data to plot, not just a padded zero-value array
   // which can happen for single-day periods like 'Yesterday' or 'Today'.
-  const hasData = data.length > 0 && data.some(point => 
+  const hasData = data.length > 0 && data.some(point =>
     series.some(s => Number(point[s.key]) > 0)
   );
 

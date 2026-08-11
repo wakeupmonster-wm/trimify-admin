@@ -121,7 +121,7 @@ export function TabTransactions({ data }) {
             value={status}
             onValueChange={(val) => onTransactionsStatusChange(val)}
           >
-            <SelectTrigger className="h-10 w-32 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
+            <SelectTrigger className="h-10 w-32 rounded-lg border border-slate-200 bg-white text-xs ml-auto sm:ml-0 font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>

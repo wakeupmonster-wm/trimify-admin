@@ -57,7 +57,7 @@ export const fetchDashboardExtrasForSubscription = createAsyncThunk(
         dashboardRevenueChartsAPI(dateRange),
         getRetentionTrendAPI(dateRange),
         dashboardRecentActivityAPI(dateRange),
-        getExpiringSoonAPI({ limit: 10 }),
+        getExpiringSoonAPI({ limit: 10, days: 15 }),
       ]);
       const summary = summaryRes.status === "fulfilled" && summaryRes.value?.success ? summaryRes.value.data : null;
       const revenue = revenueRes.status === "fulfilled" && revenueRes.value?.success ? revenueRes.value.data : null;

@@ -18,26 +18,9 @@ import StatusPill from "@/modules/dashboard/components/StatusPill";
 import { useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
 import { APP_COLORS } from "@/config/theme.config";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
-const DUMMY_EXPIRING_USERS = [
-  {
-    id: 1765,
-    name: "Priya Sharma",
-    email: "demo.completeuser@trimify.com.au",
-    plan: {
-      id: 1,
-      title: "Premium",
-      price: "30.00",
-      duration: "2",
-    },
-    plan_expiry: "2026-10-23 17:56:49",
-    paid: 1,
-    status: "Active",
-    sub_admin: {
-      name: "Self Registration",
-    },
-  },
-];
 
 export default function OverviewView({
   overview,
@@ -52,9 +35,9 @@ export default function OverviewView({
   // Build serialisable from/to strings for navigation state
   const navDateRange = dateRange
     ? {
-        from: format(dateRange.from, "yyyy-MM-dd"),
-        to: format(dateRange.to, "yyyy-MM-dd"),
-      }
+      from: format(dateRange.from, "yyyy-MM-dd"),
+      to: format(dateRange.to, "yyyy-MM-dd"),
+    }
     : null;
   const navigate = useNavigate();
 
@@ -160,7 +143,7 @@ export default function OverviewView({
           <KpiCard
             label="Expiring Soon"
             value={(dashboardExtras?.expiringSoonCount || 0).toLocaleString()}
-            description="Within next 7 days"
+            description="Within next 15 days"
             tone="cyan"
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
@@ -193,9 +176,9 @@ export default function OverviewView({
               dashboardExtras?.pieCharts?.planType?.length > 0
                 ? dashboardExtras.pieCharts.planType
                 : [
-                    { label: "Premium", value: 0, color: "#007FC0" },
-                    { label: "Basic", value: 0, color: "#3399D1" },
-                  ]
+                  { label: "Premium", value: 0, color: "#007FC0" },
+                  { label: "Basic", value: 0, color: "#3399D1" },
+                ]
             }
             footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
           />
@@ -369,9 +352,7 @@ export default function OverviewView({
               iconColor="text-slate-600"
               iconBg="bg-slate-100/50"
               rows={
-                dashboardExtras?.tables?.expiringSoon?.length
-                  ? dashboardExtras.tables.expiringSoon
-                  : DUMMY_EXPIRING_USERS
+                dashboardExtras?.tables?.expiringSoon || []
               }
               emptyMessage="No plans expiring soon."
               actionLabel="View"
@@ -397,29 +378,30 @@ export default function OverviewView({
                   label: "Plan",
                   width: "w-[25%]",
                   render: (r) => {
-                    const title =
-                      r.plan?.title || r.plan_title || "Unknown Plan";
-                    const lower = title.toLowerCase();
-                    let colorClass = "text-slate-600";
+                    const plan = r.plan?.title || r.plan_title || "Unknown Plan";
+                    const isNoPlan = !plan || plan === "No-Active Plan";
+                    const planLower = plan?.toLowerCase() || "";
 
-                    if (lower.includes("premium"))
-                      colorClass = "text-app-primary2";
-                    else if (
-                      lower.includes("basic") ||
-                      lower.includes("starter")
-                    )
-                      colorClass = "text-app-primary3";
-                    else if (lower.includes("super"))
-                      colorClass = "text-orange-500";
-                    else if (lower.includes("pro") || lower.includes("plus"))
-                      colorClass = "text-purple-500";
+                    let colorClass = "bg-emerald-500/10 text-emerald-600";
+                    if (isNoPlan || plan === "Unknown Plan") {
+                      colorClass = "bg-slate-500/10 text-slate-600";
+                    } else if (planLower.includes("premium")) {
+                      colorClass = "bg-amber-50 text-amber-600";
+                    } else if (planLower.includes("basic") || planLower.includes("starter")) {
+                      colorClass = "bg-slate-100 text-slate-800";
+                    }
 
                     return (
-                      <div
-                        className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+                          colorClass,
+                        )}
                       >
-                        {title}
-                      </div>
+                        <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                        <span className="truncate">{isNoPlan ? "No-Active Plan" : plan}</span>
+                      </Badge>
                     );
                   },
                 },

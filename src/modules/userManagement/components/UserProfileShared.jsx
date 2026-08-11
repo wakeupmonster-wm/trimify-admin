@@ -49,7 +49,7 @@ export function Card({
       )}
     >
       {(title || right) && (
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
           <div className="flex-1 min-w-0">
             <DashboardHead
               title={title}
@@ -112,13 +112,13 @@ export function Kpi({ icon: Icon, label, value, tone = "blue" }) {
     >
       <div
         className={cn(
-          "text-3xl font-black mb-1 transition-transform duration-300",
+          "text-2xl md:text-3xl font-black mb-1 transition-transform duration-300",
           textTones[tone] || textTones.blue,
         )}
       >
         {value}
       </div>
-      <p className="text-[13px] font-bold text-slate-600 tracking-tight">
+      <p className="text-xs md:text-[13px] font-bold text-slate-600 text-center tracking-tight">
         {label}
       </p>
     </div>

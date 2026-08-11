@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from "react";
-import { Activity, Footprints, Droplets, Utensils, Weight, History } from "lucide-react";
+import {
+  Activity,
+  Footprints,
+  Droplets,
+  Utensils,
+  Weight,
+  History,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, EmptyState } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
@@ -45,19 +52,18 @@ export function TabActivity({ data }) {
           const type = TILE_TYPE[c.l];
           const isActive = filter === type;
 
-          const tones = {
-            blue: "bg-blue-50/50 border-blue-100",
-            purple: "bg-purple-50/50 border-purple-100",
-            emerald: "bg-emerald-50/50 border-emerald-100",
-            amber: "bg-amber-50/50 border-amber-100",
+          const borderTones = {
+            blue: "border-b-blue-500",
+            purple: "border-b-purple-500",
+            emerald: "border-b-emerald-500",
+            amber: "border-b-amber-500",
           };
-          const iconTones = {
-            blue: "bg-blue-100 text-blue-600",
-            purple: "bg-purple-100 text-purple-600",
-            emerald: "bg-emerald-100 text-emerald-600",
-            amber: "bg-amber-100 text-amber-600",
+          const textTones = {
+            blue: "text-blue-500",
+            purple: "text-purple-500",
+            emerald: "text-emerald-500",
+            amber: "text-amber-500",
           };
-          const Icon = c.icon;
 
           return (
             <button
@@ -65,38 +71,29 @@ export function TabActivity({ data }) {
               type="button"
               onClick={() => setFilter(isActive ? "all" : type)}
               className={cn(
-                "rounded-xl border p-4 shadow-sm text-left transition-all duration-300",
-                tones[c.tone] || tones.blue,
+                "flex flex-col items-center justify-center px-6 py-4 rounded-2xl border border-slate-300/80 bg-white border-b-4 shadow-sm transition-all duration-300",
+                borderTones[c.tone] || borderTones.blue,
                 isActive
-                  ? "ring-2 ring-offset-1 ring-app-primary2 shadow-md -translate-y-0.5"
-                  : "hover:-translate-y-0.5",
+                  ? "ring-1 ring-offset-0 ring-app-primary2 shadow-md -translate-y-0.5"
+                  : "hover:-translate-y-0.5 hover:shadow-md",
               )}
             >
-              <div className="flex items-start gap-5">
-                {Icon && (
-                  <div
-                    className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm",
-                      iconTones[c.tone] || iconTones.blue,
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </div>
+              <div
+                className={cn(
+                  "text-2xl md:text-3xl font-black mb-1 transition-transform duration-300",
+                  textTones[c.tone] || textTones.blue,
                 )}
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    {c.l}
-                  </div>
-                  <div className="text-2xl font-black tracking-tight tabular-nums text-slate-900 leading-none">
-                    {c.d.total_entries || 0}
-                  </div>
-                  <div className="mt-2 text-[10px] font-medium text-slate-500">
-                    {c.d.last_logged_at
-                      ? `Last: ${fmtDate(c.d.last_logged_at)}`
-                      : "No entries yet"}
-                  </div>
-                </div>
+              >
+                {c.d.total_entries || 0}
               </div>
+              <p className="text-xs md:text-[13px] font-bold text-slate-600 text-center tracking-tight">
+                {c.l}
+              </p>
+              {/* <p className="mt-1.5 text-[10px] font-medium text-slate-400 text-center">
+                {c.d.last_logged_at
+                  ? `Last: ${fmtDate(c.d.last_logged_at)}`
+                  : "No entries yet"}
+              </p> */}
             </button>
           );
         })}
@@ -107,8 +104,8 @@ export function TabActivity({ data }) {
         subtitle="Steps, water, food & weight entries, newest first"
         icon={History}
         right={
-          <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700 shadow-sm">
-            {filteredActivities.length} records
+          <span className="inline-flex items-center ml-auto sm:ml-0 w-max border border-slate-200 bg-slate-100/50 rounded-xl text-muted-foreground px-3 py-1 font-bold text-[10px] shadow-sm">
+            {filteredActivities.length} Active Categories
           </span>
         }
       >

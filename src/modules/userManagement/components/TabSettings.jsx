@@ -30,6 +30,7 @@ import {
   Smartphone,
   Ban,
   Star,
+  Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LuUserRound } from "react-icons/lu";
@@ -104,6 +105,8 @@ export function TabSettings({ data }) {
       setIsLoading(false);
     }
   };
+
+  console.log("user.paid: ", user.paid);
 
   return (
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
@@ -264,6 +267,11 @@ export function TabSettings({ data }) {
               <div className="mt-3 px-1">
                 <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
                 <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
+                <KV
+                  icon={Briefcase}
+                  label="Designation"
+                  value={user.sub_admin?.designation}
+                />
                 <KV
                   icon={Globe}
                   label="Location"

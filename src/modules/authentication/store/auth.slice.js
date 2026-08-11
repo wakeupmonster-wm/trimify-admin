@@ -21,7 +21,7 @@ export const loginThunk = createAsyncThunk(
 
       const user = {
         id: adminData.id,
-        nickname: adminData.nickname || adminData.name,
+        name: adminData.name || adminData.nickname,
         email: adminData.email,
         role: adminData.role || "ADMIN",
         avatar: adminData.avatar,

@@ -34,15 +34,19 @@ export function TabOverview({ data }) {
     return true;
   });
 
-  console.log("recentActivities: ", recentActivities);
-
   const getFeatureIcon = (feature) => {
     const f = (feature || "").toLowerCase();
     if (f.includes("step")) return Footprints;
     if (f.includes("water") || f.includes("hydration")) return Droplets;
-    if (f.includes("food") || f.includes("meal") || f.includes("diet")) return Utensils;
+    if (f.includes("food") || f.includes("meal") || f.includes("diet"))
+      return Utensils;
     if (f.includes("weight") || f.includes("scale")) return Scale;
-    if (f.includes("fitzone") || f.includes("workout") || f.includes("exercise")) return Dumbbell;
+    if (
+      f.includes("fitzone") ||
+      f.includes("workout") ||
+      f.includes("exercise")
+    )
+      return Dumbbell;
     if (f.includes("program")) return ClipboardList;
     return Activity;
   };
@@ -51,7 +55,7 @@ export function TabOverview({ data }) {
 
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="grid grid-cols-2 gap-3.5 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
         <Kpi
           // icon={ClipboardList}
           label="Programs Enrolled"
@@ -144,9 +148,9 @@ export function TabOverview({ data }) {
                       </div>
                     </div>
                   </div>
-                  <div className="text-base font-bold tabular-nums text-slate-900">
+                  {/* <div className="text-base font-bold tabular-nums text-slate-900">
                     {user.most_used_feature?.count}
-                  </div>
+                  </div> */}
                 </div>
               </>
             </Card>
@@ -171,8 +175,8 @@ export function TabOverview({ data }) {
                         !user.paid
                           ? "bg-slate-100 text-slate-600"
                           : String(user.plan.title || user.plan)
-                                .toLowerCase()
-                                .includes("premium")
+                            .toLowerCase()
+                            .includes("premium")
                             ? "bg-amber-100/50 text-amber-600"
                             : "bg-blue-50 text-app-primary2",
                       )}
@@ -218,11 +222,11 @@ export function TabOverview({ data }) {
                     {bmi.toFixed(1)}
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide",
+                        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 uppercase text-[11px] font-bold tracking-wide",
                         bmiCat.label.toLowerCase() === "normal"
                           ? "bg-emerald-100/50 text-emerald-600"
                           : bmiCat.label.toLowerCase() === "overweight" ||
-                              bmiCat.label.toLowerCase() === "underweight"
+                            bmiCat.label.toLowerCase() === "underweight"
                             ? "bg-amber-100/50 text-amber-600"
                             : bmiCat.label.toLowerCase() === "obese"
                               ? "bg-rose-100/50 text-rose-600"
@@ -260,24 +264,35 @@ export function TabOverview({ data }) {
             subtitle="Primary contact details"
             icon={FaLink}
           >
-            <KV
-              icon={Mail}
-              label="Email"
-              value={user.email || "Not Provided"}
-              noBorder={true}
-            />
-            <KV
-              icon={Phone}
-              label="Phone"
-              value={user.mobileNo || "Not Provided"}
-              noBorder={true}
-            />
-            <KV
-              icon={Clock}
-              label="Last Login"
-              value={user.last_login ? fmtDate(user.last_login) : "—"}
-              noBorder={true}
-            />
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-4 p-3 rounded-xl bg-slate-100/50">
+                <div className="p-2 bg-slate-100/50 rounded-full">
+                  <Mail size={18} className="text-slate-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-0.5">
+                    Email
+                  </p>
+                  <p className="text-xs font-bold text-foreground/80 truncate">
+                    {user.email || "Not Provided"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-3 rounded-xl bg-slate-100/50">
+                <div className="p-2 bg-slate-100/50 rounded-full">
+                  <Phone size={18} className="text-slate-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-0.5">
+                    Phone
+                  </p>
+                  <p className="text-xs font-bold text-foreground/80 truncate">
+                    {user.mobileNo || "Not Provided"}
+                  </p>
+                </div>
+              </div>
+            </div>
           </Card>
 
           <Card

@@ -120,40 +120,40 @@ const DonutStatCard = ({
 
         <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
           {hasData ? (
-          <div className="divide-y divide-slate-100">
-            {data.map((item, idx) => {
-              const pct =
-                total > 0 ? Math.round((item.value / total) * 100) : 0;
-              return (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div
-                      className="w-2.5 h-2.5 rounded-full shrink-0"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <span className="text-xs font-medium text-slate-700 truncate">
-                      {item.label}
-                    </span>
+            <div className="divide-y divide-slate-100">
+              {data.map((item, idx) => {
+                const pct =
+                  total > 0 ? Math.round((item.value / total) * 100) : 0;
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between gap-2 py-2 first:pt-0 last:pb-0"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-xs font-medium text-slate-700 truncate">
+                        {item.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-xs font-bold text-slate-900 tabular-nums">
+                        {item.value.toLocaleString()}
+                      </span>
+                      <span className="text-[10px] font-medium text-slate-400 tabular-nums">
+                        ({pct}%)
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="text-xs font-bold text-slate-900 tabular-nums">
-                      {item.value.toLocaleString()}
-                    </span>
-                    <span className="text-[10px] font-medium text-slate-400 tabular-nums">
-                      ({pct}%)
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
           ) : (
-          <div className="flex items-center justify-center h-full min-h-[80px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
-            No data available
-          </div>
+            <div className="flex items-center justify-center h-full min-h-[80px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+              No data available
+            </div>
           )}
         </div>
       </div>

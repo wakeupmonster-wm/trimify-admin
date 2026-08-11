@@ -8,7 +8,11 @@ const ADMIN = `${BASE_URL}/admin`;
 
 // ── Account Settings ──────────────────────────────────────
 
-export const ACCOUNT_SETTING = {
+export const ACCOUNT_SETTING = { 
+  ACCOUNT_PROFILE: `${ADMIN}/profile`,
+
+  ACCOUNT_PROFILE_UPDATE: `${ADMIN}/update-profile`,
+
   /** POST — Change the logged-in admin's password */
   ACCOUNT_CHANGE_PASSWORD: `${ADMIN}/change-password`,
   

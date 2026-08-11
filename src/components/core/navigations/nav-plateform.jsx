@@ -43,10 +43,7 @@ export function NavPlateform({ items }) {
       currentPath.includes("/terms-conditions")
     )
       return true;
-    if (
-      lastSegment === "cms-management" &&
-      currentPath.includes("/about-us")
-    )
+    if (lastSegment === "cms-management" && currentPath.includes("/about-us"))
       return true;
     if (lastSegment === "giveaway" && currentPath.includes("/view-campaign"))
       return true;
@@ -225,7 +222,7 @@ export function NavPlateform({ items }) {
                             >
                               {/* Left bar indicator for active sub-tab */}
                               {isSubActive && (
-                                <div className="absolute left-0 top-1 bottom-1 w-1 rounded-r-full bg-app-primary2" />
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-app-primary2" />
                               )}
                               <span className="text-xs 3xl:text-[13px] tracking-tight">
                                 {subItem.title}
