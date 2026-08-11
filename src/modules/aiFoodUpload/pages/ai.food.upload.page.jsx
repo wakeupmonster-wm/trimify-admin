@@ -187,7 +187,6 @@ const AiFoodUploadPage = () => {
   return (
     <Container>
       <div className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8 min-w-0 relative">
-        {/* <div className="sticky top-0 z-40 bg-slate-50/90 backdrop-blur-md pt-4 pb-2 -mt-4 -mx-4 px-4 sm:-mx-6 sm:px-6 md:-mx-8 md:px-8"> */}
         <Header>
           <div className="flex-1 min-w-0 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-6">
             <div className="flex-1 min-w-0 w-full xl:w-auto">
@@ -210,7 +209,6 @@ const AiFoodUploadPage = () => {
             </div>
           </div>
         </Header>
-        {/* </div> */}
 
         <AiFoodNameInput
           onGenerate={handleGenerate}
