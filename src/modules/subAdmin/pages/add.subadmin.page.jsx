@@ -18,6 +18,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { LuUserRoundPlus } from "react-icons/lu";
 import CTAButton from "@/components/common/CTAButton";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AddSubAdminPage = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,8 @@ const AddSubAdminPage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCustomDesignation, setIsCustomDesignation] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [confirmSuccess, setConfirmSuccess] = useState(false);
 
   const fitnessDesignations = [
     "Fitness Trainer",
@@ -83,10 +86,14 @@ const AddSubAdminPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+    setIsConfirmModalOpen(true);
+    setConfirmSuccess(false);
+  };
 
+  const handleConfirmSubmit = async () => {
     setIsSubmitting(true);
     try {
       const submitData = { ...formData };
@@ -95,7 +102,11 @@ const AddSubAdminPage = () => {
 
       const result = await dispatch(addSubAdmin(submitData));
       if (addSubAdmin.fulfilled.match(result)) {
-        navigate("/admin/sub-admin-management");
+        setConfirmSuccess(true);
+        setTimeout(() => {
+          setIsConfirmModalOpen(false);
+          navigate("/admin/sub-admin-management");
+        }, 1000);
       }
     } finally {
       setIsSubmitting(false);
@@ -390,6 +401,22 @@ const AddSubAdminPage = () => {
           </form>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => {
+          if (!isSubmitting) {
+            setIsConfirmModalOpen(false);
+          }
+        }}
+        onConfirm={handleConfirmSubmit}
+        title="Create Sub-Admin?"
+        message="Are you sure you want to create this new sub-administrator account?"
+        confirmText="Create"
+        type="brand"
+        loading={isSubmitting}
+        success={confirmSuccess}
+      />
     </Container>
   );
 };

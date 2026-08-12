@@ -60,9 +60,6 @@ export const getAiFoodColumns = ({
     minSize: 36,
     cell: ({ row }) => {
       const item = row.original;
-      if (item.status !== "pending_review") {
-        return <div className="w-[30px]" />;
-      }
       return (
         <div className="w-[30px] flex justify-center">
           <Checkbox

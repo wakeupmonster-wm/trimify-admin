@@ -13,14 +13,7 @@ export const fetchProfile = createAsyncThunk(
     try {
       const response = await getAdminAccountAPI();
       if (response && response.status === "success") {
-        return { 
-          account: {
-            ...response.data,
-            nickname: response.data.name,
-            memberSince: response.data.member_since,
-            lastLoginAt: response.data.last_login_at
-          } 
-        };
+        return { account: response.data || {} };
       }
       return rejectWithValue(response.message || "Failed to fetch account");
     } catch (e) {

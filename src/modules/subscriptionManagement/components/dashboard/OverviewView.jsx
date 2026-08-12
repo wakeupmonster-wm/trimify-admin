@@ -5,11 +5,13 @@ import {
   TrendingUp,
   Wallet,
   Trophy,
+  XCircle,
+  RotateCcw,
+  AlertCircle,
+  Clock,
 } from "lucide-react";
 import ErrorState from "@/components/shared/ErrorState";
 import DashboardOverviewSkeleton from "./DashboardOverviewSkeleton";
-// Moved here from the main Dashboard — plan/revenue breakdowns belong with
-// the rest of subscription analytics.
 import DonutStatCard from "@/modules/dashboard/components/DonutStatCard";
 import KpiCard from "@/modules/dashboard/components/KpiCard";
 import TrendChartCard from "@/modules/dashboard/components/TrendChartCard";
@@ -20,6 +22,7 @@ import { format, differenceInDays } from "date-fns";
 import { APP_COLORS } from "@/config/theme.config";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { LuUserRoundMinus, LuUsersRound } from "react-icons/lu";
 
 
 
@@ -63,6 +66,7 @@ export default function OverviewView({
             label="Today's Revenue"
             value={`$${Number(dashboardExtras?.todaysRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             description="Revenue collected today"
+            icon={Wallet}
             onClick={() =>
               navigate("/admin/subscription-management/transactions")
             }
@@ -72,6 +76,7 @@ export default function OverviewView({
             value={`$${Number(overview.mrr || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
             description="Current monthly recurring revenue"
             tone="amber"
+            icon={TrendingUp}
             onClick={() =>
               navigate("/admin/subscription-management/transactions")
             }
@@ -81,6 +86,7 @@ export default function OverviewView({
             value={(overview.activeSubscribers || 0).toLocaleString()}
             description="Currently active subscribers"
             tone="emerald"
+            icon={LuUsersRound}
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
                 state: { filterId: "active" },
@@ -92,6 +98,7 @@ export default function OverviewView({
             value={(dashboardExtras?.churn?.count || 0).toLocaleString()}
             description={`Expired plan subscribers (${dashboardExtras?.churn?.rate || "0%"} rate)`}
             tone="rose"
+            icon={LuUserRoundMinus}
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
                 state: { filterId: "canceled" },
@@ -107,6 +114,7 @@ export default function OverviewView({
               rangeLabel ? `In ${rangeLabel.toLowerCase()}` : "Selected period"
             }
             tone="rose"
+            icon={XCircle}
             onClick={() =>
               navigate("/admin/subscription-management/transactions", {
                 state: { filterId: "failed", dateRange: navDateRange },
@@ -120,6 +128,7 @@ export default function OverviewView({
             ).toLocaleString()}
             description={`$${Number(dashboardExtras?.refundedTransactions?.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} refunded in ${rangeLabel ? rangeLabel.toLowerCase() : "selected period"}`}
             tone="violet"
+            icon={RotateCcw}
             onClick={() =>
               navigate("/admin/subscription-management/transactions", {
                 state: { filterId: "refunded", dateRange: navDateRange },
@@ -135,6 +144,7 @@ export default function OverviewView({
               rangeLabel ? `In ${rangeLabel.toLowerCase()}` : "Selected period"
             }
             tone="amber"
+            icon={AlertCircle}
             onClick={() =>
               navigate("/admin/subscription-management/transactions", {
                 state: { filterId: "disputed", dateRange: navDateRange },
@@ -146,6 +156,7 @@ export default function OverviewView({
             value={(dashboardExtras?.expiringSoonCount || 0).toLocaleString()}
             description="Within next 15 days"
             tone="cyan"
+            icon={Clock}
             onClick={() =>
               navigate("/admin/subscription-management/subscribers", {
                 state: { filterId: "expiring_soon" },
