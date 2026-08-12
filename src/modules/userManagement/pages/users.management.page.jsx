@@ -134,6 +134,7 @@ const UsersManagementPage = () => {
       label: "Total Users",
       value: localKpis?.totalUsers?.toLocaleString() || "0",
       description: "All registered users",
+      tone: "blue",
       onClick: () => {
         setStatusFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));

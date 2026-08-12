@@ -92,11 +92,7 @@ const AddFitzonePage = () => {
       return;
     }
 
-    if (isEditMode) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleConfirmUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmUpdate = async () => {
@@ -353,9 +349,13 @@ const AddFitzonePage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this fitzone's details?"
-        confirmText="Update"
+        title={isEditMode ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEditMode
+            ? "Are you sure you want to update this fitzone's details?"
+            : "Are you sure you want to create this new fitzone?"
+        }
+        confirmText={isEditMode ? "Update" : "Create"}
         type="brand"
         loading={isSubmitting}
       />

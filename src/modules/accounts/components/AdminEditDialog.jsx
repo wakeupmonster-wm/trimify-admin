@@ -13,15 +13,7 @@ import { useRef, useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { updateAdminAccount } from "../store/account.slice";
 import { toast } from "sonner";
-import {
-  Camera,
-  Loader2,
-  Save,
-  UserCircle,
-  User,
-  Phone,
-  Check,
-} from "lucide-react";
+import { Camera, Loader2, Save, UserCircle, Phone, Check } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { cn } from "@/lib/utils";
 import { LuUserRound } from "react-icons/lu";
@@ -144,7 +136,7 @@ export default function AdminEditDialog({ children, currentData }) {
               className="relative group cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
-              <Avatar className="h-40 w-40 transition-all shadow-md bg-slate-50 border-4 border-white">
+              <Avatar className="h-36 w-36 transition-all shadow-md bg-slate-50 border-4 border-white">
                 <AvatarImage
                   src={preview || currentData?.avatar?.url}
                   className="object-cover"
@@ -163,11 +155,11 @@ export default function AdminEditDialog({ children, currentData }) {
               </div>
 
               {/* Edit Badge floating */}
-              <div className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md border border-slate-100 group-hover:scale-110 transition-transform">
+              {/* <div className="absolute bottom-2 right-2 bg-white p-1 rounded-full shadow-md border border-slate-100 group-hover:scale-110 transition-transform">
                 <div className="bg-app-primary2 p-2 rounded-full text-app-primary2">
-                  <Camera className="w-4 h-4" strokeWidth={2.5} />
+                  <Camera className="w-3 h-3" strokeWidth={2.5} />
                 </div>
-              </div>
+              </div> */}
 
               <input
                 type="file"
@@ -179,7 +171,7 @@ export default function AdminEditDialog({ children, currentData }) {
             </div>
 
             <div className="text-center mt-4 space-y-1">
-              <p className="text-[10px] text-app-primary2 uppercase font-black tracking-widest">
+              <p className="text-[10px] text-app-primary3 uppercase font-black tracking-widest">
                 Update Photo
               </p>
               <p className="text-[10px] text-foreground/60 font-medium leading-tight">

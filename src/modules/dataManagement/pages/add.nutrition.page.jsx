@@ -137,11 +137,7 @@ const AddNutritionPage = () => {
     }
     setErrors({});
 
-    if (isEdit) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleConfirmUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmUpdate = () => {
@@ -588,9 +584,13 @@ const AddNutritionPage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this nutrition item's details?"
-        confirmText="Update"
+        title={isEdit ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEdit
+            ? "Are you sure you want to update this nutrition item's details?"
+            : "Are you sure you want to create this new nutrition item?"
+        }
+        confirmText={isEdit ? "Update" : "Create"}
         type="brand"
         loading={loading}
       />

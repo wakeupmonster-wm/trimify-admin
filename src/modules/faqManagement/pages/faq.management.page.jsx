@@ -148,6 +148,7 @@ const FaqManagementPage = () => {
       if (toggleFaqStatus.fulfilled.match(res)) {
         toast.success(`FAQ marked as ${newStatus}`);
         setToggleModal({ open: false, rowData: null, targetStatus: false });
+        refetchFaqs();
       } else {
         toast.error("Failed to update FAQ status");
       }
@@ -165,6 +166,7 @@ const FaqManagementPage = () => {
     try {
       const res = await dispatch(deleteFaq(deleteModal.rowData.id)).unwrap();
       toast.success(res?.message || "FAQ deleted successfully");
+      refetchFaqs();
     } catch (error) {
       toast.error(error?.message || error || "Failed to delete FAQ");
     } finally {
@@ -225,7 +227,7 @@ const FaqManagementPage = () => {
         label: "Total FAQs",
         value: total,
         icon: MessageCircle,
-        tone: statusFilter === "" ? "blue" : "slate",
+        tone: "blue",
         description: "All questions & answers",
         onClick: () => setStatusFilter(""),
         isSelected: statusFilter === "",
@@ -234,12 +236,7 @@ const FaqManagementPage = () => {
         label: "Active FAQs",
         value: active,
         icon: CheckCircle,
-        tone:
-          statusFilter === "Active"
-            ? "emerald"
-            : statusFilter === ""
-              ? "emerald"
-              : "slate",
+        tone: "emerald",
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
@@ -249,12 +246,7 @@ const FaqManagementPage = () => {
         label: "Inactive FAQs",
         value: inactive,
         icon: EyeOff,
-        tone:
-          statusFilter === "Inactive"
-            ? "amber"
-            : statusFilter === ""
-              ? "amber"
-              : "slate",
+        tone: "amber",
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
@@ -264,12 +256,7 @@ const FaqManagementPage = () => {
         label: "Recently Updated",
         value: recent,
         icon: RefreshCw,
-        tone:
-          statusFilter === "Recent"
-            ? "indigo"
-            : statusFilter === ""
-              ? "indigo"
-              : "slate",
+        tone: "indigo",
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
@@ -344,7 +331,7 @@ const FaqManagementPage = () => {
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
                   onChange={handleChange}
-                  className="h-11 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
+                  className="h-11 text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
                   required
                 />
               </div>
@@ -357,7 +344,7 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
-                  className="min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
+                  className="min-h-[120px] text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
                   required
                 />
               </div>
@@ -401,9 +388,11 @@ const FaqManagementPage = () => {
             columns={columns}
             data={displayFaqs}
             rowCount={
-              serverPagination
-                ? serverPagination.total
-                : displayFaqs?.length || 0
+              statusFilter
+                ? displayFaqs?.length || 0
+                : serverPagination
+                  ? serverPagination.total
+                  : displayFaqs?.length || 0
             }
             pagination={pagination}
             onPaginationChange={setPagination}

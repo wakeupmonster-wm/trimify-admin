@@ -86,11 +86,7 @@ const AddFoodCategoryPage = () => {
 
     setErrors({});
 
-    if (isEditMode) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleConfirmUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmUpdate = async () => {
@@ -312,9 +308,13 @@ const AddFoodCategoryPage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this food category?"
-        confirmText="Update"
+        title={isEditMode ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEditMode
+            ? "Are you sure you want to update this food category?"
+            : "Are you sure you want to create this new food category?"
+        }
+        confirmText={isEditMode ? "Update" : "Create"}
         type="brand"
         loading={isSubmitting || loading}
       />

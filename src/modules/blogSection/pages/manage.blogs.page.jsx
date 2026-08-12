@@ -18,7 +18,6 @@ import {
   toggleBlogPostVisibility,
   deleteBlogPost,
 } from "../store/blog.slice";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LuNewspaper } from "react-icons/lu";
@@ -62,7 +61,7 @@ const ManageBlogsPage = () => {
             const list = response.blogs || response.data || response.posts || [];
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
+
             setGlobalKpisData({
               totalBlogs: response.pagination?.total ?? list.length,
               publishedBlogs: list.filter((p) => String(p.visibility_status).toLowerCase() === "publish").length,
@@ -92,7 +91,13 @@ const ManageBlogsPage = () => {
         ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
       }),
     );
-  }, [dispatch, postPage.pageIndex, postPage.pageSize, debouncedPostFilter, dateRangeFilter]);
+  }, [
+    dispatch,
+    postPage.pageIndex,
+    postPage.pageSize,
+    debouncedPostFilter,
+    dateRangeFilter,
+  ]);
 
   const handlePostAction = async (row, action, value) => {
     if (action === "change-status") {
@@ -142,16 +147,16 @@ const ManageBlogsPage = () => {
   };
 
   const postColumns = useMemo(() => getManageBlogsColumns(handlePostAction), []);
-  
+
   const displayPosts = useMemo(() => {
     let list = posts && posts.length > 0 ? posts : [];
     if (statusFilter === "Publish") {
-      list = list.filter(
-        (p) => String(p.visibility_status).toLowerCase() === "publish",
+      list = list.filter((p) =>
+        String(p.visibility_status).toLowerCase().startsWith("publish"),
       );
     } else if (statusFilter === "Draft") {
       list = list.filter(
-        (p) => String(p.visibility_status).toLowerCase() !== "publish",
+        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish"),
       );
     } else if (statusFilter === "Recent") {
       const thirtyDaysAgo = new Date();
@@ -186,7 +191,10 @@ const ManageBlogsPage = () => {
         setDateRangeFilter(val);
         // Clear navigation state by replacing it without dateRange
         if (location.state?.dateRange) {
-          navigate(".", { replace: true, state: { ...location.state, dateRange: null } });
+          navigate(".", {
+            replace: true,
+            state: { ...location.state, dateRange: null },
+          });
         }
       },
     },
@@ -200,25 +208,30 @@ const ManageBlogsPage = () => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const localKpis = globalKpisData || postsKpis;
-
-    const total = localKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
-    const published = localKpis?.publishedBlogs ?? list.filter(
-      (p) => String(p.visibility_status).toLowerCase() === "publish",
-    ).length;
-    const drafts = localKpis?.draftBlogs ?? list.filter(
-      (p) => String(p.visibility_status).toLowerCase() !== "publish",
-    ).length;
-    const recent = localKpis?.recentBlogs ?? list.filter(
-      (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
-    ).length;
+    const total =
+      postsKpis?.totalBlogs ?? postsPagination?.total ?? list.length;
+    const published =
+      postsKpis?.publishedBlogs ??
+      list.filter((p) =>
+        String(p.visibility_status).toLowerCase().startsWith("publish"),
+      ).length;
+    const drafts =
+      postsKpis?.draftBlogs ??
+      list.filter(
+        (p) => !String(p.visibility_status).toLowerCase().startsWith("publish"),
+      ).length;
+    const recent =
+      postsKpis?.recentBlogs ??
+      list.filter(
+        (p) => p.updated_at && new Date(p.updated_at) >= thirtyDaysAgo,
+      ).length;
 
     return [
       {
         label: "Total Blogs",
         value: total,
         icon: FileText,
-        tone: statusFilter === "" ? "blue" : "slate",
+        tone: "blue",
         description: "All platform blogs",
         onClick: () => setStatusFilter(""),
         isSelected: statusFilter === "",
@@ -227,12 +240,7 @@ const ManageBlogsPage = () => {
         label: "Published Blogs",
         value: published,
         icon: CheckCircle,
-        tone:
-          statusFilter === "Publish"
-            ? "emerald"
-            : statusFilter === ""
-              ? "emerald"
-              : "slate",
+        tone: "emerald",
         description: "Live on app",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Publish" ? "" : "Publish")),
@@ -242,12 +250,7 @@ const ManageBlogsPage = () => {
         label: "Draft / Hidden",
         value: drafts,
         icon: EyeOff,
-        tone:
-          statusFilter === "Draft"
-            ? "amber"
-            : statusFilter === ""
-              ? "amber"
-              : "slate",
+        tone: "amber",
         description: "Not visible to users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Draft" ? "" : "Draft")),
@@ -257,12 +260,7 @@ const ManageBlogsPage = () => {
         label: "Recently Updated",
         value: recent,
         icon: Flame,
-        tone:
-          statusFilter === "Recent"
-            ? "rose"
-            : statusFilter === ""
-              ? "rose"
-              : "slate",
+        tone: "rose",
         description: "Modified in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
@@ -305,7 +303,11 @@ const ManageBlogsPage = () => {
             columns={postColumns}
             data={displayPosts}
             rowCount={
-              isPostManual ? postsPagination.total : displayPosts?.length || 0
+              statusFilter
+                ? displayPosts?.length || 0
+                : isPostManual
+                  ? postsPagination.total
+                  : displayPosts?.length || 0
             }
             pagination={postPage}
             onPaginationChange={setPostPageState}

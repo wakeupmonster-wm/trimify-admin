@@ -112,19 +112,19 @@ export const getTransactionColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => {
       const title = row.original.plan_title || "Unknown Plan";
-      const lower = title.toLowerCase();
-      let colorClass = "text-slate-600";
-
-      if (lower.includes("premium")) colorClass = "text-app-primary2";
-      else if (lower.includes("basic") || lower.includes("starter"))
-        colorClass = "text-app-primary3";
-
+      const isPremium = title.toLowerCase().includes("premium");
       return (
-        <div
-          className={`font-bold text-[10px] 3xl:text-[11px] uppercase tracking-wider whitespace-nowrap ${colorClass}`}
+        <Badge
+          className={cn(
+            "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
+            isPremium
+              ? "bg-amber-50 text-amber-600"
+              : "bg-app-primary2/5 text-app-primary2",
+          )}
         >
-          {title}
-        </div>
+          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          <span className="truncate">{title}</span>
+        </Badge>
       );
     },
   },

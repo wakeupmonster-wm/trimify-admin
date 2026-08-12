@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import {
   Mail,
   Phone,
@@ -106,8 +107,6 @@ export function TabSettings({ data }) {
     }
   };
 
-  console.log("user.paid: ", user.paid);
-
   return (
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
@@ -171,21 +170,23 @@ export function TabSettings({ data }) {
             value={
               user.plan ? (
                 <div className="flex items-center gap-2">
-                  <div
+                  <Badge
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide",
+                      "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none flex items-center gap-1.5 transition-all duration-200 max-w-max",
                       !user.paid
                         ? "bg-slate-100 text-slate-600"
                         : String(user.plan.title || user.plan)
                               .toLowerCase()
                               .includes("premium")
-                          ? "bg-amber-100/50 text-amber-600"
-                          : "bg-blue-50 text-app-primary2",
+                          ? "bg-amber-50 text-amber-600"
+                          : "bg-app-primary2/5 text-app-primary2",
                     )}
                   >
-                    {user.paid && <Star className="h-2.5 w-2.5 fill-current" />}
-                    {String(user.plan.title || user.plan).toUpperCase()}
-                  </div>
+                    <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                    <span className="truncate">
+                      {String(user.plan.title || user.plan)}
+                    </span>
+                  </Badge>
                 </div>
               ) : (
                 "No active plan"

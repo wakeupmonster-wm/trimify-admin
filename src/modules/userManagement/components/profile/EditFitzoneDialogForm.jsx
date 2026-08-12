@@ -40,7 +40,7 @@ const EditFitzoneDialogForm = ({ data, userId, onClose, onSuccess }) => {
         setFetchLoading(false);
       }
     };
-    
+
     if (userId) {
       fetchCategories();
     }

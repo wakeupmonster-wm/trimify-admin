@@ -255,11 +255,11 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Mail
-                        className="w-4 h-4 text-app-primary2"
+                        className="w-4 h-4 text-slate-600"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-blue-100"
+                    iconBg="bg-slate-100/50"
                     label="Email Address"
                     value={displayAccount?.email}
                     verified={displayAccount?.verified?.email}
@@ -267,11 +267,11 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Phone
-                        className="w-4 h-4 text-app-primary2"
+                        className="w-4 h-4 text-slate-600"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-blue-100"
+                    iconBg="bg-slate-100/50"
                     label="Phone Number"
                     value={displayAccount?.phone}
                     verified={displayAccount?.verified?.phone}
@@ -295,22 +295,22 @@ export default function AccountsPage() {
                   <InfoItem
                     icon={
                       <Calendar
-                        className="w-4 h-4 text-app-primary2"
+                        className="w-4 h-4 text-slate-600"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-blue-100"
+                    iconBg="bg-slate-100/50"
                     label="Member Since"
                     value={formatDateSafe(displayAccount?.memberSince)}
                   />
                   <InfoItem
                     icon={
                       <Clock
-                        className="w-4 h-4 text-app-primary2"
+                        className="w-4 h-4 text-slate-600"
                         strokeWidth={2.5}
                       />
                     }
-                    bg="bg-blue-100"
+                    iconBg="bg-slate-100/50"
                     label="Last Login"
                     value={formatDateSafe(displayAccount?.lastLoginAt)}
                   />
@@ -424,8 +424,13 @@ export default function AccountsPage() {
                           onClick={
                             showOtpField ? handleOtpSubmit : handleEmailSubmit
                           }
-                          disabled={emailLoading}
-                          className="bg-app-primary2 hover:bg-app-primary3 text-white border-none hover:text-white rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold transition-all active:scale-[0.99]"
+                          disabled={
+                            emailLoading ||
+                            (showOtpField
+                              ? !emailForm.otp?.trim()
+                              : !emailForm.email?.trim())
+                          }
+                          className="bg-app-primary2 hover:bg-app-primary3 disabled:opacity-50 disabled:cursor-not-allowed text-white border-none hover:text-white rounded-md px-5 h-10 text-[11px] 3xl:text-xs font-semibold transition-all active:scale-[0.99]"
                         >
                           {emailLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />

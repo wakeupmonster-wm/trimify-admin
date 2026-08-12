@@ -186,7 +186,7 @@ const ManageCategoryPage = () => {
         label: "Total Categories",
         value: total,
         icon: FolderTree,
-        tone: statusFilter === "" ? "blue" : "slate",
+        tone: "blue",
         description: "All blog categories",
         onClick: () => setStatusFilter(""),
         isSelected: statusFilter === "",
@@ -195,12 +195,7 @@ const ManageCategoryPage = () => {
         label: "Active Categories",
         value: active,
         icon: CheckCircle,
-        tone:
-          statusFilter === "Active"
-            ? "emerald"
-            : statusFilter === ""
-              ? "emerald"
-              : "slate",
+        tone: "emerald",
         description: "Currently visible",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
@@ -210,12 +205,7 @@ const ManageCategoryPage = () => {
         label: "Inactive Categories",
         value: inactive,
         icon: EyeOff,
-        tone:
-          statusFilter === "Inactive"
-            ? "amber"
-            : statusFilter === ""
-              ? "amber"
-              : "slate",
+        tone: "amber",
         description: "Hidden from users",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
@@ -225,12 +215,7 @@ const ManageCategoryPage = () => {
         label: "Recently Added",
         value: recent,
         icon: Sparkles,
-        tone:
-          statusFilter === "Recent"
-            ? "indigo"
-            : statusFilter === ""
-              ? "indigo"
-              : "slate",
+        tone: "indigo",
         description: "Added in last 30 days",
         onClick: () =>
           setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
@@ -274,9 +259,11 @@ const ManageCategoryPage = () => {
             columns={categoryColumns}
             data={displayCategories}
             rowCount={
-              isCategoryManual
-                ? categoriesPagination.total
-                : displayCategories?.length || 0
+              statusFilter
+                ? displayCategories?.length || 0
+                : isCategoryManual
+                  ? categoriesPagination.total
+                  : displayCategories?.length || 0
             }
             pagination={categoryPage}
             onPaginationChange={setCategoryPageState}

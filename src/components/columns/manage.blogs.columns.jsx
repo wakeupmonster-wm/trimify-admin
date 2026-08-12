@@ -117,7 +117,7 @@ export const getManageBlogsColumns = (onAction) => [
       const statusValue =
         row.original.visibility_status === "Published" ? "Public" : "Private";
       return (
-        <div className="flex justify-center max-w-26">
+        <div className="flex justify-center max-w-22">
           <Select
             value={statusValue}
             onValueChange={(val) =>

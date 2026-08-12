@@ -111,11 +111,7 @@ const AddCategoryPage = () => {
     }
     setErrors({});
 
-    if (isEdit) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleConfirmUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleConfirmUpdate = async () => {
@@ -137,6 +133,7 @@ const AddCategoryPage = () => {
         toast.success("Category updated successfully!");
         setCurrentIcon(result?.data?.icon || currentIcon);
         setFormData((prev) => ({ ...prev, iconImage: null }));
+        navigate(-1);
       } else {
         await dispatch(addBlogCategory(payload)).unwrap();
         toast.success("Category added successfully!");
@@ -394,9 +391,13 @@ const AddCategoryPage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleConfirmUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this category's details?"
-        confirmText="Update"
+        title={isEdit ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEdit
+            ? "Are you sure you want to update this category's details?"
+            : "Are you sure you want to create this new category?"
+        }
+        confirmText={isEdit ? "Update" : "Create"}
         type="brand"
         loading={loading}
       />

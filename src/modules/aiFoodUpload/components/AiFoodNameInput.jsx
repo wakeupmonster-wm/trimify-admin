@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { X, Sparkles, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,6 +17,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [creativeMode, setCreativeMode] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -122,9 +124,20 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       .filter(Boolean);
     const uniqueNames = [...new Set([...names, ...parsedDraftNames])];
     if (uniqueNames.length === 0 || loading) return;
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmGenerate = () => {
+    const parsedDraftNames = draft
+      .split(/[\n,]+/)
+      .map((n) => n.trim())
+      .filter(Boolean);
+    const uniqueNames = [...new Set([...names, ...parsedDraftNames])];
+    if (uniqueNames.length === 0 || loading) return;
     onGenerate(uniqueNames.slice(0, MAX_NAMES));
     setNames([]);
     setDraft("");
+    setIsConfirmModalOpen(false);
   };
 
   const pendingCount =
@@ -135,7 +148,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       .filter(Boolean).length;
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8 overflow-hidden">
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -265,6 +278,17 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           className="w-full h-full object-cover drop-shadow-lg hover:scale-105 transition-transform duration-500 ease-out"
         />
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        onConfirm={handleConfirmGenerate}
+        title="Confirm Generation"
+        message="Are you sure you want to generate food items with these names?"
+        confirmText="Generate"
+        type="brand"
+        loading={loading}
+      />
     </div>
   );
 };

@@ -26,7 +26,7 @@ export const getCmsManagementColumns = (onAction) => [
         table.getState().pagination || {};
       const serialNumber = pageIndex * pageSize + row.index + 1;
       return (
-        <div className="w-9 px-1 text-left font-medium text-[10px] 3xl:text-xs text-slate-700">
+        <div className="w-9 px-1 text-left font-medium text-[11px] 3xl:text-xs text-slate-700">
           {serialNumber}
         </div>
       );
@@ -42,7 +42,7 @@ export const getCmsManagementColumns = (onAction) => [
     size: 200,
     minSize: 150,
     cell: ({ row }) => (
-      <span className="text-[10px] 3xl:text-xs font-medium text-slate-700">
+      <span className="text-[11px] 3xl:text-xs font-medium text-slate-700">
         {row.getValue("pageName") || "-"}
       </span>
     ),
@@ -60,7 +60,7 @@ export const getCmsManagementColumns = (onAction) => [
       const description = row.getValue("description") || "-";
       return (
         <div
-          className="text-[10px] 3xl:text-xs font-medium max-w-80 text-slate-700 line-clamp-2"
+          className="text-[11px] 3xl:text-xs font-medium max-w-80 text-slate-700 line-clamp-2"
           dangerouslySetInnerHTML={{ __html: description }}
         />
       );
@@ -76,7 +76,7 @@ export const getCmsManagementColumns = (onAction) => [
     size: 180,
     minSize: 100,
     cell: ({ row }) => (
-      <div className="text-[10px] 3xl:text-xs font-medium text-slate-700">
+      <div className="text-[11px] 3xl:text-xs font-medium text-slate-700">
         {row.original.created_at
           ? dayjs(row.original.created_at).format("DD MMM YYYY")
           : "-"}
@@ -93,7 +93,7 @@ export const getCmsManagementColumns = (onAction) => [
     size: 150,
     minSize: 100,
     cell: ({ row }) => (
-      <div className="text-[10px] 3xl:text-xs font-medium text-slate-700">
+      <div className="text-[11px] 3xl:text-xs font-medium text-slate-700">
         {row.original.updated_at
           ? dayjs(row.original.updated_at).format("DD MMM YYYY")
           : "-"}
@@ -144,7 +144,7 @@ export const getCmsManagementColumns = (onAction) => [
           <Badge
             variant="outline"
             className={cn(
-              "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border-none",
+              "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border-none",
               config.bg,
               config.text,
               config.hover,

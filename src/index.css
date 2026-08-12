@@ -419,7 +419,7 @@ button[data-range-end="true"] {
 
 /* Custom Scrollbar for Editor */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
   display: block !important;
 }
 

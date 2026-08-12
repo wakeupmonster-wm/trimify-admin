@@ -100,11 +100,7 @@ const AddProgramPage = () => {
       return;
     }
 
-    if (isEditMode) {
-      setIsConfirmModalOpen(true);
-    } else {
-      handleSaveOrUpdate();
-    }
+    setIsConfirmModalOpen(true);
   };
 
   const handleSaveOrUpdate = async () => {
@@ -341,9 +337,13 @@ const AddProgramPage = () => {
         isOpen={isConfirmModalOpen}
         onClose={() => setIsConfirmModalOpen(false)}
         onConfirm={handleSaveOrUpdate}
-        title="Confirm Update"
-        message="Are you sure you want to update this program's details?"
-        confirmText="Update"
+        title={isEditMode ? "Confirm Update" : "Confirm Creation"}
+        message={
+          isEditMode
+            ? "Are you sure you want to update this program's details?"
+            : "Are you sure you want to create this new program?"
+        }
+        confirmText={isEditMode ? "Update" : "Create"}
         type="brand"
         loading={isSubmitting}
       />

@@ -13,7 +13,7 @@ export const getFaqManagementColumns = (onAction) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-left text-[11px] font-bold text-foreground">
+      <div className="w-10 text-left text-[10px] font-bold text-foreground">
         SR.No
       </div>
     ),
@@ -33,7 +33,7 @@ export const getFaqManagementColumns = (onAction) => [
   {
     accessorKey: "question",
     header: () => (
-      <div className="text-[11px] font-bold text-foreground text-left">
+      <div className="text-[10px] font-bold text-foreground text-left">
         Question
       </div>
     ),
@@ -48,7 +48,7 @@ export const getFaqManagementColumns = (onAction) => [
   {
     accessorKey: "answer",
     header: () => (
-      <div className="text-[11px] font-bold text-foreground text-left">
+      <div className="text-[10px] font-bold text-foreground text-left">
         Answer
       </div>
     ),
@@ -63,7 +63,7 @@ export const getFaqManagementColumns = (onAction) => [
   {
     accessorKey: "status",
     header: () => (
-      <div className="text-[11px] font-bold text-foreground text-center">
+      <div className="text-[10px] font-bold text-foreground text-center">
         Status
       </div>
     ),
@@ -88,7 +88,7 @@ export const getFaqManagementColumns = (onAction) => [
   {
     id: "actions",
     header: () => (
-      <div className="text-center text-[11px] font-bold text-foreground">
+      <div className="text-center text-[10px] font-bold text-foreground">
         Action
       </div>
     ),

@@ -133,7 +133,7 @@ export function TabPrograms({ data }) {
                     <tbody className="divide-y divide-slate-100">
                       {currentFitzones.map((f, idx) => (
                         <tr
-                          key={f.category_id}
+                          key={`${f.category_id}-${idx}`}
                           className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
                         >
                           <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
@@ -233,7 +233,7 @@ export function TabPrograms({ data }) {
                     <tbody className="divide-y divide-slate-100">
                       {currentPrograms.map((p, idx) => (
                         <tr
-                          key={p.program_id}
+                          key={`${p.program_id}-${idx}`}
                           className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
                         >
                           <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
