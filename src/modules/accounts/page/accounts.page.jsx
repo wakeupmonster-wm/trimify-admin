@@ -172,7 +172,7 @@ export default function AccountsPage() {
           {/* HERO SECTION */}
           <div className="relative bg-white rounded-lg shadow-sm shadow-gray-200 overflow-hidden border border-gray-200">
             {/* Cover Banner */}
-            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-app-primary2 via-app-primary2 to-app-primary2 relative overflow-hidden">
+            <div className="h-48 md:h-64 w-full bg-gradient-to-r from-app-primary2 via-app-primary2 to-app-primary2 relative overflow-hidden">
               {/* Decorative patterns */}
               <img
                 src={accountBg}

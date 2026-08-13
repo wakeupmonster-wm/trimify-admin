@@ -14,7 +14,6 @@ import {
   Droplets,
   Utensils,
   Scale,
-  Clock,
   Monitor,
   Smartphone,
   Globe,
