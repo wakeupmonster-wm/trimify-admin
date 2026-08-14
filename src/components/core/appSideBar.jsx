@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavMain } from "@/components/core/navigations/nav-main";
 import {
   Sidebar,
@@ -16,24 +16,35 @@ import { NavManagements } from "./navigations/nav-managements";
 import { NavUser } from "./navigations/nav-user";
 import navigationData from "@/app/data/navigation";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { cn } from "@/lib/utils";
+import { fetchProfile } from "@/modules/accounts/store/account.slice";
 
 export function AppSidebar({ ...props }) {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth?.user);
   const account = useSelector((state) => state.account?.account);
 
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName = account?.name || user?.nickname || user?.name || localUser?.nickname || localUser?.name || "Admin";
+  const displayName =
+    account?.name ||
+    user?.nickname ||
+    user?.name ||
+    localUser?.nickname ||
+    localUser?.name ||
+    "Admin";
   const displayEmail =
     account?.email || user?.email || localUser?.email || "admin@example.com";
 
   const role =
-  user?.role !== undefined ? Number(user.role)
-      : localUser?.role !== undefined ? Number(localUser.role) : null;
+    user?.role !== undefined
+      ? Number(user.role)
+      : localUser?.role !== undefined
+        ? Number(localUser.role)
+        : null;
 
   const displayUser = {
     ...user,
@@ -41,7 +52,7 @@ export function AppSidebar({ ...props }) {
     ...account,
     name: displayName,
     email: displayEmail,
-    avatar: localUser?.avatar?.url || user?.avatar?.url || "",
+    avatar: account?.avatar?.url || user?.avatar?.url || localUser?.avatar?.url || "",
     initial: displayName.charAt(0).toUpperCase(),
     role: role || localUser?.role || 0,
   };
@@ -54,6 +65,10 @@ export function AppSidebar({ ...props }) {
       setOpenMobile(false);
     }
   }, [pathname, isMobile, setOpenMobile]);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   return (
     <Sidebar

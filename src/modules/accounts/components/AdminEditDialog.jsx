@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRef, useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { updateAdminAccount } from "../store/account.slice";
+import { fetchProfile, updateAdminAccount } from "../store/account.slice";
 import { toast } from "sonner";
 import { Camera, Loader2, Save, UserCircle, Phone, Check } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -28,7 +28,7 @@ export default function AdminEditDialog({ children, currentData }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [formData, setFormData] = useState({
-    nickname: currentData?.nickname || "",
+    nickname: currentData?.nickname || currentData?.name || "",
     // about: currentData?.about || "",
     phone: currentData?.phone || "",
   });
@@ -94,6 +94,8 @@ export default function AdminEditDialog({ children, currentData }) {
 
     try {
       await dispatch(updateAdminAccount(data)).unwrap();
+      // Instantly trigger a re-fetch of the profile to sync the new avatar URL across the sidebar & navbar
+      dispatch(fetchProfile());
       toast.success("Profile updated successfully!");
       setSuccess(true);
       setLoading(false);
