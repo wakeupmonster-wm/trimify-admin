@@ -1,6 +1,10 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { IconTrendingDown, IconTrendingUp, IconMinus } from "@tabler/icons-react";
+import {
+  IconTrendingDown,
+  IconTrendingUp,
+  IconMinus,
+} from "@tabler/icons-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -105,7 +109,9 @@ const KpiCard = ({
     dynamicExplanation = `${isPositive ? "Increase" : "Decrease"} compared to previous period`;
   }
 
-  const trendNum = trendValue ? parseFloat(String(trendValue).replace(/[^0-9.\-]/g, "")) : 0;
+  const trendNum = trendValue
+    ? parseFloat(String(trendValue).replace(/[^0-9.\-]/g, ""))
+    : 0;
   const isTrendZero = trendNum === 0;
   const isTrendUp = trendNum > 0;
   const isTrendDown = trendNum < 0;
@@ -125,7 +131,7 @@ const KpiCard = ({
       className={cn(
         "flex flex-row items-start gap-4 rounded-xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5",
         onClick &&
-        "cursor-pointer hover:border-cyan-300/60 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
+          "cursor-pointer hover:border-cyan-300/60 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
         isSelected && "border-app-primary2/60 shadow-app-primary2/10 shadow-md",
       )}
     >
@@ -173,7 +179,10 @@ const KpiCard = ({
                     )}
                     <span>
                       {isTrendZero ? "" : isTrendUp ? "+" : ""}
-                      {String(trendValue).replace(/^[+-]/, isTrendDown ? "-" : "")}
+                      {String(trendValue).replace(
+                        /^[+-]/,
+                        isTrendDown ? "-" : "",
+                      )}
                     </span>
                   </div>
                 </TooltipTrigger>
@@ -219,7 +228,11 @@ const KpiCard = ({
                         <span>Difference:</span>
                         <span
                           className={
-                            isTrendZero ? "text-slate-400" : isTrendGood ? "text-emerald-400" : "text-rose-400"
+                            isTrendZero
+                              ? "text-slate-400"
+                              : isTrendGood
+                                ? "text-emerald-400"
+                                : "text-rose-400"
                           }
                         >
                           {tooltipData.current - tooltipData.previous > 0
@@ -298,7 +311,11 @@ const KpiCard = ({
                         <span>Difference:</span>
                         <span
                           className={
-                            isTrendZero ? "text-slate-400" : isTrendGood ? "text-emerald-400" : "text-rose-400"
+                            isTrendZero
+                              ? "text-slate-400"
+                              : isTrendGood
+                                ? "text-emerald-400"
+                                : "text-rose-400"
                           }
                         >
                           {tooltipData.current - tooltipData.previous > 0

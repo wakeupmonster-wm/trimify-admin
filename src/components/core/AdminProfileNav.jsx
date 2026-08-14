@@ -17,39 +17,48 @@ export function AdminProfileNav() {
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName = account?.name || user?.name || localUser?.name || "Admin";
+  const displayName =
+    account?.name ||
+    user?.nickname ||
+    user?.name ||
+    localUser?.nickname ||
+    localUser?.name ||
+    "Admin";
   const displayEmail =
     account?.email || user?.email || localUser?.email || "admin@example.com";
-  const initial = displayName.charAt(0).toUpperCase();
+
+  const role =
+    user?.role !== undefined
+      ? Number(user.role)
+      : localUser?.role !== undefined
+        ? Number(localUser.role)
+        : null;
 
   const displayUser = {
-    ...localUser,
     ...user,
+    ...localUser,
     ...account,
     name: displayName,
     email: displayEmail,
-    initial: initial,
+    avatar: localUser?.avatar?.url || user?.avatar?.url || "",
+    initial: displayName.charAt(0).toUpperCase(),
+    role: role || localUser?.role || 0,
   };
 
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div
-            // onClick={() => navigate("/admin/accounts")}
-            className="flex items-center gap-2.5 pl-2 pr-4 py-1 rounded-full border border-slate-300/60 bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm"
-          >
+          <div className="flex items-center gap-2.5 pl-2 pr-4 py-1 rounded-full border border-slate-300/60 bg-slate-50 cursor-pointer transition-all duration-200 group shadow-sm">
             {/* Avatar with fallback logic */}
             <Avatar className="h-9 w-9 rounded-full border border-white shadow-sm transition-transform group-hover:scale-105 overflow-hidden">
               <AvatarImage
-                src={
-                  displayUser?.avatar?.url || displayUser?.avatar || dummyImg
-                }
+                src={displayUser?.avatar || dummyImg}
                 alt={displayName}
                 className="object-cover"
               />
               <AvatarFallback className="bg-app-primary2 text-white font-bold text-[13px]">
-                {initial}
+                {displayUser.initial}
               </AvatarFallback>
             </Avatar>
             <div className="flex items-center gap-1 leading-none">

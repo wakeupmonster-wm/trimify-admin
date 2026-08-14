@@ -67,7 +67,7 @@ export default function RequestResetEmailForm() {
             <Input
               {...register("email")}
               placeholder="info@trimify.com.au"
-              className="pl-10 py-5"
+              className="pl-10 py-5 placeholder:font-normal"
             />
           </div>
           {errors.email && (

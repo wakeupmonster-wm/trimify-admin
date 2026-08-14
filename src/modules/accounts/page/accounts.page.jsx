@@ -215,7 +215,7 @@ export default function AccountsPage() {
                     </span>
                     <span className="flex flex-row items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-app-primary2" />
-                      Last login {formatDateSafe(displayAccount?.lastLoginAt)}
+                      Last login {formatDateSafe(displayAccount?.last_login_at)}
                     </span>
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function AccountsPage() {
                     }
                     iconBg="bg-slate-100/50"
                     label="Last Login"
-                    value={formatDateSafe(displayAccount?.lastLoginAt)}
+                    value={formatDateSafe(displayAccount?.last_login_at)}
                   />
                 </CardContent>
               </Card>

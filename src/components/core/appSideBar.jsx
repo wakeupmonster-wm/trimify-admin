@@ -15,7 +15,7 @@ import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import { NavUser } from "./navigations/nav-user";
 import navigationData from "@/app/data/navigation";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import trimifyLogo from "@/assets/web/trimifyLogo.png";
 import { cn } from "@/lib/utils";
@@ -27,19 +27,25 @@ export function AppSidebar({ ...props }) {
   const localUserStr = localStorage.getItem("auth_user");
   const localUser = localUserStr ? JSON.parse(localUserStr) : null;
 
-  const displayName = account?.name || user?.name || localUser?.name || "Admin";
+  const displayName = account?.name || user?.nickname || user?.name || localUser?.nickname || localUser?.name || "Admin";
   const displayEmail =
     account?.email || user?.email || localUser?.email || "admin@example.com";
-  const initial = displayName.charAt(0).toUpperCase();
+
+  const role =
+  user?.role !== undefined ? Number(user.role)
+      : localUser?.role !== undefined ? Number(localUser.role) : null;
 
   const displayUser = {
-    ...localUser,
     ...user,
+    ...localUser,
     ...account,
     name: displayName,
     email: displayEmail,
-    initial: initial,
+    avatar: localUser?.avatar?.url || user?.avatar?.url || "",
+    initial: displayName.charAt(0).toUpperCase(),
+    role: role || localUser?.role || 0,
   };
+
   const { open, isMobile, setOpenMobile } = useSidebar();
   const { pathname } = useLocation();
 
