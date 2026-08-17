@@ -44,7 +44,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-slate-300/60 bg-white shadow-sm transition-all duration-300 hover:border-blue-200",
+        "overflow-hidden rounded-xl border border-slate-300/60 hover:border-slate-300 bg-white shadow-sm transition-all duration-300",
         className,
       )}
     >
@@ -127,7 +127,7 @@ export function Kpi({ icon: Icon, label, value, tone = "blue" }) {
 
 export function GoalTile({ label, value, pct, colorClass = "bg-blue-500" }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md group flex flex-col gap-1">
+    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md group flex flex-col gap-1">
       <div className="space-y-1">
         <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
           {label}

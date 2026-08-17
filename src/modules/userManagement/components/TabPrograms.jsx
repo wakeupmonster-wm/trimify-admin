@@ -6,9 +6,9 @@ import {
   Dumbbell,
   Pencil,
   Plus,
-  ChevronLeft,
-  ChevronRight,
+  Eye,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Pill, EmptyState } from "./UserProfileShared";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import EditFitzoneDialogForm from "./profile/EditFitzoneDialogForm";
@@ -21,6 +21,7 @@ import { DataTablePagination } from "@/components/shared/datatable/DataTablePagi
 export function TabPrograms({ data }) {
   const { user, programs, fitzoneStatus, fmtDate } = data;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [editFitzoneOpen, setEditFitzoneOpen] = useState(false);
   const [addFitzoneOpen, setAddFitzoneOpen] = useState(false);
   const [selectedFitzone, setSelectedFitzone] = useState(null);
@@ -31,10 +32,16 @@ export function TabPrograms({ data }) {
   const [programPage, setProgramPage] = useState(1);
   const [programPageSize, setProgramPageSize] = useState(10);
 
-  const currentFitzones = fitzoneStatus.slice((fitzonePage - 1) * fitzonePageSize, fitzonePage * fitzonePageSize);
+  const currentFitzones = fitzoneStatus.slice(
+    (fitzonePage - 1) * fitzonePageSize,
+    fitzonePage * fitzonePageSize,
+  );
   const totalFitzonePages = Math.ceil(fitzoneStatus.length / fitzonePageSize);
 
-  const currentPrograms = programs.slice((programPage - 1) * programPageSize, programPage * programPageSize);
+  const currentPrograms = programs.slice(
+    (programPage - 1) * programPageSize,
+    programPage * programPageSize,
+  );
   const totalProgramPages = Math.ceil(programs.length / programPageSize);
 
   const fitzoneTable = {
@@ -43,14 +50,14 @@ export function TabPrograms({ data }) {
       pagination: {
         pageIndex: fitzonePage - 1,
         pageSize: fitzonePageSize,
-      }
+      },
     }),
     setPageSize: (size) => {
       setFitzonePageSize(size);
       setFitzonePage(1);
     },
-    previousPage: () => setFitzonePage(p => p - 1),
-    nextPage: () => setFitzonePage(p => p + 1),
+    previousPage: () => setFitzonePage((p) => p - 1),
+    nextPage: () => setFitzonePage((p) => p + 1),
     getCanPreviousPage: () => fitzonePage > 1,
     getCanNextPage: () => fitzonePage < totalFitzonePages,
     setPageIndex: (index) => setFitzonePage(index + 1),
@@ -62,14 +69,14 @@ export function TabPrograms({ data }) {
       pagination: {
         pageIndex: programPage - 1,
         pageSize: programPageSize,
-      }
+      },
     }),
     setPageSize: (size) => {
       setProgramPageSize(size);
       setProgramPage(1);
     },
-    previousPage: () => setProgramPage(p => p - 1),
-    nextPage: () => setProgramPage(p => p + 1),
+    previousPage: () => setProgramPage((p) => p - 1),
+    nextPage: () => setProgramPage((p) => p + 1),
     getCanPreviousPage: () => programPage > 1,
     getCanNextPage: () => programPage < totalProgramPages,
     setPageIndex: (index) => setProgramPage(index + 1),
@@ -102,7 +109,7 @@ export function TabPrograms({ data }) {
                 onClick={() => setAddFitzoneOpen(true)}
                 className="inline-flex items-center justify-center rounded-md border border-app-primary2/30 bg-app-primary2/10 px-2 py-1 text-[11px] font-semibold text-app-primary2 hover:bg-app-primary2 hover:text-white transition-colors"
               >
-                <Plus className="w-3.5 h-3.5 mr-1" /> Add
+                <Plus className="w-3.5 h-3.5 mr-1" /> Assign
               </button>
             </div>
           </div>
@@ -136,15 +143,17 @@ export function TabPrograms({ data }) {
                           key={`${f.category_id}-${idx}`}
                           className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
                         >
-                          <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
-                            {((fitzonePage - 1) * fitzonePageSize) + Number(idx) + 1}
+                          <td className="whitespace-nowrap px-5 py-3 text-[12px] font-medium text-slate-500">
+                            {(fitzonePage - 1) * fitzonePageSize +
+                              Number(idx) +
+                              1}
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4">
+                          <td className="whitespace-nowrap px-5 py-3">
                             <div className="text-[11px] font-semibold text-slate-900">
                               {f.category_title}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4">
+                          <td className="whitespace-nowrap px-5 py-3">
                             <Pill
                               tone={
                                 f.status === "Active" ? "success" : "neutral"
@@ -153,12 +162,12 @@ export function TabPrograms({ data }) {
                               {f.status || "Unknown"}
                             </Pill>
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4">
+                          <td className="whitespace-nowrap px-5 py-3">
                             <div className="text-[11px] font-medium text-slate-600">
                               {f.assigned_at ? fmtDate(f.assigned_at) : "—"}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4 text-right">
+                          <td className="whitespace-nowrap px-5 py-3 text-right">
                             <button
                               onClick={() => {
                                 setSelectedFitzone(f);
@@ -228,6 +237,9 @@ export function TabPrograms({ data }) {
                         <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                           Status
                         </th>
+                        <th className="h-11 px-5 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -236,10 +248,12 @@ export function TabPrograms({ data }) {
                           key={`${p.program_id}-${idx}`}
                           className="transition-colors hover:bg-slate-50/50 even:bg-slate-50/30"
                         >
-                          <td className="whitespace-nowrap px-5 py-4 text-[12px] font-medium text-slate-500">
-                            {((programPage - 1) * programPageSize) + Number(idx) + 1}
+                          <td className="whitespace-nowrap px-5 py-3 text-[12px] font-medium text-slate-500">
+                            {(programPage - 1) * programPageSize +
+                              Number(idx) +
+                              1}
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4">
+                          <td className="whitespace-nowrap px-5 py-3">
                             <div className="text-[11px] font-semibold text-slate-900">
                               {p.title}
                             </div>
@@ -247,7 +261,7 @@ export function TabPrograms({ data }) {
                               Assigned {fmtDate(p.assigned_at)}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4 text-[11px] font-medium text-slate-600">
+                          <td className="whitespace-nowrap px-5 py-3 text-[11px] font-medium text-slate-600">
                             {p.start_date ? (
                               `${fmtDate(p.start_date)} – ${fmtDate(p.end_date)}`
                             ) : (
@@ -256,7 +270,7 @@ export function TabPrograms({ data }) {
                               </span>
                             )}
                           </td>
-                          <td className="whitespace-nowrap px-5 py-4">
+                          <td className="whitespace-nowrap px-5 py-3">
                             <Pill
                               tone={
                                 p.status === "Active" ? "success" : "neutral"
@@ -264,6 +278,20 @@ export function TabPrograms({ data }) {
                             >
                               {p.status}
                             </Pill>
+                          </td>
+                          <td className="whitespace-nowrap px-5 py-3 text-center">
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/admin/manage-program?search=${encodeURIComponent(p.title)}`,
+                                )
+                              }
+                              title="View Program"
+                              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+                            >
+                              <Eye className="w-3 h-3 text-slate-500" />
+                              View
+                            </button>
                           </td>
                         </tr>
                       ))}

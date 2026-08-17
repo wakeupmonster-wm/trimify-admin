@@ -7,8 +7,6 @@ import { rootReducer } from "./rootReducers";
 const persistConfig = {
   key: "root",
   storage,
-  // You can add a whitelist/blacklist here if needed
-  // blacklist: ['someHeavyDataSlice'] 
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -18,7 +16,6 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore redux-persist actions for serializability check
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE", "persist/REGISTER", "persist/FLUSH", "persist/PAUSE", "persist/PURGE"],
       },
     }),

@@ -4,7 +4,6 @@ import {
   Ban,
   CreditCard,
   FileText,
-  Mail,
   Scale,
   ShieldCheck,
   UserCheck,

@@ -1,13 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { UserCheck, CalendarOff, ShieldOff } from "lucide-react";
-import { LuUsersRound } from "react-icons/lu";
-import {
-  DataTable,
-  DataTableFilters,
-  DataTableActiveChips,
-} from "@/components/shared/datatable";
+import { CalendarOff, ShieldOff } from "lucide-react";
+import { LuUserRoundCheck, LuUsersRound } from "react-icons/lu";
+import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import ErrorState from "@/components/shared/ErrorState";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,10 +11,7 @@ import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import { getSubscriberColumns } from "./subscriber.columns";
 import UpgradeSubscriberDialog from "./UpgradeSubscriberDialog";
 import RevokeSubscriberDialog from "./RevokeSubscriberDialog";
-import {
-  fetchSubscribers,
-  manageSubscriber,
-} from "../../../store/subscription-dashboard.slice";
+import { fetchSubscribers, manageSubscriber } from "../../../store/subscription-dashboard.slice";
 import { getSubscribersAPI } from "../../../services/subscription-dashboard.services";
 import { fetchSubscriptionPlans } from "../../../store/subscription.slice";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -134,14 +127,16 @@ export default function SubscribersView() {
       // internal refund endpoint which returns 202. The webhook will
       // set revoked_at/paid=0 after Stripe processes the refund.
       const result = await dispatch(
-        manageSubscriber({ id: subscriber.id, action, ...data })
+        manageSubscriber({ id: subscriber.id, action, ...data }),
       );
       if (manageSubscriber.fulfilled.match(result)) {
         setConfirmAction(null);
         toast.loading("Processing revocation...", { id: "revoke-toast" });
         setTimeout(async () => {
           const refetched = await dispatch(fetchSubscribers(fetchParams));
-          toast.success("Subscriber revoked successfully", { id: "revoke-toast" });
+          toast.success("Subscriber revoked successfully", {
+            id: "revoke-toast",
+          });
           if (fetchSubscribers.fulfilled.match(refetched)) {
             setPinnedCounts(refetched.payload.counts);
           }
@@ -191,7 +186,7 @@ export default function SubscribersView() {
       {
         label: "Active Subscriptions",
         value: kpiCounts.active || 0,
-        icon: UserCheck,
+        icon: LuUserRoundCheck,
         tone: "emerald",
         description: "Not revoked, not expired",
         onClick: () => {
@@ -243,7 +238,10 @@ export default function SubscribersView() {
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
       options: STATUS_OPTIONS.map((s) => ({
-        label: s === "expiring_soon" ? "Expiring Soon" : s.charAt(0).toUpperCase() + s.slice(1),
+        label:
+          s === "expiring_soon"
+            ? "Expiring Soon"
+            : s.charAt(0).toUpperCase() + s.slice(1),
         value: s,
       })),
       placeholder: "All Status",
@@ -257,7 +255,9 @@ export default function SubscribersView() {
         setPlanFilter(v);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      options: plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) || [],
+      options:
+        plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) ||
+        [],
       placeholder: "All Plans",
     },
   ];

@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -238,7 +236,7 @@ export default function AccountsPage() {
             {/* LEFT COLUMN: Sidebar Info (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
               {/* Contact Details Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-slate-200 hover:border-slate-300 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
@@ -280,7 +278,7 @@ export default function AccountsPage() {
               </Card>
 
               {/* Meta Data Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-slate-200 hover:border-slate-300 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
@@ -321,7 +319,7 @@ export default function AccountsPage() {
             {/* RIGHT COLUMN: Stats & Security (8 cols) */}
             <div className="lg:col-span-8 space-y-4">
               {/* Security Component wrapper to give it matching styles */}
-              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden">
+              <div className="rounded-lg shadow-sm border border-slate-200 hover:border-slate-300 overflow-hidden">
                 <SecurityCredentials
                   account={displayAccount}
                   loading={loading}
@@ -330,7 +328,7 @@ export default function AccountsPage() {
               </div>
 
               {/* Email Component wrapper to give it matching styles */}
-              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden mt-4">
+              <div className="rounded-lg shadow-sm border border-slate-200 hover:border-slate-300 overflow-hidden mt-4">
                 <Card className="mx-auto border-none gap-0 shadow-none bg-transparent overflow-hidden font-sans w-full">
                   <CardHeader className="p-0">
                     <div className="pb-4 px-4 border-b border-slate-300/60 pt-0">

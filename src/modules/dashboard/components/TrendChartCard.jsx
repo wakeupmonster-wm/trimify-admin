@@ -26,7 +26,17 @@ import { Info } from "lucide-react";
 //
 // Default bars: diagonal hatch fill. Hovered bar: solid top→bottom
 // gradient + a small connector dot, with a floating pill tooltip above it.
-function PillBar({ x, y, width, height, index, isActive, color, gradientId, patternId }) {
+function PillBar({
+  x,
+  y,
+  width,
+  height,
+  index,
+  isActive,
+  color,
+  gradientId,
+  patternId,
+}) {
   if (width <= 0 || height <= 0) return null;
   const radius = Math.min(width / 2, height / 2);
   return (
@@ -75,7 +85,8 @@ function PillTooltip({ active, payload, series }) {
 const formatCompact = (value) => {
   const num = Number(value);
   if (Math.abs(num) >= 1000) {
-    const trimmed = num % 1000 === 0 ? (num / 1000).toFixed(0) : (num / 1000).toFixed(1);
+    const trimmed =
+      num % 1000 === 0 ? (num / 1000).toFixed(0) : (num / 1000).toFixed(1);
     return `${trimmed}k`;
   }
   return num.toLocaleString();
@@ -108,16 +119,17 @@ const TrendChartCard = ({
   );
   // Ensure we actually have non-zero data to plot, not just a padded zero-value array
   // which can happen for single-day periods like 'Yesterday' or 'Today'.
-  const hasData = data.length > 0 && data.some(point =>
-    series.some(s => Number(point[s.key]) > 0)
-  );
+  const hasData =
+    data.length > 0 &&
+    data.some((point) => series.some((s) => Number(point[s.key]) > 0));
 
   // Every series is a bar → use the reference-design pill treatment.
   // Any area/line present → fall through to the original chart untouched.
-  const isPureBarChart = series.length > 0 && series.every((s) => s.type === "bar");
+  const isPureBarChart =
+    series.length > 0 && series.every((s) => s.type === "bar");
 
   return (
-    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm hover:shadow-md flex flex-col h-full overflow-hidden">
+    <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
       <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title={title}
@@ -179,7 +191,11 @@ const TrendChartCard = ({
                         y2="1"
                       >
                         <stop offset="0%" stopColor={s.color} stopOpacity={1} />
-                        <stop offset="100%" stopColor={s.color} stopOpacity={0.1} />
+                        <stop
+                          offset="100%"
+                          stopColor={s.color}
+                          stopOpacity={0.1}
+                        />
                       </linearGradient>
                       <pattern
                         id={`bar-hatch-${s.key}`}
@@ -189,7 +205,14 @@ const TrendChartCard = ({
                         patternUnits="userSpaceOnUse"
                       >
                         <rect width="6" height="6" fill="#eef1f5" />
-                        <line x1="0" y1="0" x2="0" y2="6" stroke="#dbe2ea" strokeWidth="2.5" />
+                        <line
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="6"
+                          stroke="#dbe2ea"
+                          strokeWidth="2.5"
+                        />
                       </pattern>
                     </React.Fragment>
                   ))}
@@ -235,11 +258,11 @@ const TrendChartCard = ({
                   isPureBarChart
                     ? false
                     : {
-                      stroke: "hsl(215, 20%, 90%)",
-                      strokeWidth: 1,
-                      strokeDasharray: "4 4",
-                      fill: "transparent",
-                    }
+                        stroke: "hsl(215, 20%, 90%)",
+                        strokeWidth: 1,
+                        strokeDasharray: "4 4",
+                        fill: "transparent",
+                      }
                 }
                 content={
                   isPureBarChart ? (
@@ -259,7 +282,9 @@ const TrendChartCard = ({
                         return label;
                       }}
                       formatter={(value, name) => {
-                        const matchedSeries = series.find((s) => s.key === name);
+                        const matchedSeries = series.find(
+                          (s) => s.key === name,
+                        );
                         return (
                           <div className="flex w-full items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
@@ -267,7 +292,8 @@ const TrendChartCard = ({
                                 className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
                                 style={{
                                   backgroundColor:
-                                    matchedSeries?.color || "hsl(215, 16%, 65%)",
+                                    matchedSeries?.color ||
+                                    "hsl(215, 16%, 65%)",
                                 }}
                               />
                               <span className="text-muted-foreground">

@@ -297,7 +297,7 @@ const FaqManagementPage = () => {
         {/* FAQ Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-sm sm:max-w-2xl p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
-            <div className="flex justify-between items-start px-6 py-5 border-b border-slate-200 bg-white">
+            <div className="flex justify-between items-start px-6 py-5 border-b border-slate-300 bg-white">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-app-primary2/10 rounded-2xl flex items-center justify-center shrink-0 border border-app-primary2/20">
                   <HelpCircle className="w-5 h-5 text-app-primary2" />

@@ -24,10 +24,8 @@ import {
   toggleProgramStatus,
   toggleFoodVisibility,
   deleteProgram,
-  replicateProgram,
 } from "../store/program.slice";
 import { getProgramManagementAPI } from "../services/program.services";
-import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
@@ -44,8 +42,11 @@ const ManageProgramPage = () => {
   } = useSelector((state) => state.manageProgram);
 
   const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState(
+    searchParams.get("search") || "",
+  );
   const [durationFilter, setDurationFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState(
     location.state?.filterId || "",
@@ -75,7 +76,7 @@ const ManageProgramPage = () => {
             // Fallback if kpis object is missing from backend
             const allProgs = response.programs || [];
             const active = allProgs.filter(
-              (p) => String(p.status || "Active").toLowerCase() === "active"
+              (p) => String(p.status || "Active").toLowerCase() === "active",
             ).length;
             setGlobalKpisData({
               totalPrograms: response.pagination?.total ?? allProgs.length,

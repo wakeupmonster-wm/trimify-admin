@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/auth.schemas";
-// import { loginThunk } from "../store/auth.slice";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +17,6 @@ import { loginThunk } from "../store/auth.slice";
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { loading, error } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -41,10 +39,7 @@ export function LoginForm({ className, ...props }) {
     setIsSubmitting(true);
     try {
       const { user } = await dispatch(loginThunk(data)).unwrap();
-
-      // Navigate to dashboard upon successful login without strict role check
       navigate(user?.screen || "/admin/dashboard", { replace: true });
-
       toast.success(user?.message || "Login successful", {
         description: `Welcome back, ${user?.nickname || "Admin"}!`,
       });

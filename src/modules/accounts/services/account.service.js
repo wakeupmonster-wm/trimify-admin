@@ -1,4 +1,3 @@
-// import { ACCOUNTENDPOINTS } from "@/services/api-endpoints/auth.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 import { ACCOUNT_SETTING } from "@/services/api-endpoints/account-settings.endpoints";
 

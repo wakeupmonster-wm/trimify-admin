@@ -33,7 +33,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { UserActionModal } from "@/modules/users/components/UserActionModal";
 
 const STATUS_STYLES = {
   active: {

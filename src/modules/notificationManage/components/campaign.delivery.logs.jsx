@@ -77,19 +77,19 @@ export default function CampaignDeliveryLogs({
               <Table className="border-separate border-spacing-0 table-fixed min-w-[650px] w-full relative">
                 <TableHeader className="z-20 shadow-sm">
                   <TableRow className="w-full">
-                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/12 text-center text-[10px] font-bold uppercase px-2 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-100 w-1/12 text-center text-[10px] font-bold uppercase px-2 h-9">
                       Sr. No
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/4 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-100 w-1/4 text-[10px] font-bold uppercase px-4 h-9">
                       Recipient
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/6 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-100 w-1/6 text-[10px] font-bold uppercase px-4 h-9">
                       Status
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-4/12 text-[10px] font-bold uppercase px-4 h-9">
+                    <TableHead className="sticky top-0 z-30 bg-slate-100 w-4/12 text-[10px] font-bold uppercase px-4 h-9">
                       Error Details
                     </TableHead>
-                    <TableHead className="sticky top-0 z-30 bg-slate-200 w-1/6 text-[10px] font-bold uppercase px-4 h-9 text-center">
+                    <TableHead className="sticky top-0 z-30 bg-slate-100 w-1/6 text-[10px] font-bold uppercase px-4 h-9 text-center">
                       Time
                     </TableHead>
                   </TableRow>

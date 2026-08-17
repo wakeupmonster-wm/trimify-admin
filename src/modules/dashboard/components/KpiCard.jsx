@@ -54,13 +54,19 @@ const TONE_STYLES = {
     border: "border-slate-200 hover:border-slate-400",
   },
   email: {
-    iconBg: "bg-[#F5EFE6]",
-    iconColor: "text-[#8A5A2B]",
+    // These Hexa color provide by Ojas Sir.
+    // iconBg: "bg-[#F5EFE6]",
+    // iconColor: "text-[#8A5A2B]",
+    iconBg: "bg-app-primary2/5",
+    iconColor: "text-app-primary2",
     border: "border-slate-200 hover:border-[#8A5A2B]/40",
   },
   push: {
-    iconBg: "bg-[#F5F3FF]",
-    iconColor: "text-[#6D28D9]",
+    // These Hexa color provide by Ojas Sir.
+    // iconBg: "bg-[#F5F3FF]",
+    // iconColor: "text-[#6D28D9]",
+    iconBg: "bg-app-primary3/5",
+    iconColor: "text-app-primary3",
     border: "border-slate-200 hover:border-[#6D28D9]/40",
   },
 };
@@ -131,7 +137,7 @@ const KpiCard = ({
       className={cn(
         "flex flex-row items-start gap-4 rounded-xl border bg-white px-5 py-5 shadow-sm transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5",
         onClick &&
-          "cursor-pointer hover:border-cyan-300/60 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
+          "cursor-pointer hover:border-app-primary2/40 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-app-primary2 focus-visible:outline-none",
         isSelected && "border-app-primary2/60 shadow-app-primary2/10 shadow-md",
       )}
     >

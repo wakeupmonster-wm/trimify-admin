@@ -577,7 +577,7 @@ const AiFoodViewPage = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:lg:grid-cols-[1fr_400px] gap-6 items-start">
               {/* Image Card (Right Column on Desktop) */}
               <div className="flex flex-col gap-4 order-last lg:order-last">
-                <Card className="border-slate-200 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
+                <Card className="border-slate-200 hover:border-slate-300 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
                   <div className="flex items-center gap-2 px-1">
                     <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
                     <h3 className="text-sm font-bold text-[#1d5284] uppercase tracking-wide">
@@ -684,7 +684,7 @@ const AiFoodViewPage = () => {
               </div>
 
               {/* Data Form (Left Column on Desktop) */}
-              <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6 order-first lg:order-first">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 hover:border-slate-300 transition-colors p-6 space-y-6 order-first lg:order-first">
                 <div className="flex items-center gap-2 -mb-2">
                   <ClipboardList className="w-3.5 h-3.5 text-app-primary2" />
                   <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">

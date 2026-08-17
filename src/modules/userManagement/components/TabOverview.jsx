@@ -175,8 +175,8 @@ export function TabOverview({ data }) {
                         !user.paid
                           ? "bg-slate-100 text-slate-600"
                           : String(user.plan.title || user.plan)
-                            .toLowerCase()
-                            .includes("premium")
+                                .toLowerCase()
+                                .includes("premium")
                             ? "bg-amber-50 text-amber-600"
                             : "bg-app-primary2/5 text-app-primary2",
                       )}
@@ -226,7 +226,7 @@ export function TabOverview({ data }) {
                         bmiCat.label.toLowerCase() === "normal"
                           ? "bg-emerald-100/50 text-emerald-600"
                           : bmiCat.label.toLowerCase() === "overweight" ||
-                            bmiCat.label.toLowerCase() === "underweight"
+                              bmiCat.label.toLowerCase() === "underweight"
                             ? "bg-amber-100/50 text-amber-600"
                             : bmiCat.label.toLowerCase() === "obese"
                               ? "bg-rose-100/50 text-rose-600"

@@ -3,7 +3,6 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Eye, ShieldCheck, Loader2, Save } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { toast } from "sonner";

@@ -39,7 +39,7 @@ const DashboardTableCard = ({
   footerStat,
 }) => {
   return (
-    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
       <div className="pt-5 pb-4 px-6 border-b border-slate-100">
         <DashboardHead
           title={title}

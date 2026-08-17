@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, ShieldOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import {
@@ -111,7 +111,7 @@ export function TabSettings({ data }) {
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
         <Card
-          className="p-0 overflow-hidden pb-0.5"
+          className="p-0 overflow-hidden"
           title="Account Status"
           subtitle="Current status and security details"
           icon={ShieldCheck}
@@ -152,9 +152,15 @@ export function TabSettings({ data }) {
             label="Revoked"
             value={user.revoked_at ? fmtDate(user.revoked_at) : "No"}
           />
+          <KV
+            icon={ShieldOff}
+            label="Account Deleted"
+            value={user.deleted_at ? fmtDate(user.deleted_at) : "No"}
+          />
         </Card>
 
         <Card
+          className="p-0 overflow-hidden"
           title="Billing & Plan"
           subtitle="Payment methods and history"
           icon={CreditCard}

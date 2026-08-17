@@ -91,7 +91,7 @@ export function TabTransactions({ data }) {
         ].map((item, idx) => (
           <div
             key={idx}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex items-start gap-4 transition-all hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm flex items-start gap-4 transition-all hover:border-slate-300 hover:shadow-sm hover:-translate-y-0.5"
           >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-500 shadow-sm">
               <item.icon className="h-6 w-6" />

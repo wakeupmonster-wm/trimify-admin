@@ -64,6 +64,19 @@ export function TabActivity({ data }) {
             emerald: "text-emerald-500",
             amber: "text-amber-500",
           };
+          const ringTones = {
+            blue: "ring-app-primary2",
+            purple: "ring-purple-500",
+            emerald: "ring-emerald-500",
+            amber: "ring-amber-500",
+          };
+
+          const borderActive = {
+            blue: "border-app-primary2",
+            purple: "border-purple-500",
+            emerald: "border-emerald-500",
+            amber: "border-amber-500",
+          };
 
           return (
             <button
@@ -74,8 +87,8 @@ export function TabActivity({ data }) {
                 "flex flex-col items-center justify-center px-6 py-4 rounded-2xl border border-slate-300/80 bg-white border-b-4 shadow-sm transition-all duration-300",
                 borderTones[c.tone] || borderTones.blue,
                 isActive
-                  ? "ring-1 ring-offset-0 ring-app-primary2 shadow-md -translate-y-0.5"
-                  : "hover:-translate-y-0.5 hover:shadow-md",
+                  ? `ring-[0.2px] ring-offset-0 shadow-md -translate-y-0.5 border-b-4 ${ringTones[c.tone]} ${borderActive[c.tone]}`
+                  : `hover:-translate-y-0.5 hover:shadow-md hover:border-slate-400`,
               )}
             >
               <div

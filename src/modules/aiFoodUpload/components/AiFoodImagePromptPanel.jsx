@@ -162,7 +162,7 @@ const AiFoodImagePromptPanel = ({
   };
 
   return (
-    <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6">
+    <div className="bg-white rounded-md shadow-sm border border-slate-200 hover:border-slate-300 transition-colors p-6">
       <div className="flex items-center gap-2 mb-5">
         <Wand2 className="w-4 h-4 text-app-primary2" />
         <h3 className="text-sm font-bold text-slate-800">
@@ -170,7 +170,7 @@ const AiFoodImagePromptPanel = ({
         </h3>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_290px] gap-6 items-start">
         <Tabs defaultValue="prompt">
           <TabsList className="grid grid-cols-2 w-full max-w-sm">
             <TabsTrigger value="prompt">Text Prompt</TabsTrigger>
@@ -184,7 +184,7 @@ const AiFoodImagePromptPanel = ({
               placeholder="Describe exactly how the image should look — e.g. “top-down shot on a dark slate plate, garnished with mint, natural light”"
               rows={3}
               disabled={busy}
-              className="text-sm resize-y border-slate-300"
+              className="text-xs placeholder:font-normal resize-y border-slate-300"
             />
             <div className="flex justify-end gap-2">
               {busy && (

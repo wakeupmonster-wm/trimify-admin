@@ -14,7 +14,7 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AboutUsPage = () => {
   const dispatch = useDispatch();
-  const { data, loading } = useSelector((state) => state.cmsManagement);
+  const { data } = useSelector((state) => state.cmsManagement);
 
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);

@@ -129,7 +129,7 @@ export function EcosystemAlerts({ data, selectedDate }) {
             return (
               <div
                 key={idx}
-                className={`group relative flex items-center gap-3 border ${alertConfig.borderColor} ${alertConfig.bgColor} rounded-xl p-4 py-5 shadow-sm hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden`}
+                className={`group relative flex items-center gap-3 border ${alertConfig.borderColor} ${alertConfig.bgColor} rounded-xl p-4 py-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer overflow-hidden`}
                 onClick={() => {
                   sessionStorage.clear();
                   navigate(
