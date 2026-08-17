@@ -77,7 +77,7 @@ const UsersManagementPage = () => {
     [navigate],
   );
 
-  const isUnfiltered = !statusFilter && !debouncedSearchTerm;
+
   const [pinnedKpis, setPinnedKpis] = useState(null);
 
   // Background fetch for true KPIs if the backend doesn't provide them
@@ -87,7 +87,7 @@ const UsersManagementPage = () => {
 
     // If the backend provided `kpis` in the initial fetch, use them directly
     if (kpis) {
-      setPinnedKpis(kpis);
+      setTimeout(() => setPinnedKpis(kpis), 0);
       return;
     }
 
