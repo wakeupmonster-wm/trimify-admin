@@ -24,58 +24,94 @@ import { Info } from "lucide-react";
 // mixed bar+line/area combo — fall straight through to the original
 // rendering below, completely untouched.
 //
-// Default bars: diagonal hatch fill. Hovered bar: solid top→bottom
-// gradient + a small connector dot, with a floating pill tooltip above it.
+// The value badge + connector dot are drawn as plain SVG *inside this same
+// shape*, anchored directly to the bar's own x/y — NOT via Recharts'
+// <Tooltip>, which positions off the mouse cursor and would drift away
+// from the bar as the pointer moves inside it. Drawing it here guarantees
+// the badge always sits exactly above the bar it belongs to.
+// Builds a bar outline with rounded TOP corners only and a flat bottom
+// edge — a plain <rect rx/ry> can't do this because rx/ry round all four
+// corners equally. M→L→Q→L→Q→L→Z: start bottom-left, go up the flat left
+// edge, arc the top-left corner, go across the flat top, arc the
+// top-right corner, go down the flat right edge, then Z closes it with a
+// straight line back along the bottom.
+function topRoundedPath(x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height);
+  return `
+    M ${x},${y + height}
+    L ${x},${y + r}
+    Q ${x},${y} ${x + r},${y}
+    L ${x + width - r},${y}
+    Q ${x + width},${y} ${x + width},${y + r}
+    L ${x + width},${y + height}
+    Z
+  `;
+}
+
 function PillBar({
   x,
   y,
   width,
   height,
   index,
+  value,
   isActive,
   color,
   gradientId,
   patternId,
+  dataLength,
 }) {
   if (width <= 0 || height <= 0) return null;
-  const radius = Math.min(width / 2, height / 2);
+  // Flat-bottom, rounded-top bars — swap this constant for
+  // Math.min(width / 2, height / 2) if the full pill (rounded top+bottom)
+  // look is wanted again.
+  const radius = width / 2;
+
+  if (!isActive) {
+    return (
+      <path
+        d={topRoundedPath(x, y, width, height, radius)}
+        fill={`url(#${patternId})`}
+      />
+    );
+  }
+
+  const cx = x + width / 2;
+  const actualValue = Array.isArray(value) ? value[1] - value[0] : value;
+  const label = Number(actualValue).toLocaleString();
+  const badgeWidth = Math.max(42, label.length * 8 + 26);
+  const badgeHeight = 26;
+  const dotR = 5;
+  const gap = 10;
+  const badgeY = y - dotR - gap - badgeHeight;
+
+  // Keep the badge from overflowing the chart edges for the first/last bar.
+  let badgeShift = 0;
+  if (index === 0) badgeShift = badgeWidth / 2 - width / 2;
+  if (index === (dataLength ?? 0) - 1) badgeShift = -(badgeWidth / 2 - width / 2);
+  const badgeX = cx + badgeShift - badgeWidth / 2;
+
   return (
     <g>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        rx={radius}
-        ry={radius}
-        fill={isActive ? `url(#${gradientId})` : `url(#${patternId})`}
-        className="transition-[fill] duration-150"
+      <path
+        d={topRoundedPath(x, y, width, height, radius)}
+        fill={`url(#${gradientId})`}
       />
-      {isActive && (
-        <circle
-          cx={x + width / 2}
-          cy={y}
-          r={5}
-          fill={color}
-          stroke="#fff"
-          strokeWidth={2}
-        />
-      )}
+      <circle cx={cx} cy={y} r={dotR} fill={color} stroke="#fff" strokeWidth={2} />
+      <g transform={`translate(${badgeX}, ${badgeY})`}>
+        <rect width={badgeWidth} height={badgeHeight} rx={badgeHeight / 2} fill={color} />
+        <text
+          x={badgeWidth / 2}
+          y={badgeHeight / 2 + 4}
+          textAnchor="middle"
+          fontSize="12"
+          fontWeight="700"
+          fill="#fff"
+        >
+          {label}
+        </text>
+      </g>
     </g>
-  );
-}
-
-function PillTooltip({ active, payload, series }) {
-  if (!active || !payload?.length) return null;
-  const item = payload[0];
-  const matched = series.find((s) => s.key === item.dataKey) || series[0];
-  return (
-    <div
-      className="rounded-full px-3 py-1.5 text-xs font-bold text-white shadow-lg whitespace-nowrap"
-      style={{ background: matched?.color }}
-    >
-      {Number(item.value).toLocaleString()}
-    </div>
   );
 }
 
@@ -112,7 +148,7 @@ const TrendChartCard = ({
   note,
   height = "flex-1 min-h-[240px]",
 }) => {
-  const [hoverIndex, setHoverIndex] = useState(null);
+  const [hoverState, setHoverState] = useState({ index: null, key: null });
 
   const chartConfig = Object.fromEntries(
     series.map((s) => [s.key, { label: s.label, color: s.color }]),
@@ -148,10 +184,20 @@ const TrendChartCard = ({
               data={data}
               margin={
                 isPureBarChart
-                  ? { top: 28, right: 12, left: 0, bottom: 0 }
+                  ? { top: 46, right: 12, left: 0, bottom: 0 }
                   : { top: 8, right: 12, left: 0, bottom: 0 }
               }
-              onMouseLeave={() => isPureBarChart && setHoverIndex(null)}
+              onMouseMove={(state) => {
+                if (isPureBarChart && state?.activeTooltipIndex !== undefined) {
+                  setHoverState((prev) => {
+                    if (prev.index !== state.activeTooltipIndex || !prev.key) {
+                      return { index: state.activeTooltipIndex, key: series[0]?.key };
+                    }
+                    return prev;
+                  });
+                }
+              }}
+              onMouseLeave={() => isPureBarChart && setHoverState({ index: null, key: null })}
             >
               <defs>
                 {series.map((s) => {
@@ -228,6 +274,7 @@ const TrendChartCard = ({
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
+                padding={{ left: 20, right: 20 }}
                 tickFormatter={(value) => {
                   if (
                     data.length === 1 &&
@@ -253,21 +300,18 @@ const TrendChartCard = ({
                 width={45}
                 tickFormatter={isPureBarChart ? formatCompact : undefined}
               />
-              <ChartTooltip
-                cursor={
-                  isPureBarChart
-                    ? false
-                    : {
-                        stroke: "hsl(215, 20%, 90%)",
-                        strokeWidth: 1,
-                        strokeDasharray: "4 4",
-                        fill: "transparent",
-                      }
-                }
-                content={
-                  isPureBarChart ? (
-                    <PillTooltip series={series} />
-                  ) : (
+              {/* Pure-bar mode draws its own value badge inside PillBar, glued
+                  to the bar's own coordinates — Recharts' cursor-following
+                  Tooltip is skipped entirely so it can't drift off the bar. */}
+              {!isPureBarChart && (
+                <ChartTooltip
+                  cursor={{
+                    stroke: "hsl(215, 20%, 90%)",
+                    strokeWidth: 1,
+                    strokeDasharray: "4 4",
+                    fill: "transparent",
+                  }}
+                  content={
                     <ChartTooltipContent
                       className="bg-white"
                       labelFormatter={(label) => {
@@ -307,9 +351,9 @@ const TrendChartCard = ({
                         );
                       }}
                     />
-                  )
-                }
-              />
+                  }
+                />
+              )}
               {series.length > 1 && (
                 <ChartLegend content={<ChartLegendContent />} />
               )}
@@ -321,17 +365,19 @@ const TrendChartCard = ({
                       <Bar
                         key={s.key}
                         dataKey={s.key}
+                        stackId="pill"
                         maxBarSize={56}
-                        onMouseEnter={(_, idx) => setHoverIndex(idx)}
-                        onMouseMove={(_, idx) => setHoverIndex(idx)}
-                        onMouseLeave={() => setHoverIndex(null)}
+                        onMouseEnter={(_, idx) => setHoverState({ index: idx, key: s.key })}
+                        onMouseMove={(_, idx) => setHoverState({ index: idx, key: s.key })}
+                        onMouseLeave={() => setHoverState({ index: null, key: null })}
                         shape={(shapeProps) => (
                           <PillBar
                             {...shapeProps}
-                            isActive={shapeProps.index === hoverIndex}
+                            isActive={shapeProps.index === hoverState.index && s.key === hoverState.key}
                             color={s.color}
                             gradientId={`bar-gradient-${s.key}`}
                             patternId={`bar-hatch-${s.key}`}
+                            dataLength={data.length}
                           />
                         )}
                       />

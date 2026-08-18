@@ -128,7 +128,9 @@ const KPI_CONFIG = [
   {
     key: "expiringSoon",
     label: "Expiring Soon",
-    description: "Next 7 days · tap to view",
+    description: "Expires within 15 days",
+    forceDescription: true,
+    hideTrend: true,
     tone: "amber",
     trendValue: "5%",
     isPositive: false,
@@ -209,7 +211,7 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
               const trendObj = data.trends?.[kpi.key];
               const trendStr = trendObj?.trend;
 
-              const dynamicDescription = contextLabel
+              const dynamicDescription = (contextLabel && !kpi.forceDescription)
                 ? contextLabel.replace(/^vs\s+/i, "Compared to ")
                 : kpi.description;
 
@@ -220,10 +222,10 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
                   value={kpi.format(data)}
                   description={dynamicDescription}
                   tone={kpi.tone}
-                  trendValue={trendStr}
+                  trendValue={kpi.hideTrend ? null : trendStr}
                   isPositive={kpi.isPositive}
                   trendExplanation={kpi.trendExplanation}
-                  tooltipData={trendObj || null}
+                  tooltipData={kpi.hideTrend ? null : (trendObj || null)}
                   onClick={() => kpi.onClick(navigate, dateRange)}
                 />
               );

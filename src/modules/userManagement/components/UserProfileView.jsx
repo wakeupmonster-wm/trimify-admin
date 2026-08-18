@@ -289,6 +289,7 @@ export default function UserProfileView({ user, onBack, loading }) {
     try {
       setIsDeleting(true);
       await dispatch(deleteUserThunk(user.id)).unwrap();
+      setIsDeleteModalOpen(false);
       toast.success("User deleted successfully.");
       setTimeout(() => onBack(), 1000);
     } catch (error) {

@@ -154,7 +154,7 @@ export default function OverviewView({
           <KpiCard
             label="Expiring Soon"
             value={(dashboardExtras?.expiringSoonCount || 0).toLocaleString()}
-            description="Within next 15 days"
+            description="Expires within 15 days"
             tone="cyan"
             icon={Clock}
             onClick={() =>
