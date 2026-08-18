@@ -32,6 +32,7 @@ axiosInstance.interceptors.response.use(
         console.warn("Session Expired. Logging out...");
         localStorage.removeItem("access_Token");
         localStorage.removeItem("auth_user");
+        localStorage.removeItem("persist:root"); // Clear persisted redux state
         window.location.href = "/auth/login";
       }
     }

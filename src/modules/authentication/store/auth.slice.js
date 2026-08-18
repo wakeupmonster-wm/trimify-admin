@@ -105,6 +105,10 @@ const authSlice = createSlice({
         state.token = token;
         state.user = JSON.parse(user);
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      } else {
+        state.isAuthenticated = false;
+        state.token = null;
+        state.user = null;
       }
       state.initialized = true; // ✅ AUTH READY
     },

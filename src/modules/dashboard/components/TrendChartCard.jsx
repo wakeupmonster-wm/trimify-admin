@@ -16,7 +16,6 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { Info } from "lucide-react";
 
 // ── Pill-bar rendering (reference-design match) ────────────────────────────
 // Only kicks in when EVERY series on the card is a bar series (e.g.

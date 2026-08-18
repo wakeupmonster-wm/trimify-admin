@@ -1,14 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/core/appSideBar";
 import { SiteHeader } from "@/components/core/siteHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { ROLES } from "@/constants/roles";
 
 export default function AdminLayout() {
-  const navigate = useNavigate();
-  const { user, isAuthenticated, token } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const mainRef = useRef(null);
 
@@ -17,10 +13,6 @@ export default function AdminLayout() {
       mainRef.current.scrollTo(0, 0);
     }
   }, [pathname]);
-
-  if (!isAuthenticated || user?.role !== ROLES.ADMIN) {
-    return navigate("/");
-  }
 
   return (
     <SidebarProvider>
