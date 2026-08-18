@@ -361,7 +361,7 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                <TrendChartCard
+                {/* <TrendChartCard
                   title="Engagement Trend (DAU)"
                   subtitle={`Users logging food / water / steps / weight ${dynamicPeriodLabel}`}
                   Icon={ActivityIcon}
@@ -380,6 +380,27 @@ export default function Dashboard() {
                     },
                   ]}
                   note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
+                /> */}
+
+                <TrendChartCard
+                  title="Engagement Trend (DAU)"
+                  subtitle={`Users logging food / water / steps / weight ${dynamicPeriodLabel}`}
+                  Icon={ActivityIcon}
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
+                  data={displayExtras?.trends?.engagementDAU || []}
+                  xKey="date"
+                  periodLabel={dynamicPeriodLabel}
+                  series={[
+                    {
+                      key: "active_users",
+                      label: "Daily Active Users",
+                      color: "#007FC0",
+                      type: "area",
+                    },
+                  ]}
+                  note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
+                  focusTimeline
                 />
 
                 <TrendChartCard
@@ -393,12 +414,15 @@ export default function Dashboard() {
                   periodLabel={dynamicPeriodLabel}
                   series={(
                     displayExtras?.trends?.fitzoneStatuses || ["Active"]
-                  ).map((status, i) => ({
-                    key: status,
-                    label: status,
-                    color: APP_COLORS[i % APP_COLORS.length],
-                    type: "bar",
-                  }))}
+                  ).map((status, i) => {
+                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"]; // Purple palette
+                    return {
+                      key: status,
+                      label: status,
+                      color: fitzoneColors[i % fitzoneColors.length],
+                      type: "bar",
+                    };
+                  })}
                   note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
                 />
                 <ProgramEnrollmentCard
