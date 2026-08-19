@@ -25,7 +25,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { DataTable } from "@/components/shared/datatable";
+import { DataTable, DataTableFilters, DataTableActiveChips } from "@/components/shared/datatable";
 import { getAiFoodColumns } from "@/components/columns/ai.food.columns";
 import AiFoodNameInput from "../components/AiFoodNameInput";
 import {
@@ -67,6 +67,7 @@ const AiFoodUploadPage = () => {
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const visibleItems = useMemo(
@@ -78,12 +79,44 @@ const AiFoodUploadPage = () => {
   );
 
   const filteredItems = useMemo(() => {
+    let result = visibleItems;
+
+    // Apply status filter
+    if (statusFilter) {
+      result = result.filter((item) => item.status === statusFilter);
+    }
+
+    // Apply search filter
     const q = globalFilter.trim().toLowerCase();
-    if (!q) return visibleItems;
-    return visibleItems.filter((item) =>
-      item.food_name?.toLowerCase().includes(q),
-    );
-  }, [visibleItems, globalFilter]);
+    if (q) {
+      result = result.filter((item) =>
+        item.food_name?.toLowerCase().includes(q),
+      );
+    }
+
+    return result;
+  }, [visibleItems, globalFilter, statusFilter]);
+
+  const filterConfig = [
+    {
+      type: "select",
+      id: "statusFilter",
+      label: "Status",
+      value: statusFilter,
+      onChange: (val) => {
+        setStatusFilter(val);
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      },
+      options: [
+        { label: "Ready for Review", value: "pending_review" },
+        { label: "Already Exists", value: "duplicate_skipped" },
+        { label: "Generating", value: "processing" },
+        { label: "Failed", value: "failed" },
+        { label: "Queued", value: "draft" },
+      ],
+      placeholder: "All Status",
+    },
+  ];
 
   const pagedItems = useMemo(() => {
     const start = pagination.pageIndex * pagination.pageSize;
@@ -238,6 +271,16 @@ const AiFoodUploadPage = () => {
             onRowClick={(row) => handleView(row.original.id)}
             manualPagination={true}
             manualFiltering={true}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => {
+                  setStatusFilter("");
+                  setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                }}
+              />
+            }
           />
         </div>
       </div>

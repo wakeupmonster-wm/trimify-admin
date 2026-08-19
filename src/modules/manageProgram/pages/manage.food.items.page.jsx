@@ -599,6 +599,7 @@ const ManageFoodItemsPage = () => {
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             loading={loading}
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

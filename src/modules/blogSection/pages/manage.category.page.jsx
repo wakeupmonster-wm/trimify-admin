@@ -274,6 +274,7 @@ const ManageCategoryPage = () => {
             isLoading={categoriesLoading}
             manualPagination={isCategoryManual}
             manualFiltering={isCategoryManual}
+            onRowClick={(row) => handleCategoryAction(row.original, "edit")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
               <DataTableActiveChips

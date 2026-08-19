@@ -374,6 +374,7 @@ const ManageProgramPage = () => {
             isLoading={loading}
             manualPagination={isManual}
             manualFiltering={isManual}
+            onRowClick={(row) => handleAction(row.original, "edit")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
               <DataTableActiveChips

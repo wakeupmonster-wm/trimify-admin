@@ -128,6 +128,7 @@ const ManageFoodProgramPage = () => {
             isLoading={loading}
             manualPagination={true}
             pageCount={serverPagination.totalPages || 1}
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

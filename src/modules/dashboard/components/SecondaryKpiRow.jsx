@@ -10,6 +10,16 @@ const fmtMoney = (n) => `$${Number(n || 0).toLocaleString()}`;
  * Failed Transactions and Conversion Rate all live there instead,
  * alongside the rest of subscription/revenue analytics).
  */
+const getNumberVal = (val) => {
+  if (typeof val === 'object' && val !== null) return val.current;
+  return val;
+};
+
+const fmtNumber = (val) => {
+  const num = getNumberVal(val);
+  return (num || 0).toLocaleString();
+};
+
 const KPI_CONFIG = [
   {
     key: "totalRevenue",
@@ -18,35 +28,46 @@ const KPI_CONFIG = [
     tone: "emerald",
     trendValue: "12%",
     isPositive: true,
-    format: (data) => {
-      const val = data?.totalRevenue;
-      return fmtMoney(typeof val === 'object' && val !== null ? val.current : val);
-    },
+    format: (data) => fmtMoney(getNumberVal(data?.totalRevenue)),
     isCurrency: true,
     onClick: (navigate) =>
       navigate("/admin/subscription-management/transactions"),
   },
-  // {
-  //   key: "totalUsersAllTime",
-  //   label: "Total Users",
-  //   description: "All-time platform total",
-  //   trendValue: "8%",
-  //   isPositive: true,
-  //   format: (data) => data?.totalUsersAllTime?.toLocaleString() || "0",
-  //   isCurrency: false,
-  //   onClick: (navigate) => navigate("/admin/users"),
-  // },
-  // {
-  //   key: "newSignupsToday",
-  //   label: "New Signups",
-  //   description: "Signed up today",
-  //   trendValue: "2%",
-  //   isPositive: true,
-  //   format: (data) => data?.newSignupsToday?.toLocaleString() || "0",
-  //   isCurrency: false,
-  //   onClick: (navigate) =>
-  //     navigate("/admin/users", { state: { filterId: "new_today" } }),
-  // },
+  {
+    key: "totalPrograms",
+    label: "Total Programs",
+    description: "Tap to manage",
+    tone: "violet",
+    trendValue: "4%",
+    isPositive: true,
+    format: (data) => fmtNumber(data?.totalPrograms),
+    isCurrency: false,
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/manage-program", { state: { dateRange } }),
+  },
+  {
+    key: "totalBlogs",
+    label: "Total Blogs",
+    description: "Tap to manage",
+    tone: "cyan",
+    trendValue: "3%",
+    isPositive: true,
+    format: (data) => fmtNumber(data?.totalBlogs),
+    isCurrency: false,
+    onClick: (navigate, dateRange) => navigate("/admin/blog-section/manage-blogs", { state: { dateRange } }),
+  },
+  {
+    key: "totalFitzoneSessions",
+    label: "Fitzone Sessions",
+    description: "Tap to manage",
+    tone: "rose",
+    trendValue: "15%",
+    isPositive: true,
+    format: (data) => fmtNumber(data?.totalFitzoneSessions),
+    isCurrency: false,
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/fitzone-management", { state: { dateRange } }),
+  },
   {
     key: "missedStepGoals",
     label: "Missed Step Goals",
@@ -54,7 +75,7 @@ const KPI_CONFIG = [
     tone: "rose",
     trendValue: "2%",
     isPositive: false,
-    format: (data) => data?.missedStepGoals?.toLocaleString() || "0",
+    format: (data) => fmtNumber(data?.missedStepGoals),
     isCurrency: false,
     onClick: (navigate, dateRange) =>
       navigate("/admin/users", {
@@ -68,7 +89,7 @@ const KPI_CONFIG = [
     tone: "amber",
     trendValue: "1%",
     isPositive: false,
-    format: (data) => data?.missedDietLogs?.toLocaleString() || "0",
+    format: (data) => fmtNumber(data?.missedDietLogs),
     isCurrency: false,
     onClick: (navigate, dateRange) =>
       navigate("/admin/users", {
@@ -82,48 +103,12 @@ const KPI_CONFIG = [
     tone: "cyan",
     trendValue: "1%",
     isPositive: false,
-    format: (data) => data?.missedWaterLogs?.toLocaleString() || "0",
+    format: (data) => fmtNumber(data?.missedWaterLogs),
     isCurrency: false,
     onClick: (navigate, dateRange) =>
       navigate("/admin/users", {
         state: { filterId: "missed_water_logs", dateRange },
       }),
-  },
-  {
-    key: "totalPrograms",
-    label: "Total Programs",
-    description: "Tap to manage",
-    tone: "violet",
-    trendValue: "4%",
-    isPositive: true,
-    format: (data) => data?.totalPrograms?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate, dateRange) =>
-      navigate("/admin/manage-program", { state: { dateRange } }),
-  },
-
-  {
-    key: "totalBlogs",
-    label: "Total Blogs",
-    description: "Tap to manage",
-    tone: "cyan",
-    trendValue: "3%",
-    isPositive: true,
-    format: (data) => data?.totalBlogs?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate, dateRange) => navigate("/admin/blog-section/manage-blogs", { state: { dateRange } }),
-  },
-  {
-    key: "totalFitzoneSessions",
-    label: "Fitzone Sessions",
-    description: "Tap to manage",
-    tone: "rose",
-    trendValue: "15%",
-    isPositive: true,
-    format: (data) => data?.totalFitzoneSessions?.toLocaleString() || "0",
-    isCurrency: false,
-    onClick: (navigate, dateRange) =>
-      navigate("/admin/fitzone-management", { state: { dateRange } }),
   },
   {
     key: "expiringSoon",
@@ -134,7 +119,7 @@ const KPI_CONFIG = [
     tone: "amber",
     trendValue: "5%",
     isPositive: false,
-    format: (data) => data?.expiringSoon?.toLocaleString() || "0",
+    format: (data) => fmtNumber(data?.expiringSoon),
     isCurrency: false,
     onClick: (navigate) =>
       navigate("/admin/subscription-management/subscribers", {
@@ -148,10 +133,21 @@ const KPI_CONFIG = [
   //   tone: "emerald",
   //   trendValue: "1%",
   //   isPositive: true,
-  //   format: (data) => data?.totalPublishedBlogs?.toLocaleString() || "0",
+  //   format: (data) => fmtNumber(data?.totalPublishedBlogs),
   //   isCurrency: false,
   //   onClick: (navigate) => navigate("/admin/blog-section/manage-blogs"),
   // },
+];
+
+const DESIRED_KPI_ORDER = [
+  "Revenue",
+  "Total Programs",
+  "Total Blogs",
+  "Fitzone Sessions",
+  "Missed Step Goals",
+  "Missed Diet Logs",
+  "Missed Water Logs",
+  "Expiring Soon"
 ];
 
 const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
@@ -171,7 +167,18 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.isArray(data)
-          ? data.map((kpi, idx) => {
+          ? [...data]
+              .sort((a, b) => {
+                const indexA = DESIRED_KPI_ORDER.indexOf(a.label);
+                const indexB = DESIRED_KPI_ORDER.indexOf(b.label);
+                
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                
+                return indexA - indexB;
+              })
+              .map((kpi, idx) => {
               const config = KPI_CONFIG.find((c) => c.label === kpi.label);
 
               // Parse numeric value for the tooltip chart
@@ -207,9 +214,23 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
               );
             })
           : KPI_CONFIG.map((kpi) => {
-              const val = data[kpi.key] || 0;
+              const valObj = data[kpi.key];
+              const isObj = typeof valObj === 'object' && valObj !== null;
+              
               const trendObj = data.trends?.[kpi.key];
-              const trendStr = trendObj?.trend;
+              
+              const trendStr = (isObj && valObj.trend) ? valObj.trend : trendObj?.trend;
+              
+              let backendIsPositive = kpi.isPositive;
+              if (isObj && valObj.isPositive !== undefined) {
+                backendIsPositive = valObj.isPositive;
+              } else if (trendObj && trendObj.isPositive !== undefined) {
+                backendIsPositive = trendObj.isPositive;
+              }
+
+              const tooltipData = kpi.hideTrend 
+                ? null 
+                : (isObj && valObj.previous !== undefined ? valObj : (trendObj || null));
 
               const dynamicDescription = (contextLabel && !kpi.forceDescription)
                 ? contextLabel.replace(/^vs\s+/i, "Compared to ")
@@ -223,9 +244,9 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
                   description={dynamicDescription}
                   tone={kpi.tone}
                   trendValue={kpi.hideTrend ? null : trendStr}
-                  isPositive={kpi.isPositive}
+                  isPositive={backendIsPositive}
                   trendExplanation={kpi.trendExplanation}
-                  tooltipData={kpi.hideTrend ? null : (trendObj || null)}
+                  tooltipData={tooltipData}
                   onClick={() => kpi.onClick(navigate, dateRange)}
                 />
               );

@@ -26,11 +26,19 @@ const ViewUserProfilePage = () => {
 
   const rawUserData = currentUser || location.state?.userData;
 
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/admin/users");
+    }
+  };
+
   return (
     <UserProfileView
       user={rawUserData}
       loading={currentUserLoading}
-      onBack={() => navigate("/admin/users")}
+      onBack={handleBack}
       initialTab={location.state?.initialTab}
     />
   );

@@ -139,6 +139,7 @@ const ManageFitzoneCategoryPage = () => {
             manualFiltering={true}
             pageCount={serverPagination?.totalPages || 1}
             rowCount={serverPagination?.total || (categories || []).length}
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

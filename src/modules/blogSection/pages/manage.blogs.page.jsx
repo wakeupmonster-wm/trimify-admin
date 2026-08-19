@@ -318,6 +318,7 @@ const ManageBlogsPage = () => {
             isLoading={postsLoading}
             manualPagination={isPostManual}
             manualFiltering={isPostManual}
+            onRowClick={(row) => handlePostAction(row.original, "edit")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
               <DataTableActiveChips

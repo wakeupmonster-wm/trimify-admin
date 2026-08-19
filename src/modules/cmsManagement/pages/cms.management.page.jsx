@@ -90,6 +90,7 @@ const CMSManagementPage = () => {
             searchPlaceholder="Search by page title..."
             itemName="entries"
             isLoading={loading}
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

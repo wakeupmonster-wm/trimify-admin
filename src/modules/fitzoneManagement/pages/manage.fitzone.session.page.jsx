@@ -172,6 +172,7 @@ const ManageFitzoneSessionPage = () => {
             pageCount={serverPagination?.totalPages || 1}
             rowCount={serverPagination?.total || (sessions || []).length}
             itemName="sessions"
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

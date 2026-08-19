@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { AppSidebar } from "@/components/core/appSideBar";
 import { SiteHeader } from "@/components/core/siteHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -60,9 +61,14 @@ function GlobalSocketHandler() {
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const { user, isAuthenticated, token } = useSelector((state) => state.auth);
   const { pathname } = useLocation();
   const mainRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     if (mainRef.current) {

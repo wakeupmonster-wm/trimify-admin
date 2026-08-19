@@ -399,7 +399,7 @@ export default function Dashboard() {
                       type: "area",
                     },
                   ]}
-                  note="Daily Active Users — how many unique users tracked their diet, water, steps, or weight on a given day. This shows whether people are actually using the app, not just installing and abandoning it."
+                  note="Count of unique users who logged their diet, water, steps, or weight on a specific day."
                   focusTimeline
                 />
 
@@ -412,6 +412,7 @@ export default function Dashboard() {
                   data={displayExtras?.trends?.fitzoneCompletion || []}
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
+                  hideLegend={true}
                   series={(
                     displayExtras?.trends?.fitzoneStatuses || ["Active"]
                   ).map((status, i) => {

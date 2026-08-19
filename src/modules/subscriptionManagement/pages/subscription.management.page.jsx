@@ -145,6 +145,7 @@ const SubscriptionManagementPage = () => {
             isLoading={loading}
             manualPagination={!!serverPagination}
             manualFiltering={!!serverPagination}
+          onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

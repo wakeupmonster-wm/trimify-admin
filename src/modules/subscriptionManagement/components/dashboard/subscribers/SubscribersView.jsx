@@ -288,6 +288,7 @@ export default function SubscribersView() {
         isLoading={subscribersLoading}
         manualPagination
         manualFiltering
+        onRowClick={(row) => handleAction(row.original, "view")}
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />

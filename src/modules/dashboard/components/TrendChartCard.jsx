@@ -16,7 +16,13 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { Info } from "lucide-react";
+import { Info, TrendingUp } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // ── Pill-bar rendering (reference-design match) ────────────────────────────
 // Only kicks in when EVERY series on the card is a bar series (e.g.
@@ -133,6 +139,176 @@ const formatCompact = (value) => {
  * the dashboard's chart convention. `series[].type` is "line" or "bar";
  * mixing both (e.g. bar for volume + line for a rate) is supported.
  */
+
+function FocusTimelineUI({
+  title,
+  subtitle,
+  data = [],
+  xKey,
+  periodLabel,
+  series = [],
+  note,
+}) {
+  const cleanSubtitle = subtitle?.replace(periodLabel, "")?.trim() || "";
+
+  const totalValue = data.reduce((sum, point) => sum + (Number(point?.[series[0]?.key]) || 0), 0);
+  const activeUsersText = totalValue === 1 ? "active user" : "active users";
+
+  // Calculate Y-axis domain
+  const values = data.map(d => Number(d[series[0]?.key] || 0));
+  const min = Math.min(...values, 0);
+  const max = Math.max(...values, 0);
+  const spread = max - min;
+  const domainMin = Math.max(0, min - spread * 0.35);
+  const domainMax = max + spread * 0.20;
+
+  // X-axis label interval
+  const xInterval = data.length <= 8 ? 0 : Math.max(0, Math.ceil(data.length / 7) - 1);
+
+  return (
+    <div className="bg-white border border-slate-300/60 rounded-[20px] shadow-sm flex flex-col h-full overflow-hidden relative group">
+
+      {note && (
+        <div className="absolute top-[18px] right-[20px] z-20">
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="text-slate-400 hover:text-slate-600 cursor-help">
+                  <Info className="w-4 h-4" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent
+                className="bg-slate-900 border-slate-800 text-slate-100 max-w-xs p-2.5 rounded-lg text-[11px] font-medium leading-relaxed shadow-xl"
+                side="left"
+              >
+                {note}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-1 pt-[18px] px-[20px] pb-[12px]">
+        <h3 className="text-[14px] font-bold leading-tight text-slate-900 capitalize flex items-center gap-2">
+          {title}
+        </h3>
+        {cleanSubtitle && (
+          <p className="text-xs -mt-0.5 font-medium text-slate-500">
+            {cleanSubtitle}
+          </p>
+        )}
+      </div>
+
+      <div className="flex items-end justify-between px-[20px] pb-[12px]">
+        <div>
+          <span className="text-[25px] font-bold text-slate-900 leading-none">
+            {Number(totalValue).toLocaleString()}
+          </span>
+          <span className="text-[11px] text-slate-500 ml-1.5 font-medium">
+            {activeUsersText}
+          </span>
+        </div>
+
+        {periodLabel && (
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 bg-blue-50/40 px-[10px] py-[7px] rounded-md border border-blue-100/60">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            {periodLabel}
+          </div>
+        )}
+      </div>
+
+      <div className="w-full h-[290px] px-[12px]">
+        {data.length > 0 ? (
+          <ChartContainer config={{}} className="w-full h-full">
+            <ComposedChart data={data} margin={{ top: 8, right: 20, left: 10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="dauGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="10%" stopColor="#007FC0" stopOpacity={0.10} />
+                  <stop offset="50%" stopColor="#007FC0" stopOpacity={0.045} />
+                  <stop offset="100%" stopColor="#007FC0" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} stroke="hsl(215, 25%, 94%)" strokeWidth={1} />
+              <XAxis
+                dataKey={xKey}
+                axisLine={false}
+                tickLine={false}
+                tickMargin={10}
+                padding={{ left: 0, right: 0 }}
+                interval={xInterval}
+                tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
+              />
+              <YAxis
+                domain={[domainMin, domainMax]}
+                axisLine={false}
+                tickLine={false}
+                tickMargin={10}
+                width={45}
+                tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
+                tickFormatter={(val) => {
+                  if (val >= 1000) return `${(val / 1000).toFixed(1).replace('.0', '')}k`;
+                  return val;
+                }}
+              />
+              <ChartTooltip
+                cursor={{
+                  stroke: "#cbd5e1",
+                  strokeWidth: 1,
+                  strokeDasharray: "4 4",
+                  fill: "transparent",
+                }}
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const dataPoint = payload[0];
+                  return (
+                    <div className="relative bg-white rounded-2xl shadow-xl border border-slate-100/60 p-3.5 flex items-center gap-3.5 ml-2 mt-2 max-w-max">
+                      {/* Top pointer notch */}
+                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white border-t border-l border-slate-100/60 rotate-45" />
+
+                      {/* Left circular blue icon bubble */}
+                      <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center shrink-0 relative z-10">
+                        <TrendingUp className="w-5 h-5 text-[#007FC0]" strokeWidth={2.5} />
+                      </div>
+
+                      {/* Right text */}
+                      <div className="flex flex-col gap-1.5 relative z-10 pr-2">
+                        <div className="text-[14px] font-bold text-[#007FC0] leading-none">
+                          {Number(dataPoint.value).toLocaleString()} {dataPoint.name || "Daily Active Users"}
+                        </div>
+                        <div className="text-[13px] text-slate-500 font-semibold leading-none">
+                          {label}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey={series[0]?.key}
+                stroke="#007FC0"
+                strokeWidth={2.5}
+                fill="url(#dauGradient)"
+                dot={false}
+                activeDot={{
+                  r: 5,
+                  fill: "#007FC0",
+                  stroke: "#ffffff",
+                  strokeWidth: 2.5,
+                }}
+              />
+            </ComposedChart>
+          </ChartContainer>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
+            No data available
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const TrendChartCard = ({
   title,
   subtitle,
@@ -146,7 +322,23 @@ const TrendChartCard = ({
   series = [],
   note,
   height = "flex-1 min-h-[240px]",
+  focusTimeline = false,
+  hideLegend = false,
 }) => {
+  if (focusTimeline) {
+    return (
+      <FocusTimelineUI
+        title={title}
+        subtitle={subtitle}
+        data={data}
+        xKey={xKey}
+        periodLabel={periodLabel}
+        series={series}
+        note={note}
+      />
+    );
+  }
+
   const [hoverState, setHoverState] = useState({ index: null, key: null });
 
   const chartConfig = Object.fromEntries(
@@ -261,7 +453,7 @@ const TrendChartCard = ({
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
-                padding={{ left: 20, right: 20 }}
+                padding={{ left: isPureBarChart ? 20 : 0, right: isPureBarChart ? 20 : 0 }}
                 tickFormatter={(value) => {
                   if (
                     data.length === 1 &&
@@ -338,7 +530,7 @@ const TrendChartCard = ({
                   }
                 />
               )}
-              {series.length > 1 && (
+              {series.length > 1 && !hideLegend && (
                 <ChartLegend content={<ChartLegendContent />} />
               )}
               {series.map((s) => {
@@ -380,7 +572,7 @@ const TrendChartCard = ({
                   return (
                     <Area
                       key={s.key}
-                      type="monotone"
+                      type={s.curveType || "monotone"}
                       dataKey={s.key}
                       stroke={s.color}
                       strokeWidth={1.5}
@@ -393,7 +585,7 @@ const TrendChartCard = ({
                   return (
                     <Line
                       key={s.key}
-                      type="monotone"
+                      type={s.curveType || "monotone"}
                       dataKey={s.key}
                       stroke={s.color}
                       strokeWidth={1.5}

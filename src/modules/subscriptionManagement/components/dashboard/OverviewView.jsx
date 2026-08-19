@@ -214,6 +214,7 @@ export default function OverviewView({
             tooltipText="Churned figures are approximate — a user who churned and later renewed no longer shows up as churned that month."
             data={dashboardExtras?.trends?.activeVsChurned || []}
             xKey="month"
+            hideLegend={true}
             series={[
               {
                 key: "activeUsers",
@@ -224,7 +225,7 @@ export default function OverviewView({
               {
                 key: "churnedUsers",
                 label: "Churned",
-                color: APP_COLORS[2],
+                color: "#ef4444",
                 type: "area",
               },
             ]}

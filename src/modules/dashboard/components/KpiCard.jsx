@@ -109,8 +109,10 @@ const KpiCard = ({
   const isTrendZero = trendNum === 0;
   const isTrendUp = trendNum > 0;
   const isTrendDown = trendNum < 0;
-  // The user requested consistent colors: positive is always green, negative is always red, regardless of the metric type.
-  const isTrendGood = isTrendZero ? null : isTrendUp;
+  // Use the backend's `isPositive` flag to determine color.
+  // For "missed" metrics: increase = bad (red), decrease = good (green).
+  // `isPositive` from backend already accounts for this inversion.
+  const isTrendGood = isTrendZero ? null : isPositive;
 
   return (
     <div
@@ -144,8 +146,8 @@ const KpiCard = ({
 
       {/* Content Area */}
       <div className="min-w-0 flex-1 flex flex-col justify-center space-y-2">
-        <div className="flex items-start justify-between gap-2 overflow-hidden">
-          <p className="truncate text-xs font-semibold text-foreground/70 capitalize tracking-wide">
+        <div className="flex items-start justify-between gap-2 overflow-hidden min-h-[24px]">
+          <p className="truncate text-xs font-semibold text-foreground/70 capitalize tracking-wide mt-1">
             {label}
           </p>
 

@@ -115,7 +115,7 @@ const NutritionFoodPage = () => {
             isLoading={loading}
             manualPagination={true}
             manualFiltering={true}
-            onRowClick={(row) => handleAction(row, "edit")}
+            onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

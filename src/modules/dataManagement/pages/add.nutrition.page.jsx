@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Save, Loader2, ArrowLeft, Carrot, Info } from "lucide-react";
+import { Save, Loader2, ArrowLeft, Carrot, Info, ImageIcon, ClipboardList, Eye } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -23,6 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { addNutrition, updateNutrition } from "../store/nutrition.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -38,6 +40,7 @@ const AddNutritionPage = () => {
 
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     image: "",
@@ -202,383 +205,283 @@ const AddNutritionPage = () => {
           </div>
         </Header>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 mx-auto w-full min-w-0 overflow-hidden">
-          <form
-            onSubmit={handleSubmit}
-            className="px-4 sm:px-6 pt-5 pb-6 space-y-5 sm:space-y-4 w-full min-w-0"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <form onSubmit={handleSubmit} className="w-full min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:lg:grid-cols-[1fr_400px] gap-6 items-start">
+            {/* Image Card (Right Column on Desktop) */}
+            <div className="flex flex-col gap-4 order-last lg:order-last">
+              <Card className="border-slate-200 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
+                <div className="flex items-center gap-2 px-1">
+                  <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
+                  <h3 className="text-sm font-bold text-[#1d5284] uppercase tracking-wide">
+                    Photo
+                  </h3>
+                </div>
+
+                <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
+                  {formData.image ? (
+                    <button
+                      type="button"
+                      onClick={() => setPreviewOpen(true)}
+                      className="w-full h-full block relative"
+                      title="View full image"
+                    >
+                      <img
+                        src={formData.image}
+                        alt={formData.title || "Food Image"}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://placehold.co/400x400?text=Invalid+Image";
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
+                        <Eye className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
+                      </div>
+                    </button>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                      <ImageIcon className="w-12 h-12 opacity-50" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5 mt-2">
+                  <Label htmlFor="image" className="text-xs font-bold text-slate-800 flex items-center gap-1.5 w-max h-5">
+                    Image URL
+                    <TooltipProvider delayDuration={300}>
+                      <Tooltip>
+                        <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
+                          <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5">
+                          Note: Please provide the jpg image URL here
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </Label>
+                  <Input
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleChange}
+                    placeholder="Enter Image URL"
+                    className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
+                  />
+                  {errors.image && (
+                    <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.image}</p>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* Data Form (Left Column on Desktop) */}
+            <div className="bg-white rounded-md shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-colors p-6 space-y-6 order-first lg:order-first">
+              <div className="flex items-center gap-2 -mb-2">
+                <ClipboardList className="w-3.5 h-3.5 text-app-primary2" />
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Nutrition &amp; Details
+                </h3>
+              </div>
+
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="title"
-                  className="text-xs font-bold text-slate-800 flex items-center h-5"
-                >
-                  Food Title
-                </Label>
+                <Label htmlFor="title" className="text-xs font-semibold text-slate-700">Food Title</Label>
                 <Input
                   id="title"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Enter Food Title"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                  className={`h-10 text-xs focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal placeholder:text-xs ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
                 />
-                {errors.title && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.title}
-                  </p>
-                )}
+                {errors.title && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.title}</p>}
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="protein" className="text-xs font-semibold text-slate-700">Protein (gm)</Label>
+                  <Input id="protein" name="protein" type="number" step="0.01" min="0" value={formData.protein} onChange={handleChange} placeholder="e.g. 25.5" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.protein ? "border-red-500" : "border-slate-300/60"}`} />
+                  {errors.protein && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.protein}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="carbs" className="text-xs font-semibold text-slate-700">Carbs (gm)</Label>
+                  <Input id="carbs" name="carbs" type="number" step="0.01" min="0" value={formData.carbs} onChange={handleChange} placeholder="e.g. 45.0" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.carbs ? "border-red-500" : "border-slate-300/60"}`} />
+                  {errors.carbs && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.carbs}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="calories" className="text-xs font-semibold text-slate-700">Calories (kcal)</Label>
+                  <Input id="calories" name="calories" type="number" step="0.01" min="0" value={formData.calories} onChange={handleChange} placeholder="e.g. 350" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.calories ? "border-red-500" : "border-slate-300/60"}`} />
+                  {errors.calories && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.calories}</p>}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="fats" className="text-xs font-semibold text-slate-700">Fats (gm)</Label>
+                  <Input id="fats" name="fats" type="number" step="0.01" min="0" value={formData.fats} onChange={handleChange} placeholder="e.g. 12.0" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.fats ? "border-red-500" : "border-slate-300/60"}`} />
+                  {errors.fats && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.fats}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="Meal_Type" className="text-xs font-semibold text-slate-700">Meal Type</Label>
+                  <Select
+                    key={`meal-type-${formData.Meal_Type}`}
+                    value={formData.Meal_Type || undefined}
+                    onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
+                  >
+                    <SelectTrigger className={`h-10 text-xs border-slate-300/60 font-medium placeholder:text-xs ${errors.Meal_Type ? "border-red-500" : "border-slate-300/60"}`}>
+                      <SelectValue placeholder="Select Meal Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ingredients">Ingredients</SelectItem>
+                      <SelectItem value="recipes">Recipes</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.Meal_Type && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.Meal_Type}</p>}
+                </div>
+                
+                <div className="space-y-1.5">
+                  <Label htmlFor="Meal_Serving" className="text-xs font-semibold text-slate-700">Meal Serving</Label>
+                  <Input id="Meal_Serving" name="Meal_Serving" type="number" min="1" value={formData.Meal_Serving} onChange={handleChange} placeholder="e.g. 2" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.Meal_Serving ? "border-red-500" : "border-slate-300/60"}`} />
+                  {errors.Meal_Serving && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.Meal_Serving}</p>}
+                </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="image"
-                  className="text-xs font-bold text-slate-800 flex items-center gap-1.5 w-max h-5"
-                >
-                  Image URL
+                <Label htmlFor="description" className="text-xs font-semibold text-slate-700">Description</Label>
+                <div className="relative">
+                  <Textarea
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    placeholder="Brief description of the meal..."
+                    maxLength={500}
+                    rows={3}
+                    className={`text-xs resize-y border-slate-300/60 placeholder:font-normal placeholder:text-xs p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  />
+                  <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                    {formData.description?.length || 0} / 500
+                  </div>
+                </div>
+                {errors.description && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.description}</p>}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="meal_ingredients" className="text-xs font-semibold text-slate-700 flex items-center gap-1.5 w-max">
+                  Ingredients (one per line)
                   <TooltipProvider delayDuration={300}>
                     <Tooltip>
-                      <TooltipTrigger
-                        type="button"
-                        className="cursor-help"
-                        onClick={(e) => e.preventDefault()}
-                      >
+                      <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
                         <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
                       </TooltipTrigger>
-                      <TooltipContent
-                        side="right"
-                        className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5"
-                      >
-                        Note: Please provide the jpg image URL here
+                      <TooltipContent side="right" className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5">
+                        Note: Please enter the meal ingredients in list format.
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </Label>
-                <Input
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleChange}
-                  placeholder="Enter Image URL"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                {errors.image && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.image}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="protein"
-                  className="text-xs font-bold text-slate-800 flex items-center h-5"
-                >
-                  Proteins (gm)
-                </Label>
-                <Input
-                  id="protein"
-                  name="protein"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.protein}
-                  onChange={handleChange}
-                  placeholder="Enter Proteins"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.protein ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                {errors.protein && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.protein}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="carbs"
-                  className="text-xs font-bold text-slate-800 flex items-center h-5"
-                >
-                  Carbs (gm)
-                </Label>
-                <Input
-                  id="carbs"
-                  name="carbs"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.carbs}
-                  onChange={handleChange}
-                  placeholder="Enter Carbs"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.carbs ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                {errors.carbs && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.carbs}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="calories"
-                  className="text-xs font-bold text-slate-800 flex items-center h-5"
-                >
-                  Calories (kcal)
-                </Label>
-                <Input
-                  id="calories"
-                  name="calories"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.calories}
-                  onChange={handleChange}
-                  placeholder="Enter Calories"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.calories ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                {errors.calories && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.calories}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label
-                  htmlFor="fats"
-                  className="text-xs font-bold text-slate-800 flex items-center h-5"
-                >
-                  Fats (gm)
-                </Label>
-                <Input
-                  id="fats"
-                  name="fats"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.fats}
-                  onChange={handleChange}
-                  placeholder="Enter Fats"
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.fats ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                {errors.fats && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.fats}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="description"
-                className="text-xs font-bold text-slate-800 flex items-center h-5"
-              >
-                Description
-              </Label>
-              <div className="relative">
-                <Textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Enter Description"
-                  maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
-                  {formData.description?.length || 0} / 500
-                </div>
-              </div>
-              {errors.description && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.description}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="Meal_Type"
-                className="text-xs font-bold text-slate-800 flex items-center h-5"
-              >
-                Meal Type
-              </Label>
-              <Select
-                // Dynamic key lagane se state change hote hi UI sync ho jayega
-                key={`meal-type-${formData.Meal_Type}`}
-                value={formData.Meal_Type || undefined}
-                onValueChange={(val) => handleSelectChange(val, "Meal_Type")}
-              >
-                <SelectTrigger
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.Meal_Type ? "border-red-500" : "border-slate-300/60"}`}
-                >
-                  <SelectValue
-                    placeholder="Select Meal Type"
-                    className="placeholder:font-normal"
+                <div className="relative">
+                  <Textarea
+                    id="meal_ingredients"
+                    name="meal_ingredients"
+                    value={formData.meal_ingredients}
+                    onChange={handleChange}
+                    placeholder={"e.g. 1 cup almond milk\n1 banana"}
+                    maxLength={1000}
+                    rows={4}
+                    className={`text-xs resize-y border-slate-300/60 placeholder:font-normal placeholder:text-xs p-3 pb-8 ${errors.meal_ingredients ? "border-red-500" : "border-slate-300/60"}`}
                   />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ingredients">Ingredients</SelectItem>
-                  <SelectItem value="recipes">Recipes</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.Meal_Type && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.Meal_Type}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="meal_description"
-                className="text-xs font-bold text-slate-800 flex items-center gap-1.5 w-max h-5"
-              >
-                Meal Instructions
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger
-                      type="button"
-                      className="cursor-help"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="right"
-                      className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5"
-                    >
-                      Note: Please enter the meal instructions in list format.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </Label>
-              <div className="relative">
-                <Textarea
-                  id="meal_description"
-                  name="meal_description"
-                  value={formData.meal_description}
-                  onChange={handleChange}
-                  placeholder="Enter Meal Instructions"
-                  maxLength={1000}
-                  rows={10}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.meal_description ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
-                  {formData.meal_description?.length || 0} / 1000
+                  <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                    {formData.meal_ingredients?.length || 0} / 1000
+                  </div>
                 </div>
+                {errors.meal_ingredients && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.meal_ingredients}</p>}
               </div>
-              {errors.meal_description && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.meal_description}
-                </p>
-              )}
-            </div>
 
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="meal_ingredients"
-                className="text-xs font-bold text-slate-800 flex items-center gap-1.5 w-max h-5"
-              >
-                Meal Ingredients
-                <TooltipProvider delayDuration={300}>
-                  <Tooltip>
-                    <TooltipTrigger
-                      type="button"
-                      className="cursor-help"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="right"
-                      className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5"
-                    >
-                      Note: Please enter the meal ingredients in list format.
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </Label>
-              <div className="relative">
-                <Textarea
-                  id="meal_ingredients"
-                  name="meal_ingredients"
-                  value={formData.meal_ingredients}
-                  onChange={handleChange}
-                  placeholder="Enter ingredients"
-                  maxLength={1000}
-                  rows={10}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.meal_ingredients ? "border-red-500" : "border-slate-300/60"}`}
-                />
-                <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
-                  {formData.meal_ingredients?.length || 0} / 1000
+              <div className="space-y-1.5">
+                <Label htmlFor="meal_description" className="text-xs font-semibold text-slate-700 flex items-center gap-1.5 w-max">
+                  Instructions (one per line)
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>
+                        <Info className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" />
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="bg-slate-800 text-white border-none text-[11px] font-medium px-2.5 py-1.5">
+                        Note: Please enter the meal instructions in list format.
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Label>
+                <div className="relative">
+                  <Textarea
+                    id="meal_description"
+                    name="meal_description"
+                    value={formData.meal_description}
+                    onChange={handleChange}
+                    placeholder={"e.g. Blend all ingredients\nServe chilled"}
+                    maxLength={1000}
+                    rows={4}
+                    className={`text-xs resize-y border-slate-300/60 placeholder:font-normal placeholder:text-xs p-3 pb-8 ${errors.meal_description ? "border-red-500" : "border-slate-300/60"}`}
+                  />
+                  <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
+                    {formData.meal_description?.length || 0} / 1000
+                  </div>
                 </div>
+                {errors.meal_description && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.meal_description}</p>}
               </div>
-              {errors.meal_ingredients && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.meal_ingredients}
-                </p>
-              )}
-            </div>
 
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="Meal_Serving"
-                className="text-xs font-bold text-slate-800 flex items-center h-5"
-              >
-                Meal Serving
-              </Label>
-              <Input
-                id="Meal_Serving"
-                name="Meal_Serving"
-                type="number"
-                min="1"
-                value={formData.Meal_Serving}
-                onChange={handleChange}
-                placeholder="Enter Meal Serving"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.Meal_Serving ? "border-red-500" : "border-slate-300/60"}`}
-              />
-              {errors.Meal_Serving && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.Meal_Serving}
-                </p>
+            </div>
+          </div>
+          
+          <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/admin/data-management/nutrition-food")}
+              className="w-full sm:w-auto rounded-md px-5 h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  {isEdit ? "Updating..." : "Saving..."}
+                </>
+              ) : (
+                <>
+                  {isEdit ? "Update" : "Save"}
+                  <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
+                </>
               )}
-            </div>
-
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  navigate("/admin/data-management/nutrition-food")
-                }
-                className="w-full sm:w-auto rounded-md px-5 h-10 text-sm sm:text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto text-white rounded-md px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                    {isEdit ? "Updating..." : "Saving..."}
-                  </>
-                ) : (
-                  <>
-                    {isEdit ? "Update" : "Save"}
-                    <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </div>
+            </Button>
+          </div>
+        </form>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
+          {formData.image && (
+            <img
+              src={formData.image}
+              alt={formData.title || "Food Image"}
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://placehold.co/400x400?text=Invalid+Image";
+              }}
+            />
+          )}
+          <div className="p-4 space-y-1">
+            <p className="text-sm font-semibold text-slate-800">
+              {formData.title || "Food Image"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

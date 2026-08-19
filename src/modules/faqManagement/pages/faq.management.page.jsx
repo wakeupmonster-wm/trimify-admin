@@ -403,6 +403,7 @@ const FaqManagementPage = () => {
             isLoading={loading}
             manualPagination={!!serverPagination}
             manualFiltering={!!serverPagination}
+            onRowClick={(row) => handleAction(row.original, "edit")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
               <DataTableActiveChips
