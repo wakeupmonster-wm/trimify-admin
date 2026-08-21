@@ -157,11 +157,7 @@ export const getAiFoodColumns = ({
             meta.className,
           )}
         >
-          {isInFlight ? (
-            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-          ) : (
-            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
-          )}
+          {isInFlight && <Loader2 className="w-3 h-3 mr-1 animate-spin" />}
           <span className="truncate">{meta.label}</span>
         </Badge>
       );

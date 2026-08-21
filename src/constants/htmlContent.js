@@ -43,8 +43,8 @@ export const htmlContent = ({ pageTitle, cleanedHtml }) => {
               .badge {
                   display: inline-block;
                   padding: 8px 18px;
-                  background: #E0F7FA;
-                  color: #00BCD4;
+                  background: #cae3ef;
+                  color: #007FC0;
                   border-radius: 100px;
                   font-size: 11px;
                   font-weight: 800;

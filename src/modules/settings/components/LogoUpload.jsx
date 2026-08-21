@@ -80,11 +80,11 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
     <div className="space-y-1.5 w-full">
       <label className="text-xs font-bold text-slate-800">Upload Logo</label>
       <div
-        className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+        className={`relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
           isDragging
             ? "border-app-primary2 bg-blue-50"
             : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-        }`}
+        } ${preview ? "p-0 min-h-[160px]" : "p-10"}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -99,15 +99,16 @@ export default function LogoUpload({ currentLogo, onFileSelect }) {
           className="hidden"
         />
         {preview ? (
-          <div className="flex flex-col items-center">
+          <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px]">
             <img
               src={preview}
               alt="Preview"
-              className="w-16 h-16 object-contain mb-3"
+              className="absolute inset-0 w-full h-full object-contain p-4"
             />
-            <span className="text-sm font-semibold text-slate-700 text-center">
-              Logo selected. Click or drag to replace.
-            </span>
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
+              <UploadCloud className="w-8 h-8 mb-2 text-white" />
+              <span className="text-sm font-semibold text-white">Click or drag to replace</span>
+            </div>
           </div>
         ) : (
           <>

@@ -14,7 +14,6 @@ import {
   Droplets,
   Utensils,
   Scale,
-  Clock,
   Monitor,
   Smartphone,
   Globe,
@@ -91,7 +90,7 @@ export function TabOverview({ data }) {
             icon={Activity}
           >
             {recentActivities.length > 0 ? (
-              <div className="flex flex-col max-h-[485px] overflow-y-auto">
+              <div className="flex flex-col max-h-[320px] overflow-y-auto pr-2 custom-scrollbar-content">
                 {recentActivities.map((a, i) => {
                   const { icon: Icon, className } = activityMeta(a.type);
                   return (
@@ -182,7 +181,7 @@ export function TabOverview({ data }) {
                             : "bg-app-primary2/5 text-app-primary2",
                       )}
                     >
-                      <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                      
                       <span className="truncate">
                         {String(user.plan.title || user.plan)}
                       </span>

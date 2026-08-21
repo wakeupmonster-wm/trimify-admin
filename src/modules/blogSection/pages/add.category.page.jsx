@@ -1,10 +1,18 @@
 import { Container } from "@/components/common/container";
 import CTAButton from "@/components/common/CTAButton";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Loader2, ArrowLeft, X, Eye } from "lucide-react";
+import {
+  Save,
+  UploadCloud,
+  Loader2,
+  ArrowLeft,
+  X,
+  Eye,
+  Pencil,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,27 +45,16 @@ const AddCategoryPage = () => {
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    status: "Active",
+  const [formData, setFormData] = useState(() => ({
+    title: isEdit ? editData?.title || editData?.name || "" : "",
+    description: isEdit ? editData?.description || "" : "",
+    status: isEdit ? editData?.status || "Active" : "Active",
     iconImage: null,
-  });
+  }));
 
   const [isDragging, setIsDragging] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(null);
-  useEffect(() => {
-    if (isEdit && editData) {
-      setFormData({
-        title: editData.title || editData.name || "",
-        description: editData.description || "",
-        status: editData.status || "Active",
-        iconImage: null,
-      });
-    }
-  }, [isEdit, editData]);
-
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -232,6 +229,13 @@ const AddCategoryPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
+              <input
+                id="icon-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+              />
               {formData.iconImage ||
               (isEdit && editData?.icon && !removedExistingImage) ? (
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
@@ -261,6 +265,17 @@ const AddCategoryPage = () => {
                     </button>
                     <button
                       type="button"
+                      aria-label="Replace category icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        document.getElementById("icon-upload")?.click();
+                      }}
+                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFormData((prev) => ({ ...prev, iconImage: null }));
@@ -286,13 +301,6 @@ const AddCategoryPage = () => {
                   onDrop={handleDrop}
                   onClick={() => document.getElementById("icon-upload").click()}
                 >
-                  <input
-                    id="icon-upload"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                  />
                   <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                   <p className="text-sm font-semibold text-slate-700">
                     Click or drag and drop to upload

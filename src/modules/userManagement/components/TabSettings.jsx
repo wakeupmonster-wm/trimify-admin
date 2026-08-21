@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, ShieldOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import {
@@ -111,12 +111,14 @@ export function TabSettings({ data }) {
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
         <Card
-          className="p-0 overflow-hidden pb-0.5"
+          className="p-0 overflow-hidden"
           title="Account Status"
           subtitle="Current status and security details"
           icon={ShieldCheck}
+          showHeaderDivider={false}
         >
           <KV
+            noBorder
             icon={ShieldCheck}
             label="Status"
             value={
@@ -141,6 +143,7 @@ export function TabSettings({ data }) {
             value={user.admin_status || "—"}
           /> */}
           <KV
+            noBorder
             icon={Mail}
             label="Email Verified"
             value={
@@ -148,23 +151,34 @@ export function TabSettings({ data }) {
             }
           />
           <KV
+            noBorder
             icon={Ban}
             label="Revoked"
             value={user.revoked_at ? fmtDate(user.revoked_at) : "No"}
           />
+          <KV
+            noBorder
+            icon={ShieldOff}
+            label="Account Deleted"
+            value={user.deleted_at ? fmtDate(user.deleted_at) : "No"}
+          />
         </Card>
 
         <Card
+          className="p-0 overflow-hidden"
           title="Billing & Plan"
           subtitle="Payment methods and history"
           icon={CreditCard}
+          showHeaderDivider={false}
         >
           <KV
+            noBorder
             icon={CreditCard}
             label="Payment Status"
             value={user.paid ? "Paid" : "Unpaid"}
           />
           <KV
+            noBorder
             icon={ShieldCheck}
             label="Plan"
             value={
@@ -182,7 +196,7 @@ export function TabSettings({ data }) {
                           : "bg-app-primary2/5 text-app-primary2",
                     )}
                   >
-                    <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                    
                     <span className="truncate">
                       {String(user.plan.title || user.plan)}
                     </span>
@@ -194,11 +208,13 @@ export function TabSettings({ data }) {
             }
           />
           <KV
+            noBorder
             icon={Calendar}
             label="Plan Expiry"
             value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"}
           />
           <KV
+            noBorder
             icon={CreditCard}
             label="Stripe ID"
             value={user.stripe_id || "Not linked"}
@@ -216,19 +232,23 @@ export function TabSettings({ data }) {
           title="Device & Notifications"
           subtitle="App settings and preferences"
           icon={Smartphone}
+          showHeaderDivider={false}
         >
           <KV
+            noBorder
             icon={Bell}
             label="Notifications"
             value={user.notification_status ? "Enabled" : "Disabled"}
           />
           <KV
+            noBorder
             icon={Globe}
             label="Timezone"
             value={user.timezone || "Not set"}
           />
 
           <KV
+            noBorder
             icon={Smartphone}
             label="Device Token"
             value={
@@ -248,6 +268,7 @@ export function TabSettings({ data }) {
           title="Managed By"
           subtitle="Assigned sub-admin details"
           icon={LuUserRound}
+          showHeaderDivider={false}
         >
           {user.sub_admin ? (
             <>
@@ -266,14 +287,26 @@ export function TabSettings({ data }) {
               </div>
 
               <div className="mt-3 px-1">
-                <KV icon={Mail} label="Email" value={user.sub_admin?.email} />
-                <KV icon={Phone} label="Phone" value={user.sub_admin?.phone} />
                 <KV
+                  noBorder
+                  icon={Mail}
+                  label="Email"
+                  value={user.sub_admin?.email}
+                />
+                <KV
+                  noBorder
+                  icon={Phone}
+                  label="Phone"
+                  value={user.sub_admin?.phone}
+                />
+                <KV
+                  noBorder
                   icon={Briefcase}
                   label="Designation"
                   value={user.sub_admin?.designation}
                 />
                 <KV
+                  noBorder
                   icon={Globe}
                   label="Location"
                   value={user.sub_admin?.location}
@@ -295,6 +328,7 @@ export function TabSettings({ data }) {
           title="Direct Administrative Messaging"
           subtitle="Dispatch warning letters, policy updates, or direct notifications"
           icon={Send}
+          showHeaderDivider={false}
         >
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

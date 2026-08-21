@@ -21,7 +21,7 @@ export const ConversionFunnel = ({ data }) => {
   const reductionPerSegment = totalReduction / totalStages;
 
   return (
-    <Card className="flex flex-col h-full bg-white border-slate-300/60 hover:border-blue-200 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
+    <Card className="flex flex-col h-full bg-white border-slate-200 hover:border-slate-300 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title="Conversion Funnel"

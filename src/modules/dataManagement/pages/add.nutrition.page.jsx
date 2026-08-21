@@ -1,10 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CTAButton from "@/components/common/CTAButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Save, Loader2, ArrowLeft, Carrot, Info, ImageIcon, ClipboardList, Eye } from "lucide-react";
+import {
+  Save,
+  Loader2,
+  ArrowLeft,
+  Carrot,
+  Info,
+  ImageIcon,
+  ClipboardList,
+  Eye,
+  Bot,
+  RefreshCcw,
+  Sparkles,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -25,8 +37,20 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { addNutrition, updateNutrition } from "../store/nutrition.slice";
+import {
+  addNutrition,
+  regenerateNutritionImage,
+  updateNutrition,
+} from "../store/nutrition.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { getNutritionListAPI } from "../services/nutrition.services";
+import { toast } from "sonner";
 
 const AddNutritionPage = () => {
   const dispatch = useDispatch();
@@ -38,23 +62,6 @@ const AddNutritionPage = () => {
   const editData = location.state?.editData || null;
   const { loading } = useSelector((state) => state.nutrition);
 
-  const [errors, setErrors] = useState({});
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    image: "",
-    protein: "",
-    carbs: "",
-    calories: "",
-    fats: "",
-    description: "",
-    Meal_Type: "",
-    meal_description: "",
-    meal_ingredients: "",
-    Meal_Serving: "",
-  });
-
   const parseArrayToString = (val) => {
     try {
       if (typeof val === "string") {
@@ -64,42 +71,57 @@ const AddNutritionPage = () => {
         }
       }
       return val || "";
-    } catch (e) {
+    } catch {
       return val || "";
     }
   };
 
-  useEffect(() => {
-    if (isEdit && editData) {
-      // const rawMealType = editData.Meal_Type || editData.meal_type || editData.type || "";
-      // let formattedMealType = rawMealType;
-      // if (rawMealType.toLowerCase().includes("ingredients")) formattedMealType = "Ingredients";
-      // if (rawMealType.toLowerCase().includes("recipes")) formattedMealType = "Recipes";
+  const [errors, setErrors] = useState({});
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [isAutoRegenerateOpen, setIsAutoRegenerateOpen] = useState(false);
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState("");
+  const [isImageRegenerating, setIsImageRegenerating] = useState(false);
+  const pollTimeoutRef = useRef(null);
+  const [formData, setFormData] = useState(() => ({
+    title: isEdit ? editData?.Meal_title || editData?.title || "" : "",
+    image: isEdit
+      ? editData?.Meal_Image_url && editData.Meal_Image_url !== "none"
+        ? editData.Meal_Image_url
+        : editData?.image || ""
+      : "",
+    protein: isEdit
+      ? editData?.Meal_Protien_In_gm || editData?.protein || ""
+      : "",
+    carbs: isEdit ? editData?.Meal_Carbs_In_gm || editData?.carbs || "" : "",
+    calories: isEdit
+      ? editData?.Meal_Calories_In_gm || editData?.calories || ""
+      : "",
+    fats: isEdit ? editData?.Meal_Fats_In_gm || editData?.fats || "" : "",
+    description: isEdit
+      ? editData?.Meal_Description || editData?.description || ""
+      : "",
+    Meal_Type: isEdit ? editData?.Meal_Type || editData?.meal_type || "" : "",
+    meal_description: isEdit
+      ? parseArrayToString(editData?.Meal_instructions) ||
+        editData?.meal_description ||
+        ""
+      : "",
+    meal_ingredients: isEdit
+      ? parseArrayToString(editData?.Meal_ingredients) ||
+        editData?.meal_ingredients ||
+        ""
+      : "",
+    Meal_Serving: isEdit ? editData?.Meal_Serving || "" : "",
+  }));
 
-      setFormData({
-        title: editData.Meal_title || editData.title || "",
-        image:
-          editData.Meal_Image_url && editData.Meal_Image_url !== "none"
-            ? editData.Meal_Image_url
-            : editData.image || "",
-        protein: editData.Meal_Protien_In_gm || editData.protein || "",
-        carbs: editData.Meal_Carbs_In_gm || editData.carbs || "",
-        calories: editData.Meal_Calories_In_gm || editData.calories || "",
-        fats: editData.Meal_Fats_In_gm || editData.fats || "",
-        description: editData.Meal_Description || editData.description || "",
-        Meal_Type: editData.Meal_Type || editData.meal_type || "",
-        meal_description:
-          parseArrayToString(editData.Meal_instructions) ||
-          editData.meal_description ||
-          "",
-        meal_ingredients:
-          parseArrayToString(editData.Meal_ingredients) ||
-          editData.meal_ingredients ||
-          "",
-        Meal_Serving: editData.Meal_Serving || "",
-      });
-    }
-  }, [isEdit, editData]);
+  useEffect(
+    () => () => {
+      if (pollTimeoutRef.current) clearTimeout(pollTimeoutRef.current);
+    },
+    [],
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,6 +130,90 @@ const AddNutritionPage = () => {
 
   const handleSelectChange = (value, name) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const getImageUrlFromResponse = (response) =>
+    response?.Meal_Image_url ||
+    response?.image ||
+    response?.data?.Meal_Image_url ||
+    response?.data?.image ||
+    response?.nutrition?.Meal_Image_url ||
+    response?.nutrition?.image ||
+    "";
+
+  const applyGeneratedImage = (imageUrl) => {
+    setFormData((current) => ({ ...current, image: imageUrl }));
+    setErrors((current) => ({ ...current, image: "" }));
+    setIsImageRegenerating(false);
+    toast.success("Food image replaced successfully.");
+  };
+
+  const pollForGeneratedImage = async (previousImage, attempt = 0) => {
+    try {
+      const response = await getNutritionListAPI({
+        search: formData.title,
+        limit: 100,
+      });
+      const nutritionItems = response?.nutrition || response?.data || [];
+      const item = nutritionItems.find(
+        (nutrition) => String(nutrition.id) === String(id),
+      );
+      const generatedImage = getImageUrlFromResponse(item);
+
+      if (generatedImage && generatedImage !== previousImage) {
+        applyGeneratedImage(generatedImage);
+        return;
+      }
+    } catch {
+      // Keep polling: image generation may still be completing asynchronously.
+    }
+
+    if (attempt >= 11) {
+      setIsImageRegenerating(false);
+      toast.info(
+        "Image generation is still processing. Reopen this item shortly to see the replacement.",
+      );
+      return;
+    }
+
+    await new Promise((resolve) => {
+      pollTimeoutRef.current = setTimeout(resolve, 2500);
+    });
+    return pollForGeneratedImage(previousImage, attempt + 1);
+  };
+
+  const handleRegenerateImage = async (prompt) => {
+    if (!id || isImageRegenerating) return;
+
+    const previousImage = formData.image;
+    setIsImageRegenerating(true);
+    try {
+      const response = await dispatch(
+        regenerateNutritionImage({ id, imagePrompt: prompt }),
+      ).unwrap();
+      const generatedImage = getImageUrlFromResponse(response);
+
+      if (generatedImage && generatedImage !== previousImage) {
+        applyGeneratedImage(generatedImage);
+      } else {
+        toast.success("Generating a replacement image…");
+        await pollForGeneratedImage(previousImage);
+      }
+    } catch (error) {
+      setIsImageRegenerating(false);
+      toast.error(error || "Failed to regenerate the food image.");
+    }
+  };
+
+  const handleCustomRegenerate = () => {
+    const prompt = imagePrompt.trim();
+    if (!prompt) {
+      toast.error("Describe the food image you want to generate.");
+      return;
+    }
+    setIsPromptOpen(false);
+    setImagePrompt("");
+    handleRegenerateImage(prompt);
   };
 
   const handleSubmit = (e) => {
@@ -243,6 +349,52 @@ const AddNutritionPage = () => {
                       <ImageIcon className="w-12 h-12 opacity-50" />
                     </div>
                   )}
+
+                  {isEdit && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label="Generate or replace food image with AI"
+                          disabled={isImageRegenerating}
+                          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-app-primary2 shadow-md transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {isImageRegenerating ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <Bot className="h-5 w-5" />
+                          )}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56 p-2">
+                        <DropdownMenuItem
+                          onClick={() => setIsAutoRegenerateOpen(true)}
+                          className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
+                        >
+                          <RefreshCcw className="h-4 w-4 text-slate-500" />
+                          Auto Regenerate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setIsPromptOpen(true)}
+                          className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
+                        >
+                          <Sparkles className="h-4 w-4 text-app-primary2" />
+                          Custom Prompt
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+
+                  {isImageRegenerating && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/70 px-6 text-center backdrop-blur-sm">
+                      <div className="rounded-full bg-white p-4 shadow-lg">
+                        <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
+                      </div>
+                      <p className="text-xs font-bold text-slate-700">
+                        Generating your replacement image…
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-1.5 mt-2">
@@ -265,8 +417,14 @@ const AddNutritionPage = () => {
                     value={formData.image}
                     onChange={handleChange}
                     placeholder="Enter Image URL"
+                    readOnly={isEdit}
                     className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
                   />
+                  {isEdit && (
+                    <p className="text-[10px] font-medium text-slate-500">
+                      Use the AI button on the image to replace this photo.
+                    </p>
+                  )}
                   {errors.image && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.image}</p>
                   )}
@@ -482,6 +640,57 @@ const AddNutritionPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isPromptOpen} onOpenChange={setIsPromptOpen}>
+        <DialogContent className="max-w-lg gap-5 bg-white p-6">
+          <div className="space-y-1">
+            <h2 className="text-base font-bold text-slate-900">
+              Custom Image Generation
+            </h2>
+            <p className="text-xs font-medium text-slate-500">
+              Describe how the replacement image for {formData.title || "this food"} should look.
+            </p>
+          </div>
+          <Textarea
+            value={imagePrompt}
+            onChange={(event) => setImagePrompt(event.target.value)}
+            placeholder="For example: overhead photo of a fresh grilled chicken salad in natural light"
+            maxLength={500}
+            className="min-h-28 resize-none text-sm"
+          />
+          <div className="flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsPromptOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleCustomRegenerate}
+              className="bg-app-primary2 text-white hover:bg-app-primary3"
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              Generate Image
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmModal
+        isOpen={isAutoRegenerateOpen}
+        onClose={() => setIsAutoRegenerateOpen(false)}
+        onConfirm={() => {
+          setIsAutoRegenerateOpen(false);
+          handleRegenerateImage();
+        }}
+        title="Replace Food Image"
+        message="Generate a new AI image for this food? The new image will replace the current one."
+        confirmText="Regenerate"
+        type="brand"
+        loading={isImageRegenerating}
+      />
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

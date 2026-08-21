@@ -32,10 +32,9 @@ export default function SubscriptionTransactionsPage() {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
                 type="button"
-                variant="outline"
                 onClick={onExportClick}
                 disabled={exportLoading}
-                className="h-10 hover:border-none rounded-md bg-slate-50 hover:bg-app-primary2 shadow-sm text-slate-500 hover:text-white text-xs font-medium transition-all active:scale-95"
+                className="h-10 rounded-md px-4 text-xs font-medium"
               >
                 {exportLoading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />

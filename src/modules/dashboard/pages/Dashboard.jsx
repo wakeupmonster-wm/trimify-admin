@@ -1,4 +1,3 @@
-import { RecentUsersTable } from "@/components/shared/recent-users-table";
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,9 +18,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ContentPerformance } from "@/components/shared/ContentPerformance";
 import { DashboardSkeleton } from "../components/DashboardSkeleton";
 import { ConversionFunnel } from "../components/ConversionFunnel";
 import SecondaryKpiRow from "../components/SecondaryKpiRow";
@@ -34,14 +32,15 @@ import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
-import { ACCENT_COLORS, APP_COLORS } from "@/config/theme.config.js";
+import { ACCENT_COLORS } from "@/config/theme.config.js";
+
+const LoadingOverlay = motion.div;
 
 export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
-    dashboardData,
     dashboardExtras,
     dashboardMeta,
     dateRange,
@@ -54,16 +53,9 @@ export default function Dashboard() {
     dateRange || { preset: "today" },
   );
   const [refreshing, setRefreshing] = useState(false);
+  const hasLoadedDashboard = useRef(false);
 
   // --- Unified Brand Palette imported from theme.config.js ---
-  const mapChartColors = (dataArray) => {
-    if (!dataArray) return [];
-    return dataArray.map((item, i) => ({
-      ...item,
-      color: APP_COLORS[i % APP_COLORS.length],
-    }));
-  };
-
   const mapAccentColors = (dataArray) => {
     if (!dataArray) return [];
     return dataArray.map((item, i) => ({
@@ -115,13 +107,14 @@ export default function Dashboard() {
     const refreshData = async (dateObj) => {
       // Show the refreshing overlay ONLY on subsequent loads (data already exists).
       // The initial load is handled by the DashboardSkeleton early return below.
-      const isSubsequentLoad = !!displayExtras;
+      const isSubsequentLoad = hasLoadedDashboard.current;
       if (isSubsequentLoad) setRefreshing(true);
       try {
         await dispatch(fetchDashboardExtras(buildDateRangeParams(dateObj)));
       } catch (err) {
         console.error("Dashboard manual refresh failed:", err);
       } finally {
+        hasLoadedDashboard.current = true;
         setRefreshing(false);
       }
     };
@@ -222,7 +215,7 @@ export default function Dashboard() {
     );
   }
 
-  // Show full-page skeleton until the first API response populates dashboardData.
+  // Show full-page skeleton until the first backend response populates the dashboard.
   // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
   if (!displayExtras) {
     return (
@@ -237,14 +230,14 @@ export default function Dashboard() {
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
         <AnimatePresence>
           {refreshing && displayExtras && (
-            <motion.div
+            <LoadingOverlay
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 z-[60]"
             >
               <TableLoader text="Updating Results..." />
-            </motion.div>
+            </LoadingOverlay>
           )}
         </AnimatePresence>
 
@@ -404,7 +397,7 @@ export default function Dashboard() {
                 />
 
                 <TrendChartCard
-                  title="Fitzone Session Completion"
+                  title="Fitzone Workouts Assigned"
                   subtitle={`Assignment volume per period ${extendedSubtitleSuffix}`}
                   Icon={Dumbbell}
                   iconColor="text-slate-600"
@@ -413,9 +406,7 @@ export default function Dashboard() {
                   xKey="date"
                   periodLabel={dynamicPeriodLabel}
                   hideLegend={true}
-                  series={(
-                    displayExtras?.trends?.fitzoneStatuses || ["Active"]
-                  ).map((status, i) => {
+                  series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
                     const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"]; // Purple palette
                     return {
                       key: status,
@@ -438,15 +429,12 @@ export default function Dashboard() {
                 <div className="w-full h-full min-h-[320px]">
                   <DashboardTableCard
                     title="Recent Joined Users"
-                    subtitle={`Monitor the latest member registrations${extendedSubtitleSuffix}`}
+                    subtitle="Latest registrations from the past 15 days"
                     Icon={Users2}
                     iconColor="text-slate-600"
                     iconBg="bg-slate-100/50"
-                    rows={(displayExtras?.tables?.recentUsers || []).slice(
-                      0,
-                      5,
-                    )}
-                    emptyMessage="No recent users found."
+                    rows={displayExtras?.tables?.recentUsers || []}
+                    emptyMessage="No users joined in the last 15 days."
                     columns={[
                       {
                         key: "sr_no",
@@ -505,28 +493,6 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-
-            {false && (
-              <>
-                {/* Content Performance */}
-                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                  <div className="w-full flex flex-col h-full min-w-0">
-                    <ContentPerformance
-                      data={dashboardData?.contentChartsData}
-                    />
-                  </div>
-                </div>
-
-                {/* Recent Joined Users */}
-                <div className="flex flex-col gap-4 3xl:gap-6 w-full items-stretch min-w-0">
-                  <div className="w-full flex flex-col h-full min-w-0 overflow-x-auto">
-                    <RecentUsersTable
-                      recentActivityData={dashboardData?.recentActivityData}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
 
             {/* Drill-down lists */}
             <div className="flex flex-col items-start pt-2 gap-4 3xl:gap-6">

@@ -21,6 +21,25 @@ import {
   LuUserRoundPlus,
 } from "react-icons/lu";
 
+const STATUS_FILTER_OPTIONS = [
+  { label: "Active", value: "Active" },
+  { label: "Inactive", value: "Inactive" },
+  { label: "Ghosted", value: "ghosted" },
+];
+
+const ACTIVITY_FILTER_OPTIONS = [
+  { label: "New Signups Today", value: "new_today" },
+  { label: "Missed Step Goals", value: "missed_step_goals" },
+  { label: "Missed Diet Logs", value: "missed_diet_logs" },
+  { label: "Missed Water Logs", value: "missed_water_logs" },
+];
+
+const getFilterValue = (filterId, options) =>
+  options.find(
+    (option) =>
+      option.value.toLowerCase() === String(filterId || "").toLowerCase(),
+  )?.value || "";
+
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
   const {
@@ -34,8 +53,11 @@ const UsersManagementPage = () => {
   const navigate = useNavigate();
 
   const [globalFilter, setGlobalFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState(
-    location.state?.filterId || "",
+  const [statusFilter, setStatusFilter] = useState(() =>
+    getFilterValue(location.state?.filterId, STATUS_FILTER_OPTIONS),
+  );
+  const [activityFilter, setActivityFilter] = useState(() =>
+    getFilterValue(location.state?.filterId, ACTIVITY_FILTER_OPTIONS),
   );
   // Optional dateRange passed via navigation from Dashboard KPI cards
   const [dateRangeFilter, setDateRangeFilter] = useState(
@@ -43,6 +65,7 @@ const UsersManagementPage = () => {
   );
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const selectedServerFilter = activityFilter || statusFilter;
 
   useEffect(() => {
     dispatch(
@@ -50,7 +73,7 @@ const UsersManagementPage = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
-        status: statusFilter,
+        status: selectedServerFilter,
         // Backend expects 'preset', 'from', 'to' at the root query level, not nested
         ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
         ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
@@ -62,7 +85,7 @@ const UsersManagementPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
-    statusFilter,
+    selectedServerFilter,
     dateRangeFilter,
   ]);
 
@@ -77,7 +100,7 @@ const UsersManagementPage = () => {
     [navigate],
   );
 
-  const isUnfiltered = !statusFilter && !debouncedSearchTerm;
+
   const [pinnedKpis, setPinnedKpis] = useState(null);
 
   // Background fetch for true KPIs if the backend doesn't provide them
@@ -87,7 +110,7 @@ const UsersManagementPage = () => {
 
     // If the backend provided `kpis` in the initial fetch, use them directly
     if (kpis) {
-      setPinnedKpis(kpis);
+      setTimeout(() => setPinnedKpis(kpis), 0);
       return;
     }
 
@@ -137,9 +160,10 @@ const UsersManagementPage = () => {
       tone: "blue",
       onClick: () => {
         setStatusFilter("");
+        setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: statusFilter === "",
+      isSelected: selectedServerFilter === "",
     },
     {
       icon: LuUserRoundCheck,
@@ -149,6 +173,7 @@ const UsersManagementPage = () => {
       tone: "emerald",
       onClick: () => {
         setStatusFilter("Active");
+        setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
       isSelected: statusFilter === "Active",
@@ -161,6 +186,7 @@ const UsersManagementPage = () => {
       tone: "rose",
       onClick: () => {
         setStatusFilter("Inactive");
+        setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
       isSelected: statusFilter === "Inactive",
@@ -172,38 +198,28 @@ const UsersManagementPage = () => {
       description: "Signups from today",
       tone: "violet",
       onClick: () => {
-        setStatusFilter("new_today");
+        setStatusFilter("");
+        setActivityFilter("new_today");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: statusFilter === "new_today",
+      isSelected: activityFilter === "new_today",
     },
   ];
 
-  // If serverPagination exists, it's server-paginated.
-  const isManual = !!serverPagination;
-
-  // Local fallback filtering in case the backend ignores the `status` parameter
-  const filteredUsers = useMemo(() => {
-    if (isManual || !statusFilter) return users || [];
-    return (users || []).filter((user) => {
-      const userStatus = String(user.status || "Active").toLowerCase();
-      if (userStatus === statusFilter.toLowerCase()) return true;
-      if (
-        statusFilter === "Active" &&
-        (userStatus === "1" || userStatus === "true")
-      )
-        return true;
-      if (
-        statusFilter === "Inactive" &&
-        (userStatus === "0" || userStatus === "false")
-      )
-        return true;
-      return false;
-    });
-  }, [users, statusFilter, isManual]);
-
   const handleStatusFilterChange = (v) => {
     setStatusFilter(v);
+    setActivityFilter("");
+    setPagination((p) => ({ ...p, pageIndex: 0 }));
+    if (location.state?.filterId) {
+      const newState = { ...location.state };
+      delete newState.filterId;
+      navigate(location.pathname, { replace: true, state: newState });
+    }
+  };
+
+  const handleActivityFilterChange = (v) => {
+    setActivityFilter(v);
+    setStatusFilter("");
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     if (location.state?.filterId) {
       const newState = { ...location.state };
@@ -219,17 +235,17 @@ const UsersManagementPage = () => {
       label: "Status",
       value: statusFilter,
       onChange: handleStatusFilterChange,
-      options: [
-        { label: "Active", value: "Active" },
-        { label: "Inactive", value: "Inactive" },
-        { label: "Ghosted", value: "ghosted" },
-        // { label: "Zero Engagement", value: "zero_engagement" },
-        { label: "New Signups Today", value: "new_today" },
-        { label: "Missed Step Goals", value: "missed_step_goals" },
-        { label: "Missed Diet Logs", value: "missed_diet_logs" },
-        { label: "Missed Water Logs", value: "missed_water_logs" },
-      ],
+      options: STATUS_FILTER_OPTIONS,
       placeholder: "All Status",
+    },
+    {
+      type: "select",
+      id: "activityFilter",
+      label: "Activity",
+      value: activityFilter,
+      onChange: handleActivityFilterChange,
+      options: ACTIVITY_FILTER_OPTIONS,
+      placeholder: "All Activity",
     },
     {
       type: "dateRange",
@@ -270,8 +286,8 @@ const UsersManagementPage = () => {
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={filteredUsers}
-            rowCount={isManual ? serverPagination.total : filteredUsers.length}
+            data={users || []}
+            rowCount={serverPagination?.total || 0}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
@@ -279,8 +295,8 @@ const UsersManagementPage = () => {
             searchPlaceholder="Search by name or email..."
             itemName="entries"
             isLoading={loading}
-            manualPagination={isManual}
-            manualFiltering={isManual}
+            manualPagination
+            manualFiltering
             onRowClick={(row) => handleAction(row.original, "view")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
@@ -288,6 +304,7 @@ const UsersManagementPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   handleStatusFilterChange("");
+                  setActivityFilter("");
                   setDateRangeFilter(null);
                   if (location.state) {
                     navigate(".", { replace: true, state: null });

@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { updateAdminAccount } from "../store/account.slice";
+import { fetchProfile, updateAdminAccount } from "../store/account.slice";
 import { toast } from "sonner";
 import { Camera, Loader2, Save, UserCircle, Phone, Check } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -28,18 +28,19 @@ export default function AdminEditDialog({ children, currentData }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [formData, setFormData] = useState({
-    nickname: currentData?.nickname || "",
+    nickname: currentData?.nickname || currentData?.name || "",
     // about: currentData?.about || "",
     phone: currentData?.phone || "",
   });
 
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (nextOpen) => {
+    setOpen(nextOpen);
+    if (nextOpen) {
       setSuccess(false);
       setLoading(false);
       setPhoneError("");
     }
-  }, [open]);
+  };
 
   // Handle File Selection with Client-Side Validation
   const handleFileChange = (e) => {
@@ -94,6 +95,8 @@ export default function AdminEditDialog({ children, currentData }) {
 
     try {
       await dispatch(updateAdminAccount(data)).unwrap();
+      // Instantly trigger a re-fetch of the profile to sync the new avatar URL across the sidebar & navbar
+      dispatch(fetchProfile());
       toast.success("Profile updated successfully!");
       setSuccess(true);
       setLoading(false);
@@ -108,7 +111,7 @@ export default function AdminEditDialog({ children, currentData }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto gap-0 p-0 border-none shadow-2xl rounded-2xl font-sans">
         {/* ── Header ── */}
@@ -255,7 +258,7 @@ export default function AdminEditDialog({ children, currentData }) {
         </div>
 
         {/* ── Footer ── */}
-        <DialogFooter className="px-4 mb-6 bg-slate-50/80 border-t border-slate-100 flex items-center sm:justify-end gap-3">
+        <DialogFooter className="px-6 pt-6 pb-6 bg-white border-t-0 flex items-center sm:justify-end gap-3">
           <Button
             type="button"
             variant="outline"

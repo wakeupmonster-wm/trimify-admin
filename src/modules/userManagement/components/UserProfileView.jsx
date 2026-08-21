@@ -185,7 +185,8 @@ export default function UserProfileView({ user, onBack, loading }) {
           a.type === "step_log"
             ? parseInt(((a.title || "").match(/\d+/) || ["0"])[0], 10)
             : 0,
-      }));
+      }))
+      .filter((a) => a.type !== "step_log" || a.steps > 0);
     const maxSteps = Math.max(
       1,
       ...logActivities.filter((a) => a.type === "step_log").map((a) => a.steps),
@@ -389,7 +390,7 @@ export default function UserProfileView({ user, onBack, loading }) {
                     alt={user?.name}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-slate-100 text-slate-400 text-2xl sm:text-3xl font-black">
+                  <AvatarFallback className="bg-app-primary2 text-white text-2xl sm:text-3xl font-black">
                     {initials(user?.name).substring(0, 1)}
                   </AvatarFallback>
                 </Avatar>

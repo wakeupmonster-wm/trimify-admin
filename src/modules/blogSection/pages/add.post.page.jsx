@@ -10,7 +10,9 @@ import {
   FileText,
   Loader2,
   ArrowLeft,
-  X,
+  Eye,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Input } from "@/components/ui/input";
@@ -31,6 +33,7 @@ import {
   fetchBlogCategoryDropdown,
 } from "../store/blog.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const AddPostPage = () => {
   const navigate = useNavigate();
@@ -46,33 +49,22 @@ const AddPostPage = () => {
   const [categories, setCategories] = useState([]);
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [currentBanner, setCurrentBanner] = useState(null);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    category: "",
-    description: "",
-    status: "Published",
-    bannerImage: null,
-  });
-
-  useEffect(() => {
-    if (isEdit && editData) {
-      // Check if status is Published or Public
-      const currentStatus =
-        editData.visibility_status || editData.status || "Published";
-
-      setFormData({
-        title: editData.title || "",
-        category:
-          editData.category?.id?.toString() ||
-          editData.blog_category_id?.toString() ||
-          "",
-        description: editData.description || "",
-        status: currentStatus, // Ensure correct mapping
-        bannerImage: editData?.image || null,
-      });
-    }
-  }, [isEdit, editData]);
+  const [formData, setFormData] = useState(() => ({
+    title: isEdit ? editData?.title || "" : "",
+    category: isEdit
+      ? editData?.category?.id?.toString() ||
+        editData?.blog_category_id?.toString() ||
+        ""
+      : "",
+    description: isEdit ? editData?.description || "" : "",
+    status: isEdit
+      ? editData?.visibility_status || editData?.status || "Published"
+      : "Published",
+    bannerImage: isEdit ? editData?.image || null : null,
+  }));
 
   useEffect(() => {
     dispatch(fetchBlogCategoryDropdown())
@@ -80,7 +72,7 @@ const AddPostPage = () => {
       .then((data) => {
         setCategories(data);
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Failed to load categories");
       });
   }, [dispatch]);
@@ -291,6 +283,13 @@ const AddPostPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 {isEdit ? "Replace Featured Image" : "Upload Featured Image"}
               </Label>
+              <input
+                id="banner-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+              />
               {formData.bannerImage ||
               (isEdit && editData?.image && !removedExistingImage) ? (
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
@@ -306,9 +305,38 @@ const AddPostPage = () => {
                     alt="Featured"
                     className="w-full h-48 object-cover bg-slate-50"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                     <button
                       type="button"
+                      aria-label="View featured image"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentBanner(
+                          formData.bannerImage instanceof File ||
+                            formData.bannerImage instanceof Blob
+                            ? URL.createObjectURL(formData.bannerImage)
+                            : formData.bannerImage || editData?.image,
+                        );
+                        setPreviewOpen(true);
+                      }}
+                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Replace featured image"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        document.getElementById("banner-upload")?.click();
+                      }}
+                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Delete featured image"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFormData((prev) => ({ ...prev, bannerImage: null }));
@@ -318,7 +346,7 @@ const AddPostPage = () => {
                       }}
                       className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
                     >
-                      <X className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
@@ -336,13 +364,6 @@ const AddPostPage = () => {
                     document.getElementById("banner-upload").click()
                   }
                 >
-                  <input
-                    id="banner-upload"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                  />
                   <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
                   <p className="text-sm font-semibold text-slate-700">
                     Click or drag and drop to upload
@@ -422,6 +443,21 @@ const AddPostPage = () => {
           </form>
         </div>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
+          {currentBanner && (
+            <img
+              src={currentBanner}
+              alt="Featured image preview"
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+            />
+          )}
+          <div className="p-4 text-sm font-semibold text-slate-800">
+            {formData.title || "Featured Image"}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

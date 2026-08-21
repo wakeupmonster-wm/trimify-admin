@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -172,7 +170,7 @@ export default function AccountsPage() {
           {/* HERO SECTION */}
           <div className="relative bg-white rounded-lg shadow-sm shadow-gray-200 overflow-hidden border border-gray-200">
             {/* Cover Banner */}
-            <div className="h-48 md:h-60 w-full bg-gradient-to-r from-app-primary2 via-app-primary2 to-app-primary2 relative overflow-hidden">
+            <div className="h-48 md:h-64 w-full bg-gradient-to-r from-app-primary2 via-app-primary2 to-app-primary2 relative overflow-hidden">
               {/* Decorative patterns */}
               <img
                 src={accountBg}
@@ -215,7 +213,7 @@ export default function AccountsPage() {
                     </span>
                     <span className="flex flex-row items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-app-primary2" />
-                      Last login {formatDateSafe(displayAccount?.lastLoginAt)}
+                      Last login {formatDateSafe(displayAccount?.last_login_at)}
                     </span>
                   </div>
                 </div>
@@ -238,7 +236,7 @@ export default function AccountsPage() {
             {/* LEFT COLUMN: Sidebar Info (4 cols) */}
             <div className="lg:col-span-4 space-y-4">
               {/* Contact Details Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-slate-200 hover:border-slate-300 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
@@ -280,7 +278,7 @@ export default function AccountsPage() {
               </Card>
 
               {/* Meta Data Card */}
-              <Card className="rounded-lg gap-2 border-gray-200 hover:border-blue-200 shadow-sm overflow-hidden pt-4 transition-all duration-300">
+              <Card className="rounded-lg gap-2 border-slate-200 hover:border-slate-300 shadow-sm overflow-hidden pt-4 transition-all duration-300">
                 <CardHeader className="p-0">
                   <div className="pb-2 px-4 border-b border-slate-300/60/50">
                     <DashboardHead
@@ -312,7 +310,7 @@ export default function AccountsPage() {
                     }
                     iconBg="bg-slate-100/50"
                     label="Last Login"
-                    value={formatDateSafe(displayAccount?.lastLoginAt)}
+                    value={formatDateSafe(displayAccount?.last_login_at)}
                   />
                 </CardContent>
               </Card>
@@ -321,7 +319,7 @@ export default function AccountsPage() {
             {/* RIGHT COLUMN: Stats & Security (8 cols) */}
             <div className="lg:col-span-8 space-y-4">
               {/* Security Component wrapper to give it matching styles */}
-              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden">
+              <div className="rounded-lg shadow-sm border border-slate-200 hover:border-slate-300 overflow-hidden">
                 <SecurityCredentials
                   account={displayAccount}
                   loading={loading}
@@ -330,7 +328,7 @@ export default function AccountsPage() {
               </div>
 
               {/* Email Component wrapper to give it matching styles */}
-              <div className="rounded-lg shadow-sm border border-gray-200 hover:border-blue-200 overflow-hidden mt-4">
+              <div className="rounded-lg shadow-sm border border-slate-200 hover:border-slate-300 overflow-hidden mt-4">
                 <Card className="mx-auto border-none gap-0 shadow-none bg-transparent overflow-hidden font-sans w-full">
                   <CardHeader className="p-0">
                     <div className="pb-4 px-4 border-b border-slate-300/60 pt-0">
@@ -446,7 +444,7 @@ export default function AccountsPage() {
               {/* Logout button */}
               <Button
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="h-12 w-full rounded-lg shadow-sm border border-slate-300/60 bg-white hover:bg-alerts-error hover:border-alerts-error font-medium hover:font-bold gap-2 text-slate-500 hover:text-white transition-all duration-300"
+                className="h-12 w-full rounded-lg shadow-sm border border-alerts-error bg-alerts-error text-white hover:bg-rose-700 hover:border-rose-700 font-semibold gap-2 transition-all duration-300"
               >
                 <LogOut className="w-4 h-4" strokeWidth={2} />
                 Logout
@@ -470,7 +468,7 @@ export default function AccountsPage() {
   );
 }
 
-function InfoItem({ icon, bg, label, value, verified }) {
+function InfoItem({ icon, bg, label, value }) {
   return (
     <div className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-all group overflow-hidden">
       <div className="flex items-center gap-4 min-w-0">

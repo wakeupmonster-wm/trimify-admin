@@ -59,8 +59,8 @@ export function NavUser({ user }) {
               >
                 <Avatar className="h-9 w-9 rounded-full">
                   <AvatarImage
-                    src={user?.avatar?.url || dummyImg}
-                    alt={user.name || "Admin"}
+                    src={user?.avatar || dummyImg}
+                    alt={user?.name || "Admin"}
                   />
                   <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">
                     {user.initial || "A"}
@@ -85,8 +85,8 @@ export function NavUser({ user }) {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
-                      src={user?.avatar?.url || dummyImg}
-                      alt={user.name || "Admin"}
+                      src={user?.avatar || dummyImg}
+                      alt={user?.name || "Admin"}
                     />
                     <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">
                       {user.initial || "A"}

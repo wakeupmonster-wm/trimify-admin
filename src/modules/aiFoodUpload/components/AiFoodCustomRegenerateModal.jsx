@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { PageHeader } from "@/components/common/headSubhead";
 import AiFoodImagePromptPanel from "./AiFoodImagePromptPanel";
@@ -20,8 +19,8 @@ const AiFoodCustomRegenerateModal = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl p-0 gap-0 border-none shadow-2xl overflow-hidden bg-white/95 backdrop-blur-md rounded-2xl">
-        <DialogHeader className="p-6 pb-5">
+      <DialogContent className="max-w-3xl p-0 gap-0 border-none shadow-2xl overflow-hidden bg-white backdrop-blur-md rounded-2xl">
+        <DialogHeader className="px-6 py-4">
           <DialogTitle className="sr-only">Custom Image Generation</DialogTitle>
           <PageHeader
             heading="Custom Image Generation"
@@ -29,14 +28,16 @@ const AiFoodCustomRegenerateModal = ({
             variant="primary"
             subheading={
               <span className="text-slate-500 font-medium">
-                Describe the perfect dish or use your voice to tell the AI how you want{" "}
-                <span className="font-bold text-slate-700">{foodName}</span> to look.
+                Describe the perfect dish or use your voice to tell the AI how
+                you want{" "}
+                <span className="font-bold text-slate-700">{foodName}</span> to
+                look.
               </span>
             }
           />
         </DialogHeader>
 
-        <div className="p-4 sm:p-6 bg-slate-50/80 border-t border-slate-100 relative">
+        <div className="p-4 sm:p-6 bg-slate-50/80 border-t border-slate-200 relative">
           <AiFoodImagePromptPanel
             onGenerateFromPrompt={onGenerateFromPrompt}
             onGenerateFromAudio={onGenerateFromAudio}

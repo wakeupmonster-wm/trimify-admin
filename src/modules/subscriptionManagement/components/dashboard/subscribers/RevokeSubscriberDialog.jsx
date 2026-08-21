@@ -41,8 +41,8 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
             <form onSubmit={handleNext} className="space-y-5 pt-4">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <Label className="text-sm font-bold text-slate-800">Reason for Revocation</Label>
-                  <span className={`text-xs font-semibold ${reason.length > 500 ? 'text-red-500' : 'text-slate-500'}`}>
+                  <Label className="text-sm font-semibold text-slate-800">Reason for Revocation</Label>
+                  <span className={`text-xs font-bold ${reason.length > 500 ? 'text-red-500' : 'text-slate-500'}`}>
                     {reason.length} / 500
                   </span>
                 </div>
@@ -50,7 +50,7 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
                   placeholder="Please provide a detailed reason for revoking this user's access..."
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  className="min-h-[120px] resize-none text-sm focus-visible:ring-red-500"
+                  className="min-h-[120px] resize-none placeholder:font-normal text-sm focus-visible:ring-red-500"
                   maxLength={500}
                   required
                 />

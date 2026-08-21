@@ -324,7 +324,7 @@ export default function OverviewView({
                           : "bg-app-primary2/5 text-app-primary2",
                       )}
                     >
-                      <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                      
                       <span className="truncate">{title}</span>
                     </Badge>
                   );
@@ -363,6 +363,7 @@ export default function OverviewView({
                 dashboardExtras?.tables?.expiringSoon || []
               }
               emptyMessage="No plans expiring soon."
+              emptyStateClassName="pb-8"
               actionLabel="View"
               onAction={(row) =>
                 navigate(`/admin/users/view-user/${row.user_id || row.id}`, {
@@ -402,7 +403,7 @@ export default function OverviewView({
                               : "bg-app-primary2/5 text-app-primary2",
                         )}
                       >
-                        <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+                        
                         <span className="truncate">
                           {isNoPlan ? "No-Active Plan" : plan}
                         </span>

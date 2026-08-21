@@ -40,16 +40,22 @@ export function Card({
   iconColor,
   iconBg,
   tooltipText,
+  showHeaderDivider = false,
 }) {
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-slate-300/60 bg-white shadow-sm transition-all duration-300 hover:border-blue-200",
+        "overflow-hidden rounded-xl border border-slate-300/60 hover:border-slate-300 bg-white shadow-sm transition-all duration-300",
         className,
       )}
     >
       {(title || right) && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 bg-slate-50/20">
+        <div
+          className={cn(
+            "flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 bg-slate-50/20",
+            showHeaderDivider && "border-b border-slate-200",
+          )}
+        >
           <div className="flex-1 min-w-0">
             <DashboardHead
               title={title}
@@ -68,14 +74,9 @@ export function Card({
   );
 }
 
-export function KV({ icon: Icon, label, value, noBorder }) {
+export function KV({ icon: Icon, label, value }) {
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between py-2.5 group",
-        !noBorder && "border-b border-slate-50 last:border-b-0 last:pb-0",
-      )}
-    >
+    <div className="flex items-center justify-between py-2.5 group">
       <div className="flex items-center gap-4">
         <div className="p-1.5 bg-slate-100/50 rounded-lg text-slate-400 group-hover:text-slate-600 transition-colors">
           {Icon && <Icon className="h-4 w-4" />}
@@ -89,7 +90,7 @@ export function KV({ icon: Icon, label, value, noBorder }) {
   );
 }
 
-export function Kpi({ icon: Icon, label, value, tone = "blue" }) {
+export function Kpi({ label, value, tone = "blue" }) {
   const textTones = {
     blue: "text-blue-500",
     purple: "text-purple-500",
@@ -127,7 +128,7 @@ export function Kpi({ icon: Icon, label, value, tone = "blue" }) {
 
 export function GoalTile({ label, value, pct, colorClass = "bg-blue-500" }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md group flex flex-col gap-1">
+    <div className="relative overflow-hidden rounded-xl border border-slate-300 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md group flex flex-col gap-1">
       <div className="space-y-1">
         <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
           {label}
@@ -161,7 +162,7 @@ export function EmptyState({ icon: Icon, title, subtitle }) {
   return (
     <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center">
       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-50 text-slate-300 border border-slate-100">
-        <Icon className="h-4 w-4" />
+        {Icon && <Icon className="h-4 w-4" />}
       </div>
       <div className="text-[11.5px] font-bold text-slate-600">{title}</div>
       {subtitle && (

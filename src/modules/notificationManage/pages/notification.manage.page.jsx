@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Container } from "@/components/common/container";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -57,7 +57,9 @@ const NotificationManagePage = () => {
   useEffect(() => {
     if (activeTab === "history") {
       const noFiltersApplied =
-        channelFilter === "all" && statusFilter === "all" && !debouncedSearchTerm;
+        channelFilter === "all" &&
+        statusFilter === "all" &&
+        !debouncedSearchTerm;
       const params = {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,

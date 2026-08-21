@@ -53,7 +53,7 @@ export const GridItem = ({
 );
 
 export const ListItem = ({ label, value, icon: Icon, badge }) => (
-  <div className="flex items-center gap-3 py-3 border-b border-slate-50 last:border-0 last:pb-0 first:pt-0">
+  <div className="flex items-center gap-3 py-3 last:pb-0 first:pt-0">
     <div className="p-2 bg-slate-100/60 rounded-xl border border-slate-100 text-slate-500">
       <Icon className="w-4 h-4" />
     </div>

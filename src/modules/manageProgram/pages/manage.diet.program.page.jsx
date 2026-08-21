@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Button } from "@/components/ui/button";
 import { CalendarCheck, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
@@ -23,7 +22,11 @@ const ManageDietProgramPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { dietMeals, loading } = useSelector((state) => state.manageDiet);
+  const {
+    dietMeals,
+    pagination: serverPagination,
+    loading,
+  } = useSelector((state) => state.manageDiet);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
@@ -37,28 +40,29 @@ const ManageDietProgramPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const fetchDietMeals = () => {
-    if (id) {
-      const params = {
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        ...(debouncedSearch && { search: debouncedSearch }),
-      };
-      dispatch(getDietMeals({ id, params }));
-    }
-  };
+  const fetchDietMeals = useCallback(() => {
+    if (!id) return;
+
+    const params = {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+      ...(debouncedSearch && { search: debouncedSearch }),
+    };
+    dispatch(getDietMeals({ id, params }));
+  }, [debouncedSearch, dispatch, id, pagination.pageIndex, pagination.pageSize]);
 
   useEffect(() => {
     fetchDietMeals();
-  }, [
-    dispatch,
-    id,
-    pagination.pageIndex,
-    pagination.pageSize,
-    debouncedSearch,
-  ]);
+  }, [fetchDietMeals]);
 
-  const handleAction = async (row, action, val) => {
+  const handleGlobalFilterChange = (value) => {
+    setGlobalFilter(value);
+    setPagination((current) =>
+      current.pageIndex === 0 ? current : { ...current, pageIndex: 0 },
+    );
+  };
+
+  const handleAction = useCallback((row, action, val) => {
     if (action === "toggle") {
       setToggleModal({ open: true, rowData: row, targetStatus: val });
     } else if (action === "edit") {
@@ -68,7 +72,7 @@ const ManageDietProgramPage = () => {
     } else if (action === "delete") {
       setDeleteTarget(row);
     }
-  };
+  }, [id, navigate]);
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
@@ -107,7 +111,10 @@ const ManageDietProgramPage = () => {
     }
   };
 
-  const columns = useMemo(() => getManageDietProgramColumns(handleAction), []);
+  const columns = useMemo(
+    () => getManageDietProgramColumns(handleAction),
+    [handleAction],
+  );
 
   return (
     <Container>
@@ -140,13 +147,14 @@ const ManageDietProgramPage = () => {
           <DataTable
             columns={columns}
             data={dietMeals || []}
-            rowCount={(dietMeals || []).length}
+            rowCount={serverPagination?.total ?? (dietMeals || []).length}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            loading={loading}
-          onRowClick={(row) => handleAction(row.original, "edit")}
+            setGlobalFilter={handleGlobalFilterChange}
+            isLoading={loading}
+            manualPagination
+            onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

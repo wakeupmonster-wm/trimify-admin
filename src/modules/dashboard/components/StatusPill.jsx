@@ -26,12 +26,12 @@ const StatusPill = ({ status }) => {
     <Badge
       variant="outline"
       className={cn(
-        "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+        "inline-flex min-h-6 items-center gap-1.5 rounded-full border-none px-3 py-1 text-[11px] font-bold leading-none shadow-none uppercase transition-all duration-200 max-w-full w-fit whitespace-nowrap",
         config.bg,
         config.text
       )}
     >
-      <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+      
       <span className="truncate">{status}</span>
     </Badge>
   );

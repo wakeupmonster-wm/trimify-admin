@@ -217,7 +217,6 @@ const SubAdminManagementPage = () => {
 
   const handleAction = useCallback(
     async (row, action, checked) => {
-      const rowId = row.id || row._id;
       if (action === "toggle-status") {
         setToggleModal({ open: true, rowData: row, targetStatus: checked });
       } else if (action === "edit") {
@@ -370,14 +369,12 @@ const SubAdminManagementPage = () => {
             <div className="flex flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 icon={Plus}
-                variant="outline"
                 label="Add Sub Admin"
                 onClick={() => navigate("/admin/sub-admin-management/add")}
               />
               <CTAButton
                 icon={Download}
                 label="Export CSV"
-                variant="outline"
                 onClick={handleExportCSV}
               />
             </div>

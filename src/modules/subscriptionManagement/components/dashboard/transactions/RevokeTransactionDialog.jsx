@@ -43,14 +43,14 @@ export default function RevokeTransactionDialog({ open, onOpenChange, transactio
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          <p className="text-sm text-slate-600 font-medium">
+          <p className="text-xs text-slate-600 font-medium">
             Are you sure you want to revoke and refund the transaction for <strong className="text-slate-800">{transaction?.user_email}</strong>?
             This will immediately issue a refund and remove the user's active subscription plan.
           </p>
           <div className="space-y-1.5">
             <Label className="text-xs font-bold text-slate-800">Reason for Refund</Label>
             <Select value={reason} onValueChange={setReason}>
-              <SelectTrigger className="h-10 text-sm">
+              <SelectTrigger className="h-10 text-xs">
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
               <SelectContent>

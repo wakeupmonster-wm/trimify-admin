@@ -4,6 +4,7 @@ import {
   addNutritionAPI,
   updateNutritionAPI,
   uploadNutritionAPI,
+  regenerateNutritionImageAPI,
 } from "../services/nutrition.services";
 
 // Fetch List
@@ -66,6 +67,23 @@ export const updateNutrition = createAsyncThunk(
       );
     }
   }
+);
+
+export const regenerateNutritionImage = createAsyncThunk(
+  "nutrition/regenerateImage",
+  async ({ id, imagePrompt }, { rejectWithValue }) => {
+    try {
+      const response = await regenerateNutritionImageAPI(id, imagePrompt);
+      if (response && (response.status === "success" || response.success)) {
+        return response;
+      }
+      return rejectWithValue(response?.message || "Failed to regenerate image");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to regenerate image",
+      );
+    }
+  },
 );
 
 // Upload (Bulk)

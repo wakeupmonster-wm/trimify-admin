@@ -12,25 +12,6 @@ import { SubscriptionDialog } from "../components/subscription.dialog";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 
-const mockData = [
-  {
-    id: 1,
-    planTitle: "Premium",
-    duration: "Quarterly",
-    price: "$50.00",
-    subTitle: "Package details here",
-    features: "Unlimited Projects, Priority Support, Advanced A...",
-  },
-  {
-    id: 2,
-    planTitle: "Basic",
-    duration: "Monthly",
-    price: "$10.00",
-    subTitle: "Package details here",
-    features: "Priority Support, Advanced Analytics",
-  },
-];
-
 const SubscriptionManagementPage = () => {
   const dispatch = useDispatch();
   const {
@@ -114,7 +95,7 @@ const SubscriptionManagementPage = () => {
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
-                className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-secondary-foreground hover:text-white border border-slate-300/60 shadow-sm rounded-md px-4 sm:px-5 h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
+                className="w-full sm:w-auto flex-1 md:flex-none rounded-md px-4 sm:px-5 h-10 text-sm sm:text-xs"
                 onClick={() => {
                   setEditData(null);
                   setDialogOpen(true);

@@ -6,14 +6,12 @@ import { Eye, EyeOff, Lock, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { resetSchema } from "../schemas/auth.schemas";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-// import { forgotPasswordThunk } from "../store/auth.slice";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 export default function ForgotPasswordForm() {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

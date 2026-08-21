@@ -35,7 +35,10 @@ export function DataTablePagination({ table, rowCount, itemName = "items" }) {
           </span>
           <Select
             value={`${pageSize}`}
-            onValueChange={(value) => table.setPageSize(Number(value))}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value));
+              table.setPageIndex(0);
+            }}
           >
             <SelectTrigger className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0">
               <SelectValue />

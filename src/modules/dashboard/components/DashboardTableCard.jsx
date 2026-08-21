@@ -17,6 +17,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Ellipsis, Eye } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Reusable drill-down table widget for the dashboard's list/table row —
@@ -37,9 +38,10 @@ const DashboardTableCard = ({
   actionLabel,
   onAction,
   footerStat,
+  emptyStateClassName,
 }) => {
   return (
-    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
       <div className="pt-5 pb-4 px-6 border-b border-slate-100">
         <DashboardHead
           title={title}
@@ -50,7 +52,12 @@ const DashboardTableCard = ({
         />
       </div>
 
-      <div className="flex-1 w-full min-h-0 overflow-auto">
+      <div
+        className={cn(
+          "flex-1 w-full min-h-0 overflow-auto",
+          rows.length === 0 && emptyStateClassName,
+        )}
+      >
         <Table className="min-w-[700px] xl:min-w-full">
           <TableHeader>
             <TableRow className="border-y border-slate-300/60 bg-app-primary2/5 hover:bg-app-primary2/5">

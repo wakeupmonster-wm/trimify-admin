@@ -122,7 +122,7 @@ export const getTransactionColumns = (onAction) => [
               : "bg-app-primary2/5 text-app-primary2",
           )}
         >
-          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          
           <span className="truncate">{title}</span>
         </Badge>
       );
@@ -198,7 +198,6 @@ export const getTransactionColumns = (onAction) => [
             config.hover,
           )}
         >
-          <span className={cn("w-1 h-1 rounded-full", config.dot)} />
           {rawStatus}
         </Badge>
       );

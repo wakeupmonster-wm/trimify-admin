@@ -1,6 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import authReducer from "@/modules/authentication/store/auth.slice";
-// import usersReducer from "@/modules/users/store/user.slice";
 import accountReducer from "@/modules/accounts/store/account.slice";
 import dashboardReducer from "@/modules/dashboard/store/dashboard.slice";
 import subAdminReducer from "@/modules/subAdmin/store/sub.admin.slice";
@@ -27,7 +26,6 @@ import accountSettingsReducer from "@/modules/accountSettings/store/account.sett
 
 const appReducer = combineReducers({
   auth: authReducer,
-  // users: usersReducer,
   account: accountReducer,
   dashboard: dashboardReducer,
   subAdmin: subAdminReducer,

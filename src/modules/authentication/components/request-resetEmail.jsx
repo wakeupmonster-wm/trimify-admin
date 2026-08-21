@@ -6,13 +6,10 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { schema } from "../schemas/auth.schemas";
-import { useDispatch } from "react-redux";
-// import { requestOtpThunk } from "../store/auth.slice";
 import { toast } from "sonner";
 
 export default function RequestResetEmailForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -67,7 +64,7 @@ export default function RequestResetEmailForm() {
             <Input
               {...register("email")}
               placeholder="info@trimify.com.au"
-              className="pl-10 py-5"
+              className="pl-10 py-5 placeholder:font-normal"
             />
           </div>
           {errors.email && (

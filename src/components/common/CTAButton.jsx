@@ -7,7 +7,7 @@ export default function CTAButton({
   label,
   onClick,
   className,
-  variant = "outline",
+  variant = "primary",
   ...props
 }) {
   return (
@@ -17,11 +17,11 @@ export default function CTAButton({
       className={cn(
         "flex items-center justify-center gap-2 flex-1 h-10 rounded-md shadow-none text-xs font-medium transition-all active:scale-95 px-3.5",
         variant === "outline" &&
-          "bg-slate-50 hover:bg-app-primary2 border border-slate-300/60 text-slate-500 hover:text-white hover:border-app-primary2",
+          "bg-white border border-slate-300/80 text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 hover:border-slate-400",
         variant === "primary" &&
           "bg-app-primary2 text-white border border-app-primary2 hover:bg-app-primary5 hover:border-app-primary5",
         variant === "danger" &&
-          "bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-500 hover:text-white hover:border-rose-500",
+          "bg-rose-600 text-white border border-rose-600 shadow-sm hover:bg-rose-700 hover:border-rose-700",
         className,
       )}
       {...props}

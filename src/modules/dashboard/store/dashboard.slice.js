@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  dashboardSummaryAPI,
-  dashboardContentChartsAPI,
-  dashboardRevenueChartsAPI,
-  dashboardEngagementChartsAPI,
-  dashboardRecentActivityAPI,
-  dashboardAllAPI,
-} from "../services/dashboard.services";
+import { dashboardAllAPI } from "../services/dashboard.services";
 import {
   toCategoricalPie,
   toLabeledPie,
@@ -14,7 +7,6 @@ import {
   buildSecondaryKpis,
   buildAlerts,
 } from "../utils/dashboardExtras.transform";
-import { getMockDashboardData } from "../utils/mockDashboardData";
 import { format, subDays } from "date-fns";
 
 function getGlanceTitle(preset) {
@@ -49,36 +41,6 @@ function getPeriodLabel(dateRange, preset) {
 
 // ─── Dashboard Data thunk (date-range aware) ───────────────────────────────────
 // 🔄 SWAP POINT: When backend is ready, replace getDashboardData() with real API call
-//    e.g., const res = await dashboardDataAPI(dateRange);
-
-export const fetchDashboardData = createAsyncThunk(
-  "dashboard/fetchDashboardData",
-  async (dateRange, { rejectWithValue }) => {
-    try {
-      const [summaryRes, contentRes, revenueRes, engagementRes, recentRes] = await Promise.allSettled([
-        dashboardSummaryAPI(dateRange),
-        dashboardContentChartsAPI(dateRange),
-        dashboardRevenueChartsAPI(dateRange),
-        dashboardEngagementChartsAPI(dateRange),
-        dashboardRecentActivityAPI(dateRange)
-      ]);
-
-      return {
-        data: {
-          summaryData: summaryRes.status === "fulfilled" ? summaryRes.value?.data : null,
-          contentChartsData: contentRes.status === "fulfilled" ? contentRes.value?.data : null,
-          revenueChartsData: revenueRes.status === "fulfilled" ? revenueRes.value?.data : null,
-          engagementChartsData: engagementRes.status === "fulfilled" ? engagementRes.value?.data : null,
-          recentActivityData: recentRes.status === "fulfilled" ? recentRes.value?.data : null,
-        },
-        meta: { dateRange },
-        dateRange
-      };
-    } catch (err) {
-      return rejectWithValue(err.message || "Server Error");
-    }
-  },
-);
 // ─── Dashboard Extras thunk (secondary KPIs, pie charts, trends, tables, funnel) ──
 // Pulls from every real endpoint the widgets below the primary summary need,
 // then maps each response into the exact shape those widgets already render
@@ -147,28 +109,12 @@ export const fetchDashboardExtras = createAsyncThunk(
   },
 );
 
-export const fetchMockDashboardData = createAsyncThunk(
-  "dashboard/fetchMockDashboardData",
-  async (dateRange, { rejectWithValue }) => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return getMockDashboardData(dateRange);
-    } catch (err) {
-      return rejectWithValue(err.message || "Server Error");
-    }
-  }
-);
-
 const initialState = {
-  dashboardData: null,
   dashboardExtras: null,
-  mockData: null,
   dashboardMeta: null,
   dateRange: null,
   activities: [],
-  dashboardLoading: false,
   extrasLoading: false,
-  mockLoading: false,
   error: null,
   lastUpdated: null,
 };
@@ -187,22 +133,6 @@ const dashboardSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Dashboard data cases
-      .addCase(fetchDashboardData.pending, (state) => {
-        state.dashboardLoading = true;
-      })
-      .addCase(fetchDashboardData.fulfilled, (state, action) => {
-        state.dashboardLoading = false;
-        state.dashboardData = action.payload.data;
-        state.dashboardMeta = action.payload.meta;
-        state.dateRange = action.payload.dateRange;
-        state.lastUpdated = Date.now();
-      })
-      .addCase(fetchDashboardData.rejected, (state, action) => {
-        state.dashboardLoading = false;
-        state.error = action.payload;
-      })
-      // Dashboard extras cases (new)
       .addCase(fetchDashboardExtras.pending, (state) => {
         state.extrasLoading = true;
       })
@@ -215,21 +145,6 @@ const dashboardSlice = createSlice({
       })
       .addCase(fetchDashboardExtras.rejected, (state, action) => {
         state.extrasLoading = false;
-        state.error = action.payload;
-      })
-      // Mock Dashboard data cases (new)
-      .addCase(fetchMockDashboardData.pending, (state) => {
-        state.mockLoading = true;
-      })
-      .addCase(fetchMockDashboardData.fulfilled, (state, action) => {
-        state.mockLoading = false;
-        state.mockData = action.payload.data;
-        state.dashboardMeta = action.payload.meta;
-        state.dateRange = action.payload.meta.dateRange;
-        state.lastUpdated = Date.now();
-      })
-      .addCase(fetchMockDashboardData.rejected, (state, action) => {
-        state.mockLoading = false;
         state.error = action.payload;
       });
   },

@@ -127,11 +127,10 @@ export const getSubAdminColumns = (onAction) => [
         <Badge
           variant="outline"
           className={cn(
-            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase flex items-center gap-1.5 transition-all duration-200 max-w-full w-fit",
+            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase transition-all duration-200 max-w-full w-fit",
             colorClass
           )}
         >
-          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
           <span className="truncate capitalize">
             {isMissing ? "Not Assigned" : designation}
           </span>

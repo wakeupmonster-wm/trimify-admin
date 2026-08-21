@@ -33,7 +33,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { UserActionModal } from "@/modules/users/components/UserActionModal";
 
 const STATUS_STYLES = {
   active: {
@@ -316,12 +315,6 @@ export function RecentUsersTable({ recentActivityData }) {
                               STATUS_STYLES[status]?.bg,
                             )}
                           >
-                            <div
-                              className={cn(
-                                "w-1 h-1 rounded-full",
-                                STATUS_STYLES[status]?.dot,
-                              )}
-                            />
                             {status}
                           </Badge>
                         </TableCell>

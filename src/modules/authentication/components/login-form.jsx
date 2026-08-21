@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/auth.schemas";
-// import { loginThunk } from "../store/auth.slice";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +17,6 @@ import { loginThunk } from "../store/auth.slice";
 export function LoginForm({ className, ...props }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { loading, error } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -41,10 +39,7 @@ export function LoginForm({ className, ...props }) {
     setIsSubmitting(true);
     try {
       const { user } = await dispatch(loginThunk(data)).unwrap();
-
-      // Navigate to dashboard upon successful login without strict role check
       navigate(user?.screen || "/admin/dashboard", { replace: true });
-
       toast.success(user?.message || "Login successful", {
         description: `Welcome back, ${user?.nickname || "Admin"}!`,
       });
@@ -90,7 +85,7 @@ export function LoginForm({ className, ...props }) {
                 type="email"
                 {...register("email")}
                 placeholder="info@trimify.com.au"
-                className={`w-full h-10 pl-8 pr-3 py-2 bg-gray-50 outline-none transition-all ${
+                className={`w-full h-10 pl-8 pr-3 py-2 placeholder:font-normal bg-gray-50 outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-100"
                     : "focus:border-app-primary2 focus-visible:ring-app-primary2"
@@ -123,7 +118,7 @@ export function LoginForm({ className, ...props }) {
                 type={showPassword ? "text" : "password"}
                 {...register("password")}
                 placeholder="••••••••"
-                className={`w-full h-10 pl-8 pr-10 py-2 bg-gray-50 border !outline-none transition-all ${
+                className={`w-full h-10 pl-8 pr-10 py-2 placeholder:font-normal bg-gray-50 border !outline-none transition-all ${
                   errors.password
                     ? "border-red-500 focus-visible:ring-red-100"
                     : "focus:border-app-primary2 focus-visible:ring-app-primary2"

@@ -96,7 +96,7 @@ export const getViewUserProgramColumns = (onAction) => [
               style,
             )}
           >
-            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            
             <span className="truncate">{status}</span>
           </Badge>
         </div>

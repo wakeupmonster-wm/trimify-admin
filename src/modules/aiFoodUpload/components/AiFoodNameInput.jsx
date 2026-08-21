@@ -148,7 +148,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       .filter(Boolean).length;
 
   return (
-    <div className="relative bg-white rounded-xl shadow-sm border border-slate-300/60 hover:border-app-primary2/30 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
+    <div className="relative bg-white rounded-xl shadow-sm border border-slate-200 hover:border-slate-300 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
       {/* Subtle background decoration */}
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-app-primary2/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -174,7 +174,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
         </div>
 
         <div className="relative" ref={wrapperRef}>
-          <div className="min-h-[48px] flex flex-wrap items-center gap-2 rounded-lg border border-slate-300/60 bg-slate-50/50 px-3 py-2.5 transition-all focus-within:bg-white focus-within:border-app-primary2 focus-within:ring-2 focus-within:ring-app-primary2/15">
+          <div className="min-h-[42px] flex flex-wrap items-center gap-2 rounded-lg border border-slate-300/60 bg-slate-50/50 px-3 py-2.5 transition-all focus-within:bg-white focus-within:border-app-primary2 focus-within:ring-2 focus-within:ring-app-primary2/15">
             {names.map((name, index) => (
               <span
                 key={`${name}-${index}`}

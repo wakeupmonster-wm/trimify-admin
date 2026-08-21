@@ -271,34 +271,16 @@ const AddFitzoneSessionPage = () => {
               )}
             </div>
 
-            {isEdit && editData?.video && !videoFile && (
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-800">
-                  Current Uploaded Video
-                </Label>
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <a
-                    href={editData.video}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-blue-600 hover:underline break-all"
-                  >
-                    {editData.video}
-                  </a>
-                </div>
-              </div>
-            )}
-
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                {isEdit ? "Upload New Video (optional)" : "Upload Video"}
+                {isEdit ? "Replace Video" : "Upload Video"}
               </Label>
               <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                className={`w-full relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   isDragging
                     ? "border-app-primary2 bg-blue-50"
                     : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                } ${(isEdit && editData?.video && !videoFile) ? "p-0 min-h-[160px]" : "p-10"}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -311,15 +293,33 @@ const AddFitzoneSessionPage = () => {
                   ref={fileInputRef}
                   onChange={handleVideoChange}
                 />
-                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                <p className="text-sm font-semibold text-slate-700">
-                  {videoFile
-                    ? videoFile.name
-                    : "Click or drag and drop to upload"}
-                </p>
-                <p className="text-xs text-slate-500 mt-1">
-                  MP4, WEBM or OGG (max. 50MB)
-                </p>
+                
+                {(isEdit && editData?.video && !videoFile) ? (
+                  <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px] bg-slate-100 p-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <PlayCircle className="w-8 h-8 text-slate-400 group-hover:text-transparent transition-colors" />
+                      <span className="text-xs font-medium text-blue-600 break-all text-center px-4 group-hover:opacity-0 transition-opacity">
+                        {editData.video}
+                      </span>
+                    </div>
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
+                      <UploadCloud className="w-8 h-8 mb-2 text-white" />
+                      <span className="text-sm font-semibold text-white">Click or drag to replace video</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                    <p className="text-sm font-semibold text-slate-700 text-center">
+                      {videoFile
+                        ? videoFile.name
+                        : "Click or drag and drop to upload"}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      MP4, WEBM or OGG (max. 50MB)
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 

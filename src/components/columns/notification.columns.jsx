@@ -71,8 +71,8 @@ export const getNotificationColumns = ({
           className={cn(
             "px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-lg border-transparent",
             channel.toLowerCase() === "email"
-              ? "bg-[#F5EFE6] text-[#8A5A2B]"
-              : "bg-[#F5F3FF] text-[#6D28D9]",
+              ? "bg-app-primary2/5 text-app-primary2"
+              : "bg-app-primary3/5 text-app-primary3",
             // ? "bg-indigo-50 text-app-primary2"
             // : "bg-emerald-600/10 text-emerald-600",
           )}

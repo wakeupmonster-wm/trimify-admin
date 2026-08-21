@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
   ComposedChart,
   Line,
@@ -23,100 +23,55 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 // ── Pill-bar rendering (reference-design match) ────────────────────────────
 // Only kicks in when EVERY series on the card is a bar series (e.g.
 // "Plan-wise Revenue", "Top Selling Plans"). Area/line charts — and any
 // mixed bar+line/area combo — fall straight through to the original
 // rendering below, completely untouched.
 //
-// The value badge + connector dot are drawn as plain SVG *inside this same
-// shape*, anchored directly to the bar's own x/y — NOT via Recharts'
-// <Tooltip>, which positions off the mouse cursor and would drift away
-// from the bar as the pointer moves inside it. Drawing it here guarantees
-// the badge always sits exactly above the bar it belongs to.
-// Builds a bar outline with rounded TOP corners only and a flat bottom
-// edge — a plain <rect rx/ry> can't do this because rx/ry round all four
-// corners equally. M→L→Q→L→Q→L→Z: start bottom-left, go up the flat left
-// edge, arc the top-left corner, go across the flat top, arc the
-// top-right corner, go down the flat right edge, then Z closes it with a
-// straight line back along the bottom.
-function topRoundedPath(x, y, width, height, radius) {
-  const r = Math.min(radius, width / 2, height);
-  return `
-    M ${x},${y + height}
-    L ${x},${y + r}
-    Q ${x},${y} ${x + r},${y}
-    L ${x + width - r},${y}
-    Q ${x + width},${y} ${x + width},${y + r}
-    L ${x + width},${y + height}
-    Z
-  `;
-}
-
-function PillBar({
-  x,
-  y,
-  width,
-  height,
-  index,
-  value,
-  isActive,
-  color,
-  gradientId,
-  patternId,
-  dataLength,
-}) {
+// Default bars: diagonal hatch fill. Hovered bar: solid top→bottom
+// gradient + a small connector dot, with a floating pill tooltip above it.
+function PillBar({ x, y, width, height, index, isActive, color, gradientId, patternId }) {
   if (width <= 0 || height <= 0) return null;
-  // Flat-bottom, rounded-top bars — swap this constant for
-  // Math.min(width / 2, height / 2) if the full pill (rounded top+bottom)
-  // look is wanted again.
-  const radius = width / 2;
-
-  if (!isActive) {
-    return (
-      <path
-        d={topRoundedPath(x, y, width, height, radius)}
-        fill={`url(#${patternId})`}
-      />
-    );
-  }
-
-  const cx = x + width / 2;
-  const actualValue = Array.isArray(value) ? value[1] - value[0] : value;
-  const label = Number(actualValue).toLocaleString();
-  const badgeWidth = Math.max(42, label.length * 8 + 26);
-  const badgeHeight = 26;
-  const dotR = 5;
-  const gap = 10;
-  const badgeY = y - dotR - gap - badgeHeight;
-
-  // Keep the badge from overflowing the chart edges for the first/last bar.
-  let badgeShift = 0;
-  if (index === 0) badgeShift = badgeWidth / 2 - width / 2;
-  if (index === (dataLength ?? 0) - 1) badgeShift = -(badgeWidth / 2 - width / 2);
-  const badgeX = cx + badgeShift - badgeWidth / 2;
-
+  const radius = Math.min(width / 2, height / 2);
   return (
     <g>
-      <path
-        d={topRoundedPath(x, y, width, height, radius)}
-        fill={`url(#${gradientId})`}
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx={radius}
+        ry={radius}
+        fill={isActive ? `url(#${gradientId})` : `url(#${patternId})`}
+        className="transition-[fill] duration-150"
       />
-      <circle cx={cx} cy={y} r={dotR} fill={color} stroke="#fff" strokeWidth={2} />
-      <g transform={`translate(${badgeX}, ${badgeY})`}>
-        <rect width={badgeWidth} height={badgeHeight} rx={badgeHeight / 2} fill={color} />
-        <text
-          x={badgeWidth / 2}
-          y={badgeHeight / 2 + 4}
-          textAnchor="middle"
-          fontSize="12"
-          fontWeight="700"
-          fill="#fff"
-        >
-          {label}
-        </text>
-      </g>
+      {isActive && (
+        <circle
+          cx={x + width / 2}
+          cy={y}
+          r={5}
+          fill={color}
+          stroke="#fff"
+          strokeWidth={2}
+        />
+      )}
     </g>
+  );
+}
+
+function PillTooltip({ active, payload, series }) {
+  if (!active || !payload?.length) return null;
+  const item = payload[0];
+  const matched = series.find((s) => s.key === item.dataKey) || series[0];
+  return (
+    <div
+      className="rounded-full px-3 py-1.5 text-xs font-bold text-white shadow-lg whitespace-nowrap"
+      style={{ background: matched?.color }}
+    >
+      {Number(item.value).toLocaleString()}
+    </div>
   );
 }
 
@@ -126,8 +81,7 @@ function PillBar({
 const formatCompact = (value) => {
   const num = Number(value);
   if (Math.abs(num) >= 1000) {
-    const trimmed =
-      num % 1000 === 0 ? (num / 1000).toFixed(0) : (num / 1000).toFixed(1);
+    const trimmed = num % 1000 === 0 ? (num / 1000).toFixed(0) : (num / 1000).toFixed(1);
     return `${trimmed}k`;
   }
   return num.toLocaleString();
@@ -146,6 +100,7 @@ function FocusTimelineUI({
   data = [],
   xKey,
   periodLabel,
+  datePreset,
   series = [],
   note,
 }) {
@@ -237,6 +192,56 @@ function FocusTimelineUI({
                 padding={{ left: 0, right: 0 }}
                 interval={xInterval}
                 tick={{ fill: "hsl(215, 16%, 55%)", fontSize: 11 }}
+                tickFormatter={(value) => {
+                  if (
+                    data.length === 1 &&
+                    String(value).toLowerCase() === "today" &&
+                    periodLabel &&
+                    periodLabel !== "Today"
+                  ) {
+                    return periodLabel;
+                  }
+
+                  if (xKey === "date") {
+                    if (
+                      typeof value === "string" &&
+                      /^\d{2}-\d{2}\s[a-zA-Z]{3}/.test(value)
+                    ) {
+                      return value;
+                    }
+                    const d = new Date(value);
+                    if (!isNaN(d)) {
+                      if (
+                        datePreset === "today" ||
+                        datePreset === "yesterday" ||
+                        datePreset === "last7"
+                      ) {
+                        return d.toLocaleDateString("en-US", {
+                          weekday: "short",
+                        });
+                      }
+                      if (
+                        datePreset === "last30" ||
+                        datePreset === "lastMonth"
+                      ) {
+                        return d.toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "short",
+                        });
+                      }
+                      if (datePreset === "last90") {
+                        return d.toLocaleDateString("en-US", {
+                          month: "short",
+                        });
+                      }
+                      return d.toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "short",
+                      });
+                    }
+                  }
+                  return value;
+                }}
               />
               <YAxis
                 domain={[domainMin, domainMax]}
@@ -260,6 +265,27 @@ function FocusTimelineUI({
                 content={({ active, payload, label }) => {
                   if (!active || !payload?.length) return null;
                   const dataPoint = payload[0];
+
+                  let formattedLabel = label;
+                  if (xKey === "date") {
+                    if (
+                      typeof label === "string" &&
+                      /^\d{2}-\d{2}\s[a-zA-Z]{3}/.test(label)
+                    ) {
+                      formattedLabel = label;
+                    } else {
+                      const d = new Date(label);
+                      if (!isNaN(d)) {
+                        formattedLabel = d.toLocaleDateString("en-US", {
+                          weekday: "short",
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        });
+                      }
+                    }
+                  }
+
                   return (
                     <div className="relative bg-white rounded-2xl shadow-xl border border-slate-100/60 p-3.5 flex items-center gap-3.5 ml-2 mt-2 max-w-max">
                       {/* Top pointer notch */}
@@ -276,7 +302,7 @@ function FocusTimelineUI({
                           {Number(dataPoint.value).toLocaleString()} {dataPoint.name || "Daily Active Users"}
                         </div>
                         <div className="text-[13px] text-slate-500 font-semibold leading-none">
-                          {label}
+                          {formattedLabel}
                         </div>
                       </div>
                     </div>
@@ -319,11 +345,11 @@ const TrendChartCard = ({
   data = [],
   xKey,
   periodLabel,
+  datePreset,
   series = [],
   note,
   height = "flex-1 min-h-[240px]",
   focusTimeline = false,
-  hideLegend = false,
 }) => {
   if (focusTimeline) {
     return (
@@ -333,51 +359,30 @@ const TrendChartCard = ({
         data={data}
         xKey={xKey}
         periodLabel={periodLabel}
+        datePreset={datePreset}
         series={series}
         note={note}
       />
     );
   }
 
-  const [hoverState, setHoverState] = useState({ index: null, key: null });
-
-  const defaultHover = useMemo(() => {
-    if (!data || data.length === 0 || series.length === 0) return { index: null, key: null };
-    const isPure = series.every((s) => s.type === "bar");
-    if (!isPure) return { index: null, key: null };
-    
-    const key = series[0].key;
-    let maxIndex = 0;
-    let maxValue = -1;
-    data.forEach((d, idx) => {
-      const val = Number(d[key]) || 0;
-      if (val > maxValue) {
-        maxValue = val;
-        maxIndex = idx;
-      }
-    });
-    return { index: maxIndex, key };
-  }, [data, series]);
-
-  const activeIndex = hoverState.index != null ? hoverState.index : defaultHover.index;
-  const activeKey = hoverState.key != null ? hoverState.key : defaultHover.key;
+  const [hoverIndex, setHoverIndex] = useState(null);
 
   const chartConfig = Object.fromEntries(
     series.map((s) => [s.key, { label: s.label, color: s.color }]),
   );
   // Ensure we actually have non-zero data to plot, not just a padded zero-value array
   // which can happen for single-day periods like 'Yesterday' or 'Today'.
-  const hasData =
-    data.length > 0 &&
-    data.some((point) => series.some((s) => Number(point[s.key]) > 0));
+  const hasData = data.length > 0 && data.some(point =>
+    series.some(s => Number(point[s.key]) > 0)
+  );
 
   // Every series is a bar → use the reference-design pill treatment.
   // Any area/line present → fall through to the original chart untouched.
-  const isPureBarChart =
-    series.length > 0 && series.every((s) => s.type === "bar");
+  const isPureBarChart = series.length > 0 && series.every((s) => s.type === "bar");
 
   return (
-    <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-white border border-slate-300/60 hover:border-blue-200 transition-all duration-300 rounded-2xl shadow-sm hover:shadow-md flex flex-col h-full overflow-hidden">
       <div className="pt-5 pb-4 px-6 border-b border-slate-300/60">
         <DashboardHead
           title={title}
@@ -396,20 +401,10 @@ const TrendChartCard = ({
               data={data}
               margin={
                 isPureBarChart
-                  ? { top: 46, right: 12, left: 0, bottom: 0 }
+                  ? { top: 28, right: 12, left: 0, bottom: 0 }
                   : { top: 8, right: 12, left: 0, bottom: 0 }
               }
-              onMouseMove={(state) => {
-                if (isPureBarChart && state?.activeTooltipIndex !== undefined) {
-                  setHoverState((prev) => {
-                    if (prev.index !== state.activeTooltipIndex || !prev.key) {
-                      return { index: state.activeTooltipIndex, key: series[0]?.key };
-                    }
-                    return prev;
-                  });
-                }
-              }}
-              onMouseLeave={() => isPureBarChart && setHoverState({ index: null, key: null })}
+              onMouseLeave={() => isPureBarChart && setHoverIndex(null)}
             >
               <defs>
                 {series.map((s) => {
@@ -449,11 +444,7 @@ const TrendChartCard = ({
                         y2="1"
                       >
                         <stop offset="0%" stopColor={s.color} stopOpacity={1} />
-                        <stop
-                          offset="100%"
-                          stopColor={s.color}
-                          stopOpacity={0.1}
-                        />
+                        <stop offset="100%" stopColor={s.color} stopOpacity={0.1} />
                       </linearGradient>
                       <pattern
                         id={`bar-hatch-${s.key}`}
@@ -463,14 +454,7 @@ const TrendChartCard = ({
                         patternUnits="userSpaceOnUse"
                       >
                         <rect width="6" height="6" fill="#eef1f5" />
-                        <line
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="6"
-                          stroke="#dbe2ea"
-                          strokeWidth="2.5"
-                        />
+                        <line x1="0" y1="0" x2="0" y2="6" stroke="#dbe2ea" strokeWidth="2.5" />
                       </pattern>
                     </React.Fragment>
                   ))}
@@ -486,7 +470,6 @@ const TrendChartCard = ({
                 axisLine={false}
                 tickLine={false}
                 tickMargin={10}
-                padding={{ left: isPureBarChart ? 20 : 0, right: isPureBarChart ? 20 : 0 }}
                 tickFormatter={(value) => {
                   if (
                     data.length === 1 &&
@@ -494,9 +477,46 @@ const TrendChartCard = ({
                     periodLabel &&
                     periodLabel !== "Today"
                   ) {
-                    // Custom date ranges come back as "Mar 01 - Mar 01, 2026", we just use it directly
-                    // Pre-defined ranges like Yesterday come back as "Yesterday"
                     return periodLabel;
+                  }
+
+                  if (xKey === "date") {
+                    if (
+                      typeof value === "string" &&
+                      /^\d{2}-\d{2}\s[a-zA-Z]{3}/.test(value)
+                    ) {
+                      return value;
+                    }
+                    const d = new Date(value);
+                    if (!isNaN(d)) {
+                      if (
+                        datePreset === "today" ||
+                        datePreset === "yesterday" ||
+                        datePreset === "last7"
+                      ) {
+                        return d.toLocaleDateString("en-US", {
+                          weekday: "short",
+                        });
+                      }
+                      if (
+                        datePreset === "last30" ||
+                        datePreset === "lastMonth"
+                      ) {
+                        return d.toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "short",
+                        });
+                      }
+                      if (datePreset === "last90") {
+                        return d.toLocaleDateString("en-US", {
+                          month: "short",
+                        });
+                      }
+                      return d.toLocaleDateString("en-US", {
+                        day: "2-digit",
+                        month: "short",
+                      });
+                    }
                   }
                   return value;
                 }}
@@ -512,19 +532,21 @@ const TrendChartCard = ({
                 width={45}
                 tickFormatter={isPureBarChart ? formatCompact : undefined}
               />
-              {/* Pure-bar mode draws its own value badge inside PillBar, glued
-                  to the bar's own coordinates — Recharts' cursor-following
-                  Tooltip is skipped entirely so it can't drift off the bar. */}
-              {!isPureBarChart && (
-                <ChartTooltip
-                  defaultIndex={defaultHover.index}
-                  cursor={{
-                    stroke: "hsl(215, 20%, 90%)",
-                    strokeWidth: 1,
-                    strokeDasharray: "4 4",
-                    fill: "transparent",
-                  }}
-                  content={
+              <ChartTooltip
+                cursor={
+                  isPureBarChart
+                    ? false
+                    : {
+                        stroke: "hsl(215, 20%, 90%)",
+                        strokeWidth: 1,
+                        strokeDasharray: "4 4",
+                        fill: "transparent",
+                      }
+                }
+                content={
+                  isPureBarChart ? (
+                    <PillTooltip series={series} />
+                  ) : (
                     <ChartTooltipContent
                       className="bg-white"
                       labelFormatter={(label) => {
@@ -536,12 +558,27 @@ const TrendChartCard = ({
                         ) {
                           return periodLabel;
                         }
+                        if (xKey === "date") {
+                          if (
+                            typeof label === "string" &&
+                            /^\d{2}-\d{2}\s[a-zA-Z]{3}/.test(label)
+                          ) {
+                            return label;
+                          }
+                          const d = new Date(label);
+                          if (!isNaN(d)) {
+                            return d.toLocaleDateString("en-US", {
+                              weekday: "short",
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            });
+                          }
+                        }
                         return label;
                       }}
                       formatter={(value, name) => {
-                        const matchedSeries = series.find(
-                          (s) => s.key === name,
-                        );
+                        const matchedSeries = series.find((s) => s.key === name);
                         return (
                           <div className="flex w-full items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
@@ -549,8 +586,7 @@ const TrendChartCard = ({
                                 className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
                                 style={{
                                   backgroundColor:
-                                    matchedSeries?.color ||
-                                    "hsl(215, 16%, 65%)",
+                                    matchedSeries?.color || "hsl(215, 16%, 65%)",
                                 }}
                               />
                               <span className="text-muted-foreground">
@@ -564,12 +600,10 @@ const TrendChartCard = ({
                         );
                       }}
                     />
-                  }
-                />
-              )}
-              {series.length > 1 && !hideLegend && (
-                <ChartLegend content={<ChartLegendContent />} />
-              )}
+                  )
+                }
+              />
+              {series.length > 1 && <ChartLegend content={<ChartLegendContent />} />}
               {series.map((s) => {
                 const effectiveType = data.length === 1 ? "bar" : s.type;
                 if (effectiveType === "bar") {
@@ -578,19 +612,17 @@ const TrendChartCard = ({
                       <Bar
                         key={s.key}
                         dataKey={s.key}
-                        stackId="pill"
                         maxBarSize={56}
-                        onMouseEnter={(_, idx) => setHoverState({ index: idx, key: s.key })}
-                        onMouseMove={(_, idx) => setHoverState({ index: idx, key: s.key })}
-                        onMouseLeave={() => setHoverState({ index: null, key: null })}
+                        onMouseEnter={(_, idx) => setHoverIndex(idx)}
+                        onMouseMove={(_, idx) => setHoverIndex(idx)}
+                        onMouseLeave={() => setHoverIndex(null)}
                         shape={(shapeProps) => (
                           <PillBar
                             {...shapeProps}
-                            isActive={shapeProps.index === activeIndex && s.key === activeKey}
+                            isActive={shapeProps.index === hoverIndex}
                             color={s.color}
                             gradientId={`bar-gradient-${s.key}`}
                             patternId={`bar-hatch-${s.key}`}
-                            dataLength={data.length}
                           />
                         )}
                       />
@@ -609,7 +641,7 @@ const TrendChartCard = ({
                   return (
                     <Area
                       key={s.key}
-                      type={s.curveType || "monotone"}
+                      type="monotone"
                       dataKey={s.key}
                       stroke={s.color}
                       strokeWidth={1.5}
@@ -622,7 +654,7 @@ const TrendChartCard = ({
                   return (
                     <Line
                       key={s.key}
-                      type={s.curveType || "monotone"}
+                      type="monotone"
                       dataKey={s.key}
                       stroke={s.color}
                       strokeWidth={1.5}

@@ -102,7 +102,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
                 : "bg-rose-500/10 text-rose-600",
             )}
           >
-            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            
             <span className="truncate">{displayStatus}</span>
           </Badge>
         </div>

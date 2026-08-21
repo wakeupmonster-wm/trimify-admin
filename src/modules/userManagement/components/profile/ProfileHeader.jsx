@@ -17,7 +17,7 @@ const ProfileHeader = ({ userData, isActive, formatDate }) => {
       {/* Left Side: Avatar & Core Info */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
         <div className="relative">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-app-primary2/10 to-app-primary2/5 text-app-primary2 flex items-center justify-center font-black text-3xl shadow-sm border border-app-primary2/10">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-app-primary2 text-white flex items-center justify-center font-black text-3xl shadow-sm border border-app-primary2/80">
             {userData.name?.substring(0, 2).toUpperCase() || "US"}
           </div>
           {/* <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white flex items-center justify-center ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}`}>

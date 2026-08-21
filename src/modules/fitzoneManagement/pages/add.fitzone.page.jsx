@@ -248,25 +248,13 @@ const AddFitzonePage = () => {
                 <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
                   Upload Banner Image
                 </Label>
-                {isEditMode && editData?.image && (
-                  <div className="flex flex-col items-center justify-center py-2 pb-4">
-                    <img
-                      src={
-                        editData.image?.startsWith("http")
-                          ? editData.image
-                          : `${IMAGE_BASE_URL}/${editData.image?.replace(/^\//, "")}`
-                      }
-                      alt="Current Banner"
-                      className="w-full max-w-[200px] h-auto object-cover rounded-md border border-slate-200"
-                    />
-                  </div>
-                )}
+
                 <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                  className={`relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
                     isDragging
                       ? "border-app-primary2 bg-blue-50"
                       : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
+                  } ${previewUrl ? "p-0 min-h-[160px]" : "p-10"}`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -282,17 +270,20 @@ const AddFitzonePage = () => {
                     onChange={handleFileSelect}
                   />
                   {previewUrl ? (
-                    <div className="flex flex-col items-center">
+                    <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px]">
                       <img
-                        src={previewUrl}
+                        src={
+                          previewUrl?.startsWith("http") || previewUrl?.startsWith("blob")
+                            ? previewUrl
+                            : `${IMAGE_BASE_URL}/${previewUrl?.replace(/^\//, "")}`
+                        }
                         alt="Banner preview"
-                        className="w-32 h-32 object-contain rounded-md border border-slate-300/60 p-2 mb-3"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
-                      <span className="text-sm font-semibold text-slate-700 text-center">
-                        {formData.bannerImage
-                          ? formData.bannerImage.name
-                          : "Current banner. Click or drag to replace."}
-                      </span>
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
+                        <UploadCloud className="w-8 h-8 mb-2 text-white" />
+                        <span className="text-sm font-semibold text-white">Click or drag to replace</span>
+                      </div>
                     </div>
                   ) : (
                     <>

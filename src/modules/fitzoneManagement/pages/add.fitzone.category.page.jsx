@@ -174,7 +174,7 @@ const AddFitzoneCategoryPage = () => {
             className="space-y-5 sm:space-y-4 w-full min-w-0"
           >
             <div className="space-y-1.5">
-              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
+              <Label className="text-sm 3xl:text-base font-bold text-slate-800">
                 Category Title
               </Label>
               <Input
@@ -196,7 +196,7 @@ const AddFitzoneCategoryPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
+              <Label className="text-sm 3xl:text-base font-bold text-slate-800">
                 Category Details
               </Label>
               <Input
@@ -222,40 +222,41 @@ const AddFitzoneCategoryPage = () => {
                 {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
               </Label>
 
-              {iconPreview && (
-                <div className="mb-4">
-                  <Label className="text-xs font-bold text-slate-800 block mb-2">
-                    {iconFile ? "New Icon Preview" : "Current Uploaded Icon"}
-                  </Label>
-                  <div className="w-16 h-16 rounded-md bg-blue-50/50 flex items-center justify-center border border-slate-100 p-2">
-                    <img
-                      src={iconPreview}
-                      alt="Icon Preview"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                </div>
-              )}
+
 
               <div
-                className={`w-full border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors relative ${
+                className={`w-full relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
                   errors.iconFile
                     ? "border-red-500"
                     : isDragging
                       ? "border-app-primary2 bg-blue-50"
                       : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
+                } ${iconPreview ? "p-0 min-h-[160px]" : "p-10"}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                <p className="text-sm font-semibold text-slate-700 text-center">
-                  {iconFile
-                    ? "Icon selected. Click or drag to replace."
-                    : "Click or drag and drop to upload"}
-                </p>
+                {iconPreview ? (
+                  <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px]">
+                    <img
+                      src={iconPreview}
+                      alt="Icon Preview"
+                      className="absolute inset-0 w-full h-full object-contain p-4"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
+                      <UploadCloud className="w-8 h-8 mb-2 text-white" />
+                      <span className="text-sm font-semibold text-white">Click or drag to replace</span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                    <p className="text-sm font-semibold text-slate-700 text-center">
+                      Click or drag and drop to upload
+                    </p>
+                  </>
+                )}
                 <p className="text-xs text-slate-500 mt-1">
                   SVG, PNG, JPG (max. 800x400px)
                 </p>

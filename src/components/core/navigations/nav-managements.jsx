@@ -136,7 +136,10 @@ export function NavManagements({ items }) {
             );
 
           const content = (
-            <SidebarMenuItem key={item.url || item.title}>
+            <SidebarMenuItem
+              key={item.url || item.title}
+              className="relative group/menu-item"
+            >
               {hasChildren ? (
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
@@ -256,7 +259,7 @@ export function NavManagements({ items }) {
               )}
 
               {hasChildren && (
-                <CollapsibleContent>
+                <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
                   <SidebarMenuSub className="ml-8 flex flex-col gap-0 border-l border-slate-300/60/60 pl-0">
                     {item.items?.map((subItem) => {
                       const isSubActive = isPathActive(
@@ -294,6 +297,39 @@ export function NavManagements({ items }) {
                     })}
                   </SidebarMenuSub>
                 </CollapsibleContent>
+              )}
+
+              {hasChildren && (
+                <div className="absolute left-full top-0 z-50 hidden min-w-52 pl-2 group-data-[collapsible=icon]:group-hover/menu-item:block group-data-[collapsible=icon]:group-focus-within/menu-item:block">
+                  <div className="overflow-hidden rounded-lg border border-slate-200 bg-white p-2 shadow-lg">
+                    <p className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      {item.title}
+                    </p>
+                    <div className="space-y-1">
+                      {item.items?.map((subItem) => {
+                        const isSubActive = isPathActive(
+                          location.pathname,
+                          subItem.url,
+                          true,
+                        );
+                        return (
+                          <Link
+                            key={subItem.url || subItem.title}
+                            to={subItem.url}
+                            className={cn(
+                              "block rounded-md px-3 py-2 text-xs font-medium transition-colors",
+                              isSubActive
+                                ? "bg-app-primary2/10 text-app-primary2"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                            )}
+                          >
+                            {subItem.title}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               )}
             </SidebarMenuItem>
           );

@@ -116,7 +116,7 @@ export const getSubscriberColumns = (onAction) => [
               : "bg-app-primary2/5 text-app-primary2",
           )}
         >
-          <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+          
           <span className="truncate">{plan}</span>
         </Badge>
       );
@@ -143,7 +143,7 @@ export const getSubscriberColumns = (onAction) => [
                 STATUS_BADGE_STYLE.active,
             )}
           >
-            <span className="w-1 h-1 shrink-0 rounded-full bg-current" />
+            
             <span className="truncate">{status}</span>
           </Badge>
           {status === "Revoked" &&
