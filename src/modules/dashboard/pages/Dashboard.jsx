@@ -397,8 +397,8 @@ export default function Dashboard() {
                 />
 
                 <TrendChartCard
-                  title="Fitzone Workouts Assigned"
-                  subtitle={`Assignment volume per period ${extendedSubtitleSuffix}`}
+                  title="Fitzone Users Assigned"
+                  subtitle={`Unique users with a usable Fitzone category ${extendedSubtitleSuffix}`}
                   Icon={Dumbbell}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
@@ -407,15 +407,15 @@ export default function Dashboard() {
                   periodLabel={dynamicPeriodLabel}
                   hideLegend={true}
                   series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
-                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"]; // Purple palette
+                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
                     return {
                       key: status,
-                      label: status,
+                      label: status === "assigned_users" ? "Users Assigned" : status,
                       color: fitzoneColors[i % fitzoneColors.length],
                       type: "bar",
                     };
                   })}
-                  note="Sessions only have an 'Active' status today — this chart will pick up a 'Completed' series automatically once the app starts writing one."
+                  note="Counts each user once per displayed day, week or month after an admin assigns them an active Fitzone category with an active workout session."
                 />
                 <ProgramEnrollmentCard
                   title="Program Enrollment Split"

@@ -23,6 +23,7 @@ const EditIntroProgramPage = () => {
   const dispatch = useDispatch();
 
   const [content, setContent] = useState("");
+  const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { programIntros, loading } = useSelector((state) => state.manageIntro);
@@ -42,6 +43,19 @@ const EditIntroProgramPage = () => {
   }, [existingIntro]);
 
   const handleUpdate = () => {
+    const newErrors = {};
+    const isContentEmpty = !content || content === "<p><br></p>" || !content.trim();
+    
+    if (isContentEmpty) {
+      newErrors.content = "Introduction Content is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     setIsConfirmModalOpen(true);
   };
 
@@ -111,11 +125,19 @@ const EditIntroProgramPage = () => {
                 content will be displayed to users before they start.
               </p>
             </div>
-            <RichTextEditor
-              value={content}
-              onChange={setContent}
-              height={400}
-            />
+            <div className={errors.content ? "rounded-md border border-red-500 overflow-hidden" : ""}>
+              <RichTextEditor
+                value={content}
+                onChange={(val) => {
+                  setContent(val);
+                  if (errors.content) setErrors({ ...errors, content: null });
+                }}
+                height={400}
+              />
+            </div>
+            {errors.content && (
+              <p className="text-xs text-red-500 mt-1">{errors.content}</p>
+            )}
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               <Button
                 variant="outline"

@@ -335,7 +335,7 @@ const AddDietProgramPage = () => {
               )}
             </div>
 
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 variant="outline"
                 className="w-full sm:w-auto rounded-md px-5 h-10 text-xs font-semibold border-slate-300/60 hover:bg-slate-50"

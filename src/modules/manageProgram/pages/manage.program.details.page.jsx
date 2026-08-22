@@ -103,6 +103,7 @@ const ManageProgramDetailsPage = () => {
             searchPlaceholder="Search by manage title..."
             itemName="modules"
             pageCount={Math.ceil(filteredData.length / pagination.pageSize)}
+            onRowClick={(row) => handleAction(row.original.id)}
           />
         </div>
       </div>

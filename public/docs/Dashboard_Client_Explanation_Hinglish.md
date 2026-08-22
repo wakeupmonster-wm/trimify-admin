@@ -321,32 +321,17 @@ Drop-off Rate = 65%
 
 **Edge cases:** Zero-activity date bhi zero ke saath visible reh sakta hai; missing chart point ka matlab automatically missing API data nahi.
 
-### 5.2 Fitzone Session Completion — current reality
+### 5.2 Fitzone Users Assigned
 
-**Important:** Current chart title “Fitzone Session Completion” hai, but current data actual workout completion prove nahi karta.
+**Simple meaning:** Selected period mein kitne unique users ko admin ne aisi Fitzone category assign ki jo Active hai aur jiske andar active workout session available hai.
 
-**Actual current meaning:**
+**Data source:** `assigned_fitzones`, `fitzones`, `work_out_sessions`, `fitzone_sessions`.
 
-> “Selected period mein kitne unique users ko Fitzone assignment mila aur assignment ka status kya tha.”
+**Example:** Admin ek active Fitzone category ko 20 users ko assign karta hai. Chart mein `20` users show honge—same user ko multiple categories milne par us period bucket mein user ek hi baar count hoga.
 
-**Data source:** `assigned_fitzones.created_at`, `assigned_fitzones.user_id`, `assigned_fitzones.status`.
+**Admin benefit:** Admin verify kar sakta hai ki usable Fitzone workout content kitne real users tak pahucha. New Fitzone create karne se count nahi badhega; count tabhi badhega jab User Management se valid category kisi user ko assign ki jaaye.
 
-**Example:** Monday par 30 users ko Fitzone workout assignment mila aur Thursday par 50 users ko mila, chart assignment activity trend dikhayega.
-
-**Admin benefit today:** Onboarding/assignment automation users tak Fitzone workout content pahucha rahi hai ya nahi, yeh check karna.
-
-**What it does not prove today:**
-
-- User ne workout open kiya
-- User ne exercise perform ki
-- User ne session complete kiya
-- Completion rate kitni hai
-
-Current app data mostly `Active` status write karta hai. Genuine completion analysis ke liye mobile app/backend ko `Completed` status or `completed_at` timestamp write karna hoga.
-
-**Recommended client wording:**
-
-> “At present this is an assignment/adoption trend. It shows whether Fitzone content is reaching users. Once workout completion events are captured, the same area can show true completion rate.”
+**What it does not prove:** User ne workout open ya complete kiya. Completion metric ke liye mobile app/backend ko separate completion event save karna hoga.
 
 ### 5.3 Program Enrollment Split
 

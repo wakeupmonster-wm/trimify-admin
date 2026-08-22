@@ -16,6 +16,9 @@ export const NUTRITION_ENDPOINTS = {
   /** POST — Update an existing nutrition/meal record by its ID */
   NUTRITION_UPDATE: (id) => `${ADMIN}/update-nutrition/${id}`,
 
+  /** DELETE â€” Remove a nutrition/meal record */
+  NUTRITION_DELETE: (id) => `${ADMIN}/delete-nutrition/${id}`,
+
   /** POST — Bulk imports nutrition records */
   NUTRITION_UPLOAD: `${ADMIN}/upload-nutrition`,
 };

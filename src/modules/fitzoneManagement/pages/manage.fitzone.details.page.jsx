@@ -102,6 +102,7 @@ const ManageFitzoneDetailsPage = () => {
             searchPlaceholder="Search by manage or description..."
             itemName="modules"
             pageCount={Math.ceil(filteredData.length / pagination.pageSize)}
+            onRowClick={(row) => handleAction(row.original.id)}
           />
         </div>
       </div>

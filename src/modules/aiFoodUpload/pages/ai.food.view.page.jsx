@@ -411,18 +411,13 @@ const AiFoodViewPage = () => {
                 label="Back"
               />
               {item.status !== "approved" && !isInFlight && (
-                <Button
+                <CTAButton
                   onClick={handleSaveEdits}
                   disabled={isBusy || !isDirty}
-                  className="flex-1 bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-                >
-                  {isBusy ? (
-                    <Spinner className="w-4 h-4 shrink-0" />
-                  ) : (
-                    <Save className="w-4 h-4 shrink-0" />
-                  )}
-                  <span className="whitespace-nowrap">Save</span>
-                </Button>
+                  icon={isBusy ? Spinner : Save}
+                  label="Save"
+                  className="flex-1"
+                />
               )}
             </div>
           </div>

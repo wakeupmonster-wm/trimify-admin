@@ -26,6 +26,7 @@ const EditFitzoneIntroPage = () => {
   const [heading, setHeading] = useState("");
   const [subheading, setSubheading] = useState("");
   const [content, setContent] = useState("");
+  const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   const { intro, loading } = useSelector((state) => state.fitzoneIntro);
@@ -45,6 +46,20 @@ const EditFitzoneIntroPage = () => {
   }, [intro]);
 
   const handleUpdate = () => {
+    const newErrors = {};
+    if (!heading.trim()) newErrors.heading = "Heading is required";
+    if (!subheading.trim()) newErrors.subheading = "Subheading is required";
+    
+    // RichTextEditor may return empty tags when "empty"
+    const isContentEmpty = !content || content === "<p><br></p>" || !content.trim();
+    if (isContentEmpty) newErrors.content = "Content is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     setIsConfirmModalOpen(true);
   };
 
@@ -126,9 +141,17 @@ const EditFitzoneIntroPage = () => {
                 type="text"
                 placeholder="Begin Your Path to Better Health"
                 value={heading}
-                onChange={(e) => setHeading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
+                onChange={(e) => {
+                  setHeading(e.target.value);
+                  if (errors.heading) setErrors({ ...errors, heading: null });
+                }}
+                className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${
+                  errors.heading ? "border-red-500" : "border-slate-300/60"
+                }`}
               />
+              {errors.heading && (
+                <p className="text-xs text-red-500 mt-1">{errors.heading}</p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
@@ -138,9 +161,17 @@ const EditFitzoneIntroPage = () => {
                 type="text"
                 placeholder="Embrace a healthier lifestyle with our tailored fitness programs"
                 value={subheading}
-                onChange={(e) => setSubheading(e.target.value)}
-                className="w-full h-10 px-4 text-sm border border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium"
+                onChange={(e) => {
+                  setSubheading(e.target.value);
+                  if (errors.subheading) setErrors({ ...errors, subheading: null });
+                }}
+                className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${
+                  errors.subheading ? "border-red-500" : "border-slate-300/60"
+                }`}
               />
+              {errors.subheading && (
+                <p className="text-xs text-red-500 mt-1">{errors.subheading}</p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -152,13 +183,21 @@ const EditFitzoneIntroPage = () => {
                 content will be displayed to users before they start.
               </p>
             </div>
-            <RichTextEditor
-              value={content}
-              onChange={setContent}
-              height={400}
-            />
+            <div className={errors.content ? "rounded-md border border-red-500 overflow-hidden" : ""}>
+              <RichTextEditor
+                value={content}
+                onChange={(val) => {
+                  setContent(val);
+                  if (errors.content) setErrors({ ...errors, content: null });
+                }}
+                height={400}
+              />
+            </div>
+            {errors.content && (
+              <p className="text-xs text-red-500 mt-1">{errors.content}</p>
+            )}
 
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4 border-t border-slate-100 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 variant="outline"
                 className="w-full sm:w-auto rounded-md px-5 sm:px-6 h-11 sm:h-10 text-sm sm:text-xs font-semibold border-slate-300/60"

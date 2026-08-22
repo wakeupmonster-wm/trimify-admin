@@ -413,7 +413,7 @@ const AddPostPage = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-slate-100 w-full">
+            <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button
                 type="button"
                 variant="outline"

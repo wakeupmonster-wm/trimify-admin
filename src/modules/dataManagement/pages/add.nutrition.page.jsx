@@ -16,6 +16,7 @@ import {
   Bot,
   RefreshCcw,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 import {
   Tooltip,
@@ -39,9 +40,12 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   addNutrition,
+  deleteNutrition,
   regenerateNutritionImage,
+  regenerateNutritionImageFromAudio,
   updateNutrition,
 } from "../store/nutrition.slice";
+import AiFoodCustomRegenerateModal from "../../aiFoodUpload/components/AiFoodCustomRegenerateModal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import {
   DropdownMenu,
@@ -80,8 +84,9 @@ const AddNutritionPage = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isAutoRegenerateOpen, setIsAutoRegenerateOpen] = useState(false);
-  const [isPromptOpen, setIsPromptOpen] = useState(false);
-  const [imagePrompt, setImagePrompt] = useState("");
+  const [isCustomRegenerateOpen, setIsCustomRegenerateOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const [isImageRegenerating, setIsImageRegenerating] = useState(false);
   const pollTimeoutRef = useRef(null);
   const [formData, setFormData] = useState(() => ({
@@ -205,15 +210,51 @@ const AddNutritionPage = () => {
     }
   };
 
-  const handleCustomRegenerate = () => {
-    const prompt = imagePrompt.trim();
-    if (!prompt) {
-      toast.error("Describe the food image you want to generate.");
-      return;
+  const handleRegenerateImageFromAudio = async (audioBlob) => {
+    if (!id || isImageRegenerating) return;
+
+    const previousImage = formData.image;
+    setIsImageRegenerating(true);
+    try {
+      const response = await dispatch(
+        regenerateNutritionImageFromAudio({ id, audioBlob }),
+      ).unwrap();
+      const generatedImage = getImageUrlFromResponse(response);
+
+      if (generatedImage && generatedImage !== previousImage) {
+        applyGeneratedImage(generatedImage);
+      } else {
+        toast.success("Generating a replacement image from your recording…");
+        await pollForGeneratedImage(previousImage);
+      }
+    } catch (error) {
+      setIsImageRegenerating(false);
+      toast.error(error || "Couldn't process that recording. Please try again.");
     }
-    setIsPromptOpen(false);
-    setImagePrompt("");
-    handleRegenerateImage(prompt);
+  };
+
+  const handleCancelRegenerate = () => {
+    setIsImageRegenerating(false);
+    toast.info(
+      "Stopped waiting — the image will still update once generation finishes.",
+    );
+  };
+
+  const handleRemoveItem = async () => {
+    if (!id || isRemoving) return;
+
+    setIsRemoving(true);
+    try {
+      await dispatch(deleteNutrition(id)).unwrap();
+      setIsDeleteModalOpen(false);
+      toast.success("Nutrition food removed.");
+      navigate("/admin/data-management/nutrition-food");
+    } catch (error) {
+      setIsDeleteModalOpen(false);
+      toast.error(error || "Failed to remove nutrition food.");
+    } finally {
+      setIsRemoving(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -375,11 +416,18 @@ const AddNutritionPage = () => {
                           Auto Regenerate
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => setIsPromptOpen(true)}
+                          onClick={() => setIsCustomRegenerateOpen(true)}
                           className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
                         >
                           <Sparkles className="h-4 w-4 text-app-primary2" />
-                          Custom Prompt
+                          Custom Regenerate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setIsDeleteModalOpen(true)}
+                          className="cursor-pointer gap-2 text-xs font-medium text-red-600 focus:text-red-700 hover:!bg-red-100"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Remove Entire Item
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -391,8 +439,15 @@ const AddNutritionPage = () => {
                         <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
                       </div>
                       <p className="text-xs font-bold text-slate-700">
-                        Generating your replacement image…
+                        Regenerating image…
                       </p>
+                      <button
+                        type="button"
+                        onClick={handleCancelRegenerate}
+                        className="text-[11px] font-semibold text-slate-500 underline hover:text-slate-800"
+                      >
+                        Cancel waiting
+                      </button>
                     </div>
                   )}
                 </div>
@@ -641,42 +696,20 @@ const AddNutritionPage = () => {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isPromptOpen} onOpenChange={setIsPromptOpen}>
-        <DialogContent className="max-w-lg gap-5 bg-white p-6">
-          <div className="space-y-1">
-            <h2 className="text-base font-bold text-slate-900">
-              Custom Image Generation
-            </h2>
-            <p className="text-xs font-medium text-slate-500">
-              Describe how the replacement image for {formData.title || "this food"} should look.
-            </p>
-          </div>
-          <Textarea
-            value={imagePrompt}
-            onChange={(event) => setImagePrompt(event.target.value)}
-            placeholder="For example: overhead photo of a fresh grilled chicken salad in natural light"
-            maxLength={500}
-            className="min-h-28 resize-none text-sm"
-          />
-          <div className="flex justify-end gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsPromptOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              onClick={handleCustomRegenerate}
-              className="bg-app-primary2 text-white hover:bg-app-primary3"
-            >
-              <Sparkles className="mr-2 h-4 w-4" />
-              Generate Image
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AiFoodCustomRegenerateModal
+        isOpen={isCustomRegenerateOpen}
+        onClose={() => setIsCustomRegenerateOpen(false)}
+        foodName={formData.title || "this food"}
+        onGenerateFromPrompt={(prompt) => {
+          setIsCustomRegenerateOpen(false);
+          handleRegenerateImage(prompt);
+        }}
+        onGenerateFromAudio={(audioBlob) => {
+          setIsCustomRegenerateOpen(false);
+          handleRegenerateImageFromAudio(audioBlob);
+        }}
+        busy={loading || isImageRegenerating}
+      />
 
       <ConfirmModal
         isOpen={isAutoRegenerateOpen}
@@ -690,6 +723,17 @@ const AddNutritionPage = () => {
         confirmText="Regenerate"
         type="brand"
         loading={isImageRegenerating}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleRemoveItem}
+        title="Remove Entire Item"
+        message="Are you sure you want to permanently remove this nutrition food? Its managed AI image will also be removed. This action cannot be undone."
+        confirmText="Remove"
+        type="danger"
+        loading={isRemoving}
       />
 
       <ConfirmModal

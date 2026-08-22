@@ -3,8 +3,10 @@ import {
   getNutritionListAPI,
   addNutritionAPI,
   updateNutritionAPI,
+  deleteNutritionAPI,
   uploadNutritionAPI,
   regenerateNutritionImageAPI,
+  regenerateNutritionImageAudioAPI,
 } from "../services/nutrition.services";
 
 // Fetch List
@@ -81,6 +83,43 @@ export const regenerateNutritionImage = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to regenerate image",
+      );
+    }
+  },
+);
+
+export const regenerateNutritionImageFromAudio = createAsyncThunk(
+  "nutrition/regenerateImageFromAudio",
+  async ({ id, audioBlob }, { rejectWithValue }) => {
+    try {
+      const response = await regenerateNutritionImageAudioAPI(id, audioBlob);
+      if (response && (response.status === "success" || response.success)) {
+        return response;
+      }
+      return rejectWithValue(
+        response?.message || "Failed to regenerate image from audio",
+      );
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Failed to regenerate image from audio",
+      );
+    }
+  },
+);
+
+export const deleteNutrition = createAsyncThunk(
+  "nutrition/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteNutritionAPI(id);
+      if (response && (response.status === "success" || response.success)) {
+        return id;
+      }
+      return rejectWithValue(response?.message || "Failed to remove nutrition");
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to remove nutrition",
       );
     }
   },

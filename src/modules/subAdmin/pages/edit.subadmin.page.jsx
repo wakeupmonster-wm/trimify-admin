@@ -76,14 +76,14 @@ const EditSubAdminPage = () => {
       password: "", // Leave blank unless they want to update it
       role:
         editData.role === 1 ||
-        editData.role === "1" ||
-        editData.role === "WhiteListing User" ||
-        editData.role_name === "WhiteListing User"
+          editData.role === "1" ||
+          editData.role === "WhiteListing User" ||
+          editData.role_name === "WhiteListing User"
           ? "WhiteListing User"
           : editData.role === 0 ||
-              editData.role === "0" ||
-              editData.role === "Sub-Admin User" ||
-              editData.role_name === "Sub-Admin User"
+            editData.role === "0" ||
+            editData.role === "Sub-Admin User" ||
+            editData.role_name === "Sub-Admin User"
             ? "Sub-Admin User"
             : String(editData.role || editData.role_name || ""),
     });

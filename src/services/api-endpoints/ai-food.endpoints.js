@@ -33,6 +33,10 @@ export const AI_FOOD_ENDPOINTS = {
   /** POST — Regenerate image for an already-saved catalog item */
   REGENERATE_SAVED_IMAGE: (id) => `${ADMIN}/nutrition/${id}/regenerate-image`,
 
+  /** POST (multipart) â€” Regenerate a saved catalog image from audio */
+  REGENERATE_SAVED_IMAGE_AUDIO: (id) =>
+    `${ADMIN}/nutrition/${id}/regenerate-image-audio`,
+
   /** DELETE — Remove an item from the list */
   DELETE: (id) => `${ADMIN}/ai-food/${id}`,
 
