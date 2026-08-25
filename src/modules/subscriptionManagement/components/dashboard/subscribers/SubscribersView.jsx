@@ -240,7 +240,7 @@ export default function SubscribersView() {
       options: STATUS_OPTIONS.map((s) => ({
         label:
           s === "expiring_soon"
-            ? "Expiring Soon"
+            ? "Expiring Soon (15 days)"
             : s.charAt(0).toUpperCase() + s.slice(1),
         value: s,
       })),

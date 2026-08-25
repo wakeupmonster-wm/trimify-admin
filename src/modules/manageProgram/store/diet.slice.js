@@ -96,7 +96,10 @@ export const getProgramDuration = createAsyncThunk(
     try {
       const response = await getProgramDurationAPI(id);
       if (response && response.status !== "error" && response.status !== false) {
-        return response.duration;
+        // The backend returns the program record in `getprogramduration`.
+        // Read its duration so the week selector matches the program length
+        // instead of falling back to eight weeks.
+        return response.getprogramduration?.duration || response.duration;
       }
       return rejectWithValue(response.message || "Failed to fetch duration");
     } catch (error) {

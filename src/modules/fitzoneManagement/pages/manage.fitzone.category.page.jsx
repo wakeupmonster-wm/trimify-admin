@@ -7,7 +7,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/datatable";
-import { Plus, Layers } from "lucide-react";
+import { Plus, Layers, ArrowLeft } from "lucide-react";
 import { getManageFitzoneCategoryColumns } from "@/components/columns/fitzone.category.columns";
 import {
   getFitzoneCategories,
@@ -114,6 +114,11 @@ const ManageFitzoneCategoryPage = () => {
               />
             </div>
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
+                onClick={() => navigate(-1)}
+              />
               <CTAButton
                 icon={Plus}
                 label="Add Session Category"

@@ -7,6 +7,33 @@ import {
   deleteFitzoneSessionAPI,
 } from "../services/fitzone.session.services";
 
+const validationErrorPayload = (error, fallbackMessage) => {
+  const response = error.response?.data;
+  const apiErrors = response?.errors;
+
+  if (apiErrors && typeof apiErrors === "object") {
+    const fieldErrors = Object.fromEntries(
+      Object.entries(apiErrors).map(([field, messages]) => [
+        field,
+        Array.isArray(messages) ? messages[0] : messages,
+      ]),
+    );
+
+    return {
+      message:
+        Object.values(fieldErrors).find(Boolean) ||
+        response.message ||
+        fallbackMessage,
+      fieldErrors,
+    };
+  }
+
+  return {
+    message: response?.message || fallbackMessage,
+    fieldErrors: {},
+  };
+};
+
 export const getFitzoneSessions = createAsyncThunk(
   "fitzoneSession/getFitzoneSessions",
   async ({ id, page, limit, search }, { rejectWithValue }) => {
@@ -40,9 +67,7 @@ export const addFitzoneSession = createAsyncThunk(
       if (response && response.status === "success") return response;
       return rejectWithValue(response.message || "Failed to add session");
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to add session",
-      );
+      return rejectWithValue(validationErrorPayload(error, "Failed to add session"));
     }
   },
 );
@@ -56,7 +81,7 @@ export const updateFitzoneSession = createAsyncThunk(
       return rejectWithValue(response.message || "Failed to update session");
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update session",
+        validationErrorPayload(error, "Failed to update session"),
       );
     }
   },

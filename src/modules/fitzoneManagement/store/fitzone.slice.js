@@ -4,7 +4,8 @@ import {
   addFitzoneAPI,
   updateFitzoneAPI,
   toggleFitzoneStatusAPI,
-  deleteFitzoneAPI
+  deleteFitzoneAPI,
+  assignFitzoneToAllUsersAPI,
 } from "../services/fitzone.services";
 
 // Backend TODO: `GET /admin/view-fitzone` should return a `kpis` object
@@ -115,6 +116,19 @@ export const deleteFitzone = createAsyncThunk(
   }
 );
 
+export const assignFitzoneToAllUsers = createAsyncThunk(
+  "fitzoneManagement/assignAllUsers",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await assignFitzoneToAllUsersAPI(id);
+      if (response?.status === "success") return response;
+      return rejectWithValue(response?.message || "Failed to queue Fitzone assignment");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to queue Fitzone assignment");
+    }
+  },
+);
+
 const fitzoneManagementSlice = createSlice({
   name: "fitzoneManagement",
   initialState: {
@@ -216,6 +230,17 @@ const fitzoneManagementSlice = createSlice({
         if (state.pagination.total > 0) state.pagination.total -= 1;
       })
       .addCase(deleteFitzone.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(assignFitzoneToAllUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(assignFitzoneToAllUsers.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(assignFitzoneToAllUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

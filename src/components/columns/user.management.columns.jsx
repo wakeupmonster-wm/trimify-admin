@@ -158,8 +158,8 @@ export const getUserManagementColumns = (onAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => {
-      let status = row.original.status || "Active";
-      if (row.original.revoked_at) status = "Revoked";
+      let status = row.original.subscription_status || row.original.status || "Active";
+      if (!row.original.subscription_status && row.original.revoked_at) status = "Revoked";
       const style =
         STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (

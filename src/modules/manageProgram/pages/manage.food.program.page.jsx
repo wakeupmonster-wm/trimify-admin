@@ -5,7 +5,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Utensils, Plus } from "lucide-react";
+import { Utensils, Plus, ArrowLeft } from "lucide-react";
 import { DataTable } from "@/components/shared/datatable";
 import { getFoodCategories, deleteFoodCategory } from "../store/food.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -102,6 +102,11 @@ const ManageFoodProgramPage = () => {
               />
             </div>
             <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
+                onClick={() => navigate(-1)}
+              />
               <CTAButton
                 icon={Plus}
                 label="Add Food Category"

@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { Dumbbell, Plus, CheckCircle2, XCircle, ListVideo } from "lucide-react";
 import Header from "@/components/common/header";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   DataTable,
@@ -19,6 +19,7 @@ import {
   fetchFitzoneList,
   toggleFitzoneStatus,
   deleteFitzone,
+  assignFitzoneToAllUsers,
 } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
@@ -54,6 +55,8 @@ const FitzoneManagementPage = () => {
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [assignModal, setAssignModal] = useState({ open: false, rowData: null });
+  const [isAssigning, setIsAssigning] = useState(false);
   const [globalKpisData, setGlobalKpisData] = useState(null);
 
   useEffect(() => {
@@ -111,7 +114,38 @@ const FitzoneManagementPage = () => {
     dateRangeFilter,
   ]);
 
-  const handleAction = async (row, action, value) => {
+  // A queued assignment is asynchronous. Refresh only while one is active so
+  // the admin can see the final run state without a manual page reload.
+  useEffect(() => {
+    const hasActiveAssignment = (fitzones || []).some((fitzone) =>
+      ["queued", "processing"].includes(fitzone.latest_assignment_run?.status),
+    );
+    if (!hasActiveAssignment) return undefined;
+
+    const timer = window.setInterval(() => {
+      dispatch(fetchFitzoneList({
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        search: debouncedSearchTerm,
+        status: statusFilter,
+        ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
+        ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
+        ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
+      }));
+    }, 10000);
+
+    return () => window.clearInterval(timer);
+  }, [
+    dispatch,
+    fitzones,
+    pagination.pageIndex,
+    pagination.pageSize,
+    debouncedSearchTerm,
+    statusFilter,
+    dateRangeFilter,
+  ]);
+
+  const handleAction = useCallback((row, action, value) => {
     if (action === "toggle-status") {
       setToggleModal({ open: true, rowData: row, targetStatus: value });
     } else if (action === "open-program") {
@@ -120,6 +154,30 @@ const FitzoneManagementPage = () => {
       navigate("edit-fitzone", { state: { editData: row } });
     } else if (action === "delete") {
       setDeleteModal({ open: true, rowData: row });
+    } else if (action === "assign-all-users") {
+      setAssignModal({ open: true, rowData: row });
+    }
+  }, [navigate]);
+
+  const handleConfirmAssignAll = async () => {
+    if (!assignModal.rowData) return;
+    setIsAssigning(true);
+    try {
+      const result = await dispatch(assignFitzoneToAllUsers(assignModal.rowData.id));
+      if (assignFitzoneToAllUsers.fulfilled.match(result)) {
+        toast.success("Fitzone assignment queued. Users are being assigned in the background.");
+        dispatch(fetchFitzoneList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          status: statusFilter,
+        }));
+      } else {
+        toast.error(result.payload || "Unable to queue Fitzone assignment.");
+      }
+    } finally {
+      setIsAssigning(false);
+      setAssignModal({ open: false, rowData: null });
     }
   };
 
@@ -173,7 +231,7 @@ const FitzoneManagementPage = () => {
     }
   };
 
-  const columns = useMemo(() => getFitzoneManagementColumns(handleAction), []);
+  const columns = useMemo(() => getFitzoneManagementColumns(handleAction), [handleAction]);
 
   // Check if the backend is doing manual pagination.
   // If serverPagination.total exists, it's server-paginated.
@@ -358,6 +416,16 @@ const FitzoneManagementPage = () => {
         type="brand"
         confirmText="Update"
         loading={isUpdating}
+      />
+      <ConfirmModal
+        isOpen={assignModal.open}
+        onClose={() => !isAssigning && setAssignModal({ open: false, rowData: null })}
+        onConfirm={handleConfirmAssignAll}
+        title="Assign Fitzone to all users"
+        message={`Assign "${assignModal.rowData?.title || "this Fitzone"}" to all users in the background? Existing assignments will be skipped, and any failures will be recorded.`}
+        type="brand"
+        confirmText="Assign all users"
+        loading={isAssigning}
       />
     </Container>
   );

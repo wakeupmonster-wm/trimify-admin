@@ -90,6 +90,7 @@ export const fetchDashboardExtras = createAsyncThunk(
           engagementDAU: engagement?.activeUsersTrend || [],
           fitzoneCompletion: fitzone?.fitzoneStatusTrend || [],
           fitzoneStatuses: fitzone?.statuses || [],
+          fitzoneAssignmentDetails: fitzone?.assignmentDetails || [],
           popularPrograms: content?.popularPrograms || [],
         },
         tables: {

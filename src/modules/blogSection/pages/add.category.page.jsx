@@ -27,7 +27,7 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { addBlogCategory, updateBlogCategory } from "../store/blog.slice";
+import { addBlogCategory, updateBlogCategory, toggleBlogCategoryStatus } from "../store/blog.slice";
 import { TbCategoryPlus } from "react-icons/tb";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
@@ -45,12 +45,22 @@ const AddCategoryPage = () => {
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const [formData, setFormData] = useState(() => ({
-    title: isEdit ? editData?.title || editData?.name || "" : "",
-    description: isEdit ? editData?.description || "" : "",
-    status: isEdit ? editData?.status || "Active" : "Active",
-    iconImage: null,
-  }));
+  const [formData, setFormData] = useState(() => {
+    let initialStatus = "Active";
+    if (isEdit && editData?.status !== undefined && editData?.status !== null) {
+      if (typeof editData.status === "boolean") {
+        initialStatus = editData.status ? "Active" : "Inactive";
+      } else {
+        initialStatus = editData.status === "Active" || editData.status === "active" ? "Active" : "Inactive";
+      }
+    }
+    return {
+      title: isEdit ? editData?.title || editData?.name || "" : "",
+      description: isEdit ? editData?.description || "" : "",
+      status: initialStatus,
+      iconImage: null,
+    };
+  });
 
   const [isDragging, setIsDragging] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -111,13 +121,20 @@ const AddCategoryPage = () => {
     setIsConfirmModalOpen(true);
   };
 
+  const getOriginalStatus = () => {
+    if (!editData?.status) return "Active";
+    if (typeof editData.status === "boolean") {
+      return editData.status ? "Active" : "Inactive";
+    }
+    return editData.status === "Active" || editData.status === "active" ? "Active" : "Inactive";
+  };
+
   const handleConfirmUpdate = async () => {
     setLoading(true);
     try {
       const payload = new FormData();
       payload.append("title", formData.title);
       payload.append("description", formData.description);
-      payload.append("status", formData.status);
 
       if (formData.iconImage) {
         payload.append("icon", formData.iconImage);
@@ -127,11 +144,21 @@ const AddCategoryPage = () => {
         const result = await dispatch(
           updateBlogCategory({ id, data: payload }),
         ).unwrap();
+
+        // Status is handled by a separate toggle endpoint
+        const originalStatus = getOriginalStatus();
+        if (formData.status !== originalStatus) {
+          await dispatch(
+            toggleBlogCategoryStatus({ id, status: formData.status }),
+          ).unwrap();
+        }
+
         toast.success("Category updated successfully!");
         setCurrentIcon(result?.data?.icon || currentIcon);
         setFormData((prev) => ({ ...prev, iconImage: null }));
         navigate(-1);
       } else {
+        payload.append("status", formData.status);
         await dispatch(addBlogCategory(payload)).unwrap();
         toast.success("Category added successfully!");
         navigate(-1);
@@ -227,7 +254,7 @@ const AddCategoryPage = () => {
             {/* Upload Icon Image */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
-                {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
+                {isEdit ? "Category Icon" : "Upload Category Icon"}
               </Label>
               <input
                 id="icon-upload"

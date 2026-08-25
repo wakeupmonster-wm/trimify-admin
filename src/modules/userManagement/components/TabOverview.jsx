@@ -196,7 +196,11 @@ export function TabOverview({ data }) {
             <KV
               icon={Calendar}
               label="Plan Expiry"
-              value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"}
+              value={
+                user.subscription_expires_at || user.plan_expiry
+                  ? fmtDate(user.subscription_expires_at || user.plan_expiry)
+                  : "—"
+              }
               noBorder={true}
             />
             <KV

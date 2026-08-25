@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { deleteUserThunk } from "../store/user.slice";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { STATUS_BADGE_STYLE } from "@/config/theme.config";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -309,6 +310,13 @@ export default function UserProfileView({ user, onBack, loading }) {
   const targetSteps = parseInt(user.targetSteps || "0", 10);
   const programs = user.programs || [];
   const fitzoneStatus = user.fitzone_status || [];
+  const deviceTokens = Array.isArray(user.device_tokens)
+    ? user.device_tokens
+    : String(user.device_token || "")
+        .split(",")
+        .map((token) => token.trim())
+        .filter(Boolean);
+  const displayedStatus = user.subscription_status || user.status || "Active";
 
   const tabData = {
     user,
@@ -319,6 +327,7 @@ export default function UserProfileView({ user, onBack, loading }) {
     targetSteps,
     programs,
     fitzoneStatus,
+    deviceTokens,
     ...derived,
     handleCopy,
     cap,
@@ -408,8 +417,14 @@ export default function UserProfileView({ user, onBack, loading }) {
                   </h2>
 
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold text-emerald-700">
-                      {user.status || "Active"}
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded-full border border-transparent px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold",
+                        STATUS_BADGE_STYLE[displayedStatus.toLowerCase()] ||
+                          STATUS_BADGE_STYLE.active,
+                      )}
+                    >
+                      {displayedStatus}
                     </span>
                   </div>
                 </div>

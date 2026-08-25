@@ -115,7 +115,9 @@ export const getManageDietProgramColumns = (handleAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <span className="font-medium text-slate-600 text-[11px]">
-        Week {row.original.week || "-"}
+        {row.original.week
+          ? `${parseInt(row.original.week, 10)} Week Plan`
+          : "-"}
       </span>
     ),
   },

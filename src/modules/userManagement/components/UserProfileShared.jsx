@@ -4,6 +4,7 @@ import DashboardHead from "@/components/shared/dashboard.head";
 
 const PILL_TONES = {
   success: "bg-emerald-50 text-emerald-600 border-emerald-200",
+  expired: "bg-[#E11D48]/10 text-[#E11D48] border-[#E11D48]/20",
   danger: "bg-red-50 text-red-600 border-red-200",
   warning: "bg-amber-50 text-amber-600 border-amber-200",
   neutral: "bg-slate-100 text-slate-500 border-slate-300/60",

@@ -13,6 +13,9 @@ import {
   UploadCloud,
   ArrowLeft,
   Info,
+  Eye,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,8 +64,38 @@ const AddFitzoneSessionPage = () => {
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [removedExistingVideo, setRemovedExistingVideo] = useState(false);
 
   const fileInputRef = useRef(null);
+
+  const setSelectedVideo = (file) => {
+    if (!file) return;
+
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    const allowedExtensions = ["mp4", "mov", "avi", "wmv"];
+    const maxFileSize = 50 * 1024 * 1024;
+
+    if (!allowedExtensions.includes(extension)) {
+      setVideoFile(null);
+      setErrors((prev) => ({
+        ...prev,
+        video: "Please upload a MP4, MOV, AVI, or WMV video file.",
+      }));
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      setVideoFile(null);
+      setErrors((prev) => ({
+        ...prev,
+        video: "Video size must not exceed 50 MB.",
+      }));
+      return;
+    }
+
+    setVideoFile(file);
+    setErrors((prev) => ({ ...prev, video: null }));
+  };
 
   useEffect(() => {
     dispatch(getFitzoneCategories({ id, limit: 100 })); // Fetch enough categories to populate the dropdown
@@ -70,6 +103,9 @@ const AddFitzoneSessionPage = () => {
 
   useEffect(() => {
     if (isEdit && editData) {
+      // This form intentionally hydrates editable local fields when the
+      // route-provided session changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionTitle(editData.title || editData.session_title || "");
       setSessionDetails(
         editData.description || editData.details || editData.sub_heading || "",
@@ -91,7 +127,7 @@ const AddFitzoneSessionPage = () => {
           } else {
             setStepDescription(editData.step_description);
           }
-        } catch (e) {
+        } catch {
           setStepDescription(editData.step_description);
         }
       } else {
@@ -102,9 +138,8 @@ const AddFitzoneSessionPage = () => {
 
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setVideoFile(file);
-    }
+    setSelectedVideo(file);
+    e.target.value = "";
   };
 
   const handleDragOver = (e) => {
@@ -121,9 +156,7 @@ const AddFitzoneSessionPage = () => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file) {
-      setVideoFile(file);
-    }
+    setSelectedVideo(file);
   };
 
   const handleSubmit = (e) => {
@@ -139,6 +172,8 @@ const AddFitzoneSessionPage = () => {
       newErrors.duration = "Duration is required";
     if (!stepDescription?.toString().trim())
       newErrors.stepDescription = "Description is required";
+    if (!isEdit && !videoFile)
+      newErrors.video = "A session video is required";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -188,7 +223,29 @@ const AddFitzoneSessionPage = () => {
       toast.success(`Session ${isEdit ? "updated" : "added"} successfully!`);
       navigate(-1);
     } else {
-      toast.error(resultAction.payload || "An error occurred");
+      const errorPayload = resultAction.payload;
+      const fieldErrors = errorPayload?.fieldErrors || {};
+      const errorFieldMap = {
+        title: "sessionTitle",
+        description: "sessionDetails",
+        workoutcat_id: "sessionCategoryId",
+        duration: "duration",
+        step_description: "stepDescription",
+        video: "video",
+      };
+
+      const mappedErrors = Object.fromEntries(
+        Object.entries(fieldErrors).map(([field, message]) => [
+          errorFieldMap[field] || field,
+          message,
+        ]),
+      );
+
+      if (Object.keys(mappedErrors).length > 0) {
+        setErrors((prev) => ({ ...prev, ...mappedErrors }));
+      }
+
+      toast.error(errorPayload?.message || "An error occurred");
     }
     setIsSubmitting(false);
     setIsConfirmModalOpen(false);
@@ -273,54 +330,89 @@ const AddFitzoneSessionPage = () => {
 
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                {isEdit ? "Replace Video" : "Upload Video"}
+                {isEdit ? "Session Video" : "Upload Session Video"}
               </Label>
-              <div
-                className={`w-full relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
-                    ? "border-app-primary2 bg-blue-50"
-                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                } ${(isEdit && editData?.video && !videoFile) ? "p-0 min-h-[160px]" : "p-10"}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <input
-                  type="file"
-                  accept="video/*"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleVideoChange}
-                />
-                
-                {(isEdit && editData?.video && !videoFile) ? (
-                  <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px] bg-slate-100 p-4">
-                    <div className="flex flex-col items-center gap-2">
-                      <PlayCircle className="w-8 h-8 text-slate-400 group-hover:text-transparent transition-colors" />
-                      <span className="text-xs font-medium text-blue-600 break-all text-center px-4 group-hover:opacity-0 transition-opacity">
-                        {editData.video}
-                      </span>
-                    </div>
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
-                      <UploadCloud className="w-8 h-8 mb-2 text-white" />
-                      <span className="text-sm font-semibold text-white">Click or drag to replace video</span>
-                    </div>
+              <input
+                type="file"
+                accept=".mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleVideoChange}
+              />
+              {(videoFile || (isEdit && editData?.video && !removedExistingVideo)) ? (
+                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
+                  <div className="w-full h-48 bg-slate-100 flex flex-col items-center justify-center">
+                    <PlayCircle className="w-10 h-10 text-slate-400 mb-2" />
+                    <span className="text-xs font-medium text-slate-600 break-all text-center px-4 line-clamp-2">
+                      {videoFile ? videoFile.name : editData?.video}
+                    </span>
                   </div>
-                ) : (
-                  <>
-                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                    <p className="text-sm font-semibold text-slate-700 text-center">
-                      {videoFile
-                        ? videoFile.name
-                        : "Click or drag and drop to upload"}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1">
-                      MP4, WEBM or OGG (max. 50MB)
-                    </p>
-                  </>
-                )}
-              </div>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    {!videoFile && editData?.video && (
+                      <button
+                        type="button"
+                        aria-label="Preview video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(editData.video, "_blank");
+                        }}
+                        className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      aria-label="Replace video"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Remove video"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setVideoFile(null);
+                        setErrors((prev) => ({ ...prev, video: null }));
+                        if (isEdit) setRemovedExistingVideo(true);
+                      }}
+                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                    isDragging
+                      ? "border-app-primary2 bg-blue-50"
+                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                  <p className="text-sm font-semibold text-slate-700 text-center">
+                    Click or drag and drop to upload
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    MP4, MOV, AVI or WMV (max. 50 MB)
+                  </p>
+                </div>
+              )}
+              {errors.video && (
+                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
+                  {errors.video}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">

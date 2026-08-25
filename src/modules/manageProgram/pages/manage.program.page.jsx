@@ -227,12 +227,10 @@ const ManageProgramPage = () => {
       label: "Duration",
       value: durationFilter,
       onChange: setDurationFilter,
-      options: [
-        { label: "4 Weeks", value: "4" },
-        { label: "6 Weeks", value: "6" },
-        { label: "8 Weeks", value: "8" },
-        { label: "12 Weeks", value: "12" },
-      ],
+      options: Array.from({ length: 12 }, (_, index) => ({
+        label: `${index + 1} Week Plan`,
+        value: String(index + 1),
+      })),
       placeholder: "All Durations",
     },
     {

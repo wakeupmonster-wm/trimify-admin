@@ -6,7 +6,16 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Layers, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  Save,
+  UploadCloud,
+  Layers,
+  ArrowLeft,
+  Loader2,
+  Eye,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { addFoodCategory, updateFoodCategory } from "../store/food.slice";
 import { Label } from "@/components/ui/label";
@@ -14,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const AddFoodCategoryPage = () => {
   const navigate = useNavigate();
@@ -36,6 +46,9 @@ const AddFoodCategoryPage = () => {
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [removedExistingImage, setRemovedExistingImage] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [currentIcon, setCurrentIcon] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -208,70 +221,96 @@ const AddFoodCategoryPage = () => {
               )}
             </div>
 
-            {isEditMode && editData?.image && (
-              <div className="space-y-1.5">
-                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
-                  Current Uploaded Banner Image
-                </Label>
-                <div className="flex flex-col items-center justify-center py-4">
-                  <img
-                    src={
-                      editData.image?.startsWith("http")
-                        ? editData.image
-                        : `${IMAGE_BASE_URL}/${editData.image?.replace(/^\//, "")}`
-                    }
-                    alt="Current Category"
-                    className="w-16 h-16 object-contain rounded-md"
-                  />
-                </div>
-              </div>
-            )}
-
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
-                {isEditMode ? "Replace Uploaded Icon" : "Upload Icon"}
+                {isEditMode ? "Category Icon" : "Upload Category Icon"}
               </Label>
-              <div
-                className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  isDragging
-                    ? "border-app-primary2 bg-blue-50"
-                    : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                }`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onClick={() => document.getElementById("icon-upload").click()}
-              >
-                <input
-                  id="icon-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                {previewUrl ? (
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="w-16 h-16 object-contain mb-3"
-                    />
-                    <span className="text-sm font-semibold text-slate-700 text-center">
-                      Icon selected. Click or drag to replace.
-                    </span>
+              <input
+                id="icon-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              {previewUrl && !removedExistingImage ? (
+                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
+                  <img
+                    src={
+                      iconFile
+                        ? URL.createObjectURL(iconFile)
+                        : previewUrl?.startsWith("http")
+                          ? previewUrl
+                          : `${IMAGE_BASE_URL}/${previewUrl?.replace(/^\//, "")}`
+                    }
+                    alt="Category Icon"
+                    className="w-full h-48 object-cover bg-slate-50"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      aria-label="View icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIcon(
+                          iconFile
+                            ? URL.createObjectURL(iconFile)
+                            : previewUrl?.startsWith("http")
+                              ? previewUrl
+                              : `${IMAGE_BASE_URL}/${previewUrl?.replace(/^\//, "")}`,
+                        );
+                        setPreviewOpen(true);
+                      }}
+                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Replace icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        document.getElementById("icon-upload")?.click();
+                      }}
+                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Remove icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIconFile(null);
+                        setPreviewUrl(null);
+                        if (isEditMode) setRemovedExistingImage(true);
+                      }}
+                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </div>
-                ) : (
-                  <>
-                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                    <p className="text-sm font-semibold text-slate-700 text-center">
-                      Click or drag and drop to upload
-                    </p>
-                  </>
-                )}
-                <p className="text-xs text-slate-500 mt-1">
-                  SVG, PNG, JPG (max. 800x400px)
-                </p>
-              </div>
+                </div>
+              ) : (
+                <div
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                    isDragging
+                      ? "border-app-primary2 bg-blue-50"
+                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
+                  }`}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onClick={() => document.getElementById("icon-upload").click()}
+                >
+                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                  <p className="text-sm font-semibold text-slate-700 text-center">
+                    Click or drag and drop to upload
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    SVG, PNG, JPG (max. 800x400px)
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -303,6 +342,23 @@ const AddFoodCategoryPage = () => {
           </div>
         </form>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
+          {currentIcon && (
+            <img
+              src={currentIcon}
+              alt="Category icon preview"
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+            />
+          )}
+          <div className="p-4">
+            <p className="text-sm font-semibold text-slate-800">
+              {categoryName || "Category Icon"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

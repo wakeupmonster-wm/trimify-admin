@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }) {
     role: role || localUser?.role || 0,
   };
 
-  const { open, isMobile, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -80,36 +80,29 @@ export function AppSidebar({ ...props }) {
       {/* --- HEADER: Logo & Branding --- */}
       <SidebarHeader className="sticky top-0 z-20 h-[3.75rem] items-center justify-center border-b border-slate-300/60 bg-white p-0">
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center justify-around px-4">
-            {/* 2. Agar sidebar open hai tabhi logo dikhega */}
-            {open && (
-              <SidebarMenuButton
-                size="lg"
-                asChild
-                className="hover:!bg-transparent"
+          <SidebarMenuItem className={cn("flex items-center justify-between px-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0")}>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              className="hover:!bg-transparent group-data-[collapsible=icon]:hidden"
+            >
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center gap-2 pl-2"
               >
-                <Link
-                  to="/admin/dashboard"
-                  className="flex items-center gap-2 pl-2"
-                >
-                  <div className="flex items-center justify-center rounded-lg max-w-[90px] h-10">
-                    <img
-                      src={trimifyLogo}
-                      alt="Logo"
-                      loading="lazy"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            )}
+                <div className="flex items-center justify-center rounded-lg max-w-[90px] h-10">
+                  <img
+                    src={trimifyLogo}
+                    alt="Logo"
+                    loading="lazy"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </Link>
+            </SidebarMenuButton>
 
-            {/* 3. Trigger button hamesha dikhega, collapsed mode mein center */}
             <SidebarTrigger
-              className={cn(
-                "text-slate-500 hover:bg-white",
-                !open && "mx-auto", // Collapsed hone par center align karne ke liye
-              )}
+              className="text-slate-500 hover:bg-white"
             />
           </SidebarMenuItem>
         </SidebarMenu>

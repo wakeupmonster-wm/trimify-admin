@@ -59,7 +59,9 @@ export const getManageProgramColumns = (onAction) => [
     minSize: 150,
     cell: ({ row }) => (
       <span className="text-slate-700 font-medium text-[11px] tracking-tight">
-        {row.original.duration ? `${row.original.duration} Weeks` : "-"}
+        {row.original.duration
+          ? `${parseInt(row.original.duration, 10)} Week Plan`
+          : "-"}
       </span>
     ),
   },

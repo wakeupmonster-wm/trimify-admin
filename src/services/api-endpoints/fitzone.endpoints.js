@@ -27,7 +27,9 @@ export const FITZONE_CRUD = {
   FITZONE_TOGGLE_STATUS: (id) => `${ADMIN}/toggle-status-fitzone/${id}`,
 
   /** DELETE — Permanently delete a Fitzone */
-  FITZONE_DELETE: (id) => `${ADMIN}/delete-fitzone/${id}`  
+  FITZONE_DELETE: (id) => `${ADMIN}/delete-fitzone/${id}`,
+  FITZONE_ASSIGN_ALL_USERS: (id) => `${ADMIN}/fitzone/${id}/assign-all-users`,
+  FITZONE_ASSIGNMENT_RUNS: (id) => `${ADMIN}/fitzone/${id}/assignment-runs`,
 }
 
 // ──────────────────────── Fitzone Intro ──────────────────────────────

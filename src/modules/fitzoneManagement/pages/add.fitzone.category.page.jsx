@@ -9,13 +9,23 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadCloud, Dumbbell, Send, Loader2, ArrowLeft } from "lucide-react";
+import {
+  UploadCloud,
+  Dumbbell,
+  Send,
+  Loader2,
+  ArrowLeft,
+  Eye,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import {
   addFitzoneCategory,
   updateFitzoneCategory,
 } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const AddFitzoneCategoryPage = () => {
   const { id, categoryId } = useParams();
@@ -40,6 +50,9 @@ const AddFitzoneCategoryPage = () => {
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [removedExistingIcon, setRemovedExistingIcon] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [currentIcon, setCurrentIcon] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -219,48 +232,8 @@ const AddFitzoneCategoryPage = () => {
 
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
-                {isEdit ? "Replace Category Icon" : "Upload Category Icon"}
+                {isEdit ? "Category Icon" : "Upload Category Icon"}
               </Label>
-
-
-
-              <div
-                className={`w-full relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                  errors.iconFile
-                    ? "border-red-500"
-                    : isDragging
-                      ? "border-app-primary2 bg-blue-50"
-                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                } ${iconPreview ? "p-0 min-h-[160px]" : "p-10"}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {iconPreview ? (
-                  <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px]">
-                    <img
-                      src={iconPreview}
-                      alt="Icon Preview"
-                      className="absolute inset-0 w-full h-full object-contain p-4"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
-                      <UploadCloud className="w-8 h-8 mb-2 text-white" />
-                      <span className="text-sm font-semibold text-white">Click or drag to replace</span>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                    <p className="text-sm font-semibold text-slate-700 text-center">
-                      Click or drag and drop to upload
-                    </p>
-                  </>
-                )}
-                <p className="text-xs text-slate-500 mt-1">
-                  SVG, PNG, JPG (max. 800x400px)
-                </p>
-              </div>
               <input
                 type="file"
                 accept="image/*"
@@ -268,6 +241,75 @@ const AddFitzoneCategoryPage = () => {
                 ref={fileInputRef}
                 onChange={handleIconChange}
               />
+              {iconPreview && !removedExistingIcon ? (
+                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
+                  <img
+                    src={iconPreview}
+                    alt="Category Icon"
+                    className="w-full h-48 object-cover bg-slate-50"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      aria-label="View icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIcon(iconPreview);
+                        setPreviewOpen(true);
+                      }}
+                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Replace icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Remove icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIconFile(null);
+                        setIconPreview(null);
+                        if (isEdit) setRemovedExistingIcon(true);
+                      }}
+                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                    errors.iconFile
+                      ? "border-red-500"
+                      : isDragging
+                        ? "border-app-primary2 bg-blue-50"
+                        : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
+                  <p className="text-sm font-semibold text-slate-700 text-center">
+                    Click or drag and drop to upload
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    SVG, PNG, JPG (max. 800x400px)
+                  </p>
+                </div>
+              )}
               {errors.iconFile && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
                   {errors.iconFile}
@@ -332,6 +374,23 @@ const AddFitzoneCategoryPage = () => {
           </form>
         </div>
       </div>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
+          {currentIcon && (
+            <img
+              src={currentIcon}
+              alt="Category icon preview"
+              className="w-full max-h-[75vh] object-contain bg-slate-50"
+            />
+          )}
+          <div className="p-4">
+            <p className="text-sm font-semibold text-slate-800">
+              {categoryName || "Category Icon"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

@@ -281,7 +281,7 @@ const AddPostPage = () => {
             {/* Upload Banner Image */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
-                {isEdit ? "Replace Featured Image" : "Upload Featured Image"}
+                {isEdit ? "Featured Image" : "Upload Featured Image"}
               </Label>
               <input
                 id="banner-upload"

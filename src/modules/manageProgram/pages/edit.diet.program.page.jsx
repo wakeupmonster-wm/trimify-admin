@@ -160,7 +160,12 @@ const EditDietProgramPage = () => {
     setIsConfirmModalOpen(false);
   };
 
-  const maxWeeks = programDuration ? parseInt(programDuration, 10) : 8;
+  // Diet plans can be configured for up to 12 weeks irrespective of the
+  // program's currently saved duration. Keep a higher saved duration valid.
+  const maxWeeks = Math.max(
+    12,
+    programDuration ? parseInt(programDuration, 10) : 0,
+  );
   const computedMaxWeeks = Math.max(
     maxWeeks,
     selectedWeek ? parseInt(selectedWeek, 10) : 0,
@@ -221,7 +226,7 @@ const EditDietProgramPage = () => {
                   <SelectContent>
                     {weeksOptions.map((w) => (
                       <SelectItem key={w} value={w.toString()}>
-                        Week {w}
+                        {w} Week Plan
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -20,3 +20,7 @@ export const toggleFitzoneStatusAPI = async (id, statusData) => {
 export const deleteFitzoneAPI = async (id) => {
   return apiConnector("DELETE", FITZONE_CRUD.FITZONE_DELETE(id));
 };
+
+export const assignFitzoneToAllUsersAPI = async (id) => {
+  return apiConnector("POST", FITZONE_CRUD.FITZONE_ASSIGN_ALL_USERS(id));
+};

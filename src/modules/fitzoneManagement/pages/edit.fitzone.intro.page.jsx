@@ -29,7 +29,9 @@ const EditFitzoneIntroPage = () => {
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const { intro, loading } = useSelector((state) => state.fitzoneIntro);
+  const { intro, loading, error: introLoadError, introFetched, introExists } = useSelector(
+    (state) => state.fitzoneIntro,
+  );
 
   useEffect(() => {
     if (id) {
@@ -39,11 +41,18 @@ const EditFitzoneIntroPage = () => {
 
   useEffect(() => {
     if (intro) {
+      // This edit form intentionally hydrates local fields after its GET request.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHeading(intro.heading || "");
       setSubheading(intro.subheading || "");
       setContent(intro.content || intro.intro || "");
+    } else if (introFetched) {
+      // A missing intro is a fresh form, not the previous Fitzone's content.
+      setHeading("");
+      setSubheading("");
+      setContent("");
     }
-  }, [intro]);
+  }, [intro, introFetched]);
 
   const handleUpdate = () => {
     const newErrors = {};
@@ -73,15 +82,9 @@ const EditFitzoneIntroPage = () => {
       };
       let resultAction;
 
-      // The intro resource is keyed by the fitzone's own id (there's no
-      // separate intro id in the API), so whether one already exists is
-      // determined by whether the GET call returned any content, not by
-      // an `intro.id` field that the API never sends.
-      const hasExistingIntro = !!(
-        intro &&
-        (intro.heading || intro.subheading || intro.content)
-      );
-      if (hasExistingIntro) {
+      // `introExists` is derived only from the GET response for this Fitzone.
+      // This prevents a previous Fitzone's Redux data from selecting update.
+      if (introExists === true) {
         resultAction = await dispatch(
           updateFitzoneIntro({ id, data: payload }),
         );
@@ -98,7 +101,7 @@ const EditFitzoneIntroPage = () => {
       } else {
         toast.error(resultAction.payload || "Failed to update introduction");
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred while saving the introduction.");
     } finally {
       setIsConfirmModalOpen(false);
@@ -133,6 +136,11 @@ const EditFitzoneIntroPage = () => {
         {/* Editor Card */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-300/60 overflow-hidden">
           <div className="px-4 sm:px-6 pt-5 pb-6 space-y-6">
+            {introExists === null && introLoadError && (
+              <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                Introduction could not be loaded: {introLoadError}. Please refresh and try again.
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label className="text-sm font-bold text-slate-800">
                 Heading
@@ -207,11 +215,11 @@ const EditFitzoneIntroPage = () => {
               </Button>
               <Button
                 onClick={handleUpdate}
-                disabled={loading}
+                disabled={loading || !introFetched || introExists === null}
                 className="w-full sm:w-auto text-white rounded-md px-5 sm:px-6 h-11 sm:h-10 flex items-center justify-center gap-2 text-sm sm:text-xs font-semibold transition-all"
               >
                 <Save className="w-4 sm:w-4 h-4 sm:h-4 shrink-0" />
-                {loading ? "Updating..." : "Update"}
+                {loading || !introFetched ? "Loading..." : "Update"}
               </Button>
             </div>
           </div>

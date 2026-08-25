@@ -25,11 +25,15 @@ export const getFitzoneIntro = createAsyncThunk(
           },
         }
       }
-      return rejectWithValue(response.message || "Failed to fetch intro");
+      return rejectWithValue({
+        message: response.message || "Failed to fetch intro",
+        status: response.status === "not_found" ? 404 : null,
+      });
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch intro",
-      );
+      return rejectWithValue({
+        message: error.response?.data?.message || "Failed to fetch intro",
+        status: error.response?.status || null,
+      });
     }
   },
 );
@@ -67,13 +71,11 @@ export const updateFitzoneIntro = createAsyncThunk(
 const fitzoneIntroSlice = createSlice({
   name: "fitzoneIntro",
   initialState: {
-    intro: {
-      content: null,
-      heading: null,
-      subheading: null
-    },
+    intro: null,
     loading: false,
     error: null,
+    introFetched: false,
+    introExists: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -81,15 +83,25 @@ const fitzoneIntroSlice = createSlice({
       .addCase(getFitzoneIntro.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.intro = null;
+        state.introFetched = false;
+        state.introExists = null;
       })
       .addCase(getFitzoneIntro.fulfilled, (state, action) => {
         state.loading = false;
         state.intro = action.payload.intro || null;
         state.pagination = action.payload.pagination || null;
+        state.introFetched = true;
+        state.introExists = true;
       })
       .addCase(getFitzoneIntro.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.intro = null;
+        state.error = action.payload?.message || action.payload;
+        state.introFetched = true;
+        // A 404 means the Fitzone exists but has no intro yet, so create is
+        // the correct next action. Other errors must not be treated as create.
+        state.introExists = action.payload?.status === 404 ? false : null;
       })
       // addFitzoneIntro
       .addCase(addFitzoneIntro.pending, (state) => { state.loading = true; state.error = null; })

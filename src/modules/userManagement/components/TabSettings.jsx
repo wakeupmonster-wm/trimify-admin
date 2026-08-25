@@ -37,7 +37,9 @@ import { cn } from "@/lib/utils";
 import { LuUserRound } from "react-icons/lu";
 
 export function TabSettings({ data }) {
-  const { user, handleCopy, initials, fmtDate, truncMid } = data;
+  const { user, handleCopy, initials, fmtDate, truncMid, deviceTokens = [] } = data;
+  const subscriptionStatus = user.subscription_status || user.status || "Active";
+  const subscriptionExpiry = user.subscription_expires_at || user.plan_expiry;
   const dispatch = useDispatch();
   const [channel, setChannel] = useState("email");
   const [subject, setSubject] = useState("");
@@ -124,16 +126,20 @@ export function TabSettings({ data }) {
             value={
               <Pill
                 tone={
-                  user.status === "Active" || user.status === "1"
+                  subscriptionStatus === "Active" || subscriptionStatus === "1"
                     ? "success"
+                    : subscriptionStatus === "Expired"
+                      ? "expired"
+                      : subscriptionStatus === "Revoked"
+                        ? "danger"
                     : "neutral"
                 }
               >
-                {user.status === "1"
+                {subscriptionStatus === "1"
                   ? "Active"
-                  : user.status === "0"
+                  : subscriptionStatus === "0"
                     ? "Inactive"
-                    : user.status}
+                    : subscriptionStatus}
               </Pill>
             }
           />
@@ -211,7 +217,7 @@ export function TabSettings({ data }) {
             noBorder
             icon={Calendar}
             label="Plan Expiry"
-            value={user.plan_expiry ? fmtDate(user.plan_expiry) : "—"}
+            value={subscriptionExpiry ? fmtDate(subscriptionExpiry) : "—"}
           />
           <KV
             noBorder
@@ -252,14 +258,28 @@ export function TabSettings({ data }) {
             icon={Smartphone}
             label="Device Token"
             value={
-              <button
-                type="button"
-                title={user.device_token}
-                onClick={() => handleCopy(user.device_token, "Device token")}
-                className="font-mono font-bold transition-colors hover:text-app-primary2"
-              >
-                {truncMid(user.device_token, 10, 6)}
-              </button>
+              deviceTokens.length > 0 ? (
+                <div className="flex flex-col items-end gap-1">
+                  {deviceTokens.slice(0, 2).map((token, index) => (
+                    <button
+                      key={token}
+                      type="button"
+                      title={token}
+                      onClick={() => handleCopy(token, `Device token ${index + 1}`)}
+                      className="font-mono font-bold transition-colors hover:text-app-primary2"
+                    >
+                      {truncMid(token, 10, 6)}
+                    </button>
+                  ))}
+                  {deviceTokens.length > 2 && (
+                    <span className="text-[10px] font-semibold text-slate-400">
+                      +{deviceTokens.length - 2} more token(s)
+                    </span>
+                  )}
+                </div>
+              ) : (
+                "Not registered"
+              )
             }
           />
         </Card>

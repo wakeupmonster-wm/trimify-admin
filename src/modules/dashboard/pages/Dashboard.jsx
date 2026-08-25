@@ -27,6 +27,7 @@ import { EcosystemAlerts } from "../components/EcosystemAlerts";
 import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
+import FitzoneAssignmentChips from "../components/FitzoneAssignmentChips";
 import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
@@ -396,27 +397,32 @@ export default function Dashboard() {
                   focusTimeline
                 />
 
-                <TrendChartCard
-                  title="Fitzone Users Assigned"
-                  subtitle={`Unique users with a usable Fitzone category ${extendedSubtitleSuffix}`}
-                  Icon={Dumbbell}
-                  iconColor="text-slate-600"
-                  iconBg="bg-slate-100/50"
-                  data={displayExtras?.trends?.fitzoneCompletion || []}
-                  xKey="date"
-                  periodLabel={dynamicPeriodLabel}
-                  hideLegend={true}
-                  series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
-                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
-                    return {
-                      key: status,
-                      label: status === "assigned_users" ? "Users Assigned" : status,
-                      color: fitzoneColors[i % fitzoneColors.length],
-                      type: "bar",
-                    };
-                  })}
-                  note="Counts each user once per displayed day, week or month after an admin assigns them an active Fitzone category with an active workout session."
-                />
+                <div className="flex min-w-0 flex-col gap-3">
+                  <TrendChartCard
+                    title="Fitzone Users Assigned"
+                    subtitle={`Unique users with a usable Fitzone category ${extendedSubtitleSuffix}`}
+                    Icon={Dumbbell}
+                    iconColor="text-slate-600"
+                    iconBg="bg-slate-100/50"
+                    data={displayExtras?.trends?.fitzoneCompletion || []}
+                    xKey="date"
+                    periodLabel={dynamicPeriodLabel}
+                    hideLegend={true}
+                    series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
+                      const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
+                      return {
+                        key: status,
+                        label: status === "assigned_users" ? "Users Assigned" : status,
+                        color: fitzoneColors[i % fitzoneColors.length],
+                        type: "bar",
+                      };
+                    })}
+                    note="Counts each user once per displayed day, week or month after an admin assigns them an active Fitzone category with an active workout session."
+                  />
+                  <FitzoneAssignmentChips
+                    details={displayExtras?.trends?.fitzoneAssignmentDetails || []}
+                  />
+                </div>
                 <ProgramEnrollmentCard
                   title="Program Enrollment Split"
                   subtitle={`Top 5 ranked programs${extendedSubtitleSuffix}`}

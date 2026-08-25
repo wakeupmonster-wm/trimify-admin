@@ -50,7 +50,7 @@ export const STATUS_BADGE_STYLE = {
   paid: "bg-emerald-500/10 text-emerald-600",
   active: "bg-emerald-500/10 text-emerald-600",
   failed: "bg-rose-500/10 text-rose-600",
-  expired: "bg-amber-500/10 text-amber-600",
+  expired: "bg-[#E11D48]/10 text-[#E11D48]",
   churned: "bg-rose-500/10 text-rose-600",
   pending: "bg-amber-500/10 text-amber-600",
   revoked: "bg-rose-500/10 text-rose-600",
