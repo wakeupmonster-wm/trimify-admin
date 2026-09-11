@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import SafeImage from "@/components/common/SafeImage";
 
 export const getNutritionFoodColumns = (onAction) => [
   {
@@ -60,8 +61,8 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Protien_In_gm || "-"} gm
+      <div className="inline-flex rounded-full bg-[#DCEAFF] px-2.5 py-1 text-[10px] font-bold text-app-primary2 whitespace-nowrap">
+        {row.original.Meal_Protien_In_gm ?? "-"} gm
       </div>
     ),
   },
@@ -75,8 +76,8 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Carbs_In_gm || "-"} gm
+      <div className="inline-flex rounded-full bg-emerald-200 px-2.5 py-1 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
+        {row.original.Meal_Carbs_In_gm ?? "-"} gm
       </div>
     ),
   },
@@ -90,8 +91,8 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Calories_In_gm || "-"} kcal
+      <div className="inline-flex rounded-full bg-amber-200 px-2.5 py-1 text-[10px] font-bold text-amber-800 whitespace-nowrap">
+        {row.original.Meal_Calories_In_gm ?? "-"} kcal
       </div>
     ),
   },
@@ -105,8 +106,8 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-        {row.original.Meal_Fats_In_gm || "-"} gm
+      <div className="inline-flex rounded-full bg-rose-200 px-2.5 py-1 text-[10px] font-bold text-rose-800 whitespace-nowrap">
+        {row.original.Meal_Fats_In_gm ?? "-"} gm
       </div>
     ),
   },
@@ -122,10 +123,11 @@ export const getNutritionFoodColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="flex justify-center">
         {row.original.Meal_Image_url ? (
-          <img
+          <SafeImage
             src={row.original.Meal_Image_url}
             alt="Food"
             className="w-8 h-8 rounded-md object-cover border"
+            fallbackClassName="w-8 h-8 rounded-md border"
           />
         ) : (
           <div className="w-8 h-8 rounded-md bg-slate-200 flex items-center justify-center text-[10px] text-slate-500">

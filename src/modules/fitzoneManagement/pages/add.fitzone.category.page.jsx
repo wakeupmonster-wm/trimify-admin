@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,14 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  UploadCloud,
   Dumbbell,
   Send,
   Loader2,
   ArrowLeft,
-  Eye,
-  Pencil,
-  Trash2,
 } from "lucide-react";
 import {
   addFitzoneCategory,
@@ -25,7 +21,7 @@ import {
 } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ImageUploadPreview from "@/components/common/ImageUploadPreview";
 
 const AddFitzoneCategoryPage = () => {
   const { id, categoryId } = useParams();
@@ -46,18 +42,14 @@ const AddFitzoneCategoryPage = () => {
   const [iconFile, setIconFile] = useState(null);
   const [iconPreview, setIconPreview] = useState(editData?.image || null);
   const [htmlContent, setHtmlContent] = useState(editData?.description || "");
-  const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [removedExistingIcon, setRemovedExistingIcon] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [currentIcon, setCurrentIcon] = useState(null);
-
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (isEdit && editData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCategoryName(editData.title || "");
       setCategoryDetails(editData.description || "");
       setHtmlContent(editData.html_content || "");
@@ -79,24 +71,6 @@ const AddFitzoneCategoryPage = () => {
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      handleIconLogic(file);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -230,92 +204,22 @@ const AddFitzoneCategoryPage = () => {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
-                {isEdit ? "Category Icon" : "Upload Category Icon"}
-              </Label>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                ref={fileInputRef}
-                onChange={handleIconChange}
-              />
-              {iconPreview && !removedExistingIcon ? (
-                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
-                  <img
-                    src={iconPreview}
-                    alt="Category Icon"
-                    className="w-full h-48 object-cover bg-slate-50"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    <button
-                      type="button"
-                      aria-label="View icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCurrentIcon(iconPreview);
-                        setPreviewOpen(true);
-                      }}
-                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Eye className="w-5 h-5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Replace icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fileInputRef.current?.click();
-                      }}
-                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Remove icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIconFile(null);
-                        setIconPreview(null);
-                        if (isEdit) setRemovedExistingIcon(true);
-                      }}
-                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                    errors.iconFile
-                      ? "border-red-500"
-                      : isDragging
-                        ? "border-app-primary2 bg-blue-50"
-                        : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                  <p className="text-sm font-semibold text-slate-700 text-center">
-                    Click or drag and drop to upload
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    SVG, PNG, JPG (max. 800x400px)
-                  </p>
-                </div>
-              )}
-              {errors.iconFile && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.iconFile}
-                </p>
-              )}
-            </div>
+            <ImageUploadPreview
+              file={iconFile}
+              previewUrl={removedExistingIcon ? null : iconPreview}
+              onFileSelect={handleIconChange}
+              onRemove={() => {
+                setIconFile(null);
+                setIconPreview(null);
+                if (isEdit) setRemovedExistingIcon(true);
+              }}
+              label={isEdit ? "Category Banner Image" : "Upload Category Banner Image"}
+              variant="banner"
+              aspectRatioBadge="Banner ~2:1"
+              hint="Recommended: Landscape banner (~2:1 ratio), 800×400 px or 1024×512 px. JPG, PNG or WebP (max 5MB)."
+              id="icon-upload"
+              error={errors.iconFile}
+            />
 
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
@@ -375,22 +279,7 @@ const AddFitzoneCategoryPage = () => {
         </div>
       </div>
 
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden gap-0">
-          {currentIcon && (
-            <img
-              src={currentIcon}
-              alt="Category icon preview"
-              className="w-full max-h-[75vh] object-contain bg-slate-50"
-            />
-          )}
-          <div className="p-4">
-            <p className="text-sm font-semibold text-slate-800">
-              {categoryName || "Category Icon"}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

@@ -17,7 +17,10 @@ export const fetchProfile = createAsyncThunk(
           account: {
             ...(response.data || {}),
             nickname: response.data?.name,
-            memberSince: response.data?.member_since,
+            // Older admin profile responses expose the account creation time
+            // as created_at/createdAt, while the sub-admin API uses
+            // member_since. Preserve the explicit field when it is available.
+            memberSince: response.data?.member_since ?? response.data?.created_at ?? response.data?.createdAt,
             lastLoginAt: response.data?.last_login_at
           } 
         };
@@ -42,7 +45,7 @@ export const updateAdminAccount = createAsyncThunk(
         return {
           ...res.data,
           nickname: res.data.name,
-          memberSince: res.data.member_since,
+          memberSince: res.data.member_since ?? res.data.created_at ?? res.data.createdAt,
           lastLoginAt: res.data.last_login_at
         };
       }

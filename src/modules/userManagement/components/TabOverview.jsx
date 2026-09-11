@@ -12,6 +12,8 @@ import {
   Phone,
   Star,
   Droplets,
+  Droplet,
+  Flame,
   Utensils,
   Scale,
   Monitor,
@@ -20,14 +22,31 @@ import {
 } from "lucide-react";
 import { GiWeightLiftingUp } from "react-icons/gi";
 import { cn } from "@/lib/utils";
-import { Kpi, Card, KV, EmptyState } from "./UserProfileShared";
+import { Kpi, Card, KV, EmptyState, ActivityRing } from "./UserProfileShared";
 import { activityMeta } from "./activity.utils";
 import { Badge } from "@/components/ui/badge";
 import { LuUserRound } from "react-icons/lu";
 import { FaLink } from "react-icons/fa6";
 
 export function TabOverview({ data }) {
-  const { user, es, cap, fmtDate, timeAgo, bmi, bmiCat, activeProgram } = data;
+  const {
+    user,
+    es,
+    cap,
+    fmtDate,
+    timeAgo,
+    bmi,
+    bmiCat,
+    activeProgram,
+    waterGoal,
+    caloriesGoal,
+    targetSteps,
+    consumedWater,
+    consumedCalories,
+    consumedSteps,
+    macroTotal,
+    macros,
+  } = data;
   const recentActivities = (user.recent_activities || []).filter((a) => {
     const valMatch = (a.title || "").match(/\d+/);
     if (valMatch && parseInt(valMatch[0], 10) === 0) return false;
@@ -82,8 +101,128 @@ export function TabOverview({ data }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr]">
-        <div className="flex flex-col gap-3.5">
+      <div className="grid grid-cols-1 items-start gap-3.5 lg:grid-cols-[1.5fr_1fr] min-w-0">
+        <div className="flex flex-col gap-3.5 min-w-0 overflow-hidden">
+          {/* Daily Targets Card */}
+          <Card
+            title="Daily Targets"
+            subtitle="Nutrition, hydration & step goals"
+            icon={Target}
+          >
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <ActivityRing
+                icon={Droplet}
+                label="Water Goal"
+                value={consumedWater}
+                max={waterGoal || 4000}
+                unit="ml"
+                textClass="text-sky-500"
+                bgLightClass="bg-sky-50"
+              />
+              <ActivityRing
+                icon={Flame}
+                label="Calories Goal"
+                value={consumedCalories}
+                max={caloriesGoal || 3500}
+                unit="kcal"
+                textClass="text-orange-500"
+                bgLightClass="bg-orange-50"
+              />
+              <ActivityRing
+                icon={Footprints}
+                label="Step Target"
+                value={consumedSteps}
+                max={targetSteps || 12000}
+                unit=""
+                textClass="text-emerald-500"
+                bgLightClass="bg-emerald-50"
+              />
+            </div>
+
+            <div className="mt-1 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3.5">
+              <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+                <div>
+                  <div className="text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
+                    Macro split · per meal
+                  </div>
+                  <div className="mt-0.5 text-[10px] font-medium text-slate-400">
+                    Distribution of carbs, protein & fat for each meal
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <div className="text-[9.5px] font-semibold uppercase tracking-wide text-slate-400">
+                    Total
+                  </div>
+                  <div className="mt-0.5 text-[13px] font-extrabold tabular-nums text-slate-700">
+                    {macroTotal ? `${macroTotal}g` : "—"}
+                  </div>
+                </div>
+              </div>
+
+              {macros.length > 0 && macroTotal ? (
+                <>
+                  <div className="mb-3 flex h-2.5 overflow-hidden rounded-full border border-slate-200/70 bg-slate-100">
+                    {macros.map((m) => {
+                      const pct = macroTotal
+                        ? Math.max(0, (Number(m.v) / macroTotal) * 100)
+                        : 0;
+
+                      return (
+                        <div
+                          key={m.label}
+                          className="h-full"
+                          style={{
+                            width: `${pct}%`,
+                            background: m.color,
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {macros.map((m) => {
+                      const grams = Number(m.v) || 0;
+                      const pct = macroTotal
+                        ? Math.round((grams / macroTotal) * 100)
+                        : 0;
+
+                      return (
+                        <div
+                          key={m.label}
+                          className="flex items-center justify-between gap-3 rounded-xl border border-slate-200/70 bg-white px-3 py-2.5"
+                        >
+                          <div className="flex min-w-0 items-center gap-2">
+                            <div className="min-w-0">
+                              <div className="truncate text-[10.5px] font-bold text-slate-600">
+                                {m.label}
+                              </div>
+                              <div className="mt-0.5 text-[9.5px] font-medium text-slate-400">
+                                {pct}% of meal
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 text-[13px] font-extrabold tabular-nums text-slate-800">
+                            {grams}
+                            <span className="ml-0.5 text-[9px] font-bold text-slate-400">
+                              g
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="flex min-h-16 items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white/70 px-3 text-center text-[10.5px] font-medium text-slate-400">
+                  Macro split is not configured.
+                </div>
+              )}
+            </div>
+          </Card>
+
           <Card
             title="Recent Activity"
             subtitle="Latest actions across the account"
@@ -157,7 +296,7 @@ export function TabOverview({ data }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-3.5 min-w-0 overflow-hidden">
           <Card
             title="Snapshot"
             subtitle="Quick summary across all areas"

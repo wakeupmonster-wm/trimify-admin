@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
+import { resolveSubscriptionStatus } from "@/modules/userManagement/utils/subscriptionStatus";
 
 export const getUserManagementColumns = (onAction) => [
   {
@@ -158,8 +159,7 @@ export const getUserManagementColumns = (onAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => {
-      let status = row.original.subscription_status || row.original.status || "Active";
-      if (!row.original.subscription_status && row.original.revoked_at) status = "Revoked";
+      const status = resolveSubscriptionStatus(row.original);
       const style =
         STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (

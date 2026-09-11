@@ -6,7 +6,11 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableActiveChips,
+  DataTableFilters,
+} from "@/components/shared/datatable";
 import { Plus, Video, ArrowLeft } from "lucide-react";
 import { getManageFitzoneSessionColumns } from "@/components/columns/fitzone.session.columns";
 import {
@@ -14,6 +18,7 @@ import {
   toggleFitzoneSessionStatus,
   deleteFitzoneSession,
 } from "../store/fitzone.session.slice";
+import { getFitzoneCategories } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -28,12 +33,16 @@ const ManageFitzoneSessionPage = () => {
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.fitzoneSession);
+  const { categories } = useSelector((state) => state.fitzoneCategory);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [toggleTarget, setToggleTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dateOrder, setDateOrder] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
 
   useEffect(() => {
@@ -44,6 +53,12 @@ const ManageFitzoneSessionPage = () => {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: debouncedSearch,
+          ...(categoryFilter && { workoutcat_id: categoryFilter }),
+          ...(statusFilter && { status: statusFilter }),
+          ...(dateOrder && {
+            sort_by: "created_at",
+            sort_order: dateOrder,
+          }),
         }),
       );
     }
@@ -53,7 +68,14 @@ const ManageFitzoneSessionPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearch,
+    categoryFilter,
+    statusFilter,
+    dateOrder,
   ]);
+
+  useEffect(() => {
+    if (id) dispatch(getFitzoneCategories({ id, limit: 100 }));
+  }, [dispatch, id]);
 
   const handleAction = async (row, action, value) => {
     if (action === "edit") {
@@ -85,6 +107,9 @@ const ManageFitzoneSessionPage = () => {
               page: pagination.pageIndex + 1,
               limit: pagination.pageSize,
               search: debouncedSearch,
+              ...(categoryFilter && { workoutcat_id: categoryFilter }),
+              ...(statusFilter && { status: statusFilter }),
+              ...(dateOrder && { sort_by: "created_at", sort_order: dateOrder }),
             }),
           );
         } else {
@@ -112,6 +137,9 @@ const ManageFitzoneSessionPage = () => {
               page: pagination.pageIndex + 1,
               limit: pagination.pageSize,
               search: debouncedSearch,
+              ...(categoryFilter && { workoutcat_id: categoryFilter }),
+              ...(statusFilter && { status: statusFilter }),
+              ...(dateOrder && { sort_by: "created_at", sort_order: dateOrder }),
             }),
           );
         } else {
@@ -125,9 +153,38 @@ const ManageFitzoneSessionPage = () => {
   };
 
   const columns = useMemo(
-    () => getManageFitzoneSessionColumns(handleAction),
-    [dispatch, id],
+    () =>
+      getManageFitzoneSessionColumns(handleAction, {
+        dateOrder,
+        onDateOrderChange: (value) => {
+          setDateOrder(value);
+          setPagination((current) => ({ ...current, pageIndex: 0 }));
+        },
+      }),
+    [dateOrder, handleAction],
   );
+
+  const updateFilter = (setter) => (value) => {
+    setter(value);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+
+  const filterConfig = [
+    {
+      type: "select", id: "category", label: "Session Category", value: categoryFilter,
+      onChange: updateFilter(setCategoryFilter),
+      options: (categories || []).map((category) => ({
+        label: category.title || category.name,
+        value: String(category.id),
+      })),
+      placeholder: "All Categories",
+    },
+    {
+      type: "select", id: "status", label: "Status", value: statusFilter,
+      onChange: updateFilter(setStatusFilter), options: ["Active", "Inactive"],
+      placeholder: "All Status",
+    },
+  ];
 
   const openAddModal = () => {
     navigate(`/admin/fitzone-management/manage/session/add-session/${id}`);
@@ -177,7 +234,18 @@ const ManageFitzoneSessionPage = () => {
             pageCount={serverPagination?.totalPages || 1}
             rowCount={serverPagination?.total || (sessions || []).length}
             itemName="sessions"
-          onRowClick={(row) => handleAction(row.original, "edit")}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => {
+                  setCategoryFilter("");
+                  setStatusFilter("");
+                  setPagination((current) => ({ ...current, pageIndex: 0 }));
+                }}
+              />
+            }
+            onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>

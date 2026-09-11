@@ -5,7 +5,11 @@ import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Plus, UploadCloud, Apple } from "lucide-react";
 import Header from "@/components/common/header";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableActiveChips,
+  DataTableFilters,
+} from "@/components/shared/datatable";
 import { Button } from "@/components/ui/button";
 import { getNutritionFoodColumns } from "@/components/columns/nutrition.food.columns";
 import { fetchNutritionList } from "../store/nutrition.slice";
@@ -23,6 +27,7 @@ const NutritionFoodPage = () => {
   } = useSelector((state) => state.nutrition);
 
   const [globalFilter, setGlobalFilter] = useState("");
+  const [mealTypeFilter, setMealTypeFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteModal, setDeleteModal] = useState({
@@ -37,6 +42,7 @@ const NutritionFoodPage = () => {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
+        ...(mealTypeFilter && { meal_type: mealTypeFilter }),
       }),
     );
   }, [
@@ -44,6 +50,7 @@ const NutritionFoodPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    mealTypeFilter,
   ]);
 
   const handleAction = (row, action) => {
@@ -69,6 +76,20 @@ const NutritionFoodPage = () => {
   };
 
   const columns = useMemo(() => getNutritionFoodColumns(handleAction), []);
+  const filterConfig = [
+    {
+      type: "select",
+      id: "mealType",
+      label: "Meal Type",
+      value: mealTypeFilter,
+      onChange: (value) => {
+        setMealTypeFilter(value);
+        setPagination((current) => ({ ...current, pageIndex: 0 }));
+      },
+      options: ["Breakfast", "Lunch", "Dinner", "Snacks"],
+      placeholder: "All Meal Types",
+    },
+  ];
 
   return (
     <Container>
@@ -115,6 +136,16 @@ const NutritionFoodPage = () => {
             isLoading={loading}
             manualPagination={true}
             manualFiltering={true}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => {
+                  setMealTypeFilter("");
+                  setPagination((current) => ({ ...current, pageIndex: 0 }));
+                }}
+              />
+            }
             onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>

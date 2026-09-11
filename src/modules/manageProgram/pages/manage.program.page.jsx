@@ -9,7 +9,7 @@ import {
   Users2,
 } from "lucide-react";
 import Header from "@/components/common/header";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   DataTable,
@@ -124,7 +124,7 @@ const ManageProgramPage = () => {
     dateRangeFilter,
   ]);
 
-  const handleAction = async (row, action, value) => {
+  const handleAction = useCallback(async (row, action, value) => {
     if (action === "toggle-status") {
       setToggleConfirm({
         row,
@@ -149,10 +149,8 @@ const ManageProgramPage = () => {
       navigate("edit-program", { state: { editData: row } });
     } else if (action === "delete") {
       setDeleteTarget(row);
-    } else if (action === "replicate") {
-      setReplicateTarget(row);
     }
-  };
+  }, [navigate]);
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -195,7 +193,10 @@ const ManageProgramPage = () => {
     }
   };
 
-  const columns = useMemo(() => getManageProgramColumns(handleAction), []);
+  const columns = useMemo(
+    () => getManageProgramColumns(handleAction),
+    [handleAction],
+  );
 
   // Check if the backend is doing manual pagination.
   // If serverPagination.total exists, it's server-paginated.
@@ -373,7 +374,7 @@ const ManageProgramPage = () => {
             isLoading={loading}
             manualPagination={isManual}
             manualFiltering={isManual}
-            onRowClick={(row) => handleAction(row.original, "edit")}
+            onRowClick={(row) => handleAction(row.original, "open-program")}
             toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
             activeFiltersChildren={
               <DataTableActiveChips

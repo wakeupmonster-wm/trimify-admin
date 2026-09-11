@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Ellipsis, Edit, Trash2 } from "lucide-react";
+import { ArrowDownUp, Ellipsis, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +9,12 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import dayjs from "dayjs";
+import SafeImage from "@/components/common/SafeImage";
 
-export const getManageFitzoneSessionColumns = (onAction) => [
+export const getManageFitzoneSessionColumns = (
+  onAction,
+  { dateOrder, onDateOrderChange } = {},
+) => [
   {
     accessorKey: "sno",
     header: () => (
@@ -28,11 +32,22 @@ export const getManageFitzoneSessionColumns = (onAction) => [
   },
   {
     accessorKey: "created_at",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Created At
-      </div>
-    ),
+    header: () => {
+      const nextOrder = dateOrder === "desc" ? "asc" : dateOrder === "asc" ? "" : "desc";
+      const sortLabel = dateOrder === "asc" ? "Oldest first" : dateOrder === "desc" ? "Newest first" : "Sort by date";
+      return (
+        <button
+          type="button"
+          title={sortLabel}
+          aria-label={sortLabel}
+          onClick={() => onDateOrderChange?.(nextOrder)}
+          className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-left hover:text-app-primary2"
+        >
+          Created At
+          <ArrowDownUp className={`h-3 w-3 ${dateOrder ? "text-app-primary2" : "text-slate-400"}`} />
+        </button>
+      );
+    },
     size: 120,
     minSize: 100,
     cell: ({ row }) => (
@@ -91,13 +106,11 @@ export const getManageFitzoneSessionColumns = (onAction) => [
       return (
         <div className="flex items-center">
           {iconUrl ? (
-            <img
+            <SafeImage
               src={iconUrl}
               alt="Icon"
               className="w-10 h-10 object-contain p-1 bg-slate-50 rounded border"
-              onError={(e) => {
-                e.target.style.display = "none";
-              }}
+              fallbackClassName="w-10 h-10 rounded border"
             />
           ) : (
             <span className="font-medium text-slate-400 text-[11px] italic">

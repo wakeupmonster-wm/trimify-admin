@@ -179,6 +179,13 @@ export const getTransactionColumns = (onAction) => [
           dot: "bg-amber-600",
           hover: "hover:bg-amber-100",
         };
+      } else if (s === "refunded") {
+        config = {
+          bg: "bg-violet-100/70",
+          text: "text-violet-700",
+          dot: "bg-violet-600",
+          hover: "hover:bg-violet-100",
+        };
       } else if (s === "failed" || s === "revoked") {
         config = {
           bg: "bg-rose-100/70",

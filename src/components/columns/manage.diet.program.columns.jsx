@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { minLength, minSize } from "zod";
+import SafeImage from "@/components/common/SafeImage";
 
 const DAYS_OF_WEEK = [
   "Sunday",
@@ -90,10 +90,11 @@ export const getManageDietProgramColumns = (handleAction) => [
       return (
         <div className="flex justify-center items-center">
           {imageUrl ? (
-            <img
+            <SafeImage
               src={imageUrl}
               alt="Diet Meal"
               className="w-8 h-8 rounded-md object-cover border"
+              fallbackClassName="w-8 h-8 rounded-md border"
             />
           ) : (
             <div className="w-8 h-8 rounded-md bg-slate-200 flex items-center justify-center text-[10px] text-slate-500">

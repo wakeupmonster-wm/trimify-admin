@@ -15,6 +15,8 @@ export const USER = {
   VIEW_USER_PROFILE: (id) => `${ADMIN}/view-user-profile/${id}`,
   /** GET — Retrieve user's transactions */
   USER_TRANSACTIONS: (id) => `${ADMIN}/users/${id}/transactions`,
+  /** GET — Retrieve user's paginated activity logs */
+  USER_ACTIVITY_LOGS: (id) => `${ADMIN}/users/${id}/activity-logs`,
   /** DELETE — Soft delete user */
   DELETE_USER: (id) => `${ADMIN}/users/${id}`,
 

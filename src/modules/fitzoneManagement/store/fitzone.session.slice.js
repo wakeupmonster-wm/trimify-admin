@@ -36,9 +36,9 @@ const validationErrorPayload = (error, fallbackMessage) => {
 
 export const getFitzoneSessions = createAsyncThunk(
   "fitzoneSession/getFitzoneSessions",
-  async ({ id, page, limit, search }, { rejectWithValue }) => {
+  async ({ id, ...params }, { rejectWithValue }) => {
     try {
-      const response = await getFitzoneSessionsAPI(id, { page, limit, search });
+      const response = await getFitzoneSessionsAPI(id, params);
       if (response && response.status === "success") {
          return {
           fitzone: response.fitzone || [],

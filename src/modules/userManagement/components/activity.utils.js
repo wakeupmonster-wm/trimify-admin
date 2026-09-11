@@ -12,3 +12,16 @@ export const ACTIVITY_META = {
 export function activityMeta(type) {
   return ACTIVITY_META[type] || { label: "Activity", icon: Activity, className: "bg-slate-50 text-slate-600" };
 }
+
+/**
+ * Formats weight values: caps at 1 decimal place if trailing zero (e.g. 75.0, 72.1),
+ * 2 decimal places otherwise (e.g. 75.25).
+ */
+export function formatWeightValue(val) {
+  if (val === null || val === undefined || val === "") return "";
+  const num = parseFloat(val);
+  if (isNaN(num)) return String(val);
+  const r2 = Math.round(num * 100) / 100;
+  const r1 = Math.round(num * 10) / 10;
+  return r2 === r1 ? num.toFixed(1) : num.toFixed(2);
+}

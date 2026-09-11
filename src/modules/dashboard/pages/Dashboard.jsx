@@ -27,7 +27,7 @@ import { EcosystemAlerts } from "../components/EcosystemAlerts";
 import LastUpdatedIndicator from "../components/LastUpdatedIndicator";
 import DonutStatCard from "../components/DonutStatCard";
 import TrendChartCard from "../components/TrendChartCard";
-import FitzoneAssignmentChips from "../components/FitzoneAssignmentChips";
+// import FitzoneAssignmentChips from "../components/FitzoneAssignmentChips";
 import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
@@ -70,8 +70,8 @@ export default function Dashboard() {
     return dataArray.map((item) => {
       let color = "#cbd5e1"; // Slate for Other/Unspecified
       if (item.label === "Male")
-        color = "#3b82f6"; // Blue
-      else if (item.label === "Female") color = "#ec4899"; // Pink
+        color = "#007FC0"; // Primary 700
+      else if (item.label === "Female") color = "#FE69B0"; // Pink
       return { ...item, color };
     });
   };
@@ -82,8 +82,8 @@ export default function Dashboard() {
       let color = "#94a3b8"; // Slate for Unspecified
       const lbl = item.label.toLowerCase();
       if (lbl === "veg" || lbl === "vegetarian")
-        color = "#10b981"; // Green
-      else if (lbl === "non-veg" || lbl === "non-vegetarian") color = "#ef4444"; // Red
+        color = "#249C60"; // Green
+      else if (lbl === "non-veg" || lbl === "non-vegetarian") color = "#F2574F"; // Red
       return { ...item, color };
     });
   };
@@ -378,7 +378,7 @@ export default function Dashboard() {
 
                 <TrendChartCard
                   title="Engagement Trend (DAU)"
-                  subtitle={`Users logging food / water / steps / weight ${dynamicPeriodLabel}`}
+                  subtitle={`Users logging food / water / steps / weight ${extendedSubtitleSuffix}`}
                   Icon={ActivityIcon}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
@@ -397,32 +397,27 @@ export default function Dashboard() {
                   focusTimeline
                 />
 
-                <div className="flex min-w-0 flex-col gap-3">
-                  <TrendChartCard
-                    title="Fitzone Users Assigned"
-                    subtitle={`Unique users with a usable Fitzone category ${extendedSubtitleSuffix}`}
-                    Icon={Dumbbell}
-                    iconColor="text-slate-600"
-                    iconBg="bg-slate-100/50"
-                    data={displayExtras?.trends?.fitzoneCompletion || []}
-                    xKey="date"
-                    periodLabel={dynamicPeriodLabel}
-                    hideLegend={true}
-                    series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
-                      const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
-                      return {
-                        key: status,
-                        label: status === "assigned_users" ? "Users Assigned" : status,
-                        color: fitzoneColors[i % fitzoneColors.length],
-                        type: "bar",
-                      };
-                    })}
-                    note="Counts each user once per displayed day, week or month after an admin assigns them an active Fitzone category with an active workout session."
-                  />
-                  <FitzoneAssignmentChips
-                    details={displayExtras?.trends?.fitzoneAssignmentDetails || []}
-                  />
-                </div>
+                <TrendChartCard
+                  title="Fitzone Users Assigned"
+                  subtitle={`Unique users with a usable Fitzone category ${extendedSubtitleSuffix}`}
+                  Icon={Dumbbell}
+                  iconColor="text-slate-600"
+                  iconBg="bg-slate-100/50"
+                  data={displayExtras?.trends?.fitzoneCompletion || []}
+                  xKey="date"
+                  periodLabel={dynamicPeriodLabel}
+                  hideLegend={true}
+                  series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
+                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
+                    return {
+                      key: status,
+                      label: status === "assigned_users" ? "Users Assigned" : status,
+                      color: fitzoneColors[i % fitzoneColors.length],
+                      type: "bar",
+                    };
+                  })}
+                  note="Counts each user once per displayed day, week or month after an admin assigns them an active Fitzone category with an active workout session."
+                />
                 <ProgramEnrollmentCard
                   title="Program Enrollment Split"
                   subtitle={`Top 5 ranked programs${extendedSubtitleSuffix}`}

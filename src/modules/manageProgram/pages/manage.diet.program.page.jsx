@@ -7,7 +7,11 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { CalendarCheck, Plus, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableActiveChips,
+  DataTableFilters,
+} from "@/components/shared/datatable";
 import {
   getDietMeals,
   toggleDietMealStatus,
@@ -30,6 +34,10 @@ const ManageDietProgramPage = () => {
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
+  const [weekFilter, setWeekFilter] = useState("");
+  const [mealFilter, setMealFilter] = useState("");
+  const [dayFilter, setDayFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleModal, setToggleModal] = useState({
@@ -47,9 +55,23 @@ const ManageDietProgramPage = () => {
       page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
       ...(debouncedSearch && { search: debouncedSearch }),
+      ...(weekFilter && { week: weekFilter }),
+      ...(mealFilter && { meal: mealFilter }),
+      ...(dayFilter && { day: dayFilter }),
+      ...(statusFilter && { status: statusFilter }),
     };
     dispatch(getDietMeals({ id, params }));
-  }, [debouncedSearch, dispatch, id, pagination.pageIndex, pagination.pageSize]);
+  }, [
+    dayFilter,
+    debouncedSearch,
+    dispatch,
+    id,
+    mealFilter,
+    pagination.pageIndex,
+    pagination.pageSize,
+    statusFilter,
+    weekFilter,
+  ]);
 
   useEffect(() => {
     fetchDietMeals();
@@ -116,6 +138,36 @@ const ManageDietProgramPage = () => {
     [handleAction],
   );
 
+  const resetToFirstPage = (setValue) => (value) => {
+    setValue(value);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+
+  const filterConfig = [
+    {
+      type: "select", id: "week", label: "Week", value: weekFilter,
+      onChange: resetToFirstPage(setWeekFilter),
+      options: Array.from({ length: 12 }, (_, index) => ({ label: `Week ${index + 1}`, value: String(index + 1) })),
+      placeholder: "All Weeks",
+    },
+    {
+      type: "select", id: "meal", label: "Meal Type", value: mealFilter,
+      onChange: resetToFirstPage(setMealFilter),
+      options: ["Breakfast", "Lunch", "Dinner", "Snacks"], placeholder: "All Meals",
+    },
+    {
+      type: "select", id: "day", label: "Meal Day", value: dayFilter,
+      onChange: resetToFirstPage(setDayFilter),
+      options: Array.from({ length: 7 }, (_, index) => ({ label: `Day ${index + 1}`, value: String(index + 1) })),
+      placeholder: "All Days",
+    },
+    {
+      type: "select", id: "status", label: "Status", value: statusFilter,
+      onChange: resetToFirstPage(setStatusFilter),
+      options: ["Active", "Inactive"], placeholder: "All Status",
+    },
+  ];
+
   return (
     <Container>
       <div className="w-full flex flex-col space-y-6 min-w-0">
@@ -159,6 +211,20 @@ const ManageDietProgramPage = () => {
             setGlobalFilter={handleGlobalFilterChange}
             isLoading={loading}
             manualPagination
+            manualFiltering
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => {
+                  setWeekFilter("");
+                  setMealFilter("");
+                  setDayFilter("");
+                  setStatusFilter("");
+                  setPagination((current) => ({ ...current, pageIndex: 0 }));
+                }}
+              />
+            }
             onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>

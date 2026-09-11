@@ -9,7 +9,9 @@
 // Used for general data visualization (e.g., pie charts, bar charts) to avoid 
 // the "rainbow effect" and maintain a cohesive brand identity.
 export const APP_COLORS = [
-  "#007FC0", // Base Primary Blue
+  "#007FC0", // Base Primary Blue (700)
+  "#006193", // Primary 800
+  "#009DEE", // Primary 600
   "#3399D1", // Light Blue
   "#005986", // Dark Blue
   "#66B2E3", // Lighter Blue
@@ -19,9 +21,9 @@ export const APP_COLORS = [
 ];
 
 export const ACCENT_COLORS = [
-    "#3b82f6", // Blue (Weight Loss)
-    "#10b981", // Emerald (Gain Muscle)
-    "#8b5cf6", // Violet (Stay Fit)
+    "#0069A5", // User Goal 1
+    "#7956F8", // User Goal 2
+    "#019CFD", // User Goal 3
     "#f59e0b", // Amber 
     "#f43f5e", // Rose
     "#0ea5e9", // Sky

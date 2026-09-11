@@ -13,6 +13,10 @@ export const getUserTransactionsAPI = async (id, params = {}) => {
   return apiConnector("GET", USER.USER_TRANSACTIONS(id), null, null, params);
 };
 
+export const getUserActivityLogsAPI = async (id, params = {}) => {
+  return apiConnector("GET", USER.USER_ACTIVITY_LOGS(id), null, null, params);
+};
+
 export const deleteUserAPI = async (id) => {
   return apiConnector("DELETE", USER.DELETE_USER(id));
 };

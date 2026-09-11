@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
-import { Ellipsis, Eye, ShieldOff, Mail } from "lucide-react";
+import { Ellipsis, Eye, ShieldOff, Mail, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -33,7 +33,7 @@ const REVOKED_REASON_STYLE = {
 
 const humanizeReason = (value) => value || "";
 
-export const getSubscriberColumns = (onAction) => [
+export const getSubscriberColumns = (onAction, sortConfig = {}) => [
   {
     id: "sno",
     header: () => (
@@ -172,11 +172,48 @@ export const getSubscriberColumns = (onAction) => [
   },
   {
     accessorKey: "started_at",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Started
-      </div>
-    ),
+    header: () => {
+      const isAsc = sortConfig?.dateSort === "started_at:asc";
+      const isDesc = sortConfig?.dateSort === "started_at:desc";
+      const isActive = isAsc || isDesc;
+      return (
+        <div
+          className={cn(
+            "flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-left transition-colors select-none",
+            sortConfig?.onSort && "cursor-pointer hover:text-foreground",
+            isActive && "text-app-primary2 font-extrabold",
+          )}
+          onClick={(e) => {
+            if (sortConfig?.onSort) {
+              e.stopPropagation();
+              sortConfig.onSort("started_at");
+            }
+          }}
+          title={
+            sortConfig?.onSort
+              ? isDesc
+                ? "Sorted Newest first. Click for Oldest first"
+                : isAsc
+                  ? "Sorted Oldest first. Click to clear"
+                  : "Click to sort by Start Date"
+              : undefined
+          }
+        >
+          <span>Started</span>
+          {sortConfig?.onSort && (
+            <span className="inline-flex items-center">
+              {isAsc ? (
+                <ArrowUp className="w-3 h-3 text-app-primary2" />
+              ) : isDesc ? (
+                <ArrowDown className="w-3 h-3 text-app-primary2" />
+              ) : (
+                <ArrowUpDown className="w-3 h-3 opacity-30 hover:opacity-70 transition-opacity" />
+              )}
+            </span>
+          )}
+        </div>
+      );
+    },
     size: 150,
     minSize: 150,
     cell: ({ row }) => (
@@ -187,11 +224,48 @@ export const getSubscriberColumns = (onAction) => [
   },
   {
     accessorKey: "expires_at",
-    header: () => (
-      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
-        Expired
-      </div>
-    ),
+    header: () => {
+      const isAsc = sortConfig?.dateSort === "expires_at:asc";
+      const isDesc = sortConfig?.dateSort === "expires_at:desc";
+      const isActive = isAsc || isDesc;
+      return (
+        <div
+          className={cn(
+            "flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-left transition-colors select-none",
+            sortConfig?.onSort && "cursor-pointer hover:text-foreground",
+            isActive && "text-app-primary2 font-extrabold",
+          )}
+          onClick={(e) => {
+            if (sortConfig?.onSort) {
+              e.stopPropagation();
+              sortConfig.onSort("expires_at");
+            }
+          }}
+          title={
+            sortConfig?.onSort
+              ? isDesc
+                ? "Sorted Newest first. Click for Oldest first"
+                : isAsc
+                  ? "Sorted Oldest first. Click to clear"
+                  : "Click to sort by Expiry Date"
+              : undefined
+          }
+        >
+          <span>Expired</span>
+          {sortConfig?.onSort && (
+            <span className="inline-flex items-center">
+              {isAsc ? (
+                <ArrowUp className="w-3 h-3 text-app-primary2" />
+              ) : isDesc ? (
+                <ArrowDown className="w-3 h-3 text-app-primary2" />
+              ) : (
+                <ArrowUpDown className="w-3 h-3 opacity-30 hover:opacity-70 transition-opacity" />
+              )}
+            </span>
+          )}
+        </div>
+      );
+    },
     size: 150,
     minSize: 150,
     cell: ({ row }) => (

@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,6 +18,7 @@ import {
 import { Send, X, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/shared/datatable";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   getFoodList,
   addFood,
@@ -30,6 +32,21 @@ import { getManageFoodItemsColumns } from "@/components/columns/manage.food.item
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { IoFastFoodOutline } from "react-icons/io5";
 import CTAButton from "@/components/common/CTAButton";
+
+const standardUnits = [
+  "g",
+  "mg",
+  "kg",
+  "ml",
+  "L",
+  "cup",
+  "tbsp",
+  "tsp",
+  "oz",
+  "lbs",
+  "piece",
+  "slice",
+];
 
 const ManageFoodItemsPage = () => {
   const { programId, categoryId } = useParams();
@@ -47,6 +64,7 @@ const ManageFoodItemsPage = () => {
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedSearchTerm = useDebounce(globalFilter, 500);
 
   // Consolidated Form State (Add & Edit)
   const [isEditing, setIsEditing] = useState(false);
@@ -55,6 +73,7 @@ const ManageFoodItemsPage = () => {
   const [toggleTarget, setToggleTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     food_id: "",
@@ -62,7 +81,9 @@ const ManageFoodItemsPage = () => {
     category_id: categoryId || "",
     quantity: "",
     unit: "",
+    status: "Active",
   });
+  const [initialStatus, setInitialStatus] = useState("Active");
 
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -82,28 +103,12 @@ const ManageFoodItemsPage = () => {
     );
   }
 
-  const standardUnits = [
-    "g",
-    "mg",
-    "kg",
-    "ml",
-    "L",
-    "cup",
-    "tbsp",
-    "tsp",
-    "oz",
-    "lbs",
-    "piece",
-    "slice",
-  ];
-
   useEffect(() => {
     // Fetch drop down categories for the select input
     dispatch(getFoodCategoriesDrop());
   }, [dispatch]);
 
-  useEffect(() => {
-    // Fetch food items for this program and category, page by page
+  const fetchFoodList = useCallback(() => {
     if (programId && categoryId) {
       dispatch(
         getFoodList({
@@ -112,6 +117,7 @@ const ManageFoodItemsPage = () => {
           params: {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
+            ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
           },
         }),
       );
@@ -122,7 +128,42 @@ const ManageFoodItemsPage = () => {
     categoryId,
     pagination.pageIndex,
     pagination.pageSize,
+    debouncedSearchTerm,
   ]);
+
+  useEffect(() => {
+    fetchFoodList();
+  }, [fetchFoodList]);
+
+  const handleGlobalFilterChange = (value) => {
+    setGlobalFilter(value);
+    setPagination((prev) =>
+      prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 },
+    );
+  };
+
+  // Client-side fallback filter so search works immediately even if backend ignores search query param
+  const filteredFoods = useMemo(() => {
+    if (!debouncedSearchTerm) return foods;
+    const lower = debouncedSearchTerm.toLowerCase().trim();
+    return (foods || []).filter((item) => {
+      const foodName =
+        item.meal?.Meal_title ||
+        item.Meal_title ||
+        item.name ||
+        item.title ||
+        "";
+      const catName =
+        item.category?.name ||
+        item.category?.title ||
+        item.category_name ||
+        "";
+      return (
+        foodName.toLowerCase().includes(lower) ||
+        catName.toLowerCase().includes(lower)
+      );
+    });
+  }, [foods, debouncedSearchTerm]);
 
   const resetForm = () => {
     setIsEditing(false);
@@ -134,7 +175,9 @@ const ManageFoodItemsPage = () => {
       category_id: categoryId || "",
       quantity: "",
       unit: "",
+      status: "Active",
     });
+    setInitialStatus("Active");
     setShowSuggestions(false);
     setIsFoodSelected(false);
   };
@@ -173,47 +216,57 @@ const ManageFoodItemsPage = () => {
       return;
     }
 
-    if (isEditing) {
-      const payload = {
-        foodName: formData.food_id,
-        approvalStatus: formData.type,
-        category: formData.category_id,
-        quantity: formData.quantity,
-        unit: formData.unit,
-      };
+    setIsSubmitting(true);
+    try {
+      if (isEditing) {
+        const payload = {
+          foodName: formData.food_id,
+          approvalStatus: formData.type,
+          category: formData.category_id,
+          quantity: formData.quantity,
+          unit: formData.unit,
+        };
 
-      const resultAction = await dispatch(
-        updateFood({ id: editingFoodId, data: payload }),
-      );
-      if (updateFood.fulfilled.match(resultAction)) {
-        toast.success("Food updated successfully!");
-        resetForm();
-        dispatch(getFoodList({ programId, categoryId }));
+        const resultAction = await dispatch(
+          updateFood({ id: editingFoodId, data: payload }),
+        );
+        if (updateFood.fulfilled.match(resultAction)) {
+          if (formData.status !== initialStatus) {
+            await dispatch(
+              toggleFoodStatus({ id: editingFoodId, status: formData.status }),
+            );
+          }
+          toast.success("Food updated successfully!");
+          resetForm();
+          fetchFoodList();
+        } else {
+          toast.error(resultAction.payload || "Failed to update food.");
+        }
       } else {
-        toast.error(resultAction.payload || "Failed to update food.");
-      }
-    } else {
-      const payload = {
-        program_id: programId,
-        category: formData.category_id,
-        foodName: formData.food_id,
-        approvalStatus: formData.type,
-        quantity: formData.quantity,
-        unit: formData.unit,
-      };
+        const payload = {
+          program_id: programId,
+          category: formData.category_id,
+          foodName: formData.food_id,
+          approvalStatus: formData.type,
+          quantity: formData.quantity,
+          unit: formData.unit,
+        };
 
-      const resultAction = await dispatch(addFood(payload));
-      if (addFood.fulfilled.match(resultAction)) {
-        toast.success("Food added successfully!");
-        resetForm();
-        dispatch(getFoodList({ programId, categoryId }));
-      } else {
-        toast.error(resultAction.payload || "Failed to add food.");
+        const resultAction = await dispatch(addFood(payload));
+        if (addFood.fulfilled.match(resultAction)) {
+          toast.success("Food added successfully!");
+          resetForm();
+          fetchFoodList();
+        } else {
+          toast.error(resultAction.payload || "Failed to add food.");
+        }
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleAction = async (row, action, val) => {
+  const handleAction = useCallback(async (row, action, val) => {
     if (action === "toggle") {
       const newStatus = val ? "Active" : "Inactive";
       setToggleTarget({ row, newStatus });
@@ -237,6 +290,11 @@ const ManageFoodItemsPage = () => {
           (u) => u.toLowerCase() === String(rawUnit).toLowerCase(),
         ) || rawUnit;
 
+      const loadedStatus =
+        row.status === "Active" || row.status === 1 || row.is_active
+          ? "Active"
+          : "Inactive";
+
       setFormData({
         title: row.name || row.title || row.meal?.Meal_title || "",
         food_id: row.food_id || row.meal_id || row.meal?.id || row.id || "",
@@ -252,14 +310,16 @@ const ManageFoodItemsPage = () => {
           row.meal?.Meal_Serving ||
           "",
         unit: matchedUnit,
+        status: loadedStatus,
       });
+      setInitialStatus(loadedStatus);
       setIsFoodSelected(true); // Treat as selected so the pill shows if needed (or just keep normal input depending on logic)
       // Scroll to top where the form is
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else if (action === "delete") {
       setDeleteTarget(row);
     }
-  };
+  }, [categoryId]);
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -268,7 +328,7 @@ const ManageFoodItemsPage = () => {
       const resultAction = await dispatch(deleteFood(deleteTarget.id));
       if (deleteFood.fulfilled.match(resultAction)) {
         toast.success("Food deleted successfully!");
-        dispatch(getFoodList({ programId, categoryId }));
+        fetchFoodList();
       } else {
         toast.error(resultAction.payload || "Failed to delete food.");
       }
@@ -288,7 +348,7 @@ const ManageFoodItemsPage = () => {
       );
       if (toggleFoodStatus.fulfilled.match(resultAction)) {
         toast.success("Status updated successfully!");
-        dispatch(getFoodList({ programId, categoryId }));
+        fetchFoodList();
       } else {
         toast.error(resultAction.payload || "Failed to update status.");
       }
@@ -300,7 +360,7 @@ const ManageFoodItemsPage = () => {
 
   const columns = useMemo(
     () => getManageFoodItemsColumns(handleAction),
-    [programId, categoryId],
+    [handleAction],
   );
 
   return (
@@ -554,13 +614,48 @@ const ManageFoodItemsPage = () => {
               </>
             )}
 
+            {/* Status toggle inside edit form */}
+            {isEditing && (
+              <div className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 bg-slate-50/70">
+                <div className="space-y-0.5">
+                  <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
+                    Food Status
+                  </Label>
+                  <p className="text-[11px] 3xl:text-xs text-slate-500 font-medium">
+                    Toggle whether this food item is active in the program.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`text-xs font-bold ${
+                      formData.status === "Active"
+                        ? "text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full"
+                        : "text-slate-600 bg-slate-200 px-2.5 py-0.5 rounded-full"
+                    }`}
+                  >
+                    {formData.status}
+                  </span>
+                  <Switch
+                    checked={formData.status === "Active"}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        status: checked ? "Active" : "Inactive",
+                      }))
+                    }
+                    className="data-[state=checked]:bg-app-cardGreen"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
               {isEditing && (
                 <Button
                   variant="outline"
                   className="w-full sm:w-auto rounded-md px-6 h-10 text-xs font-semibold"
                   onClick={resetForm}
-                  disabled={loading}
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
@@ -568,14 +663,14 @@ const ManageFoodItemsPage = () => {
               <Button
                 className="w-full sm:w-auto bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-5 h-10 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
                 type="submit"
-                disabled={loading}
+                disabled={isSubmitting}
               >
-                {loading ? (
+                {isSubmitting ? (
                   <Loader2 size={16} className="animate-spin" />
                 ) : (
                   !isEditing && <Send size={16} />
                 )}
-                {loading
+                {isSubmitting
                   ? isEditing
                     ? "Updating..."
                     : "Adding..."
@@ -591,22 +686,26 @@ const ManageFoodItemsPage = () => {
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={foods}
-            rowCount={foodsPagination?.total || foods.length}
+            data={filteredFoods}
+            rowCount={
+              debouncedSearchTerm
+                ? filteredFoods.length
+                : (foodsPagination?.total || foods.length)
+            }
             manualPagination={true}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            loading={loading}
-          onRowClick={(row) => handleAction(row.original, "edit")}
+            setGlobalFilter={handleGlobalFilterChange}
+            isLoading={loading}
+            onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>
       </div>
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => !deleteLoading && setDeleteTarget(null)}
+        onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Item"
         message={`Are you sure you want to delete "${deleteTarget?.name || deleteTarget?.title || deleteTarget?.meal?.Meal_title}"? This action cannot be undone.`}
@@ -615,7 +714,7 @@ const ManageFoodItemsPage = () => {
 
       <ConfirmModal
         isOpen={!!toggleTarget}
-        onClose={() => !toggleLoading && setToggleTarget(null)}
+        onClose={() => setToggleTarget(null)}
         onConfirm={handleConfirmToggle}
         title="Confirm Status Change"
         message={`Are you sure you want to change the status of "${toggleTarget?.row?.name || toggleTarget?.row?.title || toggleTarget?.row?.meal?.Meal_title}"?`}

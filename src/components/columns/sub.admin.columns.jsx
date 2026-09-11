@@ -150,17 +150,29 @@ export const getSubAdminColumns = (onAction) => [
     cell: ({ row }) => {
       const roleVal = row.original.role;
       let displayRole = "-";
-      if (roleVal == 1) {
+  if (roleVal == 1) {
         displayRole = "WhiteListing User";
       } else if (roleVal == 0) {
         displayRole = "Sub-Admin User";
       } else if (roleVal) {
         displayRole = roleVal;
       }
+      const roleStyle =
+        roleVal == 1
+          ? "bg-blue-500/15 text-blue-700"
+          : roleVal == 0
+            ? "bg-violet-500/15 text-violet-700"
+            : "bg-slate-500/10 text-slate-600";
       return (
-        <span className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
-          {displayRole}
-        </span>
+        <Badge
+          variant="outline"
+          className={cn(
+            "text-[10px] font-bold px-2.5 py-0.5 rounded-full border-none shadow-none uppercase tracking-wide max-w-full w-fit",
+            roleStyle,
+          )}
+        >
+          <span className="truncate">{displayRole}</span>
+        </Badge>
       );
     },
   },

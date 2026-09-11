@@ -38,8 +38,9 @@ export function TabTransactions({ data }) {
       case "disputed":
         return "danger";
       case "pending":
-      case "refunded":
         return "warning";
+      case "refunded":
+        return "refunded";
       default:
         return "neutral";
     }

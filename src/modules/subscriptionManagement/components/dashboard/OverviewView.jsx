@@ -23,6 +23,7 @@ import { APP_COLORS } from "@/config/theme.config";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { LuUserRoundMinus, LuUsersRound } from "react-icons/lu";
+import { toast } from "sonner";
 
 
 
@@ -291,11 +292,21 @@ export default function OverviewView({
             rows={dashboardExtras?.tables?.recentTransactions || []}
             emptyMessage="No transactions yet."
             actionLabel="View"
-            onAction={(row) =>
-              navigate(`/admin/users/view-user/${row.user_id || row.id}`, {
-                state: { from: "/admin/subscription-management/dashboard" },
-              })
-            }
+            onAction={(row) => {
+              const userId =
+                row?.user_id ||
+                row?.userId ||
+                row?.user?.id ||
+                row?.user?.user_id;
+              if (userId) {
+                navigate(`/admin/users/view-user/${userId}`, {
+                  state: { from: "/admin/subscription-management/dashboard" },
+                });
+              } else {
+                console.warn("Recent Transaction row is missing a linkable user id:", row);
+                toast.error("User ID not found for this transaction");
+              }
+            }}
             columns={[
               {
                 key: "sno",
@@ -307,7 +318,23 @@ export default function OverviewView({
                   </span>
                 ),
               },
-              { key: "user_name", label: "User", width: "w-[26%]" },
+              {
+                key: "user_name",
+                label: "User",
+                width: "w-[26%]",
+                render: (r) => (
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-semibold text-slate-800 hover:text-app-primary transition-colors truncate">
+                      {r.user_name || "Unknown User"}
+                    </span>
+                    {r.user_email && (
+                      <span className="text-[10px] text-slate-400 truncate">
+                        {r.user_email}
+                      </span>
+                    )}
+                  </div>
+                ),
+              },
               {
                 key: "plan_title",
                 label: "Plan",
@@ -365,11 +392,14 @@ export default function OverviewView({
               emptyMessage="No plans expiring soon."
               emptyStateClassName="pb-8"
               actionLabel="View"
-              onAction={(row) =>
-                navigate(`/admin/users/view-user/${row.user_id || row.id}`, {
-                  state: { from: "/admin/subscription-management/dashboard" },
-                })
-              }
+              onAction={(row) => {
+                const userId = row?.user_id || row?.userId || row?.user?.id || row?.user?.user_id || row?.id;
+                if (userId) {
+                  navigate(`/admin/users/view-user/${userId}`, {
+                    state: { from: "/admin/subscription-management/dashboard" },
+                  });
+                }
+              }}
               columns={[
                 {
                   key: "sr_no",

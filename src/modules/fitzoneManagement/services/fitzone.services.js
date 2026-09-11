@@ -24,3 +24,19 @@ export const deleteFitzoneAPI = async (id) => {
 export const assignFitzoneToAllUsersAPI = async (id) => {
   return apiConnector("POST", FITZONE_CRUD.FITZONE_ASSIGN_ALL_USERS(id));
 };
+
+export const getFitzoneAssignmentRunsAPI = async (id) => {
+  return apiConnector("GET", FITZONE_CRUD.FITZONE_ASSIGNMENT_RUNS(id));
+};
+
+export const getFitzoneAssignableUsersAPI = async (id, params = {}) => {
+  return apiConnector("GET", FITZONE_CRUD.FITZONE_ASSIGNABLE_USERS(id), null, null, params);
+};
+
+export const assignFitzoneToSelectedUsersAPI = async (id, userIds) => {
+  return apiConnector("POST", FITZONE_CRUD.FITZONE_ASSIGN_SELECTED_USERS(id), { user_ids: userIds });
+};
+
+export const unassignFitzoneUserAPI = async (id, userId) => {
+  return apiConnector("POST", FITZONE_CRUD.FITZONE_UNASSIGN_USER(id), { user_id: userId });
+};

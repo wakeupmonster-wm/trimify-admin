@@ -20,6 +20,34 @@ const fmtNumber = (val) => {
   return (num || 0).toLocaleString();
 };
 
+// Keep dashboard drill-down filters in the URL. React navigation state is
+// ephemeral and can be lost by reloads, redirects, or a second navigation.
+const formatLocalDate = (value) => {
+  if (!value) return "";
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return value.slice(0, 10);
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const pad = (number) => String(number).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
+const fitzoneDrillDownUrl = (dateRange) => {
+  const params = new URLSearchParams();
+  if (dateRange?.preset) params.set("preset", dateRange.preset);
+
+  const from = formatLocalDate(dateRange?.from);
+  const to = formatLocalDate(dateRange?.to);
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+
+  const query = params.toString();
+  return `/admin/fitzone-management${query ? `?${query}` : ""}`;
+};
+
 const KPI_CONFIG = [
   {
     key: "totalRevenue",
@@ -66,7 +94,7 @@ const KPI_CONFIG = [
     format: (data) => fmtNumber(data?.totalFitzoneSessions),
     isCurrency: false,
     onClick: (navigate, dateRange) =>
-      navigate("/admin/fitzone-management", { state: { dateRange } }),
+      navigate(fitzoneDrillDownUrl(dateRange), { state: { dateRange } }),
   },
   {
     key: "missedStepGoals",

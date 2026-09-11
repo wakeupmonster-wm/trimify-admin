@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Activity,
   Footprints,
@@ -6,10 +6,13 @@ import {
   Utensils,
   Weight,
   History,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, EmptyState } from "./UserProfileShared";
-import { activityMeta } from "./activity.utils";
+import { activityMeta, formatWeightValue } from "./activity.utils";
+import { getUserActivityLogsAPI } from "../services/user.services";
+import { DataTablePagination } from "@/components/shared/datatable/DataTablePagination";
 
 const FILTERS = [
   { key: "all", label: "All", tile: null },
@@ -27,30 +30,123 @@ const TILE_TYPE = {
 };
 
 export function TabActivity({ data }) {
-  const { as, logActivities, maxSteps, fmtDate } = data;
-  const [filter, setFilter] = useState("all");
+  const { as, maxSteps, fmtDate, user } = data;
+  const userId = user?.id || user?.user_id;
 
-  const filteredActivities = useMemo(
-    () =>
-      filter === "all"
-        ? logActivities
-        : logActivities.filter((a) => a.type === filter),
-    [logActivities, filter],
+  const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [loading, setLoading] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [summary, setSummary] = useState(as || {});
+  const [totalRows, setTotalRows] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchActivityLogs = useCallback(
+    async (currentPage, currentLimit, currentFilter) => {
+      if (!userId) return;
+      setLoading(true);
+      try {
+        const params = {
+          page: currentPage,
+          limit: currentLimit,
+        };
+        if (currentFilter && currentFilter !== "all") {
+          params.type = currentFilter;
+        }
+        const res = await getUserActivityLogsAPI(userId, params);
+        if (res?.success && res.data) {
+          setActivities(res.data.activities || []);
+          if (res.data.summary) {
+            setSummary(res.data.summary);
+          }
+          if (res.data.pagination) {
+            setTotalRows(res.data.pagination.total || 0);
+            setTotalPages(
+              res.data.pagination.last_page ||
+                res.data.pagination.totalPage ||
+                1,
+            );
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch activity logs:", err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userId],
   );
 
-  const activeFilterMeta = FILTERS.find((f) => f.key === filter);
+  useEffect(() => {
+    fetchActivityLogs(page, pageSize, filter);
+  }, [fetchActivityLogs, page, pageSize, filter]);
+
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    setPage(1);
+  };
+
+  const activeFilterMeta =
+    FILTERS.find((f) => f.key === filter) || FILTERS[0];
+
+  const table = useMemo(
+    () => ({
+      getPageCount: () => totalPages,
+      getState: () => ({
+        pagination: {
+          pageIndex: Math.max(0, page - 1),
+          pageSize: pageSize,
+        },
+      }),
+      setPageSize: (size) => {
+        setPageSize(size);
+        setPage(1);
+      },
+      previousPage: () => setPage((p) => Math.max(1, p - 1)),
+      nextPage: () => setPage((p) => Math.min(totalPages, p + 1)),
+      getCanPreviousPage: () => page > 1,
+      getCanNextPage: () => page < totalPages,
+      setPageIndex: (index) => setPage(index + 1),
+    }),
+    [page, pageSize, totalPages],
+  );
+
+  const activeSummary = summary || as || {};
 
   return (
     <>
+      {/* KPI Top Cards */}
       <div className="mb-3.5 grid grid-cols-2 gap-3.5 lg:grid-cols-2 xl:grid-cols-4">
         {[
-          { l: "Steps", d: as.steps || {}, icon: Footprints, tone: "emerald" },
-          { l: "Water", d: as.water || {}, icon: Droplets, tone: "blue" },
-          { l: "Food", d: as.food || {}, icon: Utensils, tone: "amber" },
-          { l: "Weight", d: as.weight || {}, icon: Weight, tone: "purple" },
+          {
+            l: "Steps",
+            d: activeSummary.steps || {},
+            icon: Footprints,
+            tone: "emerald",
+          },
+          {
+            l: "Water",
+            d: activeSummary.water || {},
+            icon: Droplets,
+            tone: "blue",
+          },
+          {
+            l: "Food",
+            d: activeSummary.food || {},
+            icon: Utensils,
+            tone: "amber",
+          },
+          {
+            l: "Weight",
+            d: activeSummary.weight || {},
+            icon: Weight,
+            tone: "purple",
+          },
         ].map((c) => {
           const type = TILE_TYPE[c.l];
           const isActive = filter === type;
+          const isWater = c.l === "Water";
 
           const borderTones = {
             blue: "border-b-app-primary2",
@@ -70,7 +166,6 @@ export function TabActivity({ data }) {
             emerald: "ring-emerald-500",
             amber: "ring-amber-500",
           };
-
           const borderActive = {
             blue: "border-app-primary2",
             purple: "border-purple-500",
@@ -78,11 +173,15 @@ export function TabActivity({ data }) {
             amber: "border-amber-500",
           };
 
+          const displayValue = isWater
+            ? `${c.d.total_liters ?? (c.d.total_ml ? (c.d.total_ml / 1000).toFixed(1) : 0)} L`
+            : c.d.total_entries || 0;
+
           return (
             <button
               key={c.l}
               type="button"
-              onClick={() => setFilter(isActive ? "all" : type)}
+              onClick={() => handleFilterChange(isActive ? "all" : type)}
               className={cn(
                 "flex flex-col items-center justify-center px-6 py-4 rounded-2xl border border-slate-300/80 bg-white border-b-4 shadow-sm transition-all duration-300",
                 borderTones[c.tone] || borderTones.blue,
@@ -97,37 +196,41 @@ export function TabActivity({ data }) {
                   textTones[c.tone] || textTones.blue,
                 )}
               >
-                {c.d.total_entries || 0}
+                {displayValue}
               </div>
               <p className="text-xs md:text-[13px] font-bold text-slate-600 text-center tracking-tight">
                 {c.l}
               </p>
-              {/* <p className="mt-1.5 text-[10px] font-medium text-slate-400 text-center">
-                {c.d.last_logged_at
-                  ? `Last: ${fmtDate(c.d.last_logged_at)}`
-                  : "No entries yet"}
-              </p> */}
+              {isWater && (
+                <p className="mt-0.5 text-[10.5px] font-semibold text-slate-400 text-center">
+                  {c.d.total_entries || 0} logs
+                </p>
+              )}
             </button>
           );
         })}
       </div>
 
+      {/* Activity Log History Card */}
       <Card
         title="Activity Log History"
         subtitle="Steps, water, food & weight entries, newest first"
         icon={History}
         right={
           <span className="inline-flex items-center ml-auto sm:ml-0 w-max border border-slate-200 bg-slate-100/50 rounded-xl text-muted-foreground px-3 py-1 font-bold text-[10px] shadow-sm">
-            {filteredActivities.length} Active Categories
+            {totalRows > 0
+              ? `${totalRows} ${filter === "all" ? "Total Logs" : activeFilterMeta.label + " Logs"}`
+              : "0 Logs"}
           </span>
         }
       >
+        {/* Filter Pills */}
         <div className="mb-4 flex flex-wrap gap-1.5">
           {FILTERS.map((f) => (
             <button
               key={f.key}
               type="button"
-              onClick={() => setFilter(f.key)}
+              onClick={() => handleFilterChange(f.key)}
               className={cn(
                 "rounded-full border px-3 py-1 text-[10.5px] font-semibold transition-colors",
                 filter === f.key
@@ -140,14 +243,47 @@ export function TabActivity({ data }) {
           ))}
         </div>
 
-        {filteredActivities.length > 0 ? (
+        {/* Content Area */}
+        {loading ? (
+          <div className="flex h-48 flex-col items-center justify-center gap-2 text-slate-400">
+            <Loader2 className="h-6 w-6 animate-spin text-app-primary2" />
+            <p className="text-xs font-medium">Loading activity logs...</p>
+          </div>
+        ) : activities.length > 0 ? (
           <div className="flex flex-col">
-            {filteredActivities.map((a, i) => {
+            {activities.map((a, i) => {
               const { icon: Icon, className, label } = activityMeta(a.type);
+
+              let displayTitle = a.title || "";
+              if (a.type === "water_log") {
+                if (a.water_ml !== undefined && a.water_ml !== null) {
+                  displayTitle = `${a.water_ml} ml of water logged`;
+                } else {
+                  displayTitle = displayTitle
+                    .replace(/glass\(es\)/i, "ml")
+                    .replace(/glasses/i, "ml");
+                }
+              } else if (a.type === "weight_log") {
+                displayTitle = displayTitle.replace(
+                  /Weight logged:\s*([\d.]+)\s*(\w+)?/i,
+                  (_, weightNum, unit) =>
+                    `Weight logged: ${formatWeightValue(weightNum)} ${unit || "kg"}`.trim(),
+                );
+              }
+
+              const stepsVal =
+                a.steps ||
+                (a.type === "step_log"
+                  ? parseInt(
+                      ((a.title || "").match(/\d+/) || ["0"])[0],
+                      10,
+                    )
+                  : 0);
+
               return (
                 <div
-                  key={i}
-                  className="flex items-center gap-3 py-2.5 last:pb-0"
+                  key={a.id || `${a.type}-${i}`}
+                  className="flex items-center gap-3 py-2.5 last:pb-0 border-b border-slate-100 last:border-b-0"
                 >
                   <div
                     className={cn(
@@ -159,10 +295,10 @@ export function TabActivity({ data }) {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-[12px] font-semibold text-slate-900">
-                      {a.title}
+                      {displayTitle}
                     </div>
                     <div className="text-[10.5px] font-medium text-slate-400">
-                      {label} · {fmtDate(a.created_at)}
+                      {label} · {fmtDate ? fmtDate(a.created_at) : a.created_at}
                     </div>
                   </div>
                   {a.type === "step_log" && (
@@ -171,7 +307,7 @@ export function TabActivity({ data }) {
                         <div
                           className="h-full rounded-full bg-app-primary2"
                           style={{
-                            width: `${maxSteps ? ((a.steps / maxSteps) * 100).toFixed(0) : 0}%`,
+                            width: `${maxSteps ? Math.min(100, Math.round((stepsVal / maxSteps) * 100)) : 0}%`,
                           }}
                         />
                       </div>
@@ -180,6 +316,17 @@ export function TabActivity({ data }) {
                 </div>
               );
             })}
+
+            {/* Pagination Controls */}
+            {totalRows > 0 && (
+              <div className="mt-4 -mx-5 -mb-5">
+                <DataTablePagination
+                  table={table}
+                  rowCount={totalRows}
+                  itemName="Logs"
+                />
+              </div>
+            )}
           </div>
         ) : (
           <EmptyState

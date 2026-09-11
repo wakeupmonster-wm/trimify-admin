@@ -282,11 +282,17 @@ const NotificationManagePage = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-xs font-bold text-slate-800">
-                        Campaign Name
-                      </Label>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold text-slate-800">
+                          Campaign Name
+                        </Label>
+                        <span className="text-[10px] font-medium text-slate-400">
+                          {campaignName.length} / 80
+                        </span>
+                      </div>
                       <Input
                         type="text"
+                        maxLength={80}
                         placeholder="e.g., Reminder - Riya"
                         value={campaignName}
                         onChange={(e) => setCampaignName(e.target.value)}
@@ -329,11 +335,17 @@ const NotificationManagePage = () => {
 
                     {activeTab === "push" && (
                       <div className="space-y-2">
-                        <Label className="text-xs font-bold text-slate-800">
-                          Push Title
-                        </Label>
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-bold text-slate-800">
+                            Push Title
+                          </Label>
+                          <span className="text-[10px] font-medium text-slate-400">
+                            {pushTitle.length} / 65
+                          </span>
+                        </div>
                         <Input
                           type="text"
+                          maxLength={65}
                           placeholder="Enter Push Title Here..."
                           value={pushTitle}
                           onChange={(e) => setPushTitle(e.target.value)}
@@ -344,11 +356,17 @@ const NotificationManagePage = () => {
 
                     {activeTab === "email" && (
                       <div className="space-y-2">
-                        <Label className="text-xs font-bold text-slate-800">
-                          Email Subject
-                        </Label>
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs font-bold text-slate-800">
+                            Email Subject
+                          </Label>
+                          <span className="text-[10px] font-medium text-slate-400">
+                            {emailSubject.length} / 100
+                          </span>
+                        </div>
                         <Input
                           type="text"
+                          maxLength={100}
                           placeholder="Enter Subject Here..."
                           value={emailSubject}
                           onChange={(e) => setEmailSubject(e.target.value)}
@@ -358,19 +376,30 @@ const NotificationManagePage = () => {
                     )}
 
                     <div className="space-y-2">
-                      <Label className="text-xs font-bold text-slate-800">
-                        Message Content
-                      </Label>
-                      <Textarea
-                        placeholder={
-                          activeTab === "email"
-                            ? "Enter Email Body Here (HTML supported)..."
-                            : "Enter Push Message Here..."
-                        }
-                        value={messageText}
-                        onChange={(e) => setMessageText(e.target.value)}
-                        className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 rounded-lg"
-                      />
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold text-slate-800">
+                          Message Content
+                        </Label>
+                        <span className="text-[10px] font-medium text-slate-400">
+                          {messageText.length} / {activeTab === "email" ? 2000 : 240}
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Textarea
+                          maxLength={activeTab === "email" ? 2000 : 240}
+                          placeholder={
+                            activeTab === "email"
+                              ? "Enter Email Body Here (HTML supported)..."
+                              : "Enter Push Message Here..."
+                          }
+                          value={messageText}
+                          onChange={(e) => setMessageText(e.target.value)}
+                          className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 pb-7 rounded-lg"
+                        />
+                        <div className="absolute bottom-2 right-3 text-[10px] font-medium text-slate-400 pointer-events-none">
+                          {messageText.length} / {activeTab === "email" ? 2000 : 240}
+                        </div>
+                      </div>
                     </div>
 
                     <Button

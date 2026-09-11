@@ -115,16 +115,24 @@ const KpiCard = ({
     dynamicExplanation = `${isPositive ? "Increase" : "Decrease"} compared to previous period`;
   }
 
+  const rawNumVal =
+    typeof value === "number"
+      ? value
+      : parseFloat(String(value).replace(/[^0-9.\-]/g, ""));
+  const isValueZero = isNaN(rawNumVal) || rawNumVal === 0;
+
   const trendNum = trendValue
     ? parseFloat(String(trendValue).replace(/[^0-9.\-]/g, ""))
     : 0;
-  const isTrendZero = trendNum === 0;
+  const isTrendZero = isNaN(trendNum) || trendNum === 0;
   const isTrendUp = trendNum > 0;
   const isTrendDown = trendNum < 0;
   // Use the backend's `isPositive` flag to determine color.
   // For "missed" metrics: increase = bad (red), decrease = good (green).
   // `isPositive` from backend already accounts for this inversion.
   const isTrendGood = isTrendZero ? null : isPositive;
+
+  const shouldShowTrend = trendValue && !isValueZero && !isTrendZero;
 
   return (
     <div
@@ -164,7 +172,7 @@ const KpiCard = ({
           </p>
 
           {/* Trend Tooltip */}
-          {trendValue ? (
+          {shouldShowTrend ? (
             <TooltipProvider>
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>

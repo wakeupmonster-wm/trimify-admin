@@ -2,7 +2,7 @@ import { Container } from "@/components/common/container";
 import CTAButton from "@/components/common/CTAButton";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, UploadCloud, Activity, Loader2, ArrowLeft } from "lucide-react";
+import { Save, Activity, Loader2, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import ImageUploadPreview from "@/components/common/ImageUploadPreview";
 
 const AddFitzonePage = () => {
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ const AddFitzonePage = () => {
   });
 
   const [previewUrl, setPreviewUrl] = useState(editData?.image || null);
-  const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -40,28 +40,6 @@ const AddFitzonePage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, bannerImage: file }));
-      setPreviewUrl(URL.createObjectURL(file));
-      if (errors.bannerImage)
-        setErrors((prev) => ({ ...prev, bannerImage: null }));
-    }
   };
 
   const handleFileSelect = (e) => {
@@ -243,66 +221,22 @@ const AddFitzonePage = () => {
                 )}
               </div>
 
-              {/* Row 4: Banner Image Upload */}
-              <div className="space-y-1.5">
-                <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
-                  Upload Banner Image
-                </Label>
-
-                <div
-                  className={`relative overflow-hidden border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                    isDragging
-                      ? "border-app-primary2 bg-blue-50"
-                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  } ${previewUrl ? "p-0 min-h-[160px]" : "p-10"}`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() =>
-                    document.getElementById("banner-upload").click()
-                  }
-                >
-                  <input
-                    id="banner-upload"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                  />
-                  {previewUrl ? (
-                    <div className="relative w-full h-full group flex flex-col items-center justify-center min-h-[160px]">
-                      <img
-                        src={
-                          previewUrl?.startsWith("http") || previewUrl?.startsWith("blob")
-                            ? previewUrl
-                            : `${IMAGE_BASE_URL}/${previewUrl?.replace(/^\//, "")}`
-                        }
-                        alt="Banner preview"
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white z-10">
-                        <UploadCloud className="w-8 h-8 mb-2 text-white" />
-                        <span className="text-sm font-semibold text-white">Click or drag to replace</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                      <p className="text-sm font-semibold text-slate-700">
-                        Click or drag and drop to upload
-                      </p>
-                    </>
-                  )}
-                  <p className="text-xs text-slate-500 mt-1">
-                    SVG, PNG, JPG or GIF (max. 800x400px)
-                  </p>
-                </div>
-                {errors.bannerImage && (
-                  <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                    {errors.bannerImage}
-                  </p>
-                )}
-              </div>
+              {/* Row 4: Thumbnail Image Upload (Circle Chip on App) */}
+              <ImageUploadPreview
+                file={formData.bannerImage}
+                previewUrl={previewUrl}
+                onFileSelect={handleFileSelect}
+                onRemove={() => {
+                  setFormData((prev) => ({ ...prev, bannerImage: null }));
+                  setPreviewUrl(null);
+                }}
+                label={isEditMode ? "Replace Program Thumbnail (Circle View)" : "Upload Program Thumbnail (Circle View)"}
+                variant="icon"
+                aspectRatioBadge="Circle 1:1"
+                hint="Recommended: Square thumbnail (1:1), 150×150 px to 256×256 px. Renders as a circular chip on mobile app (max 5MB)."
+                id="banner-upload"
+                error={errors.bannerImage}
+              />
             </div>
 
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">

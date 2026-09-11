@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
+import SafeImage from "@/components/common/SafeImage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,10 +58,11 @@ export const getManageFoodCategoryColumns = (handleAction) => [
       return (
         <div className="flex justify-center items-center">
           {row.original.image ? (
-            <img
+            <SafeImage
               src={imageUrl}
               alt={row.original.name}
               className="w-8 h-8 object-contain rounded-md bg-slate-50 border border-slate-100"
+              fallbackClassName="w-8 h-8 rounded-md border border-slate-100"
             />
           ) : (
             <span className="text-xs text-slate-400">-</span>

@@ -6,13 +6,9 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
 import {
   Save,
-  UploadCloud,
   FileText,
   Loader2,
   ArrowLeft,
-  Eye,
-  Pencil,
-  Trash2,
 } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { Input } from "@/components/ui/input";
@@ -33,7 +29,7 @@ import {
   fetchBlogCategoryDropdown,
 } from "../store/blog.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ImageUploadPreview from "@/components/common/ImageUploadPreview";
 
 const AddPostPage = () => {
   const navigate = useNavigate();
@@ -49,8 +45,6 @@ const AddPostPage = () => {
   const [categories, setCategories] = useState([]);
   const [removedExistingImage, setRemovedExistingImage] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [currentBanner, setCurrentBanner] = useState(null);
 
   const [formData, setFormData] = useState(() => ({
     title: isEdit ? editData?.title || "" : "",
@@ -77,8 +71,6 @@ const AddPostPage = () => {
       });
   }, [dispatch]);
 
-  const [isDragging, setIsDragging] = useState(false);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -88,29 +80,13 @@ const AddPostPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, bannerImage: file }));
-    }
-  };
-
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prev) => ({ ...prev, bannerImage: file }));
+      if (errors.bannerImage) {
+        setErrors((prev) => ({ ...prev, bannerImage: "" }));
+      }
     }
   };
 
@@ -279,106 +255,29 @@ const AddPostPage = () => {
             </div>
 
             {/* Upload Banner Image */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
-                {isEdit ? "Featured Image" : "Upload Featured Image"}
-              </Label>
-              <input
-                id="banner-upload"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileSelect}
-              />
-              {formData.bannerImage ||
-              (isEdit && editData?.image && !removedExistingImage) ? (
-                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
-                  <img
-                    src={
-                      formData.bannerImage instanceof File ||
-                      formData.bannerImage instanceof Blob
-                        ? URL.createObjectURL(formData.bannerImage)
-                        : typeof formData.bannerImage === "string"
-                          ? formData.bannerImage
-                          : editData?.image
-                    }
-                    alt="Featured"
-                    className="w-full h-48 object-cover bg-slate-50"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    <button
-                      type="button"
-                      aria-label="View featured image"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCurrentBanner(
-                          formData.bannerImage instanceof File ||
-                            formData.bannerImage instanceof Blob
-                            ? URL.createObjectURL(formData.bannerImage)
-                            : formData.bannerImage || editData?.image,
-                        );
-                        setPreviewOpen(true);
-                      }}
-                      className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Eye className="w-5 h-5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Replace featured image"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        document.getElementById("banner-upload")?.click();
-                      }}
-                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Delete featured image"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setFormData((prev) => ({ ...prev, bannerImage: null }));
-                        if (isEdit) setRemovedExistingImage(true);
-                        if (errors.bannerImage)
-                          setErrors((prev) => ({ ...prev, bannerImage: "" }));
-                      }}
-                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div
-                  className={`border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                    isDragging
-                      ? "border-app-primary2 bg-blue-50"
-                      : "border-slate-300/60 hover:border-app-primary2/50 bg-slate-50 hover:bg-slate-50/80"
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() =>
-                    document.getElementById("banner-upload").click()
-                  }
-                >
-                  <UploadCloud className="w-10 h-10 text-app-primary2 mb-3" />
-                  <p className="text-sm font-semibold text-slate-700">
-                    Click or drag and drop to upload
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    SVG, PNG, JPG or GIF (max. 800x400px)
-                  </p>
-                </div>
-              )}
-              {errors.bannerImage && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.bannerImage}
-                </p>
-              )}
-            </div>
+            <ImageUploadPreview
+              file={formData.bannerImage instanceof File || formData.bannerImage instanceof Blob ? formData.bannerImage : null}
+              previewUrl={
+                removedExistingImage 
+                  ? null 
+                  : (formData.bannerImage instanceof File || formData.bannerImage instanceof Blob)
+                    ? null
+                    : typeof formData.bannerImage === "string" ? formData.bannerImage : editData?.image
+              }
+              onFileSelect={handleFileSelect}
+              onRemove={() => {
+                setFormData((prev) => ({ ...prev, bannerImage: null }));
+                if (isEdit) setRemovedExistingImage(true);
+                if (errors.bannerImage)
+                  setErrors((prev) => ({ ...prev, bannerImage: "" }));
+              }}
+              label={isEdit ? "Featured Banner Image" : "Upload Featured Banner Image"}
+              variant="banner"
+              aspectRatioBadge="Banner ~2:1"
+              hint="Recommended: Landscape banner (~2:1 ratio), 800×400 px or 1024×512 px. PNG, JPG or WebP (max 5MB)."
+              id="banner-upload"
+              error={errors.bannerImage}
+            />
 
             {/* Post Status */}
             <div className="space-y-1.5">
@@ -444,20 +343,7 @@ const AddPostPage = () => {
         </div>
       </div>
 
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden gap-0">
-          {currentBanner && (
-            <img
-              src={currentBanner}
-              alt="Featured image preview"
-              className="w-full max-h-[75vh] object-contain bg-slate-50"
-            />
-          )}
-          <div className="p-4 text-sm font-semibold text-slate-800">
-            {formData.title || "Featured Image"}
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

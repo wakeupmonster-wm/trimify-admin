@@ -68,6 +68,7 @@ const AiFoodUploadPage = () => {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [mealTypeFilter, setMealTypeFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   const visibleItems = useMemo(
@@ -86,6 +87,10 @@ const AiFoodUploadPage = () => {
       result = result.filter((item) => item.status === statusFilter);
     }
 
+    if (mealTypeFilter) {
+      result = result.filter((item) => item.Meal_Type === mealTypeFilter);
+    }
+
     // Apply search filter
     const q = globalFilter.trim().toLowerCase();
     if (q) {
@@ -95,7 +100,7 @@ const AiFoodUploadPage = () => {
     }
 
     return result;
-  }, [visibleItems, globalFilter, statusFilter]);
+  }, [visibleItems, globalFilter, statusFilter, mealTypeFilter]);
 
   const filterConfig = [
     {
@@ -115,6 +120,18 @@ const AiFoodUploadPage = () => {
         { label: "Queued", value: "draft" },
       ],
       placeholder: "All Status",
+    },
+    {
+      type: "select",
+      id: "mealTypeFilter",
+      label: "Meal Type",
+      value: mealTypeFilter,
+      onChange: (val) => {
+        setMealTypeFilter(val);
+        setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      },
+      options: ["Breakfast", "Lunch", "Dinner", "Snacks"],
+      placeholder: "All Meal Types",
     },
   ];
 
@@ -277,6 +294,7 @@ const AiFoodUploadPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   setStatusFilter("");
+                  setMealTypeFilter("");
                   setPagination((prev) => ({ ...prev, pageIndex: 0 }));
                 }}
               />

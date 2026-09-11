@@ -3,7 +3,7 @@ import { Container } from "@/components/common/container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Settings, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Settings, Loader2, Calendar, Clock } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ import {
 const AccountSettingsPage = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.accountSettings);
+  const { account } = useSelector((state) => state.account);
 
   const [activeTab, setActiveTab] = useState("password");
 
@@ -39,6 +40,17 @@ const AccountSettingsPage = () => {
   });
   const [emailErrors, setEmailErrors] = useState({});
   const [showOtpField, setShowOtpField] = useState(false);
+
+  const formatDateSafe = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   const handlePasswordSubmit = async () => {
     let errors = {};
@@ -134,6 +146,27 @@ const AccountSettingsPage = () => {
             />
           </div>
         </Header>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-md border border-slate-300/60 bg-white px-4 py-3.5 shadow-sm">
+            <div className="rounded-lg bg-slate-100/60 p-2 text-slate-600">
+              <Calendar className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Member Since</p>
+              <p className="mt-0.5 text-sm font-semibold text-slate-800">{formatDateSafe(account?.memberSince || account?.member_since)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-md border border-slate-300/60 bg-white px-4 py-3.5 shadow-sm">
+            <div className="rounded-lg bg-slate-100/60 p-2 text-slate-600">
+              <Clock className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Last Login</p>
+              <p className="mt-0.5 text-sm font-semibold text-slate-800">{formatDateSafe(account?.lastLoginAt || account?.last_login_at)}</p>
+            </div>
+          </div>
+        </div>
 
         {/* Content Card */}
         <div className="bg-white rounded-md shadow-sm border border-slate-300/60 p-6">

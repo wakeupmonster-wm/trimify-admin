@@ -7,6 +7,7 @@ const PILL_TONES = {
   expired: "bg-[#E11D48]/10 text-[#E11D48] border-[#E11D48]/20",
   danger: "bg-red-50 text-red-600 border-red-200",
   warning: "bg-amber-50 text-amber-600 border-amber-200",
+  refunded: "bg-violet-50 text-violet-700 border-violet-200",
   neutral: "bg-slate-100 text-slate-500 border-slate-300/60",
 };
 
@@ -41,7 +42,7 @@ export function Card({
   iconColor,
   iconBg,
   tooltipText,
-  showHeaderDivider = false,
+  showHeaderDivider = true,
 }) {
   return (
     <div
@@ -54,7 +55,7 @@ export function Card({
         <div
           className={cn(
             "flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 bg-slate-50/20",
-            showHeaderDivider && "border-b border-slate-200",
+            showHeaderDivider !== false && "border-b border-slate-200",
           )}
         >
           <div className="flex-1 min-w-0">
@@ -171,6 +172,75 @@ export function EmptyState({ icon: Icon, title, subtitle }) {
           {subtitle}
         </div>
       )}
+    </div>
+  );
+}
+
+export function ActivityRing({
+  value = 0,
+  max = 1,
+  label,
+  unit,
+  icon: Icon,
+  textClass,
+  bgLightClass,
+}) {
+  const pct = Math.min(100, Math.max(0, (value / (max || 1)) * 100));
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (pct / 100) * circumference;
+
+  return (
+    <div className="flex flex-col items-center justify-center p-4 rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-slate-200">
+      <div className="relative flex items-center justify-center h-24 w-24 mb-3">
+        <svg
+          className="h-full w-full -rotate-90 transform drop-shadow-sm"
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            className="stroke-slate-100"
+            strokeWidth="9"
+            fill="none"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            className={cn(
+              "transition-all duration-1000 ease-out drop-shadow-sm",
+              textClass,
+            )}
+            stroke="currentColor"
+            strokeWidth="9"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+          />
+        </svg>
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center rounded-full m-6",
+            bgLightClass,
+          )}
+        >
+          {Icon && <Icon className={cn("w-5 h-5", textClass)} />}
+        </div>
+      </div>
+      <div className="text-center w-full">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-0.5">
+          {label}
+        </div>
+        <div className="text-[13px] font-black tabular-nums text-slate-900 leading-tight">
+          {value.toLocaleString()}{" "}
+          <span className="text-[10px] font-bold text-slate-400">
+            / {max.toLocaleString()} {unit}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

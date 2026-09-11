@@ -40,6 +40,7 @@ export default function SubscribersView() {
     location.state?.filterId || "",
   );
   const [planFilter, setPlanFilter] = useState("");
+  const [dateSort, setDateSort] = useState("");
 
   const [confirmAction, setConfirmAction] = useState(null); // { subscriber, action: "expire"|"revoke" }
   const [upgradeSubscriber, setUpgradeSubscriber] = useState(null);
@@ -83,8 +84,12 @@ export default function SubscribersView() {
       search: debouncedSearch,
       status: statusFilter,
       plan_id: planFilter,
+      ...(dateSort && {
+        sort_by: dateSort.split(":")[0],
+        sort_order: dateSort.split(":")[1],
+      }),
     }),
-    [pagination, debouncedSearch, statusFilter, planFilter],
+    [pagination, debouncedSearch, statusFilter, planFilter, dateSort],
   );
 
   useEffect(() => {
@@ -223,7 +228,23 @@ export default function SubscribersView() {
     [kpiCounts, statusFilter, planFilter],
   );
 
-  const columns = useMemo(() => getSubscriberColumns(handleAction), []);
+  const handleSortToggle = (col) => {
+    setDateSort((prev) => {
+      if (prev === `${col}:desc`) return `${col}:asc`;
+      if (prev === `${col}:asc`) return "";
+      return `${col}:desc`;
+    });
+    setPagination((p) => ({ ...p, pageIndex: 0 }));
+  };
+
+  const columns = useMemo(
+    () =>
+      getSubscriberColumns(handleAction, {
+        dateSort,
+        onSort: handleSortToggle,
+      }),
+    [handleAction, dateSort],
+  );
 
   const isFirstLoad = subscribersLoading && subscribersPagination === null;
 
@@ -259,6 +280,23 @@ export default function SubscribersView() {
         plans?.map((plan) => ({ label: plan.title, value: String(plan.id) })) ||
         [],
       placeholder: "All Plans",
+    },
+    {
+      type: "select",
+      id: "dateSort",
+      label: "Date Sort",
+      value: dateSort,
+      onChange: (v) => {
+        setDateSort(v);
+        setPagination((p) => ({ ...p, pageIndex: 0 }));
+      },
+      options: [
+        { label: "Start: oldest first", value: "started_at:asc" },
+        { label: "Start: newest first", value: "started_at:desc" },
+        { label: "Expiry: oldest first", value: "expires_at:asc" },
+        { label: "Expiry: newest first", value: "expires_at:desc" },
+      ],
+      placeholder: "Start / Expiry Date",
     },
   ];
 
@@ -300,6 +338,7 @@ export default function SubscribersView() {
             onClearAll={() => {
               setStatusFilter("");
               setPlanFilter("");
+              setDateSort("");
               if (location.state) {
                 navigate(".", { replace: true, state: null });
               }

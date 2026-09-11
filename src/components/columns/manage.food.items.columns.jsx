@@ -105,17 +105,12 @@ export const getManageFoodItemsColumns = (handleAction) => [
       return (
         <div className="flex justify-center">
           <div
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+            className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${
               isApproved
                 ? "bg-emerald-100 text-emerald-800"
                 : "bg-rose-100 text-rose-800"
             }`}
           >
-            <span
-              className={`w-1 h-1 rounded-full ${
-                isApproved ? "bg-emerald-600" : "bg-rose-600"
-              }`}
-            />
             {isApproved ? "Approved" : "Non Approved"}
           </div>
         </div>

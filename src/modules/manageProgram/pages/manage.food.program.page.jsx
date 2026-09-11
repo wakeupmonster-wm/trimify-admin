@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
@@ -46,7 +46,7 @@ const ManageFoodProgramPage = () => {
     debouncedSearchTerm,
   ]);
 
-  const handleAction = (row, action) => {
+  const handleAction = useCallback((row, action) => {
     if (action === "manage-food") {
       // Navigate to manage specific foods for this program and category
       navigate(`/admin/manage-program/manage/food/add-food/${id}/${row.id}`);
@@ -56,9 +56,10 @@ const ManageFoodProgramPage = () => {
         { state: { editData: row } },
       );
     } else if (action === "delete") {
+      setIsDeleting(false);
       setDeleteTarget(row);
     }
-  };
+  }, [id, navigate]);
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -85,7 +86,7 @@ const ManageFoodProgramPage = () => {
 
   const columns = useMemo(
     () => getManageFoodCategoryColumns(handleAction),
-    [id],
+    [handleAction],
   );
 
   return (
@@ -133,14 +134,14 @@ const ManageFoodProgramPage = () => {
             isLoading={loading}
             manualPagination={true}
             pageCount={serverPagination.totalPages || 1}
-          onRowClick={(row) => handleAction(row.original, "edit")}
+          onRowClick={(row) => handleAction(row.original, "manage-food")}
           />
         </div>
       </div>
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => !deleteLoading && setDeleteTarget(null)}
+        onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         title="Delete Food Category"
         message={`Are you sure you want to delete the category "${deleteTarget?.name || deleteTarget?.title}"? This action cannot be undone.`}

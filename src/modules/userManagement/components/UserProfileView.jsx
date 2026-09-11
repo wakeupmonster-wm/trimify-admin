@@ -17,12 +17,14 @@ import { TabPrograms } from "./TabPrograms";
 import { TabActivity } from "./TabActivity";
 import { TabSettings } from "./TabSettings";
 import { TabTransactions } from "./TabTransactions";
+import UserProfileSkeleton from "./profile/UserProfileSkeleton";
 import { getUserTransactionsAPI } from "../services/user.services";
 import { useDispatch } from "react-redux";
 import { deleteUserThunk } from "../store/user.slice";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
+import { resolveSubscriptionStatus } from "../utils/subscriptionStatus";
 import { format, formatDistanceToNow } from "date-fns";
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -270,16 +272,7 @@ export default function UserProfileView({ user, onBack, loading }) {
   }, [tab, user?.id]);
 
   if (loading || !user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full mx-auto max-w-[1180px]">
-        <Loader2 className="w-10 h-10 animate-spin text-app-primary2" />
-        <p className="text-sm text-slate-500 mt-4 font-medium animate-pulse">
-          Loading user profile...
-        </p>
-        {/* <div className="py-5 w-full max-w-full">
-        <UserProfileSkeleton /> */}
-      </div>
-    );
+    return <UserProfileSkeleton onBack={onBack} />;
   }
 
   const handleCopy = (value, label) => {
@@ -308,6 +301,20 @@ export default function UserProfileView({ user, onBack, loading }) {
   const waterGoal = user.water_goal || 0;
   const caloriesGoal = user.calories_goal || 0;
   const targetSteps = parseInt(user.targetSteps || "0", 10);
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayActivities = (user.recent_activities || []).filter(
+    (a) => (a.created_at || "").startsWith(todayStr)
+  );
+  const parseVal = (title) => parseInt(((title || "").match(/\d+/) || ["0"])[0], 10);
+  const consumedWater = todayActivities
+    .filter((a) => a.type === "water_log")
+    .reduce((sum, a) => sum + parseVal(a.title), 0);
+  const consumedCalories = todayActivities
+    .filter((a) => a.type === "food_log")
+    .reduce((sum, a) => sum + parseVal(a.title), 0);
+  const consumedSteps = todayActivities
+    .filter((a) => a.type === "step_log")
+    .reduce((sum, a) => sum + parseVal(a.title), 0);
   const programs = user.programs || [];
   const fitzoneStatus = user.fitzone_status || [];
   const deviceTokens = Array.isArray(user.device_tokens)
@@ -316,7 +323,7 @@ export default function UserProfileView({ user, onBack, loading }) {
         .split(",")
         .map((token) => token.trim())
         .filter(Boolean);
-  const displayedStatus = user.subscription_status || user.status || "Active";
+  const displayedStatus = resolveSubscriptionStatus(user);
 
   const tabData = {
     user,
@@ -325,6 +332,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     waterGoal,
     caloriesGoal,
     targetSteps,
+    consumedWater,
+    consumedCalories,
+    consumedSteps,
     programs,
     fitzoneStatus,
     deviceTokens,

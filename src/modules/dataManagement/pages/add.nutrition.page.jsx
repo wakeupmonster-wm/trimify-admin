@@ -357,11 +357,16 @@ const AddNutritionPage = () => {
             {/* Image Card (Right Column on Desktop) */}
             <div className="flex flex-col gap-4 order-last lg:order-last">
               <Card className="border-slate-200 shadow-sm p-4 flex flex-col gap-4 bg-white rounded-xl">
-                <div className="flex items-center gap-2 px-1">
-                  <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
-                  <h3 className="text-sm font-bold text-[#1d5284] uppercase tracking-wide">
-                    Photo
-                  </h3>
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-[18px] h-[18px] text-[#1d5284]" />
+                    <h3 className="text-sm font-bold text-[#1d5284] uppercase tracking-wide">
+                      Photo
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    Centered Dish
+                  </span>
                 </div>
 
                 <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
@@ -483,6 +488,16 @@ const AddNutritionPage = () => {
                   {errors.image && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.image}</p>
                   )}
+                </div>
+
+                <div className="rounded-lg bg-amber-50/80 border border-amber-200/80 p-3 text-[11px] text-amber-900 leading-relaxed space-y-1">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-950">
+                    <Info className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>Mobile App Display Note</span>
+                  </div>
+                  <p className="text-[10.5px] text-amber-900/90">
+                    Renders as a <strong>16:9 landscape banner</strong> (~800×520 px) on Recipe Detail and a <strong>1:1 square</strong> (~64×64 px) on Food Lists. Ensure the food dish is centered so it isn&apos;t cropped.
+                  </p>
                 </div>
               </Card>
             </div>

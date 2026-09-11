@@ -69,7 +69,12 @@ const ConfirmModal = ({
             {title}
           </h3>
           <button
-            onClick={onClose}
+            type="button"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onClose?.();
+            }}
             className="text-white/70 hover:text-white rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
@@ -86,8 +91,13 @@ const ConfirmModal = ({
         {/* Actions - matching Dialog UI */}
         <div className="px-6 py-4 bg-slate-50 border-t border-slate-300/60 flex items-center gap-3 justify-end">
           <Button
+            type="button"
             variant="outline"
-            onClick={onClose}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onClose?.();
+            }}
             className="font-semibold text-slate-500 border border-slate-300/60"
           >
             Cancel

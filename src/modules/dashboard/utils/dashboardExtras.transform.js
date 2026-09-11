@@ -165,7 +165,7 @@ export const buildAlerts = (alerts = {}) => {
     });
   }
   const zeroEnrollment = alerts?.zeroEnrollmentPrograms;
-  if (zeroEnrollment && (zeroEnrollment.needsAttention === true || zeroEnrollment.needsAttention === "true" || zeroEnrollment.needsAttention === 1)) {
+  if (zeroEnrollment) {
     result.push({
       id: "zero_enrollment",
       label: "Zero Enrollment",

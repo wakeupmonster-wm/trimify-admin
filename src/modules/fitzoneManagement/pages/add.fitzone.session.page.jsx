@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import CTAButton from "@/components/common/CTAButton";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Save,
   Loader2,
@@ -36,12 +37,22 @@ import {
 import {
   addFitzoneSession,
   updateFitzoneSession,
+  toggleFitzoneSessionStatus,
 } from "../store/fitzone.session.slice";
 import { getFitzoneCategories } from "../store/fitzone.category.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 
 const AddFitzoneSessionPage = () => {
+  const resolveSessionVideoUrl = (value) => {
+    const video = String(value || "").trim();
+    if (!video || /^(?:javascript|data):/i.test(video)) return null;
+    if (/^https?:\/\//i.test(video)) return video;
+
+    return `${IMAGE_BASE_URL.replace(/\/+$/, "")}/${video.replace(/^\/+/, "")}`;
+  };
+
   const { id, sessionId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -52,6 +63,9 @@ const AddFitzoneSessionPage = () => {
 
   const isEdit = Boolean(sessionId);
   const editData = location.state?.editData || null;
+  const existingVideoUrl = resolveSessionVideoUrl(
+    editData?.video_url || editData?.video,
+  );
 
   const [sessionTitle, setSessionTitle] = useState("");
   const [sessionDetails, setSessionDetails] = useState("");
@@ -59,14 +73,28 @@ const AddFitzoneSessionPage = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [duration, setDuration] = useState("");
+  const [sessionStatus, setSessionStatus] = useState("Active");
+  const [initialSessionStatus, setInitialSessionStatus] = useState("Active");
   const [stepDescription, setStepDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState({});
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [removedExistingVideo, setRemovedExistingVideo] = useState(false);
+  const [videoMeta, setVideoMeta] = useState(null);
 
   const fileInputRef = useRef(null);
+  const localVideoPreviewUrl = useMemo(
+    () => (videoFile ? URL.createObjectURL(videoFile) : null),
+    [videoFile],
+  );
+
+  useEffect(
+    () => () => {
+      if (localVideoPreviewUrl) URL.revokeObjectURL(localVideoPreviewUrl);
+    },
+    [localVideoPreviewUrl],
+  );
 
   const setSelectedVideo = (file) => {
     if (!file) return;
@@ -77,6 +105,7 @@ const AddFitzoneSessionPage = () => {
 
     if (!allowedExtensions.includes(extension)) {
       setVideoFile(null);
+      setVideoMeta(null);
       setErrors((prev) => ({
         ...prev,
         video: "Please upload a MP4, MOV, AVI, or WMV video file.",
@@ -86,6 +115,7 @@ const AddFitzoneSessionPage = () => {
 
     if (file.size > maxFileSize) {
       setVideoFile(null);
+      setVideoMeta(null);
       setErrors((prev) => ({
         ...prev,
         video: "Video size must not exceed 50 MB.",
@@ -94,6 +124,7 @@ const AddFitzoneSessionPage = () => {
     }
 
     setVideoFile(file);
+    setVideoMeta(null);
     setErrors((prev) => ({ ...prev, video: null }));
   };
 
@@ -118,6 +149,12 @@ const AddFitzoneSessionPage = () => {
       );
       setVideoUrl(editData.video_url || "");
       setDuration(editData.duration || "");
+      const loadedStatus =
+        editData.status === "Inactive" || editData.status === 0 || editData.is_active === false
+          ? "Inactive"
+          : "Active";
+      setSessionStatus(loadedStatus);
+      setInitialSessionStatus(loadedStatus);
 
       if (editData.step_description) {
         try {
@@ -220,6 +257,16 @@ const AddFitzoneSessionPage = () => {
       updateFitzoneSession.fulfilled.match(resultAction) ||
       addFitzoneSession.fulfilled.match(resultAction)
     ) {
+      if (isEdit && sessionStatus !== initialSessionStatus) {
+        const statusResult = await dispatch(
+          toggleFitzoneSessionStatus({ id: sessionId, status: sessionStatus }),
+        );
+        if (!toggleFitzoneSessionStatus.fulfilled.match(statusResult)) {
+          toast.error("Session details were saved, but its status could not be updated.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
       toast.success(`Session ${isEdit ? "updated" : "added"} successfully!`);
       navigate(-1);
     } else {
@@ -329,9 +376,14 @@ const AddFitzoneSessionPage = () => {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
-                {isEdit ? "Session Video" : "Upload Session Video"}
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold text-slate-800">
+                  {isEdit ? "Session Video" : "Upload Session Video"}
+                </Label>
+                <span className="text-[10px] font-medium text-slate-400">
+                  16:9 Landscape
+                </span>
+              </div>
               <input
                 type="file"
                 accept=".mp4,.mov,.avi,.wmv,video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv"
@@ -339,52 +391,71 @@ const AddFitzoneSessionPage = () => {
                 ref={fileInputRef}
                 onChange={handleVideoChange}
               />
-              {(videoFile || (isEdit && editData?.video && !removedExistingVideo)) ? (
-                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden group">
-                  <div className="w-full h-48 bg-slate-100 flex flex-col items-center justify-center">
-                    <PlayCircle className="w-10 h-10 text-slate-400 mb-2" />
-                    <span className="text-xs font-medium text-slate-600 break-all text-center px-4 line-clamp-2">
-                      {videoFile ? videoFile.name : editData?.video}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    {!videoFile && editData?.video && (
+              {(videoFile || (isEdit && (existingVideoUrl || editData?.video) && !removedExistingVideo)) ? (
+                <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden bg-slate-950 shadow-sm">
+                  <div className="relative w-full">
+                    <video
+                      key={localVideoPreviewUrl || existingVideoUrl || editData?.video}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      src={localVideoPreviewUrl || existingVideoUrl || editData?.video}
+                      className="w-full max-h-64 bg-slate-950 object-contain block"
+                      onLoadedMetadata={(e) => {
+                        const w = e.currentTarget.videoWidth;
+                        const h = e.currentTarget.videoHeight;
+                        if (w && h) {
+                          const is16by9 = Math.abs(w / h - 16 / 9) < 0.08;
+                          setVideoMeta({
+                            width: w,
+                            height: h,
+                            aspectRatio: is16by9 ? "16:9" : `${(w / h).toFixed(2)}:1`,
+                          });
+                        }
+                      }}
+                    >
+                      Your browser does not support in-panel video playback.
+                    </video>
+                    {/* Top-right floating action buttons so native video controls (play, pause, seek, volume) are never blocked */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
                       <button
                         type="button"
-                        aria-label="Preview video"
+                        aria-label="Replace video"
+                        title="Replace video"
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.open(editData.video, "_blank");
+                          fileInputRef.current?.click();
                         }}
-                        className="bg-white text-slate-700 rounded-full p-2 hover:bg-slate-100 shadow-sm transition-transform hover:scale-105"
+                        className="bg-white/90 hover:bg-white text-app-primary2 rounded-full p-1.5 shadow-md transition-transform hover:scale-105 cursor-pointer"
                       >
-                        <Eye className="w-5 h-5" />
+                        <Pencil className="w-4 h-4" />
                       </button>
+                      <button
+                        type="button"
+                        aria-label="Remove video"
+                        title="Remove video"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setVideoFile(null);
+                          setVideoMeta(null);
+                          setErrors((prev) => ({ ...prev, video: null }));
+                          if (isEdit) setRemovedExistingVideo(true);
+                        }}
+                        className="bg-white/90 hover:bg-white text-red-500 rounded-full p-1.5 shadow-md transition-transform hover:scale-105 cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="bg-slate-50 px-3 py-2 border-t border-slate-200 flex items-center justify-between gap-2">
+                    <p className="truncate text-xs font-medium text-slate-600 flex-1">
+                      {videoFile ? videoFile.name : editData?.video || editData?.video_url}
+                    </p>
+                    {videoMeta && (
+                      <span className="shrink-0 text-[10px] font-semibold text-slate-500 bg-slate-200/80 px-1.5 py-0.5 rounded">
+                        {videoMeta.width}×{videoMeta.height} • {videoMeta.aspectRatio}
+                      </span>
                     )}
-                    <button
-                      type="button"
-                      aria-label="Replace video"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fileInputRef.current?.click();
-                      }}
-                      className="bg-white text-app-primary2 rounded-full p-2 hover:bg-blue-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Remove video"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setVideoFile(null);
-                        setErrors((prev) => ({ ...prev, video: null }));
-                        if (isEdit) setRemovedExistingVideo(true);
-                      }}
-                      className="bg-white text-red-500 rounded-full p-2 hover:bg-red-50 shadow-sm transition-transform hover:scale-105"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
                   </div>
                 </div>
               ) : (
@@ -403,8 +474,8 @@ const AddFitzoneSessionPage = () => {
                   <p className="text-sm font-semibold text-slate-700 text-center">
                     Click or drag and drop to upload
                   </p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    MP4, MOV, AVI or WMV (max. 50 MB)
+                  <p className="text-xs text-slate-500 mt-1 text-center max-w-sm">
+                    Recommended: 16:9 Aspect Ratio, 720p (1280×720) or 1080p (1920×1080) MP4 (H.264). Max 50 MB.
                   </p>
                 </div>
               )}
@@ -562,6 +633,38 @@ const AddFitzoneSessionPage = () => {
                 </p>
               )}
             </div>
+
+            {/* Session Status Toggle in Edit Flow */}
+            {isEdit && (
+              <div className="flex items-center justify-between p-3.5 rounded-lg border border-slate-200 bg-slate-50/70">
+                <div className="space-y-0.5">
+                  <Label className="text-xs font-bold text-slate-800">
+                    Session Status
+                  </Label>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Toggle whether this workout session is active and visible to users.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`text-xs font-bold ${
+                      sessionStatus === "Active"
+                        ? "text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full"
+                        : "text-slate-600 bg-slate-200 px-2 py-0.5 rounded-full"
+                    }`}
+                  >
+                    {sessionStatus}
+                  </span>
+                  <Switch
+                    checked={sessionStatus === "Active"}
+                    onCheckedChange={(checked) =>
+                      setSessionStatus(checked ? "Active" : "Inactive")
+                    }
+                    className="data-[state=checked]:bg-app-cardGreen"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
               <Button

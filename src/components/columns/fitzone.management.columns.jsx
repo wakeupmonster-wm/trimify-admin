@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Ellipsis, Edit, Trash2, UsersRound } from "lucide-react";
+import { Ellipsis, Edit, Trash2, UsersRound, ClipboardList, UserPlus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -180,17 +180,42 @@ export const getFitzoneManagementColumns = (onAction) => [
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
-              disabled={!row.original.can_assign_to_all_users || ["queued", "processing"].includes(row.original.latest_assignment_run?.status)}
+              disabled={!row.original.can_assign_to_all_users || ["queued", "processing", "completed", "completed_with_errors"].includes(row.original.latest_assignment_run?.status)}
               className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-blue-50 focus:text-app-primary2 font-semibold text-xs disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => onAction && onAction(row.original, "assign-all-users")}
             >
               <UsersRound className="w-3.5 h-3.5" />
-              {row.original.latest_assignment_run?.status === "processing"
-                ? "Assigning users…"
-                : row.original.can_assign_to_all_users
-                  ? "Assign to all users"
-                  : "Complete setup first"}
+              {row.original.latest_assignment_run?.status === "queued"
+                ? "Assignment queued"
+                : row.original.latest_assignment_run?.status === "processing"
+                  ? "Assigning users…"
+                  : row.original.latest_assignment_run?.status === "completed"
+                    ? "Already Assigned"
+                    : row.original.latest_assignment_run?.status === "completed_with_errors"
+                      ? "Review assignment logs"
+                      : row.original.can_assign_to_all_users
+                        ? "Assign to all users"
+                        : "Complete setup first"}
             </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={!row.original.can_assign_to_all_users}
+              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-blue-50 focus:text-app-primary2 font-semibold text-xs disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() => onAction && onAction(row.original, "assign-selective-users")}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              {row.original.can_assign_to_all_users
+                ? "Select users for assignment"
+                : "Complete setup first"}
+            </DropdownMenuItem>
+            {row.original.latest_assignment_run && (
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
+                onClick={() => onAction && onAction(row.original, "assignment-logs")}
+              >
+                <ClipboardList className="w-3.5 h-3.5" />
+                Assignment Logs
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "delete")}

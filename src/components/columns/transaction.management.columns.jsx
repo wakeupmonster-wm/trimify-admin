@@ -122,11 +122,18 @@ export const getTransactionManagementColumns = (onAction) => [
     minSize: 80,
     cell: ({ row }) => {
       const status = row.getValue("status") || "Success";
-      const isSuccess = status.toLowerCase() === "success";
+      const styles = {
+        success: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
+        pending: "bg-amber-100 text-amber-700 hover:bg-amber-100",
+        refunded: "bg-violet-100 text-violet-700 hover:bg-violet-100",
+        failed: "bg-rose-100 text-rose-700 hover:bg-rose-100",
+        disputed: "bg-orange-100 text-orange-700 hover:bg-orange-100",
+      };
+      const style = styles[status.toLowerCase()] || "bg-slate-100 text-slate-700 hover:bg-slate-100";
       return (
         <div className="flex justify-center">
           <Badge
-            className={`${isSuccess ? "bg-[#1ea82c] hover:bg-[#1ea82c]/90" : "bg-red-500 hover:bg-red-600"} text-white rounded text-[10px] px-2 py-0.5 font-semibold shadow-none border-none pointer-events-none capitalize`}
+            className={`${style} rounded-full text-[10px] px-2.5 py-0.5 font-bold shadow-none border-none pointer-events-none capitalize`}
           >
             {status}
           </Badge>

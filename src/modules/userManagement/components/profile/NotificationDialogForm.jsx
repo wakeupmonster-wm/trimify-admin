@@ -79,11 +79,17 @@ const NotificationDialogForm = ({ type, userId, onClose }) => {
       <div className="px-4 sm:px-6 pt-3 pb-5 space-y-5">
         {isEmail && (
           <div className="space-y-2">
-            <Label className="text-xs font-bold text-slate-800">
-              Email Subject
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-bold text-slate-800">
+                Email Subject
+              </Label>
+              <span className="text-[10px] font-medium text-slate-400">
+                {subject.length} / 100
+              </span>
+            </div>
             <input
               type="text"
+              maxLength={100}
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter Subject Here..."
@@ -93,19 +99,30 @@ const NotificationDialogForm = ({ type, userId, onClose }) => {
         )}
 
         <div className="space-y-2">
-          <Label className="text-xs font-bold text-slate-800">
-            Message Content
-          </Label>
-          <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={
-              isEmail
-                ? "Enter Email Body Here (HTML supported)..."
-                : "Enter Push Message Here..."
-            }
-            className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 rounded-lg"
-          />
+          <div className="flex items-center justify-between">
+            <Label className="text-xs font-bold text-slate-800">
+              Message Content
+            </Label>
+            <span className="text-[10px] font-medium text-slate-400">
+              {message.length} / {isEmail ? 2000 : 240}
+            </span>
+          </div>
+          <div className="relative">
+            <Textarea
+              maxLength={isEmail ? 2000 : 240}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder={
+                isEmail
+                  ? "Enter Email Body Here (HTML supported)..."
+                  : "Enter Push Message Here..."
+              }
+              className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 pb-7 rounded-lg"
+            />
+            <div className="absolute bottom-2 right-3 text-[10px] font-medium text-slate-400 pointer-events-none">
+              {message.length} / {isEmail ? 2000 : 240}
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 pt-2">

@@ -35,10 +35,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LuUserRound } from "react-icons/lu";
+import { resolveSubscriptionStatus } from "../utils/subscriptionStatus";
 
 export function TabSettings({ data }) {
   const { user, handleCopy, initials, fmtDate, truncMid, deviceTokens = [] } = data;
-  const subscriptionStatus = user.subscription_status || user.status || "Active";
+  const subscriptionStatus = resolveSubscriptionStatus(user);
   const subscriptionExpiry = user.subscription_expires_at || user.plan_expiry;
   const dispatch = useDispatch();
   const [channel, setChannel] = useState("email");
@@ -113,11 +114,9 @@ export function TabSettings({ data }) {
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
         <Card
-          className="p-0 overflow-hidden"
           title="Account Status"
           subtitle="Current status and security details"
           icon={ShieldCheck}
-          showHeaderDivider={false}
         >
           <KV
             noBorder
@@ -171,11 +170,9 @@ export function TabSettings({ data }) {
         </Card>
 
         <Card
-          className="p-0 overflow-hidden"
           title="Billing & Plan"
           subtitle="Payment methods and history"
           icon={CreditCard}
-          showHeaderDivider={false}
         >
           <KV
             noBorder
@@ -238,7 +235,6 @@ export function TabSettings({ data }) {
           title="Device & Notifications"
           subtitle="App settings and preferences"
           icon={Smartphone}
-          showHeaderDivider={false}
         >
           <KV
             noBorder
@@ -288,7 +284,6 @@ export function TabSettings({ data }) {
           title="Managed By"
           subtitle="Assigned sub-admin details"
           icon={LuUserRound}
-          showHeaderDivider={false}
         >
           {user.sub_admin ? (
             <>
@@ -348,7 +343,6 @@ export function TabSettings({ data }) {
           title="Direct Administrative Messaging"
           subtitle="Dispatch warning letters, policy updates, or direct notifications"
           icon={Send}
-          showHeaderDivider={false}
         >
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -368,11 +362,17 @@ export function TabSettings({ data }) {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label className="text-xs font-semibold text-slate-700">
-                  {channel === "push" ? "Notification Title" : "Email Subject"}
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold text-slate-700">
+                    {channel === "push" ? "Notification Title" : "Email Subject"}
+                  </Label>
+                  <span className="text-[10px] font-medium text-slate-400">
+                    {subject.length} / {channel === "push" ? 65 : 100}
+                  </span>
+                </div>
                 <Input
                   type="text"
+                  maxLength={channel === "push" ? 65 : 100}
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="e.g., Important account update"
@@ -382,19 +382,30 @@ export function TabSettings({ data }) {
             </div>
 
             <div className="flex flex-col gap-1.5 mt-2">
-              <Label className="text-xs font-semibold text-slate-700">
-                Message Body
-              </Label>
-              <Textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder={
-                  channel === "push"
-                    ? "Write your push notification message here..."
-                    : "Write your email content here (HTML supported)..."
-                }
-                className="min-h-[160px] w-full resize-y rounded-lg border-slate-200 bg-slate-50 hover:bg-slate-100/50 focus:bg-white p-4 text-[13px] font-medium text-slate-900 placeholder:text-slate-400 focus-visible:border-app-primary2 focus-visible:ring-4 focus-visible:ring-app-primary2/10 transition-all"
-              />
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold text-slate-700">
+                  Message Body
+                </Label>
+                <span className="text-[10px] font-medium text-slate-400">
+                  {body.length} / {channel === "push" ? 240 : 2000}
+                </span>
+              </div>
+              <div className="relative">
+                <Textarea
+                  maxLength={channel === "push" ? 240 : 2000}
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder={
+                    channel === "push"
+                      ? "Write your push notification message here..."
+                      : "Write your email content here (HTML supported)..."
+                  }
+                  className="min-h-[160px] w-full resize-y rounded-lg border-slate-200 bg-slate-50 hover:bg-slate-100/50 focus:bg-white p-4 pb-7 text-[13px] font-medium text-slate-900 placeholder:text-slate-400 focus-visible:border-app-primary2 focus-visible:ring-4 focus-visible:ring-app-primary2/10 transition-all"
+                />
+                <div className="absolute bottom-2 right-3 text-[10px] font-medium text-slate-400 pointer-events-none">
+                  {body.length} / {channel === "push" ? 240 : 2000}
+                </div>
+              </div>
             </div>
 
             <div className="mt-4 flex justify-end">

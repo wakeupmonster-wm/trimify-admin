@@ -30,6 +30,9 @@ export const FITZONE_CRUD = {
   FITZONE_DELETE: (id) => `${ADMIN}/delete-fitzone/${id}`,
   FITZONE_ASSIGN_ALL_USERS: (id) => `${ADMIN}/fitzone/${id}/assign-all-users`,
   FITZONE_ASSIGNMENT_RUNS: (id) => `${ADMIN}/fitzone/${id}/assignment-runs`,
+  FITZONE_ASSIGNABLE_USERS: (id) => `${ADMIN}/fitzone/${id}/assignable-users`,
+  FITZONE_ASSIGN_SELECTED_USERS: (id) => `${ADMIN}/fitzone/${id}/assign-selected-users`,
+  FITZONE_UNASSIGN_USER: (id) => `${ADMIN}/fitzone/${id}/unassign-user`,
 }
 
 // ──────────────────────── Fitzone Intro ──────────────────────────────

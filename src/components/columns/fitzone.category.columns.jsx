@@ -10,6 +10,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import dayjs from "dayjs";
+import SafeImage from "@/components/common/SafeImage";
 
 export const getManageFitzoneCategoryColumns = (onAction) => [
   {
@@ -124,13 +125,11 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
         <div className="flex justify-center">
           {iconUrl ? (
             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-300/60 overflow-hidden">
-              <img
+              <SafeImage
                 src={iconUrl}
                 alt="Icon"
                 className="w-5 h-5 object-contain"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
+                fallbackClassName="w-5 h-5 rounded-full"
               />
             </div>
           ) : (
