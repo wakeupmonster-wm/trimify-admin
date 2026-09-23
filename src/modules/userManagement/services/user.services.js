@@ -17,6 +17,12 @@ export const getUserActivityLogsAPI = async (id, params = {}) => {
   return apiConnector("GET", USER.USER_ACTIVITY_LOGS(id), null, null, params);
 };
 
+export const addUserDeviceTokenAPI = async (id, deviceToken) => {
+  return apiConnector("POST", USER.ADD_DEVICE_TOKEN(id), {
+    device_token: deviceToken,
+  });
+};
+
 export const deleteUserAPI = async (id) => {
   return apiConnector("DELETE", USER.DELETE_USER(id));
 };

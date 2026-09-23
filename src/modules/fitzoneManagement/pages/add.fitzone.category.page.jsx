@@ -173,7 +173,7 @@ const AddFitzoneCategoryPage = () => {
                     setErrors({ ...errors, categoryName: null });
                 }}
                 placeholder="Enter Title Here"
-                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.categoryName ? "border-red-500" : "border-slate-300/60"}`}
+                className="w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.categoryName && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -195,7 +195,7 @@ const AddFitzoneCategoryPage = () => {
                     setErrors((prev) => ({ ...prev, categoryDetails: null }));
                 }}
                 placeholder="e.g. 20 min , 182 kcal"
-                className={`w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.categoryDetails ? "border-red-500" : "border-slate-300/60"}`}
+                className="w-full h-10 px-4 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.categoryDetails && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -235,7 +235,7 @@ const AddFitzoneCategoryPage = () => {
                   }}
                   placeholder="Enter Description"
                   maxLength={500}
-                  className={`w-full px-4 py-3 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-y min-h-[100px] pb-8 ${errors.htmlContent ? "border-red-500" : "border-slate-300/60"}`}
+                  className="w-full px-4 py-3 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-y min-h-[100px] pb-8 border-slate-300/60"
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {htmlContent.length} / 500

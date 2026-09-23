@@ -138,8 +138,10 @@ const ManageProgramPage = () => {
         row,
         action,
         value,
-        title: "Change Food Visibility",
-        message: "Are you sure you want to change the food visibility setting?",
+        title: "Change Eat Smart & Drink Visibility",
+        message: value
+          ? "Show approved and non-approved food options for this program in the app?"
+          : "Hide approved and non-approved food options for this program in the app?",
       });
     } else if (action === "view-user") {
       navigate(`view-user/${row.id}`);
@@ -184,8 +186,14 @@ const ManageProgramPage = () => {
         await dispatch(toggleProgramStatus({ id: row.id, status }));
         toast.success("Status updated successfully!");
       } else if (action === "toggle-food-visibility") {
-        await dispatch(toggleFoodVisibility(row.id));
-        toast.success("Food visibility updated successfully!");
+        const result = await dispatch(
+          toggleFoodVisibility({ id: row.id, isVisible: value }),
+        );
+        if (toggleFoodVisibility.fulfilled.match(result)) {
+          toast.success("Food visibility updated successfully!");
+        } else {
+          toast.error(result.payload || "Failed to update food visibility.");
+        }
       }
     } finally {
       setIsUpdating(false);
@@ -349,7 +357,7 @@ const ManageProgramPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 icon={Plus}
-                label="Create Program"
+                label="Add Program"
                 onClick={() => navigate("add-program")}
               />
             </div>

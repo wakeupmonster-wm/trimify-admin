@@ -103,7 +103,7 @@ export const buildSecondaryKpis = (summary) => {
   return {
     newSignupsToday: summary.newSignupsToday || 0,
     expiringSoon: summary.expiringSoonCount || 0,
-    totalRevenue: summary.trends?.totalRevenue || 0,
+    totalRevenue: summary.trends?.totalRevenue || summary.totalRevenue || summary.totalRevenueAllTime || 0,
     inactiveUsers: summary.inactiveUsers || 0,
     totalUsersAllTime: summary.totalUsersAllTime || 0,
     totalPrograms: summary.totalPrograms || 0,
@@ -114,6 +114,7 @@ export const buildSecondaryKpis = (summary) => {
     missedStepGoals: summary.missedStepGoals || 0,
     missedDietLogs: summary.missedDietLogs || 0,
     missedWaterLogs: summary.missedWaterLogs || 0,
+    newSignups: summary.newSignups || 0,
     // Pass through the real trend objects from the backend
     trends: summary.trends || null,
   };

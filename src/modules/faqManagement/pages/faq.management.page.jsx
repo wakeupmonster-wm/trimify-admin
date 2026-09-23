@@ -66,8 +66,9 @@ const FaqManagementPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const deleteLoading = isDeleting;
+  const toggleLoading = isUpdating;
 
   const refetchFaqs = () =>
     dispatch(
@@ -88,16 +89,34 @@ const FaqManagementPage = () => {
   ]);
 
   useEffect(() => {
-    if (error) toast.error(error);
+    if (error) {
+      // Validation error objects (422) are handled inline in the form — skip toasting them
+      if (typeof error === "string") {
+        toast.error(error);
+      } else if (error?.message && !error?.errors) {
+        toast.error(error.message);
+      }
+      // If error.errors exists, the form's catch block already sets formErrors — don't toast
+    }
   }, [error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const nextErrors = {};
+    if (!formData.question.trim()) nextErrors.question = "Question is required.";
+    if (!formData.answer.trim()) nextErrors.answer = "Answer is required.";
+    if (Object.keys(nextErrors).length > 0) {
+      setFormErrors(nextErrors);
+      return;
+    }
     setIsSubmitting(true);
     try {
       let res;
@@ -117,7 +136,23 @@ const FaqManagementPage = () => {
       setCurrentFaqId(null);
       refetchFaqs();
     } catch (error) {
-      toast.error(error?.message || error || "An error occurred");
+      // If the API returned field-level validation errors (422), show them inline
+      if (error?.errors) {
+        const fieldErrors = {};
+        if (error.errors.question) {
+          fieldErrors.question = Array.isArray(error.errors.question)
+            ? error.errors.question.join(", ")
+            : error.errors.question;
+        }
+        if (error.errors.answer) {
+          fieldErrors.answer = Array.isArray(error.errors.answer)
+            ? error.errors.answer.join(", ")
+            : error.errors.answer;
+        }
+        setFormErrors(fieldErrors);
+      } else {
+        toast.error(error?.message || (typeof error === "string" ? error : "An error occurred"));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -285,6 +320,7 @@ const FaqManagementPage = () => {
                 label="Add FAQ"
                 onClick={() => {
                   setFormData({ question: "", answer: "" });
+                  setFormErrors({});
                   setEditMode(false);
                   setCurrentFaqId(null);
                   setIsDialogOpen(true);
@@ -330,10 +366,14 @@ const FaqManagementPage = () => {
                   name="question"
                   placeholder="e.g. How does the diet plan work?"
                   value={formData.question}
-                  onChange={handleChange}
+                onChange={handleChange}
                   className="h-11 text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors"
-                  required
                 />
+                {formErrors.question && (
+                  <p className="text-red-500 text-[11px] font-medium mt-1">
+                    {formErrors.question}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-slate-700 uppercase tracking-wide">
@@ -344,9 +384,17 @@ const FaqManagementPage = () => {
                   placeholder="Provide a clear and concise answer..."
                   value={formData.answer}
                   onChange={handleChange}
+                  maxLength={500}
                   className="min-h-[120px] text-sm placeholder:font-normal focus-visible:ring-1 focus-visible:ring-app-primary2 border-slate-300/80 bg-slate-50 hover:bg-white transition-colors resize-none p-3"
-                  required
                 />
+                {formErrors.answer && (
+                  <p className="text-red-500 text-[11px] font-medium mt-1">
+                    {formErrors.answer}
+                  </p>
+                )}
+                <p className={`text-[11px] font-medium text-right mt-1 ${formData.answer.length >= 500 ? 'text-red-500' : 'text-slate-400'}`}>
+                  {formData.answer.length}/500 characters
+                </p>
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <Button

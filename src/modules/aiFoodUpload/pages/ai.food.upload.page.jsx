@@ -124,14 +124,17 @@ const AiFoodUploadPage = () => {
     {
       type: "select",
       id: "mealTypeFilter",
-      label: "Meal Type",
+      label: "Food Type",
       value: mealTypeFilter,
       onChange: (val) => {
         setMealTypeFilter(val);
         setPagination((prev) => ({ ...prev, pageIndex: 0 }));
       },
-      options: ["Breakfast", "Lunch", "Dinner", "Snacks"],
-      placeholder: "All Meal Types",
+      options: [
+        { label: "Ingredients", value: "ingredients" },
+        { label: "Recipes", value: "recipes" },
+      ],
+      placeholder: "All Food Types",
     },
   ];
 

@@ -64,9 +64,18 @@ export const changePassword = createAsyncThunk(
       if (response?.status === "success") {
         return response;
       }
-      return rejectWithValue(response);
+      return rejectWithValue(
+        response?.message ||
+          response?.error ||
+          "Failed to change password"
+      );
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.response || error);
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to change password";
+      return rejectWithValue(message);
     }
   }
 );

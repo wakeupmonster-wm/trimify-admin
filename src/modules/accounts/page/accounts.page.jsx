@@ -37,7 +37,7 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 export default function AccountsPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { account, loading, passwordSuccess } = useSelector(
+  const { account, loading, updating, passwordSuccess } = useSelector(
     (state) => state.account,
   );
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -119,7 +119,7 @@ export default function AccountsPage() {
 
     return isNaN(date.getTime())
       ? "Invalid Date"
-      : format(date, "dd MMM, yyyy - h:mm a");
+      : format(date, "dd MMM yyyy - h:mm a");
   };
 
   const localUserStr = localStorage.getItem("auth_user");
@@ -130,12 +130,31 @@ export default function AccountsPage() {
     account?.email || localUser?.email || "admin@example.com";
   const initial = displayName.charAt(0).toUpperCase();
 
+  const memberSinceDate =
+    account?.member_since ||
+    account?.memberSince ||
+    account?.created_at ||
+    account?.createdAt ||
+    localUser?.member_since ||
+    localUser?.memberSince ||
+    localUser?.created_at;
+
+  const lastLoginDate =
+    account?.last_login_at ||
+    account?.lastLoginAt ||
+    localUser?.last_login_at ||
+    localUser?.lastLoginAt;
+
   const displayAccount = {
     ...localUser,
     ...account,
     name: displayName,
     email: displayEmail,
     initial: initial,
+    member_since: memberSinceDate,
+    memberSince: memberSinceDate,
+    last_login_at: lastLoginDate,
+    lastLoginAt: lastLoginDate,
   };
 
   const initials = displayName
@@ -322,7 +341,7 @@ export default function AccountsPage() {
               <div className="rounded-lg shadow-sm border border-slate-200 hover:border-slate-300 overflow-hidden">
                 <SecurityCredentials
                   account={displayAccount}
-                  loading={loading}
+                  loading={updating}
                   passwordSuccess={passwordSuccess}
                 />
               </div>
@@ -463,6 +482,7 @@ export default function AccountsPage() {
         confirmText="Log Out"
         type="warning"
         loading={isLoggingOut}
+        closeOnOutsideClick={false}
       />
     </>
   );

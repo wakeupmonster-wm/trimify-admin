@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 import SafeImage from "@/components/common/SafeImage";
+import { formatAppDate } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -82,13 +83,7 @@ export const getManageFoodCategoryColumns = (handleAction) => [
     minSize: 90,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700 text-left">
-        {row.original.created_at
-          ? new Date(row.original.created_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
-          : "-"}
+        {formatAppDate(row.original.created_at)}
       </div>
     ),
   },
@@ -103,13 +98,7 @@ export const getManageFoodCategoryColumns = (handleAction) => [
     minSize: 90,
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700 text-left">
-        {row.original.updated_at
-          ? new Date(row.original.updated_at).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })
-          : "-"}
+        {formatAppDate(row.original.updated_at)}
       </div>
     ),
   },

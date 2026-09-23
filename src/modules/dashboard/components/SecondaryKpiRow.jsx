@@ -49,10 +49,13 @@ const fitzoneDrillDownUrl = (dateRange) => {
 };
 
 const KPI_CONFIG = [
+  // ── Group A: All-time totals (top row, never filtered) ──
   {
     key: "totalRevenue",
-    label: "Revenue",
+    label: "Total Revenue",
     description: "All-time, all plans",
+    forceDescription: true,
+    useBackendSubtext: true,
     tone: "emerald",
     trendValue: "12%",
     isPositive: true,
@@ -64,7 +67,9 @@ const KPI_CONFIG = [
   {
     key: "totalPrograms",
     label: "Total Programs",
-    description: "Tap to manage",
+    description: "All programs created",
+    forceDescription: true,
+    useBackendSubtext: true,
     tone: "violet",
     trendValue: "4%",
     isPositive: true,
@@ -76,7 +81,9 @@ const KPI_CONFIG = [
   {
     key: "totalBlogs",
     label: "Total Blogs",
-    description: "Tap to manage",
+    description: "All blogs published",
+    forceDescription: true,
+    useBackendSubtext: true,
     tone: "cyan",
     trendValue: "3%",
     isPositive: true,
@@ -87,7 +94,9 @@ const KPI_CONFIG = [
   {
     key: "totalFitzoneSessions",
     label: "Fitzone Sessions",
-    description: "Tap to manage",
+    description: "All fitzone sessions",
+    forceDescription: true,
+    useBackendSubtext: true,
     tone: "rose",
     trendValue: "15%",
     isPositive: true,
@@ -95,6 +104,19 @@ const KPI_CONFIG = [
     isCurrency: false,
     onClick: (navigate, dateRange) =>
       navigate(fitzoneDrillDownUrl(dateRange), { state: { dateRange } }),
+  },
+  // ── Group B: Filter-based KPIs (bottom row) ──
+  {
+    key: "newSignups",
+    label: "New Signups",
+    description: "User registrations this period",
+    tone: "emerald",
+    trendValue: "0%",
+    isPositive: true,
+    format: (data) => fmtNumber(data?.newSignups),
+    isCurrency: false,
+    onClick: (navigate, dateRange) =>
+      navigate("/admin/users", { state: { filterId: "new_signups", dateRange } }),
   },
   {
     key: "missedStepGoals",
@@ -124,20 +146,20 @@ const KPI_CONFIG = [
         state: { filterId: "missed_diet_logs", dateRange },
       }),
   },
-  {
-    key: "missedWaterLogs",
-    label: "Missed Water Logs",
-    description: "Users missing water logs",
-    tone: "cyan",
-    trendValue: "1%",
-    isPositive: false,
-    format: (data) => fmtNumber(data?.missedWaterLogs),
-    isCurrency: false,
-    onClick: (navigate, dateRange) =>
-      navigate("/admin/users", {
-        state: { filterId: "missed_water_logs", dateRange },
-      }),
-  },
+  // {
+  //   key: "missedWaterLogs",
+  //   label: "Missed Water Logs",
+  //   description: "Users missing water logs",
+  //   tone: "cyan",
+  //   trendValue: "1%",
+  //   isPositive: false,
+  //   format: (data) => fmtNumber(data?.missedWaterLogs),
+  //   isCurrency: false,
+  //   onClick: (navigate, dateRange) =>
+  //     navigate("/admin/users", {
+  //       state: { filterId: "missed_water_logs", dateRange },
+  //     }),
+  // },
   {
     key: "expiringSoon",
     label: "Expiring Soon",
@@ -154,27 +176,17 @@ const KPI_CONFIG = [
         state: { filterId: "expiring_soon" },
       }),
   },
-  // {
-  //   key: "totalPublishedBlogs",
-  //   label: "Published Blogs",
-  //   description: "Live on the app",
-  //   tone: "emerald",
-  //   trendValue: "1%",
-  //   isPositive: true,
-  //   format: (data) => fmtNumber(data?.totalPublishedBlogs),
-  //   isCurrency: false,
-  //   onClick: (navigate) => navigate("/admin/blog-section/manage-blogs"),
-  // },
 ];
 
 const DESIRED_KPI_ORDER = [
-  "Revenue",
+  "Total Revenue",
   "Total Programs",
   "Total Blogs",
   "Fitzone Sessions",
+  "New Signups",
   "Missed Step Goals",
   "Missed Diet Logs",
-  "Missed Water Logs",
+  // "Missed Water Logs",
   "Expiring Soon"
 ];
 
@@ -260,9 +272,18 @@ const SecondaryKpiRow = ({ data, title, dateRange, contextLabel }) => {
                 ? null 
                 : (isObj && valObj.previous !== undefined ? valObj : (trendObj || null));
 
-              const dynamicDescription = (contextLabel && !kpi.forceDescription)
-                ? contextLabel.replace(/^vs\s+/i, "Compared to ")
-                : kpi.description;
+              // Group A (forceDescription): use backend subtext if available, else static description
+              // Group B: use contextLabel for period-aware description
+              let dynamicDescription;
+              if (kpi.forceDescription) {
+                // For Group A: prefer backend subtext ("+2 new in last 7 days")
+                const backendSubtext = trendObj?.subtext || (isObj && valObj.subtext);
+                dynamicDescription = backendSubtext || kpi.description;
+              } else if (contextLabel) {
+                dynamicDescription = contextLabel.replace(/^vs\s+/i, "Compared to ");
+              } else {
+                dynamicDescription = kpi.description;
+              }
 
               return (
                 <KpiCard

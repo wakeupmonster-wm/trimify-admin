@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import SafeImage from "@/components/common/SafeImage";
 
 export const getManageCategoryColumns = (onAction) => [
   {
@@ -47,6 +48,36 @@ export const getManageCategoryColumns = (onAction) => [
         {row.original.title || "-"}
       </span>
     ),
+  },
+  {
+    accessorKey: "icon",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-center">
+        Icon
+      </div>
+    ),
+    size: 90,
+    minSize: 80,
+    cell: ({ row }) => {
+      const iconUrl =
+        row.original.icon || row.original.icon_url || row.original.image;
+      return (
+        <div className="flex justify-center">
+          {iconUrl ? (
+            <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 overflow-hidden flex items-center justify-center p-1 shadow-xs">
+              <SafeImage
+                src={iconUrl}
+                alt="Icon"
+                className="w-full h-full object-contain"
+                fallbackClassName="w-8 h-8 rounded-lg bg-slate-100"
+              />
+            </div>
+          ) : (
+            <span className="text-[10px] text-slate-400">N/A</span>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",

@@ -22,7 +22,10 @@ import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 import { LuNewspaper } from "react-icons/lu";
 import CTAButton from "@/components/common/CTAButton";
-import { getBlogPostsAPI } from "../services/blog.services";
+import {
+  getBlogCategoryDropdownAPI,
+  getBlogPostsAPI,
+} from "../services/blog.services";
 
 const ManageBlogsPage = () => {
   const navigate = useNavigate();
@@ -38,6 +41,8 @@ const ManageBlogsPage = () => {
     pageSize: postsPagination.limit || 10,
   });
   const [statusFilter, setStatusFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryOptions, setCategoryOptions] = useState([]);
   // Optional dateRange from Dashboard KPI navigation
   const [dateRangeFilter, setDateRangeFilter] = useState(
     location.state?.dateRange || null,
@@ -48,6 +53,28 @@ const ManageBlogsPage = () => {
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [globalKpisData, setGlobalKpisData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCategoryOptions = async () => {
+      try {
+        const response = await getBlogCategoryDropdownAPI();
+        const categories =
+          response?.blogcategories || response?.data || response?.categories || [];
+        if (isMounted) {
+          setCategoryOptions(Array.isArray(categories) ? categories : []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch blog category options", error);
+      }
+    };
+
+    fetchCategoryOptions();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -86,6 +113,7 @@ const ManageBlogsPage = () => {
         page: postPage.pageIndex + 1,
         limit: postPage.pageSize,
         search: debouncedPostFilter,
+        ...(categoryFilter ? { category_id: categoryFilter } : {}),
         ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
         ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
         ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
@@ -96,6 +124,7 @@ const ManageBlogsPage = () => {
     postPage.pageIndex,
     postPage.pageSize,
     debouncedPostFilter,
+    categoryFilter,
     dateRangeFilter,
   ]);
 
@@ -111,6 +140,7 @@ const ManageBlogsPage = () => {
             page: postPage.pageIndex + 1,
             limit: postPage.pageSize,
             search: postFilter,
+            ...(categoryFilter ? { category_id: categoryFilter } : {}),
           }),
         );
       } catch (error) {
@@ -132,11 +162,12 @@ const ManageBlogsPage = () => {
       await dispatch(deleteBlogPost(deleteModal.rowData.id)).unwrap();
       toast.success("Post deleted successfully!");
       dispatch(
-        fetchBlogPosts({
-          page: postPage.pageIndex + 1,
-          limit: postPage.pageSize,
-          search: postFilter,
-        }),
+          fetchBlogPosts({
+            page: postPage.pageIndex + 1,
+            limit: postPage.pageSize,
+            search: postFilter,
+            ...(categoryFilter ? { category_id: categoryFilter } : {}),
+          }),
       );
     } catch (error) {
       toast.error(error || "Failed to delete post");
@@ -181,6 +212,21 @@ const ManageBlogsPage = () => {
         { label: "Recent", value: "Recent" },
       ],
       placeholder: "All Status",
+    },
+    {
+      type: "select",
+      id: "categoryFilter",
+      label: "Category",
+      value: categoryFilter,
+      onChange: (value) => {
+        setCategoryFilter(value);
+        setPostPageState((current) => ({ ...current, pageIndex: 0 }));
+      },
+      options: categoryOptions.map((category) => ({
+        label: category.title,
+        value: String(category.id),
+      })),
+      placeholder: "All Categories",
     },
     {
       type: "dateRange",
@@ -285,7 +331,7 @@ const ManageBlogsPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 icon={Plus}
-                label="Create Post"
+                label="Add Post"
                 onClick={() => navigate("/admin/blog-section/add-post")}
               />
             </div>
@@ -325,6 +371,7 @@ const ManageBlogsPage = () => {
                 filterConfig={filterConfig}
                 onClearAll={() => {
                   setStatusFilter("");
+                  setCategoryFilter("");
                   setDateRangeFilter(null);
                   if (location.state) {
                     navigate(".", { replace: true, state: null });

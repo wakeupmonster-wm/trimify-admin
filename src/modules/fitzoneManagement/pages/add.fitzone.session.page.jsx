@@ -53,6 +53,13 @@ const AddFitzoneSessionPage = () => {
     return `${IMAGE_BASE_URL.replace(/\/+$/, "")}/${video.replace(/^\/+/, "")}`;
   };
 
+  const formatVideoDuration = (seconds) => {
+    const totalSeconds = Math.max(0, Math.round(Number(seconds) || 0));
+    const minutes = Math.floor(totalSeconds / 60);
+    const remainingSeconds = totalSeconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   const { id, sessionId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -88,6 +95,8 @@ const AddFitzoneSessionPage = () => {
     () => (videoFile ? URL.createObjectURL(videoFile) : null),
     [videoFile],
   );
+  const previewVideoUrl =
+    localVideoPreviewUrl || videoUrl.trim() || existingVideoUrl || editData?.video;
 
   useEffect(
     () => () => {
@@ -101,11 +110,14 @@ const AddFitzoneSessionPage = () => {
 
     const extension = file.name.split(".").pop()?.toLowerCase();
     const allowedExtensions = ["mp4", "mov", "avi", "wmv"];
-    const maxFileSize = 50 * 1024 * 1024;
+    // PHP accepts a 40 MB request body. Leave room for multipart fields so
+    // Laravel receives the request and can return a useful JSON response.
+    const maxFileSize = 35 * 1024 * 1024;
 
     if (!allowedExtensions.includes(extension)) {
       setVideoFile(null);
       setVideoMeta(null);
+      setDuration("");
       setErrors((prev) => ({
         ...prev,
         video: "Please upload a MP4, MOV, AVI, or WMV video file.",
@@ -116,15 +128,17 @@ const AddFitzoneSessionPage = () => {
     if (file.size > maxFileSize) {
       setVideoFile(null);
       setVideoMeta(null);
+      setDuration("");
       setErrors((prev) => ({
         ...prev,
-        video: "Video size must not exceed 50 MB.",
+        video: "Video size must not exceed 35 MB.",
       }));
       return;
     }
 
     setVideoFile(file);
     setVideoMeta(null);
+    setDuration("");
     setErrors((prev) => ({ ...prev, video: null }));
   };
 
@@ -205,15 +219,16 @@ const AddFitzoneSessionPage = () => {
       newErrors.sessionDetails = "Session Sub-Heading is required";
     if (!sessionCategoryId)
       newErrors.sessionCategoryId = "Category is required";
-    if (!duration?.toString().trim())
-      newErrors.duration = "Duration is required";
     if (!stepDescription?.toString().trim())
       newErrors.stepDescription = "Description is required";
-    if (!isEdit && !videoFile)
-      newErrors.video = "A session video is required";
+    if (!isEdit && !videoFile && !videoUrl.trim())
+      newErrors.video = "Upload a session video or provide a valid video URL.";
+    if (!duration?.toString().trim())
+      newErrors.video = "Video duration could not be detected. Please use a playable MP4/MOV video with metadata.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      toast.error("Please correct the highlighted fields before saving.");
       return;
     }
 
@@ -279,6 +294,7 @@ const AddFitzoneSessionPage = () => {
         duration: "duration",
         step_description: "stepDescription",
         video: "video",
+        video_url: "video",
       };
 
       const mappedErrors = Object.fromEntries(
@@ -343,8 +359,8 @@ const AddFitzoneSessionPage = () => {
                   if (errors.sessionTitle)
                     setErrors((prev) => ({ ...prev, sessionTitle: null }));
                 }}
-                placeholder="Enter Title Here"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.sessionTitle ? "border-red-500" : "border-slate-300/60"}`}
+                placeholder="e.g. 10-Minute Morning Stretch"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.sessionTitle && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -365,8 +381,8 @@ const AddFitzoneSessionPage = () => {
                   if (errors.sessionDetails)
                     setErrors((prev) => ({ ...prev, sessionDetails: null }));
                 }}
-                placeholder="Enter Details Here"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.sessionDetails ? "border-red-500" : "border-slate-300/60"}`}
+                placeholder="e.g. A gentle full-body routine for mobility and flexibility"
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.sessionDetails && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -391,19 +407,24 @@ const AddFitzoneSessionPage = () => {
                 ref={fileInputRef}
                 onChange={handleVideoChange}
               />
-              {(videoFile || (isEdit && (existingVideoUrl || editData?.video) && !removedExistingVideo)) ? (
+              {(previewVideoUrl && !removedExistingVideo) ? (
                 <div className="relative w-full max-w-sm rounded-lg border border-slate-200 overflow-hidden bg-slate-950 shadow-sm">
                   <div className="relative w-full">
                     <video
-                      key={localVideoPreviewUrl || existingVideoUrl || editData?.video}
+                      key={previewVideoUrl}
                       controls
                       playsInline
                       preload="metadata"
-                      src={localVideoPreviewUrl || existingVideoUrl || editData?.video}
+                      src={previewVideoUrl}
                       className="w-full max-h-64 bg-slate-950 object-contain block"
                       onLoadedMetadata={(e) => {
                         const w = e.currentTarget.videoWidth;
                         const h = e.currentTarget.videoHeight;
+                        const detectedDuration = e.currentTarget.duration;
+                        if (Number.isFinite(detectedDuration) && detectedDuration > 0) {
+                          setDuration(String(Math.round(detectedDuration)));
+                          setErrors((prev) => ({ ...prev, video: null }));
+                        }
                         if (w && h) {
                           const is16by9 = Math.abs(w / h - 16 / 9) < 0.08;
                           setVideoMeta({
@@ -438,6 +459,7 @@ const AddFitzoneSessionPage = () => {
                           e.stopPropagation();
                           setVideoFile(null);
                           setVideoMeta(null);
+                          setDuration("");
                           setErrors((prev) => ({ ...prev, video: null }));
                           if (isEdit) setRemovedExistingVideo(true);
                         }}
@@ -449,11 +471,16 @@ const AddFitzoneSessionPage = () => {
                   </div>
                   <div className="bg-slate-50 px-3 py-2 border-t border-slate-200 flex items-center justify-between gap-2">
                     <p className="truncate text-xs font-medium text-slate-600 flex-1">
-                      {videoFile ? videoFile.name : editData?.video || editData?.video_url}
+                      {videoFile ? videoFile.name : videoUrl.trim() || editData?.video || editData?.video_url}
                     </p>
                     {videoMeta && (
                       <span className="shrink-0 text-[10px] font-semibold text-slate-500 bg-slate-200/80 px-1.5 py-0.5 rounded">
                         {videoMeta.width}×{videoMeta.height} • {videoMeta.aspectRatio}
+                      </span>
+                    )}
+                    {duration && (
+                      <span className="shrink-0 text-[10px] font-semibold text-slate-500 bg-slate-200/80 px-1.5 py-0.5 rounded">
+                        {formatVideoDuration(duration)}
                       </span>
                     )}
                   </div>
@@ -475,7 +502,7 @@ const AddFitzoneSessionPage = () => {
                     Click or drag and drop to upload
                   </p>
                   <p className="text-xs text-slate-500 mt-1 text-center max-w-sm">
-                    Recommended: 16:9 Aspect Ratio, 720p (1280×720) or 1080p (1920×1080) MP4 (H.264). Max 50 MB.
+                    Recommended: 16:9 Aspect Ratio, 720p or 1080p MP4 (H.264). Max 35 MB.
                   </p>
                 </div>
               )}
@@ -493,32 +520,13 @@ const AddFitzoneSessionPage = () => {
               <Input
                 type="text"
                 value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
+                onChange={(e) => {
+                  setVideoUrl(e.target.value);
+                  if (errors.video) setErrors((prev) => ({ ...prev, video: null }));
+                }}
                 placeholder="Enter Video URL here"
                 className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-800">
-                Duration
-              </Label>
-              <Input
-                type="text"
-                value={duration}
-                onChange={(e) => {
-                  setDuration(e.target.value);
-                  if (errors.duration)
-                    setErrors((prev) => ({ ...prev, duration: null }));
-                }}
-                placeholder="Enter Video Duration"
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.duration ? "border-red-500" : "border-slate-300/60"}`}
-              />
-              {errors.duration && (
-                <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
-                  {errors.duration}
-                </p>
-              )}
             </div>
 
             <div className="space-y-1.5">
@@ -543,7 +551,7 @@ const AddFitzoneSessionPage = () => {
                   }}
                 >
                   <SelectTrigger
-                    className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.sessionCategoryId ? "border-red-500" : "border-slate-300/60"}`}
+                    className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                   >
                     <SelectValue
                       placeholder="Select a category"
@@ -621,7 +629,7 @@ const AddFitzoneSessionPage = () => {
                   }}
                   placeholder="Enter description"
                   maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.stepDescription ? "border-red-500" : "border-slate-300/60"}`}
+                  className="w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 border-slate-300/60"
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {stepDescription.length} / 500

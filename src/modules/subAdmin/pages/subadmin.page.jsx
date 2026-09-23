@@ -31,6 +31,7 @@ import {
 } from "../store/sub.admin.slice";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { formatAppDate } from "@/lib/utils";
 
 // Simple utility to convert an array of objects to CSV
 const downloadCSV = (data, filename = "sub_admins.csv") => {
@@ -53,10 +54,7 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
     else if (item.role) displayRole = item.role;
 
     const dateValue = item.created_at;
-    const createdAt =
-      dateValue && !isNaN(new Date(dateValue).getTime())
-        ? new Date(dateValue).toLocaleDateString()
-        : "-";
+    const createdAt = formatAppDate(dateValue);
 
     return [
       index + 1,
@@ -99,6 +97,8 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
   document.body.removeChild(link);
 };
 
+const SUB_ADMIN_SEARCH_STORAGE_KEY = "subAdminManagementGlobalFilter";
+
 const SubAdminManagementPage = () => {
   const dispatch = useDispatch();
   const {
@@ -108,7 +108,17 @@ const SubAdminManagementPage = () => {
     pagination: serverPagination,
   } = useSelector((state) => state.subAdmin);
 
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilterState] = useState(
+    () => sessionStorage.getItem(SUB_ADMIN_SEARCH_STORAGE_KEY) || "",
+  );
+  const setGlobalFilter = useCallback((nextValue) => {
+    setGlobalFilterState((currentValue) => {
+      const value =
+        typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
+      sessionStorage.setItem(SUB_ADMIN_SEARCH_STORAGE_KEY, value || "");
+      return value || "";
+    });
+  }, []);
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
@@ -164,14 +174,14 @@ const SubAdminManagementPage = () => {
       icon: LuUsersRound,
       label: "Total Admins",
       value: (kpis?.total ?? 0).toLocaleString(),
-      description: "Total registered users",
+      description: "All administrator accounts",
       tone: "blue",
     },
     {
       icon: LuUserRoundCheck,
       label: "Active Accounts",
       value: (kpis?.active ?? 0).toLocaleString(),
-      description: "Currently active accounts",
+      description: "Currently active admins",
       tone: "emerald",
       onClick: () => setStatusFilter("Active"),
       isSelected: statusFilter === "Active",
@@ -180,7 +190,7 @@ const SubAdminManagementPage = () => {
       icon: Shield,
       label: "Sub-Admin Users",
       value: (kpis?.subAdminUsers ?? 0).toLocaleString(),
-      description: "Total sub-admin users",
+      description: "Standard sub-admin role",
       tone: "indigo",
       onClick: () => setRoleFilter(roleFilter === "0" ? "" : "0"),
       isSelected: roleFilter === "0",
@@ -189,7 +199,7 @@ const SubAdminManagementPage = () => {
       icon: ShieldAlert,
       label: "WhiteListing Users",
       value: (kpis?.whiteListingUsers ?? 0).toLocaleString(),
-      description: "Total whitelisted users",
+      description: "Whitelisted access role",
       tone: "rose",
       onClick: () => setRoleFilter(roleFilter === "1" ? "" : "1"),
       isSelected: roleFilter === "1",

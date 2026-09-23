@@ -19,6 +19,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 import { LuUserRoundPen } from "react-icons/lu";
 import CTAButton from "@/components/common/CTAButton";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { toast } from "sonner";
 
 const EditSubAdminPage = () => {
   const dispatch = useDispatch();
@@ -117,6 +118,8 @@ const EditSubAdminPage = () => {
     if (!formData.hospital.trim())
       newErrors.hospital = "Hospital/Clinic Name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone Number is required";
+    else if (!/^\d{10}$/.test(formData.phone))
+      newErrors.phone = "Phone Number must be exactly 10 digits";
     if (!formData.designation.trim())
       newErrors.designation = "Designation is required";
     if (!formData.role) newErrors.role = "Role is required";
@@ -146,13 +149,14 @@ const EditSubAdminPage = () => {
         delete submitData.password;
       }
 
-      const result = await dispatch(
+      await dispatch(
         updateSubAdmin({ id: editData.id || editData._id, data: submitData }),
-      );
+      ).unwrap();
 
-      if (updateSubAdmin.fulfilled.match(result)) {
-        navigate("/admin/sub-admin-management");
-      }
+      toast.success("Sub-admin updated successfully.");
+      navigate("/admin/sub-admin-management");
+    } catch (error) {
+      toast.error(error || "Failed to update sub-admin.");
     } finally {
       setIsSubmitting(false);
       setIsConfirmModalOpen(false);

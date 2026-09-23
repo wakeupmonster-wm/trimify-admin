@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { TableLoader } from "@/app/loader/table.loader";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableToolbar } from "./DataTableToolbar";
@@ -59,6 +59,8 @@ export default function DataTable({
     meta,
   });
 
+  const skeletonRowCount = Math.min(Math.max(data?.length || 0, 7), 10);
+
   return (
     <div className="w-full space-y-3">
       <DataTableToolbar
@@ -89,25 +91,7 @@ export default function DataTable({
 
       {/* TABLE DATA AREA */}
       <div className="relative rounded-xl border border-slate-300/60 bg-white shadow-sm overflow-hidden">
-        <div
-          className={cn(
-            "overflow-x-auto relative",
-            isLoading && data.length > 0 && "min-h-[180px]",
-          )}
-        >
-          <AnimatePresence>
-            {isLoading && data.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-20"
-              >
-                <TableLoader text="Updating Results..." />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
+        <div className="overflow-x-auto relative">
           <Table className="min-w-[900px]">
             <TableHeader className="">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -136,82 +120,122 @@ export default function DataTable({
               ))}
             </TableHeader>
 
-            <TableBody
-              className={cn(
-                isLoading &&
-                  data.length > 0 &&
-                  "opacity-50 pointer-events-none transition-opacity",
-              )}
-            >
-              <AnimatePresence mode="popLayout">
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row, index) => (
-                    <motion.tr
-                      key={row.id}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ delay: index * 0.03, duration: 0.2 }}
-                      className={cn(
-                        "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group",
-                        onRowClick ? "cursor-pointer" : "",
-                        isLoading && "opacity-50 pointer-events-none",
-                        typeof rowClassName === "function"
-                          ? rowClassName(row)
-                          : rowClassName,
-                      )}
-                      onClick={(e) => {
-                        if (
-                          e.target.closest("button") ||
-                          e.target.closest("[role='menuitem']")
-                        ) {
-                          return;
-                        }
-                        if (onRowClick) {
-                          onRowClick(row);
-                        }
-                      }}
-                    >
-                      {row.getVisibleCells().map((cell) => (
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: skeletonRowCount }).map((_, rowIndex) => (
+                  <TableRow
+                    key={`skeleton-row-${rowIndex}`}
+                    className="even:bg-slate-50/50 hover:bg-transparent border-b border-slate-100"
+                  >
+                    {columns.map((col, colIndex) => {
+                      const widths = [
+                        "w-8",
+                        "w-36",
+                        "w-28",
+                        "w-20",
+                        "w-32",
+                        "w-24",
+                        "w-16",
+                      ];
+                      const widthClass = widths[colIndex % widths.length];
+                      return (
                         <TableCell
-                          key={cell.id}
-                          style={{
-                            width:
-                              cell.column.getSize() !== 150
-                                ? cell.column.getSize()
-                                : undefined,
-                          }}
-                          className="py-3 px-4 text-left"
+                          key={`skeleton-cell-${colIndex}`}
+                          className="py-3.5 px-4 text-left"
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
+                          <Skeleton
+                            className={cn(
+                              "h-4 rounded bg-slate-200/80 animate-pulse",
+                              widthClass,
+                            )}
+                          />
                         </TableCell>
-                      ))}
-                    </motion.tr>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-60 text-center relative"
-                    >
-                      {isLoading ? (
-                        <TableLoader text={`Fetching ${itemName}...`} />
-                      ) : (
-                        <DataNotFound
-                          message={
-                            globalFilter
-                              ? "No results found for your search"
-                              : `No ${itemName} found`
-                          }
-                        />
-                      )}
-                    </TableCell>
+                      );
+                    })}
                   </TableRow>
-                )}
-              </AnimatePresence>
+                ))
+              ) : (
+                <AnimatePresence mode="popLayout">
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row, index) => (
+                      <motion.tr
+                        key={row.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ delay: index * 0.03, duration: 0.2 }}
+                        className={cn(
+                          "transition-all duration-200 even:bg-slate-50 hover:bg-slate-100/70 border-b border-slate-300/60/50 group",
+                          onRowClick ? "cursor-pointer" : "",
+                          typeof rowClassName === "function"
+                            ? rowClassName(row)
+                            : rowClassName,
+                        )}
+                        onClick={(e) => {
+                          if (
+                            e.target.closest("button") ||
+                            e.target.closest("[role='menuitem']")
+                          ) {
+                            return;
+                          }
+                          if (onRowClick) {
+                            onRowClick(row);
+                          }
+                        }}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            style={{
+                              width:
+                                cell.column.getSize() !== 150
+                                  ? cell.column.getSize()
+                                  : undefined,
+                            }}
+                            className="py-3 px-4 text-left"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </motion.tr>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="min-h-[260px] py-8 text-center relative"
+                      >
+                        {globalFilter ? (
+                          <DataNotFound
+                            isSearch={true}
+                            title="No matching results found"
+                            subtitle={`No entries matching "${globalFilter}". Try adjusting your keyword or clear the search.`}
+                            action={
+                              setGlobalFilter ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setGlobalFilter("")}
+                                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 active:scale-95 cursor-pointer"
+                                >
+                                  Clear search
+                                </button>
+                              ) : null
+                            }
+                          />
+                        ) : (
+                          <DataNotFound
+                            title={`No ${itemName} available`}
+                            subtitle={`There are currently no ${itemName} recorded in the system. New entries will appear here once added.`}
+                          />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </AnimatePresence>
+              )}
             </TableBody>
           </Table>
         </div>

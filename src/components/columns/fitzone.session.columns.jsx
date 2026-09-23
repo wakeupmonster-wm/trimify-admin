@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import dayjs from "dayjs";
 import SafeImage from "@/components/common/SafeImage";
+import { formatAppDate } from "@/lib/utils";
 
 export const getManageFitzoneSessionColumns = (
   onAction,
@@ -53,7 +53,7 @@ export const getManageFitzoneSessionColumns = (
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700">
         {row.original.created_at
-          ? dayjs(row.original.created_at).format("DD MMM YYYY")
+          ? formatAppDate(row.original.created_at)
           : "N/A"}
       </div>
     ),

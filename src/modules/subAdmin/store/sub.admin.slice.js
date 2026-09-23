@@ -63,8 +63,14 @@ export const updateSubAdmin = createAsyncThunk(
       }
       return rejectWithValue(response.message || "Failed to update sub admin");
     } catch (error) {
+      const validationErrors = error.response?.data?.errors;
+      const firstValidationError = validationErrors
+        ? Object.values(validationErrors).flat()[0]
+        : null;
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update sub admin"
+        firstValidationError ||
+          error.response?.data?.message ||
+          "Failed to update sub admin"
       );
     }
   }

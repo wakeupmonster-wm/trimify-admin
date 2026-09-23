@@ -1,6 +1,7 @@
 import React from "react";
 import { PieChart, Pie, Tooltip, Label, Cell } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
+import { PieChart as PieChartIcon } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
 
 const CustomTooltip = ({ active, payload }) => {
@@ -66,60 +67,72 @@ const DonutStatCard = ({
         />
       </div>
 
-      <div className="flex-1 flex flex-col md:flex-row gap-8 items-center px-6 py-8">
-        <div className="relative w-full aspect-square max-w-[200px] mx-auto flex items-center justify-center">
-          <ChartContainer config={chartConfig} className="h-full w-full">
-            <PieChart>
-              <Tooltip content={<CustomTooltip />} cursor={false} />
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={54}
-                outerRadius={85}
-                stroke="none"
-                paddingAngle={hasData ? 1 : 0}
-                animationDuration={800}
-              >
-                {chartData.map((entry, idx) => (
-                  <Cell key={idx} fill={entry.fill} />
-                ))}
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy - 4}
-                            className="fill-slate-900 text-xl font-black"
-                          >
-                            {hasData ? total.toLocaleString() : "0"}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy + 16}
-                            className="fill-slate-400 text-[9px] font-bold tracking-[0.1em] uppercase"
-                          >
-                            {centerLabel}
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  }}
-                />
-              </Pie>
-            </PieChart>
-          </ChartContainer>
+      {!hasData ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[220px] select-none">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+            <PieChartIcon className="h-6 w-6" strokeWidth={2} />
+          </div>
+          <h4 className="text-sm font-bold text-slate-800 tracking-tight">
+            No data for selected period
+          </h4>
+          <p className="mt-1 max-w-[280px] text-xs font-medium text-slate-500 leading-relaxed">
+            No {title?.toLowerCase() || "records"} recorded for this timeframe. Try choosing a different date range.
+          </p>
         </div>
+      ) : (
+        <div className="flex-1 flex flex-col md:flex-row gap-8 items-center px-6 py-8">
+          <div className="relative w-full aspect-square max-w-[200px] mx-auto flex items-center justify-center">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <PieChart>
+                <Tooltip content={<CustomTooltip />} cursor={false} />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={54}
+                  outerRadius={85}
+                  stroke="none"
+                  paddingAngle={hasData ? 1 : 0}
+                  animationDuration={800}
+                >
+                  {chartData.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.fill} />
+                  ))}
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        return (
+                          <text
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                          >
+                            <tspan
+                              x={viewBox.cx}
+                              y={viewBox.cy - 4}
+                              className="fill-slate-900 text-xl font-black"
+                            >
+                              {total.toLocaleString()}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={viewBox.cy + 16}
+                              className="fill-slate-400 text-[9px] font-bold tracking-[0.1em] uppercase"
+                            >
+                              {centerLabel}
+                            </tspan>
+                          </text>
+                        );
+                      }
+                    }}
+                  />
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+          </div>
 
-        <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
-          {hasData ? (
+          <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
             <div className="divide-y divide-slate-100">
               {data.map((item, idx) => {
                 const pct =
@@ -150,13 +163,9 @@ const DonutStatCard = ({
                 );
               })}
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-full min-h-[80px] text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl">
-              No data available
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

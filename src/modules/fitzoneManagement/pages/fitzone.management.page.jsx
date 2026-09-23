@@ -19,7 +19,6 @@ import {
   fetchFitzoneList,
   toggleFitzoneStatus,
   deleteFitzone,
-  assignFitzoneToAllUsers,
 } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -96,9 +95,7 @@ const FitzoneManagementPage = () => {
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [assignModal, setAssignModal] = useState({ open: false, rowData: null });
   const [selectiveAssignModal, setSelectiveAssignModal] = useState({ open: false, rowData: null });
-  const [isAssigning, setIsAssigning] = useState(false);
   const [globalKpisData, setGlobalKpisData] = useState(null);
   const [assignmentLogs, setAssignmentLogs] = useState({ open: false, row: null, runs: [], loading: false });
 
@@ -165,9 +162,7 @@ const FitzoneManagementPage = () => {
       navigate("edit-fitzone", { state: { editData: row } });
     } else if (action === "delete") {
       setDeleteModal({ open: true, rowData: row });
-    } else if (action === "assign-all-users") {
-      setAssignModal({ open: true, rowData: row });
-    } else if (action === "assign-selective-users") {
+    } else if (action === "assign") {
       setSelectiveAssignModal({ open: true, rowData: row });
     } else if (action === "assignment-logs") {
       setAssignmentLogs({ open: true, row, runs: [], loading: true });
@@ -176,23 +171,6 @@ const FitzoneManagementPage = () => {
         .catch(() => setAssignmentLogs({ open: true, row, runs: [], loading: false }));
     }
   }, [navigate]);
-
-  const handleConfirmAssignAll = async () => {
-    if (!assignModal.rowData) return;
-    setIsAssigning(true);
-    try {
-      const result = await dispatch(assignFitzoneToAllUsers(assignModal.rowData.id));
-      if (assignFitzoneToAllUsers.fulfilled.match(result)) {
-        toast.success("Assignment started. Open Assignment Logs to view live progress and final totals.");
-        dispatch(fetchFitzoneList(listRequestParams));
-      } else {
-        toast.error(result.payload || "Unable to queue Fitzone assignment.");
-      }
-    } finally {
-      setIsAssigning(false);
-      setAssignModal({ open: false, rowData: null });
-    }
-  };
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
@@ -348,7 +326,7 @@ const FitzoneManagementPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 icon={Plus}
-                label="Create Fitzone"
+                label="Add Fitzone"
                 onClick={() => navigate("add-fitzone")}
               />
             </div>
@@ -435,17 +413,6 @@ const FitzoneManagementPage = () => {
           ) : <p className="text-sm text-slate-500">No assignment run has been recorded yet.</p>}
         </DialogContent>
       </Dialog>
-      <ConfirmModal
-        isOpen={assignModal.open}
-        onClose={() => !isAssigning && setAssignModal({ open: false, rowData: null })}
-        onConfirm={handleConfirmAssignAll}
-        title="Assign Fitzone to all users"
-        message={`Assign "${assignModal.rowData?.title || "this Fitzone"}" to all users in the background? Existing assignments will be skipped, and any failures will be recorded.`}
-        type="brand"
-        confirmText="Assign all users"
-        loading={isAssigning}
-      />
-
       <AssignSelectiveUsersDialog
         open={selectiveAssignModal.open}
         onOpenChange={(open) => setSelectiveAssignModal((prev) => ({ ...prev, open }))}

@@ -9,13 +9,19 @@ import AiRobotImg from "@/assets/web/ai-robot.png";
 
 const MAX_NAMES = 50;
 
+const splitFoodNames = (value) =>
+  String(value || "")
+    .split(/[\n,]+/)
+    .map((name) => name.trim())
+    .filter(Boolean);
+
 const AiFoodNameInput = ({ onGenerate, loading }) => {
   const [names, setNames] = useState([]);
   const [draft, setDraft] = useState("");
   const [debouncedDraft, setDebouncedDraft] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [creativeMode, setCreativeMode] = useState(false);
+  const creativeMode = false;
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const wrapperRef = useRef(null);
@@ -77,7 +83,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
           setSuggestions(list);
           setShowSuggestions(list.length > 0);
         }
-      } catch (e) {
+      } catch {
         if (!controller.signal.aborted) setSuggestions([]);
       } finally {
         if (!controller.signal.aborted) setLoadingSuggestions(false);
@@ -87,18 +93,28 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     return () => controller.abort();
   }, [debouncedDraft, creativeMode]);
 
-  const addName = (value) => {
-    const trimmed = value.trim();
-    if (!trimmed) return;
-    if (names.length >= MAX_NAMES) return;
-    const exists = names.some((n) => n.toLowerCase() === trimmed.toLowerCase());
-    if (exists) {
-      setDraft("");
-      return;
-    }
-    setNames((prev) => [...prev, trimmed]);
+  const addNames = (value) => {
+    const candidates = splitFoodNames(value);
+    if (!candidates.length) return;
+
+    setNames((previousNames) => {
+      const seen = new Set(previousNames.map((name) => name.toLowerCase()));
+      const nextNames = [...previousNames];
+
+      candidates.forEach((name) => {
+        const normalizedName = name.toLowerCase();
+        if (!seen.has(normalizedName) && nextNames.length < MAX_NAMES) {
+          seen.add(normalizedName);
+          nextNames.push(name);
+        }
+      });
+
+      return nextNames;
+    });
     setDraft("");
   };
+
+  const addName = (value) => addNames(value);
 
   const removeName = (index) => {
     setNames((prev) => prev.filter((_, i) => i !== index));
@@ -117,35 +133,31 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     }
   };
 
+  const handlePaste = (event) => {
+    const pastedText = event.clipboardData?.getData("text") || "";
+    if (!/[\n,]/.test(pastedText)) return;
+
+    // Make a comma-separated clipboard list visibly become separate food chips
+    // immediately instead of leaving it looking like a single pending item.
+    event.preventDefault();
+    addNames(pastedText);
+    setShowSuggestions(false);
+  };
+
   const handleSubmit = () => {
-    const parsedDraftNames = draft
-      .split(/[\n,]+/)
-      .map((n) => n.trim())
-      .filter(Boolean);
-    const uniqueNames = [...new Set([...names, ...parsedDraftNames])];
+    const uniqueNames = [...new Set([...names, ...splitFoodNames(draft)])];
     if (uniqueNames.length === 0 || loading) return;
     setIsConfirmModalOpen(true);
   };
 
   const handleConfirmGenerate = () => {
-    const parsedDraftNames = draft
-      .split(/[\n,]+/)
-      .map((n) => n.trim())
-      .filter(Boolean);
-    const uniqueNames = [...new Set([...names, ...parsedDraftNames])];
+    const uniqueNames = [...new Set([...names, ...splitFoodNames(draft)])];
     if (uniqueNames.length === 0 || loading) return;
     onGenerate(uniqueNames.slice(0, MAX_NAMES));
     setNames([]);
     setDraft("");
     setIsConfirmModalOpen(false);
   };
-
-  const pendingCount =
-    names.length +
-    draft
-      .split(/[\n,]+/)
-      .map((n) => n.trim())
-      .filter(Boolean).length;
 
   return (
     <div className="relative bg-white rounded-xl shadow-sm border border-slate-200 hover:border-slate-300 transition-all px-4 sm:px-6 py-3 sm:py-4 flex flex-col md:flex-row items-stretch gap-6 sm:gap-8">
@@ -196,6 +208,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
                 setDraft(e.target.value);
                 if (!e.target.value.trim()) setShowSuggestions(false);
               }}
+              onPaste={handlePaste}
               onKeyDown={handleKeyDown}
               placeholder={
                 names.length === 0
@@ -207,7 +220,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
             />
           </div>
           <p className="text-[10px] text-slate-400 font-medium mt-1.5 px-1">
-            * Comma also works to separate names.
+            * Paste or type comma-separated names to add each food separately.
           </p>
 
           {showSuggestions &&

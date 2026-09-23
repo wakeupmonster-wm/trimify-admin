@@ -17,6 +17,8 @@ export const USER = {
   USER_TRANSACTIONS: (id) => `${ADMIN}/users/${id}/transactions`,
   /** GET — Retrieve user's paginated activity logs */
   USER_ACTIVITY_LOGS: (id) => `${ADMIN}/users/${id}/activity-logs`,
+  /** POST — Register an additional FCM device token for a user */
+  ADD_DEVICE_TOKEN: (id) => `${ADMIN}/users/${id}/device-tokens`,
   /** DELETE — Soft delete user */
   DELETE_USER: (id) => `${ADMIN}/users/${id}`,
 

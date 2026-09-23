@@ -190,7 +190,7 @@ const AddCategoryPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.title && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -211,7 +211,7 @@ const AddCategoryPage = () => {
                   value={formData.description}
                   onChange={handleChange}
                   maxLength={500}
-                  className={`w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                  className="w-full min-h-[120px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium resize-none p-3 pb-8 border-slate-300/60"
                 />
                 <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                   {formData.description.length} / 500
@@ -259,7 +259,7 @@ const AddCategoryPage = () => {
                 onValueChange={handleStatusChange}
               >
                 <SelectTrigger
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.status ? "border-red-500" : "border-slate-300/60"}`}
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 >
                   <SelectValue
                     placeholder="Select..."

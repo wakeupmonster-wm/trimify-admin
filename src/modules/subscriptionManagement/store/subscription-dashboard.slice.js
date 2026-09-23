@@ -125,9 +125,14 @@ export const manageSubscriber = createAsyncThunk(
   async ({ id, ...body }, { rejectWithValue, dispatch }) => {
     try {
       const response = await manageSubscriberAPI(id, body);
-      if (response?.success) {
+      if (
+        response?.success ||
+        response?.status === "success" ||
+        response?.status === 200 ||
+        (!response?.error && !response?.errors)
+      ) {
         dispatch(fetchOverview());
-        return { id };
+        return { id, ...(response?.data || response || {}) };
       }
       return rejectWithValue(response);
     } catch (error) {

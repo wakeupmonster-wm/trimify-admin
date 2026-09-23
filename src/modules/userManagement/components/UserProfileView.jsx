@@ -12,9 +12,8 @@ import {
   Settings,
 } from "lucide-react";
 import { TabOverview } from "./TabOverview";
-import { TabHealth } from "./TabHealth";
+import { TabHealthActivity } from "./TabHealthActivity";
 import { TabPrograms } from "./TabPrograms";
-import { TabActivity } from "./TabActivity";
 import { TabSettings } from "./TabSettings";
 import { TabTransactions } from "./TabTransactions";
 import UserProfileSkeleton from "./profile/UserProfileSkeleton";
@@ -55,8 +54,8 @@ const cap = (s) =>
   s === null || s === undefined || s === ""
     ? null
     : String(s)
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
 const fmtDate = (v) => {
   if (!v) return "—";
@@ -126,9 +125,8 @@ function bmiCategory(bmi) {
 ========================================================================= */
 const TABS = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
-  { key: "health", label: "Health & Goals", icon: HeartPulse },
+  { key: "health", label: "Health & Activity", icon: HeartPulse },
   { key: "programs", label: "Programs & Fitzone", icon: Dumbbell },
-  { key: "activity", label: "Activity", icon: Activity },
   // { key: "account", label: "Account", icon: User },
   { key: "transactions", label: "Transactions", icon: CreditCard },
   { key: "settings", label: "Settings", icon: Settings },
@@ -148,21 +146,62 @@ export default function UserProfileView({ user, onBack, loading }) {
     if (!user) return {};
     const height = parseFloat(user.height);
     const weight = parseFloat(user.weight);
-    const bmi = height && weight ? weight / Math.pow(height / 100, 2) : null;
+    const weightUnit = (user.weight_unit || 'kg').toLowerCase().trim();
+    const heightUnit = (user.height_unit || 'cm').toLowerCase().trim();
+    const weightGoalUnit = (user.weight_goal_unit || user.weight_unit || 'kg').toLowerCase().trim();
+
+    // Convert to kg/cm for BMI calculation
+    const weightInKg = weightUnit === 'lbs' ? weight * 0.45359237 : weight;
+    const heightInCm =
+      heightUnit === 'ft' || heightUnit === 'feet'
+        ? (() => {
+            const strH = String(user.height || '').trim();
+            // Plain numeric values (6.1 / 6.10) mean decimal feet.  Only an
+            // explicit feet-and-inches value (6'1\" or 6 ft 1 in) is parsed
+            // as inches, preventing 6.10 from becoming 6 ft 10 in.
+            const feetInches = strH.match(/^(\d+)\s*(?:ft|feet|')\s*(\d+(?:\.\d+)?)?\s*(?:in|inches|\")?$/i);
+            return feetInches
+              ? (Number(feetInches[1]) * 12 + Number(feetInches[2] || 0)) * 2.54
+              : height * 30.48;
+          })()
+        : height;
+
+    const computedBmi = heightInCm && weightInKg ? weightInKg / Math.pow(heightInCm / 100, 2) : null;
+    // Height/weight are the source of truth. `user.bmi` can be stale after
+    // the app updates either measurement, so only use it as a fallback.
+    const rawBmi = computedBmi ?? parseFloat(user.bmi);
+    const bmi = rawBmi && !isNaN(rawBmi) ? rawBmi : null;
     const bmiCat = bmiCategory(bmi);
     const bmiPct = bmi
       ? Math.min(100, Math.max(0, ((bmi - 15) / (35 - 15)) * 100))
       : 0;
     const age = ageFromDob(user.dob);
-    const macroTotal =
-      (user.carbs_goal || 0) + (user.fat_goal || 0) + (user.protein_goal || 0);
+    const todayNutrition = user.today_nutrition || {};
+    const consumedCarbs = Number(todayNutrition.carbs) || 0;
+    const consumedProtein = Number(todayNutrition.protein) || 0;
+    const consumedFat = Number(todayNutrition.fat) || 0;
+
+    const hasConsumedMacros = (consumedCarbs + consumedProtein + consumedFat) > 0;
+
+    // Agar user ne meal log kiya hai toh consumed actual macros aayenge, warna goal/default
+    const currentCarbs = hasConsumedMacros ? consumedCarbs : (user.carbs_goal || 0);
+    const currentProtein = hasConsumedMacros ? consumedProtein : (user.protein_goal || 0);
+    const currentFat = hasConsumedMacros ? consumedFat : (user.fat_goal || 0);
+
+    const macroTotal = currentCarbs + currentProtein + currentFat;
     const macros = [
-      { label: "Carbs", v: user.carbs_goal || 0, color: "#f43f5e" }, // Rose-500
-      { label: "Protein", v: user.protein_goal || 0, color: "#0ea5e9" }, // Sky-500
-      { label: "Fat", v: user.fat_goal || 0, color: "#8b5cf6" }, // Violet-500
+      { label: "Carbs", v: currentCarbs, color: "#f43f5e" }, // Rose-500
+      { label: "Protein", v: currentProtein, color: "#0ea5e9" }, // Sky-500
+      { label: "Fat", v: currentFat, color: "#8b5cf6" }, // Violet-500
     ];
+
     const fitnessProfileFields = [
-      ["Weight Goal", user.weight_goal ? `${user.weight_goal} kg` : null],
+      [
+        "Weight Goal",
+        user.weight_goal
+          ? `${user.weight_goal} ${weightGoalUnit}`
+          : null,
+      ],
       ["Main Goal", cap(user.main_goal)],
       ["Current Body Shape", cap(user.body_shape)],
       ["Goal Body Shape", cap(user.body_shape_goal)],
@@ -201,6 +240,9 @@ export default function UserProfileView({ user, onBack, loading }) {
     return {
       height,
       weight,
+      heightUnit,
+      weightUnit,
+      weightGoalUnit,
       bmi,
       bmiCat,
       bmiPct,
@@ -224,14 +266,16 @@ export default function UserProfileView({ user, onBack, loading }) {
     page: 1,
     totalPages: 1,
     status: "all",
+    plan: "all",
   });
 
-  const loadTransactions = async (page, status) => {
+  const loadTransactions = async (page, status, plan = "all") => {
     if (!user?.id) return;
     setTxState((s) => ({ ...s, loading: true }));
     try {
       const params = { page };
       if (status !== "all") params.status = status;
+      if (plan !== "all") params.plan = plan;
       const response = await getUserTransactionsAPI(user.id, params);
       if (response?.success) {
         setTxState({
@@ -242,6 +286,7 @@ export default function UserProfileView({ user, onBack, loading }) {
           page,
           totalPages: response.data?.pagination?.last_page || 1,
           status,
+          plan,
         });
       } else {
         setTxState((s) => ({ ...s, loading: false }));
@@ -255,7 +300,7 @@ export default function UserProfileView({ user, onBack, loading }) {
   const handleTabChange = (value) => {
     setTab(value);
     if (value === "transactions" && !txState.loaded && !txState.loading) {
-      loadTransactions(1, "all");
+      loadTransactions(1, "all", "all");
     }
   };
 
@@ -266,7 +311,7 @@ export default function UserProfileView({ user, onBack, loading }) {
       !txState.loading &&
       user?.id
     ) {
-      loadTransactions(1, "all");
+      loadTransactions(1, "all", "all");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, user?.id]);
@@ -276,7 +321,7 @@ export default function UserProfileView({ user, onBack, loading }) {
   }
 
   const handleCopy = (value, label) => {
-    navigator.clipboard?.writeText(String(value)).catch(() => {});
+    navigator.clipboard?.writeText(String(value)).catch(() => { });
     toast.success(`${label} copied`);
   };
 
@@ -309,9 +354,11 @@ export default function UserProfileView({ user, onBack, loading }) {
   const consumedWater = todayActivities
     .filter((a) => a.type === "water_log")
     .reduce((sum, a) => sum + parseVal(a.title), 0);
-  const consumedCalories = todayActivities
-    .filter((a) => a.type === "food_log")
-    .reduce((sum, a) => sum + parseVal(a.title), 0);
+  // `today_nutrition` is calculated by the API from all food logs using
+  // quantity / 100 * servings. Do not rebuild it from the (limited) activity
+  // timeline; that can omit logs and makes the Daily Targets total differ from
+  // the mobile app.
+  const consumedCalories = Number(user.today_nutrition?.calories) || 0;
   const consumedSteps = todayActivities
     .filter((a) => a.type === "step_log")
     .reduce((sum, a) => sum + parseVal(a.title), 0);
@@ -320,9 +367,9 @@ export default function UserProfileView({ user, onBack, loading }) {
   const deviceTokens = Array.isArray(user.device_tokens)
     ? user.device_tokens
     : String(user.device_token || "")
-        .split(",")
-        .map((token) => token.trim())
-        .filter(Boolean);
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean);
   const displayedStatus = resolveSubscriptionStatus(user);
 
   const tabData = {
@@ -346,8 +393,12 @@ export default function UserProfileView({ user, onBack, loading }) {
     truncMid,
     timeAgo,
     transactionsState: txState,
-    onTransactionsPageChange: (page) => loadTransactions(page, txState.status),
-    onTransactionsStatusChange: (status) => loadTransactions(1, status),
+    onTransactionsPageChange: (page) =>
+      loadTransactions(page, txState.status, txState.plan),
+    onTransactionsStatusChange: (status) =>
+      loadTransactions(1, status, txState.plan),
+    onTransactionsPlanChange: (plan) =>
+      loadTransactions(1, txState.status, plan),
   };
 
   return (
@@ -431,30 +482,13 @@ export default function UserProfileView({ user, onBack, loading }) {
                       className={cn(
                         "inline-flex items-center rounded-full border border-transparent px-2 py-0.5 text-[10px] sm:text-[11px] font-semibold",
                         STATUS_BADGE_STYLE[displayedStatus.toLowerCase()] ||
-                          STATUS_BADGE_STYLE.active,
+                        STATUS_BADGE_STYLE.active,
                       )}
                     >
                       {displayedStatus}
                     </span>
                   </div>
                 </div>
-
-                {/* <div className="flex flex-col sm:flex-row items-start gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-medium text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
-                    <span className="text-slate-400">Joined:</span>{" "}
-                    <span className="text-slate-700">
-                      {fmtDate(user.createdAt || user.created_at)}
-                    </span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <History className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
-                    <span className="text-slate-400">Updated:</span>{" "}
-                    <span className="text-slate-700">
-                      {fmtDate(user.updatedAt || user.updated_at)}
-                    </span>
-                  </span>
-                </div> */}
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-semibold text-xs text-slate-600">
                   {/* Joined Date */}
@@ -501,7 +535,6 @@ export default function UserProfileView({ user, onBack, loading }) {
 
           <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
             <div className="relative w-full overflow-hidden mb-6">
-              {/* <TabsList className="hidden lg:flex overflow-x-auto h-12 p-1 bg-slate-100/80 backdrop-blur-md border border-slate-300/80 rounded-xl w-full lg:max-w-max justify-start shadow-sm"> */}
               <TabsList className="hidden lg:flex items-center justify-between gap-1 p-1 bg-white backdrop-blur-md rounded-lg w-full border border-slate-200 h-auto overflow-x-auto flex-nowrap shadow-sm">
                 {TABS.map((t) => {
                   const isActive = tab === t.key;
@@ -518,9 +551,8 @@ export default function UserProfileView({ user, onBack, loading }) {
                     >
                       {t.icon && (
                         <t.icon
-                          className={`w-4 h-4 relative z-10 font-semibold ${
-                            isActive ? "text-white" : "text-slate-500"
-                          }`}
+                          className={`w-4 h-4 relative z-10 font-semibold ${isActive ? "text-white" : "text-slate-500"
+                            }`}
                         />
                       )}
                       <span
@@ -572,13 +604,10 @@ export default function UserProfileView({ user, onBack, loading }) {
               <TabOverview data={tabData} />
             </TabsContent>
             <TabsContent value="health">
-              <TabHealth data={tabData} />
+              <TabHealthActivity data={tabData} />
             </TabsContent>
             <TabsContent value="programs">
               <TabPrograms data={tabData} />
-            </TabsContent>
-            <TabsContent value="activity">
-              <TabActivity data={tabData} />
             </TabsContent>
             {/* <TabsContent value="account">
               <TabAccount data={tabData} />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format, startOfDay, endOfDay } from "date-fns";
+import { formatAppDate } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import OverviewView from "../components/dashboard/OverviewView";
@@ -52,7 +53,7 @@ export default function SubscriptionDashboardPage() {
     if (dateRange.preset && dateRange.preset !== "custom") {
       return presetLabels[dateRange.preset] || "Selected Range";
     }
-    return `${format(dateRange.from, "MMM dd")} – ${format(dateRange.to, "MMM dd, y")}`;
+    return `${formatAppDate(dateRange.from)} – ${formatAppDate(dateRange.to)}`;
   }, [dateRange]);
 
   const fetchChartsForRange = useCallback(

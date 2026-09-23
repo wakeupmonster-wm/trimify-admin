@@ -11,6 +11,7 @@ import ModuleKpiRow from "@/components/shared/ModuleKpiRow";
 import ErrorState from "@/components/shared/ErrorState";
 import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, format, parseISO } from "date-fns";
+import { formatAppDate } from "@/lib/utils";
 import { getTransactionColumns } from "./transaction.columns";
 import RevokeTransactionDialog from "./RevokeTransactionDialog";
 import ExportLoadingModal from "@/components/shared/ExportLoadingModal";
@@ -322,7 +323,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
 
   // Formatted label for the date range chip
   const dateRangeLabel = dateRange
-    ? `${format(dateRange.from, "MMM dd, yyyy")} – ${format(dateRange.to, "MMM dd, yyyy")}`
+    ? `${formatAppDate(dateRange.from)} – ${formatAppDate(dateRange.to)}`
     : "";
 
   if (transactionsError && !transactionsPagination) {

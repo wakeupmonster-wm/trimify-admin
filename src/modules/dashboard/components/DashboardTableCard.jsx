@@ -1,5 +1,6 @@
 import React from "react";
 import DashboardHead from "@/components/shared/dashboard.head";
+import { CheckCircle2 } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -83,8 +84,16 @@ const DashboardTableCard = ({
                   colSpan={columns.length + (actionLabel ? 1 : 0)}
                   className="h-32 text-center"
                 >
-                  <div className="flex items-center justify-center h-full text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl mx-4 my-2 min-h-[80px]">
-                    {emptyMessage}
+                  <div className="flex flex-col items-center justify-center text-center py-6 select-none">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200/70 text-emerald-600 shadow-sm mb-3">
+                      <CheckCircle2 className="h-6 w-6" strokeWidth={2} />
+                    </div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
+                      No members need follow-up
+                    </h4>
+                    <p className="mt-1 max-w-[280px] text-[11px] font-medium text-slate-500 leading-relaxed">
+                      All member health and engagement metrics are currently on track for this period.
+                    </p>
                   </div>
                 </TableCell>
               </TableRow>

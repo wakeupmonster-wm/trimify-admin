@@ -35,7 +35,8 @@ export const addFaq = createAsyncThunk(
       const response = await addFaqAPI(data);
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message || "Failed to add FAQ");
+      // Pass full response data so the component can extract field-level validation errors
+      return rejectWithValue(error.response?.data || { message: error.message || "Failed to add FAQ" });
     }
   }
 );
@@ -47,7 +48,8 @@ export const updateFaq = createAsyncThunk(
       const response = await updateFaqAPI(id, data);
       return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message || "Failed to update FAQ");
+      // Pass full response data so the component can extract field-level validation errors
+      return rejectWithValue(error.response?.data || { message: error.message || "Failed to update FAQ" });
     }
   }
 );

@@ -11,6 +11,34 @@ const validationErrorPayload = (error, fallbackMessage) => {
   const response = error.response?.data;
   const apiErrors = response?.errors;
 
+  if (error.response?.status === 413) {
+    return {
+      message: "The video is too large for the server. Please upload a video smaller than 35 MB.",
+      fieldErrors: { video: "The video is too large for the server. Please upload a video smaller than 35 MB." },
+    };
+  }
+
+  if (error.code === "ECONNABORTED") {
+    return {
+      message: "The upload took too long. Check your connection and try a smaller video.",
+      fieldErrors: { video: "The upload timed out. Please check your connection and try a smaller video." },
+    };
+  }
+
+  if (error.code === "ERR_CANCELED") {
+    return {
+      message: "The upload was cancelled before it reached the server. Please try again.",
+      fieldErrors: { video: "The upload was cancelled. Please try again." },
+    };
+  }
+
+  if (!error.response) {
+    return {
+      message: "Could not reach the server while uploading the video. Check your connection and try again.",
+      fieldErrors: { video: "Upload failed before the server responded. Please try again." },
+    };
+  }
+
   if (apiErrors && typeof apiErrors === "object") {
     const fieldErrors = Object.fromEntries(
       Object.entries(apiErrors).map(([field, messages]) => [

@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import dayjs from "dayjs";
 import SafeImage from "@/components/common/SafeImage";
+import { formatAppDate } from "@/lib/utils";
 
 export const getManageFitzoneCategoryColumns = (onAction) => [
   {
@@ -40,7 +40,7 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="text-[11px] font-medium text-slate-700">
         {row.original.created_at
-          ? dayjs(row.original.created_at).format("DD MMM YYYY")
+          ? formatAppDate(row.original.created_at)
           : "N/A"}
       </div>
     ),
@@ -114,22 +114,22 @@ export const getManageFitzoneCategoryColumns = (onAction) => [
     accessorKey: "icon",
     header: () => (
       <div className="text-[10px] font-bold uppercase tracking-wider text-center">
-        Icon
+        Banner
       </div>
     ),
-    size: 100,
-    minSize: 80,
+    size: 110,
+    minSize: 90,
     cell: ({ row }) => {
       const iconUrl = row.original.icon || row.original.icon_url;
       return (
         <div className="flex justify-center">
           {iconUrl ? (
-            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-300/60 overflow-hidden">
+            <div className="w-14 h-7 rounded border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center shadow-xs">
               <SafeImage
                 src={iconUrl}
-                alt="Icon"
-                className="w-5 h-5 object-contain"
-                fallbackClassName="w-5 h-5 rounded-full"
+                alt="Banner"
+                className="w-full h-full object-cover"
+                fallbackClassName="w-14 h-7 rounded bg-slate-100"
               />
             </div>
           ) : (

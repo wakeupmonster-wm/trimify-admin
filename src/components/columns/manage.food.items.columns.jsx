@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Ellipsis, Edit, Trash2 } from "lucide-react";
+import { formatAppDate } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,16 +42,10 @@ export const getManageFoodItemsColumns = (handleAction) => [
     size: 120,
     minSize: 100,
     cell: ({ row }) => {
-      const date = row.original.updated_at
-        ? new Date(row.original.updated_at)
-        : new Date();
+      const date = row.original.updated_at;
       return (
         <span className="font-medium text-slate-700 text-[11px]">
-          {date.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })}
+          {formatAppDate(date)}
         </span>
       );
     },

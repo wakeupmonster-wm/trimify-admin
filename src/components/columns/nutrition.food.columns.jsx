@@ -61,7 +61,7 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="inline-flex rounded-full bg-[#DCEAFF] px-2.5 py-1 text-[10px] font-bold text-app-primary2 whitespace-nowrap">
+      <div className="inline-flex rounded-full bg-sky-100 px-2.5 py-1 text-[10px] font-bold text-sky-700 whitespace-nowrap">
         {row.original.Meal_Protien_In_gm ?? "-"} gm
       </div>
     ),
@@ -76,7 +76,7 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="inline-flex rounded-full bg-emerald-200 px-2.5 py-1 text-[10px] font-bold text-emerald-800 whitespace-nowrap">
+      <div className="inline-flex rounded-full bg-rose-100 px-2.5 py-1 text-[10px] font-bold text-rose-700 whitespace-nowrap">
         {row.original.Meal_Carbs_In_gm ?? "-"} gm
       </div>
     ),
@@ -91,7 +91,7 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="inline-flex rounded-full bg-amber-200 px-2.5 py-1 text-[10px] font-bold text-amber-800 whitespace-nowrap">
+      <div className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold text-amber-700 whitespace-nowrap">
         {row.original.Meal_Calories_In_gm ?? "-"} kcal
       </div>
     ),
@@ -106,7 +106,7 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 40,
     minSize: 30,
     cell: ({ row }) => (
-      <div className="inline-flex rounded-full bg-rose-200 px-2.5 py-1 text-[10px] font-bold text-rose-800 whitespace-nowrap">
+      <div className="inline-flex rounded-full bg-violet-100 px-2.5 py-1 text-[10px] font-bold text-violet-700 whitespace-nowrap">
         {row.original.Meal_Fats_In_gm ?? "-"} gm
       </div>
     ),
@@ -147,7 +147,7 @@ export const getNutritionFoodColumns = (onAction) => [
     size: 50,
     minSize: 40,
     cell: ({ row }) => (
-      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap">
+      <div className="text-[11px] font-medium text-slate-600 tracking-tight whitespace-nowrap capitalize">
         {row.original.Meal_Type || "-"}
       </div>
     ),

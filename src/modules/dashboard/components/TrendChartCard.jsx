@@ -16,7 +16,7 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { Info, TrendingUp } from "lucide-react";
+import { Info, TrendingUp, BarChart3 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -340,8 +340,16 @@ function FocusTimelineUI({
               </ComposedChart>
             </ChartContainer>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl min-h-[200px]">
-              No data available
+            <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl min-h-[220px] select-none">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+                <BarChart3 className="h-6 w-6" strokeWidth={2} />
+              </div>
+              <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
+                No data for selected period
+              </h4>
+              <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
+                No activity recorded for this timeframe. Try choosing a different date range.
+              </p>
             </div>
           )}
         </div>
@@ -681,9 +689,17 @@ const TrendChartCard = ({
           </ChartContainer>
         ) : (
           <div
-            className={`w-full ${height} flex items-center justify-center text-xs text-slate-400 font-medium border-2 border-dashed border-slate-100 rounded-xl`}
+            className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl select-none`}
           >
-            No data available
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+              <BarChart3 className="h-6 w-6" strokeWidth={2} />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
+              No data for selected period
+            </h4>
+            <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
+              No records found for this timeframe. Try choosing a different date range.
+            </p>
           </div>
         )}
       </div>

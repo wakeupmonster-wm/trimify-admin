@@ -29,11 +29,23 @@ const TILE_TYPE = {
   Weight: "weight_log",
 };
 
+const PERIODS = [
+  { key: "1d", label: "1 Day" },
+  { key: "3d", label: "3 Day" },
+  { key: "90d", label: "Last 90 Days" },
+  { key: "all", label: "Full History" },
+];
+
+// Survives tab unmounts while the user profile stays open, so toggling
+// All/Water (or leaving and returning to Activity) does not flash a spinner.
+const activityResponseCache = new Map();
+
 export function TabActivity({ data }) {
   const { as, maxSteps, fmtDate, user } = data;
   const userId = user?.id || user?.user_id;
 
   const [filter, setFilter] = useState("all");
+  const [period, setPeriod] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [loading, setLoading] = useState(false);
@@ -45,6 +57,17 @@ export function TabActivity({ data }) {
   const fetchActivityLogs = useCallback(
     async (currentPage, currentLimit, currentFilter) => {
       if (!userId) return;
+      const cacheKey = `${userId}:${currentPage}:${currentLimit}:${currentFilter || "all"}:${period}`;
+      const cachedResponse = activityResponseCache.get(cacheKey);
+
+      if (cachedResponse) {
+        setActivities(cachedResponse.activities);
+        setSummary(cachedResponse.summary);
+        setTotalRows(cachedResponse.totalRows);
+        setTotalPages(cachedResponse.totalPages);
+        return;
+      }
+
       setLoading(true);
       try {
         const params = {
@@ -54,6 +77,7 @@ export function TabActivity({ data }) {
         if (currentFilter && currentFilter !== "all") {
           params.type = currentFilter;
         }
+        params.period = period;
         const res = await getUserActivityLogsAPI(userId, params);
         if (res?.success && res.data) {
           setActivities(res.data.activities || []);
@@ -61,12 +85,20 @@ export function TabActivity({ data }) {
             setSummary(res.data.summary);
           }
           if (res.data.pagination) {
-            setTotalRows(res.data.pagination.total || 0);
-            setTotalPages(
+            const nextTotalRows = res.data.pagination.total || 0;
+            const nextTotalPages =
               res.data.pagination.last_page ||
                 res.data.pagination.totalPage ||
-                1,
-            );
+                1;
+            const cachedData = {
+              activities: res.data.activities || [],
+              summary: res.data.summary || as || {},
+              totalRows: nextTotalRows,
+              totalPages: nextTotalPages,
+            };
+            activityResponseCache.set(cacheKey, cachedData);
+            setTotalRows(nextTotalRows);
+            setTotalPages(nextTotalPages);
           }
         }
       } catch (err) {
@@ -75,15 +107,23 @@ export function TabActivity({ data }) {
         setLoading(false);
       }
     },
-    [userId],
+    [as, period, userId],
   );
 
   useEffect(() => {
-    fetchActivityLogs(page, pageSize, filter);
+    const timer = window.setTimeout(() => {
+      fetchActivityLogs(page, pageSize, filter);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchActivityLogs, page, pageSize, filter]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
+    setPage(1);
+  };
+
+  const handlePeriodChange = (nextPeriod) => {
+    setPeriod(nextPeriod);
     setPage(1);
   };
 
@@ -116,37 +156,69 @@ export function TabActivity({ data }) {
 
   return (
     <>
+      {/* Activity Section Header with Period Tabs */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h3 className="text-base sm:text-lg font-bold text-slate-800 tracking-tight">
+          Activity
+        </h3>
+
+        {/* Period Filter Tabs */}
+        <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-slate-100 border border-slate-200/80">
+          {PERIODS.map(({ key, label }) => {
+            const isActive = period === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => handlePeriodChange(key)}
+                className={cn(
+                  "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 whitespace-nowrap",
+                  isActive
+                    ? "bg-app-primary2 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-white/60",
+                )}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       {/* KPI Top Cards */}
       <div className="mb-3.5 grid grid-cols-2 gap-3.5 lg:grid-cols-2 xl:grid-cols-4">
         {[
           {
-            l: "Steps",
+            key: "Steps",
+            l: "Steps Logged",
             d: activeSummary.steps || {},
             icon: Footprints,
             tone: "emerald",
           },
           {
-            l: "Water",
+            key: "Water",
+            l: "Water Consumed",
             d: activeSummary.water || {},
             icon: Droplets,
             tone: "blue",
           },
           {
-            l: "Food",
+            key: "Food",
+            l: "Meals Logged",
             d: activeSummary.food || {},
             icon: Utensils,
             tone: "amber",
           },
           {
-            l: "Weight",
+            key: "Weight",
+            l: "Weight Entries",
             d: activeSummary.weight || {},
             icon: Weight,
             tone: "purple",
           },
         ].map((c) => {
-          const type = TILE_TYPE[c.l];
+          const type = TILE_TYPE[c.key];
           const isActive = filter === type;
-          const isWater = c.l === "Water";
+          const isWater = c.key === "Water";
 
           const borderTones = {
             blue: "border-b-app-primary2",
@@ -173,7 +245,9 @@ export function TabActivity({ data }) {
             amber: "border-amber-500",
           };
 
-          const displayValue = isWater
+          const displayValue = c.key === "Steps"
+            ? c.d.total_steps || 0
+            : isWater
             ? `${c.d.total_liters ?? (c.d.total_ml ? (c.d.total_ml / 1000).toFixed(1) : 0)} L`
             : c.d.total_entries || 0;
 
@@ -201,11 +275,9 @@ export function TabActivity({ data }) {
               <p className="text-xs md:text-[13px] font-bold text-slate-600 text-center tracking-tight">
                 {c.l}
               </p>
-              {isWater && (
-                <p className="mt-0.5 text-[10.5px] font-semibold text-slate-400 text-center">
-                  {c.d.total_entries || 0} logs
-                </p>
-              )}
+              <p className="mt-0.5 text-[10.5px] font-semibold text-slate-400 text-center">
+                {c.d.total_entries || 0} {(c.d.total_entries || 0) === 1 ? "log" : "logs"}
+              </p>
             </button>
           );
         })}
@@ -264,10 +336,11 @@ export function TabActivity({ data }) {
                     .replace(/glasses/i, "ml");
                 }
               } else if (a.type === "weight_log") {
+                const defaultUnit = user?.weight_unit || "kg";
                 displayTitle = displayTitle.replace(
                   /Weight logged:\s*([\d.]+)\s*(\w+)?/i,
                   (_, weightNum, unit) =>
-                    `Weight logged: ${formatWeightValue(weightNum)} ${unit || "kg"}`.trim(),
+                    `Weight logged: ${formatWeightValue(weightNum)} ${unit || defaultUnit}`.trim(),
                 );
               }
 
@@ -283,7 +356,7 @@ export function TabActivity({ data }) {
               return (
                 <div
                   key={a.id || `${a.type}-${i}`}
-                  className="flex items-center gap-3 py-2.5 last:pb-0 border-b border-slate-100 last:border-b-0"
+                  className="flex items-center gap-3 py-2.5 last:pb-0"
                 >
                   <div
                     className={cn(

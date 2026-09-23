@@ -36,9 +36,16 @@ export default function SubscribersView() {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 400);
-  const [statusFilter, setStatusFilter] = useState(
-    location.state?.filterId || "",
-  );
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const fromState = location.state?.filterId || "";
+    if (fromState) {
+      const match = STATUS_OPTIONS.find(
+        (o) => o.toLowerCase() === fromState.toLowerCase()
+      );
+      if (match) return match;
+    }
+    return fromState;
+  });
   const [planFilter, setPlanFilter] = useState("");
   const [dateSort, setDateSort] = useState("");
 
@@ -128,15 +135,19 @@ export default function SubscribersView() {
     const { subscriber, action } = confirmAction;
 
     if (action === "revoke") {
-      // Revoke is async: the backend proxies to the main backend's
-      // internal refund endpoint which returns 202. The webhook will
-      // set revoked_at/paid=0 after Stripe processes the refund.
+      // Close popup immediately so admin doesn't need to manually cross it out
+      setConfirmAction(null);
+      toast.loading("Processing revocation...", { id: "revoke-toast" });
+
       const result = await dispatch(
         manageSubscriber({ id: subscriber.id, action, ...data }),
       );
-      if (manageSubscriber.fulfilled.match(result)) {
-        setConfirmAction(null);
-        toast.loading("Processing revocation...", { id: "revoke-toast" });
+
+      if (
+        manageSubscriber.fulfilled.match(result) ||
+        result?.payload?.status === "success" ||
+        result?.payload?.success
+      ) {
         setTimeout(async () => {
           const refetched = await dispatch(fetchSubscribers(fetchParams));
           toast.success("Subscriber revoked successfully", {
@@ -145,13 +156,13 @@ export default function SubscribersView() {
           if (fetchSubscribers.fulfilled.match(refetched)) {
             setPinnedCounts(refetched.payload.counts);
           }
-        }, 4000);
+        }, 3000);
       } else {
         const payload = result.payload;
         const message = payload?.errors
           ? Object.values(payload.errors).flat().join(" ")
           : payload?.message || "Failed to revoke subscriber";
-        toast.error(message);
+        toast.error(message, { id: "revoke-toast" });
       }
       return;
     }
@@ -195,10 +206,10 @@ export default function SubscribersView() {
         tone: "emerald",
         description: "Not revoked, not expired",
         onClick: () => {
-          setStatusFilter("active");
+          setStatusFilter((prev) => (prev === "Active" ? "" : "Active"));
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "active",
+        isSelected: statusFilter === "Active",
       },
       {
         label: "Expired Plans",
@@ -207,10 +218,10 @@ export default function SubscribersView() {
         tone: "amber",
         description: "Expired subscriptions",
         onClick: () => {
-          setStatusFilter("expired");
+          setStatusFilter((prev) => (prev === "Expired" ? "" : "Expired"));
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "expired",
+        isSelected: statusFilter === "Expired",
       },
       {
         label: "Revoked Access",
@@ -219,10 +230,10 @@ export default function SubscribersView() {
         tone: "rose",
         description: "Revoked subscriptions",
         onClick: () => {
-          setStatusFilter("revoked");
+          setStatusFilter((prev) => (prev === "Revoked" ? "" : "Revoked"));
           setPagination((p) => ({ ...p, pageIndex: 0 }));
         },
-        isSelected: statusFilter === "revoked",
+        isSelected: statusFilter === "Revoked",
       },
     ],
     [kpiCounts, statusFilter, planFilter],
@@ -291,10 +302,10 @@ export default function SubscribersView() {
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
       options: [
-        { label: "Start: oldest first", value: "started_at:asc" },
-        { label: "Start: newest first", value: "started_at:desc" },
-        { label: "Expiry: oldest first", value: "expires_at:asc" },
-        { label: "Expiry: newest first", value: "expires_at:desc" },
+        { label: "Start: Oldest First", value: "started_at:asc" },
+        { label: "Start: Newest First", value: "started_at:desc" },
+        { label: "Expiry: Oldest First", value: "expires_at:asc" },
+        { label: "Expiry: Newest First", value: "expires_at:desc" },
       ],
       placeholder: "Start / Expiry Date",
     },

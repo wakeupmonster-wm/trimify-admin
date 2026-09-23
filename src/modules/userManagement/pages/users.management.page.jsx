@@ -28,17 +28,31 @@ const STATUS_FILTER_OPTIONS = [
 ];
 
 const ACTIVITY_FILTER_OPTIONS = [
+  { label: "New Signups", value: "new_signups" },
   { label: "New Signups Today", value: "new_today" },
   { label: "Missed Step Goals", value: "missed_step_goals" },
   { label: "Missed Diet Logs", value: "missed_diet_logs" },
   { label: "Missed Water Logs", value: "missed_water_logs" },
 ];
 
+const USER_SEARCH_STORAGE_KEY = "userManagementGlobalFilter";
+
 const getFilterValue = (filterId, options) =>
   options.find(
     (option) =>
       option.value.toLowerCase() === String(filterId || "").toLowerCase(),
   )?.value || "";
+
+const formatApiDate = (dateVal) => {
+  if (!dateVal) return undefined;
+  if (typeof dateVal === "string" && /^\d{4}-\d{2}-\d{2}/.test(dateVal)) {
+    return dateVal.slice(0, 10);
+  }
+  const d = new Date(dateVal);
+  if (isNaN(d.getTime())) return undefined;
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
 
 const UsersManagementPage = () => {
   const dispatch = useDispatch();
@@ -52,7 +66,18 @@ const UsersManagementPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilterState] = useState(
+    () => sessionStorage.getItem(USER_SEARCH_STORAGE_KEY) || "",
+  );
+  const setGlobalFilter = useCallback((nextValue) => {
+    setGlobalFilterState((currentValue) => {
+      const value =
+        typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
+      sessionStorage.setItem(USER_SEARCH_STORAGE_KEY, value || "");
+      return value || "";
+    });
+  }, []);
+
   const [statusFilter, setStatusFilter] = useState(() =>
     getFilterValue(location.state?.filterId, STATUS_FILTER_OPTIONS),
   );
@@ -63,6 +88,21 @@ const UsersManagementPage = () => {
   const [dateRangeFilter, setDateRangeFilter] = useState(
     location.state?.dateRange || null,
   );
+
+  // Sync state if navigation location.state changes
+  useEffect(() => {
+    if (location.state?.filterId) {
+      const sFilter = getFilterValue(location.state.filterId, STATUS_FILTER_OPTIONS);
+      const aFilter = getFilterValue(location.state.filterId, ACTIVITY_FILTER_OPTIONS);
+      setStatusFilter(sFilter);
+      setActivityFilter(aFilter);
+      setPagination((p) => ({ ...p, pageIndex: 0 }));
+    }
+    if (location.state?.dateRange) {
+      setDateRangeFilter(location.state.dateRange);
+    }
+  }, [location.state]);
+
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const selectedServerFilter = activityFilter || statusFilter;
@@ -76,8 +116,12 @@ const UsersManagementPage = () => {
         status: selectedServerFilter,
         // Backend expects 'preset', 'from', 'to' at the root query level, not nested
         ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
-        ...(dateRangeFilter?.from ? { from: dateRangeFilter.from } : {}),
-        ...(dateRangeFilter?.to ? { to: dateRangeFilter.to } : {}),
+        ...(dateRangeFilter?.from
+          ? { from: formatApiDate(dateRangeFilter.from) }
+          : {}),
+        ...(dateRangeFilter?.to
+          ? { to: formatApiDate(dateRangeFilter.to) }
+          : {}),
       }),
     );
   }, [
@@ -99,7 +143,6 @@ const UsersManagementPage = () => {
     },
     [navigate],
   );
-
 
   const [pinnedKpis, setPinnedKpis] = useState(null);
 
@@ -199,10 +242,10 @@ const UsersManagementPage = () => {
       tone: "violet",
       onClick: () => {
         setStatusFilter("");
-        setActivityFilter("new_today");
+        setActivityFilter("new_signups");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: activityFilter === "new_today",
+      isSelected: activityFilter === "new_signups" || activityFilter === "new_today",
     },
   ];
 

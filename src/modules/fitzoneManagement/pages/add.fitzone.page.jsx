@@ -149,7 +149,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Title"
                     value={formData.title}
                     onChange={handleChange}
-                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                    className="w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium border-slate-300/60"
                   />
                   {errors.title && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -167,7 +167,7 @@ const AddFitzonePage = () => {
                     placeholder="Enter Workout Heading"
                     value={formData.workoutHeading}
                     onChange={handleChange}
-                    className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.workoutHeading ? "border-red-500" : "border-slate-300/60"}`}
+                    className="w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium border-slate-300/60"
                   />
                   {errors.workoutHeading && (
                     <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -187,7 +187,7 @@ const AddFitzonePage = () => {
                   placeholder="Enter Workout Description"
                   value={formData.workoutDescription}
                   onChange={handleChange}
-                  className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${errors.workoutDescription ? "border-red-500" : "border-slate-300/60"}`}
+                  className="w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium border-slate-300/60"
                 />
                 {errors.workoutDescription && (
                   <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -208,7 +208,7 @@ const AddFitzonePage = () => {
                     value={formData.description}
                     onChange={handleChange}
                     maxLength={500}
-                    className={`w-full min-h-[120px] p-4 pb-8 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-none ${errors.description ? "border-red-500" : "border-slate-300/60"}`}
+                    className="w-full min-h-[120px] p-4 pb-8 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium resize-none border-slate-300/60"
                   />
                   <div className="absolute bottom-2 right-3 text-[10px] text-slate-400 font-medium pointer-events-none">
                     {formData.description.length} / 500

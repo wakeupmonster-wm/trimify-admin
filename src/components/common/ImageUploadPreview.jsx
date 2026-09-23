@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { UploadCloud, Eye, Pencil, Trash2, Image as ImageIcon } from "lucide-react";
+import {
+  UploadCloud,
+  Eye,
+  Pencil,
+  Trash2,
+  Image as ImageIcon,
+  AlertTriangle,
+  CheckCircle2,
+} from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { IMAGE_BASE_URL } from "@/services/api-endpoints/base.url";
 import SafeImage from "@/components/common/SafeImage";
@@ -78,6 +86,43 @@ const ImageUploadPreview = ({
   const cfg = VARIANT_CONFIG[resolvedVariant];
   const isIcon = resolvedVariant === "icon";
   const effectiveHint = hint || cfg.defaultHint;
+
+  // Aspect ratio validation
+  const ratioValidation = useMemo(() => {
+    if (!imageDimensions?.width || !imageDimensions?.height) return null;
+    const { width, height } = imageDimensions;
+    const actualRatio = width / height;
+
+    let isMatch = true;
+    let expectedText = aspectRatioBadge || cfg.badge;
+
+    if (resolvedVariant === "icon") {
+      // 1:1 Square (accept between 0.85 and 1.18)
+      isMatch = actualRatio >= 0.85 && actualRatio <= 1.18;
+      expectedText = aspectRatioBadge || "Square 1:1";
+    } else if (resolvedVariant === "banner") {
+      // ~2:1 Landscape (accept between 1.6 and 2.5)
+      isMatch = actualRatio >= 1.6 && actualRatio <= 2.5;
+      expectedText = aspectRatioBadge || "Banner ~2:1";
+    } else if (resolvedVariant === "card") {
+      // ~3:2 Card (accept between 1.3 and 1.75)
+      isMatch = actualRatio >= 1.3 && actualRatio <= 1.75;
+      expectedText = aspectRatioBadge || "Card ~3:2";
+    }
+
+    const ratioStr =
+      actualRatio >= 1
+        ? `${actualRatio.toFixed(1)}:1`
+        : `1:${(1 / actualRatio).toFixed(1)}`;
+
+    return {
+      isMatch,
+      width,
+      height,
+      ratioStr,
+      expectedText,
+    };
+  }, [imageDimensions, resolvedVariant, aspectRatioBadge, cfg.badge]);
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -217,9 +262,24 @@ const ImageUploadPreview = ({
 
           {/* Live Dimension and Size Badge */}
           {imageDimensions && (
-            <div className="absolute bottom-1.5 right-2 rounded-md bg-slate-950/75 backdrop-blur-xs px-2 py-0.5 text-[10px] font-semibold text-white tracking-tight pointer-events-none shadow-xs">
-              {imageDimensions.width} × {imageDimensions.height}px
-              {fileSizeLabel && ` • ${fileSizeLabel}`}
+            <div
+              className={`absolute bottom-1.5 right-2 rounded-md backdrop-blur-xs px-2 py-0.5 text-[10px] font-semibold tracking-tight pointer-events-none shadow-xs flex items-center gap-1.5 ${
+                ratioValidation?.isMatch
+                  ? "bg-slate-950/80 text-emerald-300"
+                  : "bg-amber-950/90 text-amber-200 border border-amber-500/50"
+              }`}
+            >
+              {ratioValidation?.isMatch ? (
+                <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+              )}
+              <span>
+                {ratioValidation?.isMatch
+                  ? `${imageDimensions.width} × ${imageDimensions.height}px`
+                  : `Current: ${imageDimensions.width} × ${imageDimensions.height}px (~${ratioValidation?.ratioStr})`}
+              </span>
+              {fileSizeLabel && <span>• {fileSizeLabel}</span>}
             </div>
           )}
         </div>
@@ -248,6 +308,21 @@ const ImageUploadPreview = ({
           <p className="text-[11px] text-slate-500 text-center mt-1 max-w-xs leading-relaxed">
             {effectiveHint}
           </p>
+        </div>
+      )}
+
+      {/* Aspect Ratio Warning Alert */}
+      {ratioValidation && !ratioValidation.isMatch && (
+        <div className="flex items-start gap-2.5 rounded-lg bg-amber-50/90 border border-amber-300/80 p-2.5 text-[11px] text-amber-900 leading-normal max-w-md w-full">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5 flex-1">
+            <p className="font-bold text-amber-950">
+              Dimension Warning: Image is {ratioValidation.width} × {ratioValidation.height}px (~{ratioValidation.ratioStr})
+            </p>
+            <p className="text-[10.5px] text-amber-800">
+              Mobile app requires <strong>{ratioValidation.expectedText}</strong>. This photo does not match and may be cropped or distorted on user devices. Please upload an image matching the recommended ratio.
+            </p>
+          </div>
         </div>
       )}
 

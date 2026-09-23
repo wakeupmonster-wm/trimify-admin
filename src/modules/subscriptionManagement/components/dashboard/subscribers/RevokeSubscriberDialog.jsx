@@ -18,7 +18,7 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
 
   const handleNext = (e) => {
     e.preventDefault();
-    if (!reason.trim() || reason.length > 500) return;
+    if (!reason.trim() || reason.length > 100) return;
     setStep(2);
   };
 
@@ -42,8 +42,8 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label className="text-sm font-semibold text-slate-800">Reason for Revocation</Label>
-                  <span className={`text-xs font-bold ${reason.length > 500 ? 'text-red-500' : 'text-slate-500'}`}>
-                    {reason.length} / 500
+                  <span className={`text-xs font-bold ${reason.length > 100 ? 'text-red-500' : 'text-slate-500'}`}>
+                    {reason.length} / 100
                   </span>
                 </div>
                 <Textarea
@@ -51,7 +51,7 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   className="min-h-[120px] resize-none placeholder:font-normal text-sm focus-visible:ring-red-500"
-                  maxLength={500}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -67,7 +67,7 @@ export default function RevokeSubscriberDialog({ open, onOpenChange, subscriber,
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!reason.trim() || reason.length > 500}
+                  disabled={!reason.trim() || reason.length > 100}
                   className="bg-red-600 hover:bg-red-700 text-white px-6 rounded-md text-sm font-semibold flex items-center gap-2 transition-colors"
                 >
                   Next Step <ArrowRight className="w-4 h-4" />

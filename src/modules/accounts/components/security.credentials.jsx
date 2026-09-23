@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { IconEye, IconEyeOff, IconLock } from "@tabler/icons-react";
 import { Check, Loader2 } from "lucide-react";
 import React, { useState } from "react";
-import { Label } from "recharts";
 import { changePassword } from "../store/account.slice";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -15,11 +15,13 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+  const [errors, setErrors] = useState({});
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -51,14 +53,42 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
     form.confirmPassword && form.newPassword === form.confirmPassword;
   const passwordsMismatch =
     form.confirmPassword && form.newPassword !== form.confirmPassword;
+  const isSamePassword =
+    form.currentPassword &&
+    form.newPassword &&
+    form.currentPassword === form.newPassword;
+
+  const validateForm = () => {
+    const errs = {};
+    if (!form.currentPassword.trim()) {
+      errs.currentPassword = "Current password is required";
+    }
+    if (!form.newPassword) {
+      errs.newPassword = "New password is required";
+    } else if (form.newPassword.length < 6) {
+      errs.newPassword = "New password must be at least 6 characters";
+    } else if (form.currentPassword && form.newPassword === form.currentPassword) {
+      errs.newPassword = "New password cannot be the same as the current password";
+    }
+
+    if (!form.confirmPassword) {
+      errs.confirmPassword = "Confirm password is required";
+    } else if (form.newPassword !== form.confirmPassword) {
+      errs.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (form.newPassword !== form.confirmPassword) return;
+    if (!validateForm()) return;
     setIsModalOpen(true);
   };
 
   const confirmUpdatePassword = async () => {
+    setIsSubmitting(true);
     try {
       const result = await dispatch(
         changePassword({
@@ -66,22 +96,38 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
           new_password: form.newPassword,
         }),
       ).unwrap();
-      toast.success(result.message || "Success", {
-        description: result.description,
-      });
+
+      toast.success(result?.message || "Password updated successfully!");
       setForm({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
+      setErrors({});
       setIsModalOpen(false);
     } catch (err) {
-      toast.error(err?.message || err?.error || "Failed to update password");
+      const errorMessage =
+        typeof err === "string"
+          ? err
+          : err?.message || err?.error || "Failed to update password";
+
+      toast.error(errorMessage);
+      if (
+        errorMessage.toLowerCase().includes("current") ||
+        errorMessage.toLowerCase().includes("old") ||
+        errorMessage.toLowerCase().includes("incorrect")
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          currentPassword: errorMessage,
+        }));
+      }
       setIsModalOpen(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // 1. ADD THIS: Toggle function for passwords
   const toggleVisibility = (field) => {
     setShowPasswords((prev) => ({ ...prev, [field]: !prev[field] }));
   };
@@ -127,11 +173,18 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
             <div className="relative">
               <Input
                 type={showPasswords.current ? "text" : "password"}
-                className="pr-10 h-10 text-sm font-normal border-slate-300/60"
+                className={`pr-10 h-10 text-sm font-normal ${
+                  errors.currentPassword
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : "border-slate-300/60"
+                }`}
                 value={form.currentPassword}
-                onChange={(e) =>
-                  setForm({ ...form, currentPassword: e.target.value })
-                }
+                onChange={(e) => {
+                  setForm({ ...form, currentPassword: e.target.value });
+                  if (errors.currentPassword) {
+                    setErrors((prev) => ({ ...prev, currentPassword: "" }));
+                  }
+                }}
                 placeholder="Enter current password"
               />
               <EyeToggle
@@ -139,6 +192,11 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                 onToggle={() => toggleVisibility("current")}
               />
             </div>
+            {errors.currentPassword && (
+              <span className="text-red-500 text-[11px] mt-1 block">
+                {errors.currentPassword}
+              </span>
+            )}
           </div>
 
           {/* New Passwords Grid */}
@@ -150,11 +208,18 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               <div className="relative">
                 <Input
                   type={showPasswords.new ? "text" : "password"}
-                  className="pr-10 h-10 text-sm font-normal border-slate-300/60"
+                  className={`pr-10 h-10 text-sm font-normal ${
+                    errors.newPassword || isSamePassword
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-slate-300/60"
+                  }`}
                   value={form.newPassword}
-                  onChange={(e) =>
-                    setForm({ ...form, newPassword: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, newPassword: e.target.value });
+                    if (errors.newPassword) {
+                      setErrors((prev) => ({ ...prev, newPassword: "" }));
+                    }
+                  }}
                   placeholder="Create new password"
                 />
                 <EyeToggle
@@ -162,6 +227,15 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                   onToggle={() => toggleVisibility("new")}
                 />
               </div>
+              {errors.newPassword ? (
+                <span className="text-red-500 text-[11px] mt-1 block">
+                  {errors.newPassword}
+                </span>
+              ) : isSamePassword ? (
+                <span className="text-red-500 text-[11px] mt-1 block">
+                  New password cannot be the same as current password
+                </span>
+              ) : null}
             </div>
 
             <div className="space-y-2">
@@ -172,14 +246,17 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                 <Input
                   type={showPasswords.confirm ? "text" : "password"}
                   className={`pr-10 h-10 text-sm font-normal ${
-                    passwordsMismatch
+                    passwordsMismatch || errors.confirmPassword
                       ? "border-red-500 focus-visible:ring-red-500"
                       : "border-slate-300/60"
                   }`}
                   value={form.confirmPassword}
-                  onChange={(e) =>
-                    setForm({ ...form, confirmPassword: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, confirmPassword: e.target.value });
+                    if (errors.confirmPassword) {
+                      setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+                    }
+                  }}
                   placeholder="Repeat new password"
                 />
                 <EyeToggle
@@ -187,9 +264,9 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                   onToggle={() => toggleVisibility("confirm")}
                 />
               </div>
-              {passwordsMismatch && (
+              {(errors.confirmPassword || passwordsMismatch) && (
                 <span className="text-red-500 text-[11px] mt-1 block">
-                  Passwords do not match
+                  {errors.confirmPassword || "Passwords do not match"}
                 </span>
               )}
             </div>
@@ -259,6 +336,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                   newPassword: "",
                   confirmPassword: "",
                 });
+                setErrors({});
               }}
             >
               Clear
@@ -267,13 +345,17 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               variant="outline"
               type="submit"
               disabled={
+                isSubmitting ||
                 loading ||
+                !form.currentPassword ||
+                !form.newPassword ||
+                !form.confirmPassword ||
                 form.newPassword !== form.confirmPassword ||
-                !form.newPassword
+                isSamePassword
               }
               className="bg-app-primary2 hover:bg-app-primary3 text-white hover:text-white border-none font-semibold px-5 h-10 text-[11px] 3xl:text-xs rounded-md transition-all active:scale-[0.99]"
             >
-              {loading ? (
+              {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
               ) : null}
               Update Password
@@ -284,13 +366,13 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
 
       <ConfirmModal
         isOpen={isModalOpen}
-        onClose={() => !loading && setIsModalOpen(false)}
+        onClose={() => !isSubmitting && setIsModalOpen(false)}
         onConfirm={confirmUpdatePassword}
         title="Update Password?"
         message="Are you sure you want to update your password? You will need to use the new password on your next login."
         confirmText="Update"
         type="brand"
-        loading={loading}
+        loading={isSubmitting}
         success={passwordSuccess}
       />
     </Card>

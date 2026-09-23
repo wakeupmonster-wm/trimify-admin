@@ -42,7 +42,7 @@ export function DataTableFilters({ filterConfig = [] }) {
                         "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
                   >
-                    <span className="text-xs">
+                    <span className="text-xs capitalize">
                       {isActive && filter.getDisplayValue
                         ? filter.getDisplayValue(filter.value)
                         : isActive

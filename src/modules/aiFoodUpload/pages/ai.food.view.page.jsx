@@ -16,6 +16,7 @@ import {
   ClipboardList,
   Bot,
   Save,
+  Info,
 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -102,11 +103,13 @@ const stringifyList = (val) =>
   );
 
 const buildFields = (item) => ({
+  food_name: item.food_name ?? "",
   Meal_Protien_In_gm: item.Meal_Protien_In_gm ?? "",
   Meal_Carbs_In_gm: item.Meal_Carbs_In_gm ?? "",
   Meal_Calories_In_gm: item.Meal_Calories_In_gm ?? "",
   Meal_Fats_In_gm: item.Meal_Fats_In_gm ?? "",
   Meal_Description: item.Meal_Description ?? "",
+  Meal_Image_url: item.Meal_Image_url ?? "",
   Meal_Type: item.Meal_Type ?? "",
   Meal_Serving: item.Meal_Serving ?? "",
   Meal_ingredients: parseJsonList(item.Meal_ingredients),
@@ -207,7 +210,10 @@ const AiFoodViewPage = () => {
     item.status === "draft" ||
     (item.status === "processing" && item.nutrition_status !== "success");
 
-  const showReviewForm = !isInFlight;
+  // Match the backend's state rule. Backend still rejects invalid updates.
+  const isReviewEditable = item.status === "pending_review";
+  const showReviewForm = isReviewEditable;
+  const previewImageUrl = fields.Meal_Image_url || item.Meal_Image_url;
 
   const handleChange = (name, value) => {
     setFields((prev) => ({ ...prev, [name]: value }));
@@ -410,7 +416,7 @@ const AiFoodViewPage = () => {
                 icon={ArrowLeft}
                 label="Back"
               />
-              {item.status !== "approved" && !isInFlight && (
+              {isReviewEditable && (
                 <CTAButton
                   onClick={handleSaveEdits}
                   disabled={isBusy || !isDirty}
@@ -581,7 +587,7 @@ const AiFoodViewPage = () => {
                   </div>
 
                   <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
-                    {item.Meal_Image_url ? (
+                    {previewImageUrl ? (
                       <button
                         type="button"
                         onClick={() => setPreviewOpen(true)}
@@ -589,7 +595,7 @@ const AiFoodViewPage = () => {
                         title="View full image"
                       >
                         <img
-                          src={item.Meal_Image_url}
+                          src={previewImageUrl}
                           alt={item.food_name}
                           className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${showImageOverlay ? "opacity-30 blur-sm" : ""}`}
                         />
@@ -659,7 +665,7 @@ const AiFoodViewPage = () => {
                     )}
                   </div>
 
-                  {item.Meal_Image_url && item.image_attribution_name && (
+                  {previewImageUrl === item.Meal_Image_url && item.image_attribution_name && (
                     <div className="px-1 -mt-1">
                       <p className="text-[11px] text-slate-400 text-center">
                         Photo by{" "}
@@ -675,6 +681,39 @@ const AiFoodViewPage = () => {
                       </p>
                     </div>
                   )}
+
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="Meal_Image_url"
+                      className="text-xs font-bold text-slate-800"
+                    >
+                      Image URL
+                    </label>
+                    <Input
+                      id="Meal_Image_url"
+                      name="Meal_Image_url"
+                      type="url"
+                      value={fields.Meal_Image_url}
+                      onChange={(event) =>
+                        handleChange("Meal_Image_url", event.target.value)
+                      }
+                      placeholder="Paste image URL"
+                      className="h-10 text-xs font-medium"
+                    />
+                    <p className="text-[10px] font-medium text-slate-500">
+                      Paste a public image URL, then select Save to replace the AI image.
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border border-amber-200/80 bg-amber-50/80 p-3 text-[11px] leading-relaxed text-amber-900 space-y-1">
+                    <div className="flex items-center gap-1.5 font-semibold text-amber-950">
+                      <Info className="h-3.5 w-3.5 shrink-0 text-amber-600" />
+                      <span>Mobile App Display Note</span>
+                    </div>
+                    <p className="text-[10.5px] text-amber-900/90">
+                      Renders as a <strong>16:9 landscape banner</strong> on Recipe Detail and a <strong>1:1 square</strong> on Food Lists. Keep the dish centered so it isn&apos;t cropped.
+                    </p>
+                  </div>
                 </Card>
               </div>
 
@@ -686,6 +725,26 @@ const AiFoodViewPage = () => {
                     Nutrition &amp; Details
                   </h3>
                 </div>
+                <div className="space-y-1.5">
+                  <label
+                    htmlFor="food_name"
+                    className="text-xs font-semibold text-slate-700"
+                  >
+                    Food Title
+                  </label>
+                  <Input
+                    id="food_name"
+                    name="food_name"
+                    value={fields.food_name}
+                    onChange={(event) =>
+                      handleChange("food_name", event.target.value)
+                    }
+                    placeholder="Enter Food Title"
+                    maxLength={100}
+                    className="h-10 text-xs font-medium placeholder:text-xs"
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <NumberField
                     label="Protein (gm)"

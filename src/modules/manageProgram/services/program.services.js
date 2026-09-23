@@ -21,8 +21,10 @@ export const toggleProgramStatusAPI = async (id, statusData) => {
   return apiConnector("PATCH", PROGRAM.PROGRAM_TOGGLE_STATUS(id), statusData);
 };
 
-export const toggleFoodVisibilityAPI = async (id) => {
-  return apiConnector("PATCH", PROGRAM.PROGRAM_TOGGLE_FOOD_VISIBILITY(id));
+export const toggleFoodVisibilityAPI = async (id, isVisible) => {
+  return apiConnector("PATCH", PROGRAM.PROGRAM_TOGGLE_FOOD_VISIBILITY(id), {
+    is_visible: isVisible,
+  });
 };
 
 export const replicateProgramAPI = async (id) => {

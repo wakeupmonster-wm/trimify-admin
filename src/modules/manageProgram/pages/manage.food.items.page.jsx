@@ -17,7 +17,11 @@ import {
 } from "@/components/ui/select";
 import { Send, X, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { DataTable } from "@/components/shared/datatable";
+import {
+  DataTable,
+  DataTableActiveChips,
+  DataTableFilters,
+} from "@/components/shared/datatable";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
   getFoodList,
@@ -64,6 +68,8 @@ const ManageFoodItemsPage = () => {
   // Table State
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
+  const [approvalStatusFilter, setApprovalStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
 
   // Consolidated Form State (Add & Edit)
@@ -118,6 +124,8 @@ const ManageFoodItemsPage = () => {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
             ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
+            ...(approvalStatusFilter && { approval_status: approvalStatusFilter }),
+            ...(statusFilter && { status: statusFilter }),
           },
         }),
       );
@@ -129,6 +137,8 @@ const ManageFoodItemsPage = () => {
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    approvalStatusFilter,
+    statusFilter,
   ]);
 
   useEffect(() => {
@@ -144,7 +154,6 @@ const ManageFoodItemsPage = () => {
 
   // Client-side fallback filter so search works immediately even if backend ignores search query param
   const filteredFoods = useMemo(() => {
-    if (!debouncedSearchTerm) return foods;
     const lower = debouncedSearchTerm.toLowerCase().trim();
     return (foods || []).filter((item) => {
       const foodName =
@@ -158,12 +167,26 @@ const ManageFoodItemsPage = () => {
         item.category?.title ||
         item.category_name ||
         "";
+      const itemApprovalStatus =
+        item.approval_status === "Approved" ||
+        item.approval_status === 1 ||
+        item.is_approved
+          ? "Approved"
+          : "Non Approved";
+      const itemStatus =
+        item.status === "Active" || item.status === 1 || item.is_active
+          ? "Active"
+          : "Inactive";
+
       return (
-        foodName.toLowerCase().includes(lower) ||
-        catName.toLowerCase().includes(lower)
+        (!lower ||
+          foodName.toLowerCase().includes(lower) ||
+          catName.toLowerCase().includes(lower)) &&
+        (!approvalStatusFilter || itemApprovalStatus === approvalStatusFilter) &&
+        (!statusFilter || itemStatus === statusFilter)
       );
     });
-  }, [foods, debouncedSearchTerm]);
+  }, [foods, debouncedSearchTerm, approvalStatusFilter, statusFilter]);
 
   const resetForm = () => {
     setIsEditing(false);
@@ -225,6 +248,7 @@ const ManageFoodItemsPage = () => {
           category: formData.category_id,
           quantity: formData.quantity,
           unit: formData.unit,
+          status: formData.status,
         };
 
         const resultAction = await dispatch(
@@ -232,9 +256,12 @@ const ManageFoodItemsPage = () => {
         );
         if (updateFood.fulfilled.match(resultAction)) {
           if (formData.status !== initialStatus) {
-            await dispatch(
+            const toggleAction = await dispatch(
               toggleFoodStatus({ id: editingFoodId, status: formData.status }),
             );
+            if (!toggleFoodStatus.fulfilled.match(toggleAction)) {
+              toast.error(toggleAction.payload || "Failed to update food status.");
+            }
           }
           toast.success("Food updated successfully!");
           resetForm();
@@ -362,6 +389,30 @@ const ManageFoodItemsPage = () => {
     () => getManageFoodItemsColumns(handleAction),
     [handleAction],
   );
+  const resetToFirstPage = (setValue) => (value) => {
+    setValue(value);
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+  const filterConfig = [
+    {
+      type: "select",
+      id: "approvalStatus",
+      label: "Approval Status",
+      value: approvalStatusFilter,
+      onChange: resetToFirstPage(setApprovalStatusFilter),
+      options: ["Approved", "Non Approved"],
+      placeholder: "All Approval Status",
+    },
+    {
+      type: "select",
+      id: "status",
+      label: "Status",
+      value: statusFilter,
+      onChange: resetToFirstPage(setStatusFilter),
+      options: ["Active", "Inactive"],
+      placeholder: "All Status",
+    },
+  ];
 
   return (
     <Container>
@@ -698,6 +749,17 @@ const ManageFoodItemsPage = () => {
             globalFilter={globalFilter}
             setGlobalFilter={handleGlobalFilterChange}
             isLoading={loading}
+            toolbarChildren={<DataTableFilters filterConfig={filterConfig} />}
+            activeFiltersChildren={
+              <DataTableActiveChips
+                filterConfig={filterConfig}
+                onClearAll={() => {
+                  setApprovalStatusFilter("");
+                  setStatusFilter("");
+                  setPagination((current) => ({ ...current, pageIndex: 0 }));
+                }}
+              />
+            }
             onRowClick={(row) => handleAction(row.original, "edit")}
           />
         </div>

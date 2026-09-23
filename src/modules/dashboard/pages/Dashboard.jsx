@@ -31,7 +31,7 @@ import TrendChartCard from "../components/TrendChartCard";
 import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, formatAppDate } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
 import { ACCENT_COLORS } from "@/config/theme.config.js";
 
@@ -158,7 +158,7 @@ export default function Dashboard() {
     selectedDate?.preset && PRESET_LABELS[selectedDate.preset]
       ? PRESET_LABELS[selectedDate.preset]
       : selectedDate?.from
-        ? `${format(selectedDate.from, "MMM dd")} - ${format(selectedDate.to || selectedDate.from, "MMM dd, y")}`
+        ? `${formatAppDate(selectedDate.from)} - ${formatAppDate(selectedDate.to || selectedDate.from)}`
         : dashboardMeta?.periodLabel;
   const isShortPeriod =
     selectedDate?.preset === "today" || selectedDate?.preset === "yesterday";
@@ -478,7 +478,7 @@ export default function Dashboard() {
                         render: (r) => (
                           <span className="whitespace-nowrap">
                             {r.created_at
-                              ? format(new Date(r.created_at), "MMM, dd yyyy")
+                              ? formatAppDate(r.created_at)
                               : "-"}
                           </span>
                         ),
@@ -555,7 +555,7 @@ export default function Dashboard() {
                         width: "w-[15%]",
                         align: "left",
                         render: (r) =>
-                          format(new Date(r.signed_up_at), "MMM dd, HH:mm"),
+                          format(new Date(r.signed_up_at), "dd MMM yyyy, HH:mm"),
                       },
                       {
                         key: "days_since_signup",

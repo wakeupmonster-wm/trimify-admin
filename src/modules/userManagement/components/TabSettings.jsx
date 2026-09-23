@@ -29,6 +29,7 @@ import {
   CreditCard,
   User,
   Smartphone,
+  Copy,
   Ban,
   Star,
   Briefcase,
@@ -103,12 +104,16 @@ export function TabSettings({ data }) {
           );
         }
       }
-    } catch (error) {
+    } catch {
       toast.error("An error occurred while sending");
     } finally {
       setIsLoading(false);
     }
   };
+
+    const deviceToken =
+    user.device_token ||
+    (deviceTokens.length > 0 ? deviceTokens[deviceTokens.length - 1] : null);
 
   return (
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
@@ -147,14 +152,14 @@ export function TabSettings({ data }) {
             label="Admin Status"
             value={user.admin_status || "—"}
           /> */}
-          <KV
+          {/* <KV
             noBorder
             icon={Mail}
             label="Email Verified"
             value={
               user.email_verified_at ? fmtDate(user.email_verified_at) : "No"
             }
-          />
+          /> */}
           <KV
             noBorder
             icon={Ban}
@@ -254,27 +259,18 @@ export function TabSettings({ data }) {
             icon={Smartphone}
             label="Device Token"
             value={
-              deviceTokens.length > 0 ? (
-                <div className="flex flex-col items-end gap-1">
-                  {deviceTokens.slice(0, 2).map((token, index) => (
-                    <button
-                      key={token}
-                      type="button"
-                      title={token}
-                      onClick={() => handleCopy(token, `Device token ${index + 1}`)}
-                      className="font-mono font-bold transition-colors hover:text-app-primary2"
-                    >
-                      {truncMid(token, 10, 6)}
-                    </button>
-                  ))}
-                  {deviceTokens.length > 2 && (
-                    <span className="text-[10px] font-semibold text-slate-400">
-                      +{deviceTokens.length - 2} more token(s)
-                    </span>
-                  )}
-                </div>
+              deviceToken ? (
+                <button
+                  type="button"
+                  title={deviceToken}
+                  onClick={() => handleCopy(deviceToken, "Device token")}
+                  className="group inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold text-slate-700 hover:text-app-primary2 transition-colors cursor-pointer text-right"
+                >
+                  <span>{truncMid(deviceToken, 12, 8)}</span>
+                  <Copy className="h-3.5 w-3.5 text-slate-400 group-hover:text-app-primary2 opacity-60 group-hover:opacity-100 transition-all shrink-0" />
+                </button>
               ) : (
-                "Not registered"
+                <span className="text-xs font-medium text-slate-400">—</span>
               )
             }
           />

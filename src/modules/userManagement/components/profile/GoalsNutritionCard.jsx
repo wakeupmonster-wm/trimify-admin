@@ -22,7 +22,7 @@ const GoalsNutritionCard = ({ userData }) => {
           <span className="text-2xl font-black text-slate-800 mt-1">
             {userData.weight_goal || "-"}
             <span className="text-sm font-semibold text-slate-400 ml-1">
-              kg
+              {userData.weight_goal_unit || "kg"}
             </span>
           </span>
         </div>

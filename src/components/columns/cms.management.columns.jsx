@@ -1,15 +1,8 @@
-import { Ellipsis, Edit } from "lucide-react";
+import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import dayjs from "dayjs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { formatAppDate } from "@/lib/utils";
 
 export const getCmsManagementColumns = (onAction) => [
   {
@@ -78,7 +71,7 @@ export const getCmsManagementColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="text-[11px] 3xl:text-xs font-medium text-slate-700">
         {row.original.created_at
-          ? dayjs(row.original.created_at).format("DD MMM YYYY")
+          ? formatAppDate(row.original.created_at)
           : "-"}
       </div>
     ),
@@ -95,7 +88,7 @@ export const getCmsManagementColumns = (onAction) => [
     cell: ({ row }) => (
       <div className="text-[11px] 3xl:text-xs font-medium text-slate-700">
         {row.original.updated_at
-          ? dayjs(row.original.updated_at).format("DD MMM YYYY")
+          ? formatAppDate(row.original.updated_at)
           : "-"}
       </div>
     ),
@@ -110,22 +103,20 @@ export const getCmsManagementColumns = (onAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => {
-      const rawStatus = row.original.status || "Unknown";
+      const rawStatus = (row.original.status || "Unknown").replace(/\.+$/, "");
       let config = {
         bg: "bg-slate-100/70",
         text: "text-slate-700",
-        dot: "bg-slate-500",
         hover: "hover:bg-slate-100",
       };
 
-      const s = String(rawStatus).toLowerCase();
+      const s = String(rawStatus).toLowerCase().trim();
       let displayStatus = rawStatus;
 
       if (s === "active" || s === "1" || s === "true") {
         config = {
           bg: "bg-emerald-100/70",
           text: "text-emerald-700",
-          dot: "bg-emerald-600",
           hover: "hover:bg-emerald-100",
         };
         if (s === "1" || s === "true") displayStatus = "Active";
@@ -133,7 +124,6 @@ export const getCmsManagementColumns = (onAction) => [
         config = {
           bg: "bg-rose-100/70",
           text: "text-rose-700",
-          dot: "bg-rose-600",
           hover: "hover:bg-rose-100",
         };
         if (s === "0" || s === "false") displayStatus = "Inactive";
@@ -144,13 +134,12 @@ export const getCmsManagementColumns = (onAction) => [
           <Badge
             variant="outline"
             className={cn(
-              "flex w-max items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border-none",
+              "flex w-max items-center px-3 py-1 rounded-full text-[11px] font-bold tracking-wide uppercase border-none",
               config.bg,
               config.text,
               config.hover,
             )}
           >
-            <span className={cn("w-1 h-1 rounded-full", config.dot)} />
             {displayStatus}
           </Badge>
         </div>
@@ -168,31 +157,20 @@ export const getCmsManagementColumns = (onAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
-            >
-              <Ellipsis className="h-4 w-4 text-foreground/90" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
-          >
-            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
-              Actions
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg  focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs "
-              onClick={() => onAction && onAction(row.original, "edit")}
-            >
-              <Edit className="w-3.5 h-3.5" />
-              Edit
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAction && onAction(row.original, "edit");
+          }}
+          title="View"
+          aria-label="View"
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
       </div>
     ),
   },

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SafeImage from "@/components/common/SafeImage";
+import { formatAppDate } from "@/lib/utils";
 
 const DAYS_OF_WEEK = [
   "Sunday",
@@ -46,17 +47,10 @@ export const getManageDietProgramColumns = (handleAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => {
-      const date =
-        row.original.created_at || row.original.updated_at
-          ? new Date(row.original.created_at || row.original.updated_at)
-          : new Date();
+      const date = row.original.created_at || row.original.updated_at;
       return (
         <span className="font-medium text-slate-700 text-[11px]">
-          {date.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })}
+          {formatAppDate(date)}
         </span>
       );
     },

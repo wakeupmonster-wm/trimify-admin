@@ -24,6 +24,7 @@ export default {
         sans: ["Plus Jakarta Sans", "sans-serif"],
         // Keeping jakarta for backward compatibility
         jakarta: ["Plus Jakarta Sans", "sans-serif"],
+        dmsans: ["DM Sans", "sans-serif"],
       },
       fontSize: {
         "2xs": ["0.625rem", { lineHeight: "0.75rem" }], // 10px

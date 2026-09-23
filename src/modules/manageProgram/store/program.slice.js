@@ -105,11 +105,11 @@ export const toggleProgramStatus = createAsyncThunk(
 // Toggle Food Visibility
 export const toggleFoodVisibility = createAsyncThunk(
   "manageProgram/toggleFoodVisibility",
-  async (id, { rejectWithValue }) => {
+  async ({ id, isVisible }, { rejectWithValue }) => {
     try {
-      const response = await toggleFoodVisibilityAPI(id);
+      const response = await toggleFoodVisibilityAPI(id, isVisible);
       if (response && response.status === "success") {
-        return { id, newStatus: response.new_status };
+        return { id, newStatus: Boolean(response.new_status) };
       }
       return rejectWithValue(response.message || "Failed to toggle food visibility");
     } catch (error) {

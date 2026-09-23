@@ -18,6 +18,22 @@ import { fetchSingleUserProfile } from "../store/user.slice";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { DataTablePagination } from "@/components/shared/datatable/DataTablePagination";
 
+const getStatusTone = (status) => {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "success";
+    case "expired":
+      return "expired";
+    case "deactivated":
+    case "inactive":
+      return "danger";
+    case "completed":
+      return "neutral";
+    default:
+      return "neutral";
+  }
+};
+
 export function TabPrograms({ data }) {
   const { user, programs, fitzoneStatus, fmtDate } = data;
   const dispatch = useDispatch();
@@ -154,11 +170,7 @@ export function TabPrograms({ data }) {
                             </div>
                           </td>
                           <td className="whitespace-nowrap px-5 py-3">
-                            <Pill
-                              tone={
-                                f.status === "Active" ? "success" : "neutral"
-                              }
-                            >
+                            <Pill tone={getStatusTone(f.status)}>
                               {f.status || "Unknown"}
                             </Pill>
                           </td>
@@ -271,11 +283,7 @@ export function TabPrograms({ data }) {
                             )}
                           </td>
                           <td className="whitespace-nowrap px-5 py-3">
-                            <Pill
-                              tone={
-                                p.status === "Active" ? "success" : "neutral"
-                              }
-                            >
+                            <Pill tone={getStatusTone(p.status)}>
                               {p.status}
                             </Pill>
                           </td>

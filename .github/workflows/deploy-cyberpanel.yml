@@ -1,0 +1,72 @@
+﻿name: Deploy Admin Frontend to CyberPanel
+
+on:
+  push:
+    branches: [ "dev" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Production Bundle
+      run: npm run build
+
+    - name: Ensure .htaccess in dist
+      run: |
+        cat << 'EOF' > dist/.htaccess
+        <IfModule mod_rewrite.c>
+          RewriteEngine On
+          RewriteBase /
+          RewriteRule ^index\.html$ - [L]
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule . /index.html [L]
+        </IfModule>
+        EOF
+
+    - name: Compress Build Artifacts
+      run: tar -czf deploy.tar.gz -C dist .
+
+    - name: Upload Artifact to CyberPanel
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        source: "deploy.tar.gz"
+        target: "/home/tap.admin.trimify.com.au"
+
+    - name: Extract and Deploy on CyberPanel
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: 22
+        script: |
+          set -e
+          TARGET_DIR="/home/tap.admin.trimify.com.au/public_html"
+          mkdir -p "$TARGET_DIR"
+
+          # Extract into public_html
+          tar -xzf /home/tap.admin.trimify.com.au/deploy.tar.gz -C "$TARGET_DIR"
+          rm -f /home/tap.admin.trimify.com.au/deploy.tar.gz
+
+          # Fix permissions for OpenLiteSpeed
+          chmod -R 755 "$TARGET_DIR"
+
+          echo "✅ tap.admin.trimify.com.au deployment completed successfully!"

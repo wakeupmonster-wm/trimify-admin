@@ -1,7 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Keep TinyMCE aligned with the admin form style: focusing its body should
+   not introduce the browser-like blue outline around the editor shell. */
+.tox.tox-tinymce:focus-within {
+  border-color: rgb(226 232 240) !important;
+  box-shadow: none !important;
+}
+
+/* TinyMCE draws the visible blue frame on this pseudo-element when its
+   iframe receives focus, so it must be neutralized separately. */
+.tox.tox-edit-focus .tox-edit-area::before {
+  opacity: 0 !important;
+}
 
 @layer base {
   :root {

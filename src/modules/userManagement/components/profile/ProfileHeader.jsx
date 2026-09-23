@@ -59,7 +59,7 @@ const ProfileHeader = ({ userData, isActive, formatDate }) => {
             <div className="flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-slate-400" />
               Last Login:{" "}
-              {formatDate(userData.updated_at, "MMM dd, yyyy hh:mm a")}
+              {formatDate(userData.updated_at, "dd MMM yyyy hh:mm a")}
             </div>
           </div>
         </div>

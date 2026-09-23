@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import CTAButton from "@/components/common/CTAButton";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
@@ -40,7 +40,14 @@ const MEAL_TYPES = ["Breakfast", "Lunch", "Dinner", "Snacks"];
 const EditDietProgramPage = () => {
   const { id, dietId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+
+  const returnToDietMealList = () =>
+    navigate(`/admin/manage-program/manage/diet-plan/${id}`, {
+      replace: true,
+      state: { dietMealListState: location.state?.dietMealListState },
+    });
 
   const { dietMeals, programDuration, foodSearchResults, loading } =
     useSelector((state) => state.manageDiet);
@@ -153,7 +160,7 @@ const EditDietProgramPage = () => {
 
     if (updateDietMeal.fulfilled.match(resultAction)) {
       toast.success("Diet meal updated successfully!");
-      navigate(-1);
+      returnToDietMealList();
     } else {
       toast.error(resultAction.payload || "Failed to update diet meal.");
     }
@@ -195,7 +202,7 @@ const EditDietProgramPage = () => {
               <CTAButton
                 icon={ArrowLeft}
                 label="Back"
-                onClick={() => navigate(-1)}
+                onClick={returnToDietMealList}
               />
             </div>
           </div>
@@ -381,7 +388,7 @@ const EditDietProgramPage = () => {
               <Button
                 variant="outline"
                 className="w-full sm:w-auto rounded-md px-5 h-10 text-xs font-semibold border-slate-300/60 hover:bg-slate-50"
-                onClick={() => navigate(-1)}
+                onClick={returnToDietMealList}
               >
                 Cancel
               </Button>

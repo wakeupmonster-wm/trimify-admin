@@ -139,7 +139,7 @@ export function TabOverview({ data }) {
               />
             </div>
 
-            <div className="mt-1 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3.5">
+            <div className="mt-1 rounded-2xl border border-slate-200/50 bg-slate-50/30 p-3.5">
               <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
                 <div>
                   <div className="text-[10.5px] font-bold uppercase tracking-wide text-slate-500">
@@ -273,7 +273,7 @@ export function TabOverview({ data }) {
               icon={Star}
             >
               <>
-                <div className="flex items-center justify-between pb-6">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
                       <FeatureIcon className="h-5 w-5" />

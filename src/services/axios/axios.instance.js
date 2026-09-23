@@ -5,6 +5,7 @@ export const axiosInstance = axios.create({
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
+    "Accept": "application/json",
   },
 });
 
@@ -26,9 +27,13 @@ axiosInstance.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Auto-logout logic — only redirect if NOT already on the login page
-      const isOnLoginPage = window.location.pathname.startsWith("/auth/login") || window.location.pathname === "/auth";
-      if (!isOnLoginPage) {
+      // If 401 is due to wrong current password during change-password, do not logout the user
+      const isChangePasswordUrl = error.config?.url?.includes("/change-password");
+      const isOnLoginPage =
+        window.location.pathname.startsWith("/auth/login") ||
+        window.location.pathname === "/auth";
+
+      if (!isOnLoginPage && !isChangePasswordUrl) {
         console.warn("Session Expired. Logging out...");
         localStorage.removeItem("access_Token");
         localStorage.removeItem("auth_user");

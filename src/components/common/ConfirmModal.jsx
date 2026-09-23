@@ -21,8 +21,15 @@ const ConfirmModal = ({
   type = "danger", // danger, warning, or brand
   loading = false,
   success = false,
+  closeOnOutsideClick = true,
+  closeOnBackdropClick,
 }) => {
   if (!isOpen) return null;
+
+  const isOutsideClickAllowed =
+    closeOnBackdropClick !== undefined
+      ? closeOnBackdropClick
+      : closeOnOutsideClick;
 
   // Determine header color based on type
   const headerStyle =
@@ -48,8 +55,15 @@ const ConfirmModal = ({
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200 pointer-events-auto"
       onClick={(e) => {
-        // Only close if clicking the backdrop itself, not child elements
-        if (e.target === e.currentTarget) onClose();
+        // Only close if clicking the backdrop itself, not child elements, and if outside click is allowed
+        if (
+          isOutsideClickAllowed &&
+          !loading &&
+          !success &&
+          e.target === e.currentTarget
+        ) {
+          onClose?.();
+        }
       }}
       onMouseDown={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
@@ -70,12 +84,14 @@ const ConfirmModal = ({
           </h3>
           <button
             type="button"
+            disabled={loading || success}
             onClick={(event) => {
+              if (loading || success) return;
               event.preventDefault();
               event.stopPropagation();
               onClose?.();
             }}
-            className="text-white/70 hover:text-white rounded-full transition-colors"
+            className="text-white/70 hover:text-white rounded-full transition-colors disabled:opacity-50 disabled:pointer-events-none"
           >
             <X className="w-5 h-5" />
           </button>
@@ -93,7 +109,9 @@ const ConfirmModal = ({
           <Button
             type="button"
             variant="outline"
+            disabled={loading || success}
             onClick={(event) => {
+              if (loading || success) return;
               event.preventDefault();
               event.stopPropagation();
               onClose?.();

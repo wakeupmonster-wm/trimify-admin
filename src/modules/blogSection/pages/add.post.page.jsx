@@ -186,7 +186,7 @@ const AddPostPage = () => {
                 placeholder="Enter Title"
                 value={formData.title}
                 onChange={handleChange}
-                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.title ? "border-red-500" : "border-slate-300/60"}`}
+                className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium border-slate-300/60"
               />
               {errors.title && (
                 <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">
@@ -206,7 +206,7 @@ const AddPostPage = () => {
                 onValueChange={(val) => handleSelectChange("category", val)}
               >
                 <SelectTrigger
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${errors.category ? "border-red-500" : "border-slate-300/60"}`}
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 >
                   <SelectValue
                     placeholder="Select Category"
@@ -233,9 +233,7 @@ const AddPostPage = () => {
               <Label className="text-xs font-bold text-slate-800 flex items-center h-5">
                 Content / Description
               </Label>
-              <div
-                className={`${errors.description ? "rounded-md border border-red-500" : ""}`}
-              >
+              <div>
                 <RichTextEditor
                   value={formData.description}
                   onChange={(content) => {
@@ -290,9 +288,7 @@ const AddPostPage = () => {
                 onValueChange={(val) => handleSelectChange("status", val)}
               >
                 <SelectTrigger
-                  className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium ${
-                    errors.status ? "border-red-500" : "border-slate-300/60"
-                  }`}
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
                 >
                   <SelectValue
                     placeholder="Select Status"

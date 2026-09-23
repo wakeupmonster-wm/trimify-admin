@@ -9,7 +9,7 @@ import {
   Utensils,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, KV, EmptyState, Tag } from "./UserProfileShared";
+import { Card, KV } from "./UserProfileShared";
 import { LuUserRound } from "react-icons/lu";
 
 const getFitnessIcon = (label) => {
@@ -24,22 +24,23 @@ const getFitnessIcon = (label) => {
   return Activity;
 };
 
-function BodyMeasurementSummary({ height, weight, bmi, bmiCat, bmiPct }) {
+function BodyMeasurementSummary({ height, weight, bmi, bmiCat, bmiPct, heightUnit, weightUnit }) {
   const hasBmi = Number.isFinite(Number(bmi));
   const safeBmiPct = Math.min(
     100,
     Math.max(0, Number.isFinite(Number(bmiPct)) ? Number(bmiPct) : 0),
   );
 
-  const displayHeight =
-    height !== null && height !== undefined && height !== ""
-      ? `${height} cm`
-      : "—";
+  const hasHeight = height !== null && height !== undefined && height !== "" && !isNaN(Number(height));
+  const hasWeight = weight !== null && weight !== undefined && weight !== "" && !isNaN(Number(weight));
 
-  const displayWeight =
-    weight !== null && weight !== undefined && weight !== ""
-      ? `${weight} kg`
-      : "—";
+  const displayHeight = hasHeight
+    ? `${height} ${heightUnit || "cm"}`
+    : "—";
+
+  const displayWeight = hasWeight
+    ? `${weight} ${weightUnit || "kg"}`
+    : "—";
 
   return (
     <div className="overflow-hidden rounded-2xl border border-sky-100 bg-[linear-gradient(135deg,#f0f9ff_0%,#f8fafc_64%,#ffffff_100%)] shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
@@ -141,11 +142,11 @@ export function TabHealth({ data }) {
     user,
     height,
     weight,
+    heightUnit,
+    weightUnit,
     bmi,
     bmiCat,
     bmiPct,
-    fitnessProfileSet,
-    fitnessProfileMissing,
     fitnessProfileFields,
   } = data;
 
@@ -164,6 +165,8 @@ export function TabHealth({ data }) {
               bmi={bmi}
               bmiCat={bmiCat}
               bmiPct={bmiPct}
+              heightUnit={heightUnit}
+              weightUnit={weightUnit}
             />
           </Card>
 
@@ -201,33 +204,15 @@ export function TabHealth({ data }) {
             subtitle="Goal & body-shape preferences"
             icon={Dumbbell}
           >
-            {fitnessProfileSet.map(([l, v]) => (
+            {fitnessProfileFields.map(([l, v]) => (
               <KV
                 key={l}
                 icon={getFitnessIcon(l)}
                 label={l}
-                value={v}
+                value={v || "—"}
                 noBorder={true}
               />
             ))}
-            {fitnessProfileMissing.length === fitnessProfileFields.length ? (
-              <EmptyState
-                icon={Target}
-                title="Fitness profile not completed"
-                subtitle="This client hasn't set up their fitness goal preferences yet."
-              />
-            ) : fitnessProfileMissing.length ? (
-              <>
-                <div className="mb-2 mt-3.5 text-[10.5px] font-bold uppercase tracking-wide text-slate-400">
-                  Not yet set
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {fitnessProfileMissing.map(([l]) => (
-                    <Tag key={l}>{l}</Tag>
-                  ))}
-                </div>
-              </>
-            ) : null}
           </Card>
         </div>
       </div>

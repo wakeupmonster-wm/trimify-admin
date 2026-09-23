@@ -42,12 +42,12 @@ export function ChartRadialShape({ period, total, title }) {
         <CardDescription>
           <span>
             {period?.start
-              ? format(new Date(period?.start), "dd MMM, yyyy")
+              ? format(new Date(period?.start), "dd MMM yyyy")
               : "-"}
           </span>
           -
           <span>
-            {period?.end ? format(new Date(period?.end), "dd MMM, yyyy") : "-"}
+            {period?.end ? format(new Date(period?.end), "dd MMM yyyy") : "-"}
           </span>
         </CardDescription>
       </CardHeader>

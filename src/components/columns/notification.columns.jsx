@@ -1,7 +1,6 @@
-import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatAppDate } from "@/lib/utils";
 
 const stripHtml = (html) => {
   if (!html) return "";
@@ -50,7 +49,7 @@ export const getNotificationColumns = ({
       }
       return (
         <div className="text-[11px] font-bold text-slate-900 tracking-tight whitespace-nowrap">
-          {format(new Date(dateValue), "dd MMM, yyyy")}
+          {formatAppDate(dateValue)}
         </div>
       );
     },

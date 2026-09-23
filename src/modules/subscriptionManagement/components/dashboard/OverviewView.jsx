@@ -374,7 +374,7 @@ export default function OverviewView({
                 label: "Date",
                 width: "w-[18%]",
                 align: "center",
-                render: (r) => format(new Date(r.created_at), "MMM dd, HH:mm"),
+                render: (r) => format(new Date(r.created_at), "dd MMM yyyy, HH:mm"),
               },
             ]}
           />
@@ -448,7 +448,7 @@ export default function OverviewView({
                   render: (r) => {
                     const expiryDate = r.expires_at || r.plan_expiry;
                     return expiryDate
-                      ? format(new Date(expiryDate), "MMM dd, yyyy")
+                      ? format(new Date(expiryDate), "dd MMM yyyy")
                       : "N/A";
                   },
                 },

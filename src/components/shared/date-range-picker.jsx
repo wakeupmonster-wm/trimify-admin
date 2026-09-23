@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   subDays,
-  format,
   startOfDay,
   endOfDay,
   isSameDay,
@@ -10,9 +9,11 @@ import {
   subMonths,
 } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatAppDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+
+const format = formatAppDate;
 import {
   Popover,
   PopoverContent,
@@ -165,10 +166,10 @@ export function CalendarDateRangePicker({
                   date.to && !isSameDay(date.from, date.to) ? (
                     <>
                       {format(date.from, "MMM dd")} –{" "}
-                      {format(date.to, "MMM dd, y")}
+                      {formatAppDate(date.to)}
                     </>
                   ) : (
-                    format(date.from, "MMM dd, y")
+                    formatAppDate(date.from)
                   )
                 ) : (
                   "Pick a date"

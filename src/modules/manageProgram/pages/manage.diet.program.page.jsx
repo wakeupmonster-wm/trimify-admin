@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CTAButton from "@/components/common/CTAButton";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
@@ -24,7 +24,9 @@ import { useDebounce } from "@/hooks/useDebounce";
 const ManageDietProgramPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+  const returnedListState = location.state?.dietMealListState || {};
 
   const {
     dietMeals,
@@ -32,12 +34,14 @@ const ManageDietProgramPage = () => {
     loading,
   } = useSelector((state) => state.manageDiet);
 
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [weekFilter, setWeekFilter] = useState("");
-  const [mealFilter, setMealFilter] = useState("");
-  const [dayFilter, setDayFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [pagination, setPagination] = useState(
+    returnedListState.pagination || { pageIndex: 0, pageSize: 10 },
+  );
+  const [globalFilter, setGlobalFilter] = useState(returnedListState.globalFilter || "");
+  const [weekFilter, setWeekFilter] = useState(returnedListState.weekFilter || "");
+  const [mealFilter, setMealFilter] = useState(returnedListState.mealFilter || "");
+  const [dayFilter, setDayFilter] = useState(returnedListState.dayFilter || "");
+  const [statusFilter, setStatusFilter] = useState(returnedListState.statusFilter || "");
   const debouncedSearch = useDebounce(globalFilter, 500);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [toggleModal, setToggleModal] = useState({
@@ -90,11 +94,32 @@ const ManageDietProgramPage = () => {
     } else if (action === "edit") {
       navigate(
         `/admin/manage-program/manage/diet-plan/edit-diet/${id}/${row.id}`,
+        {
+          state: {
+            dietMealListState: {
+              pagination,
+              globalFilter,
+              weekFilter,
+              mealFilter,
+              dayFilter,
+              statusFilter,
+            },
+          },
+        },
       );
     } else if (action === "delete") {
       setDeleteTarget(row);
     }
-  }, [id, navigate]);
+  }, [
+    dayFilter,
+    globalFilter,
+    id,
+    mealFilter,
+    navigate,
+    pagination,
+    statusFilter,
+    weekFilter,
+  ]);
 
   const handleConfirmToggle = async () => {
     if (!toggleModal.rowData) return;
@@ -158,7 +183,7 @@ const ManageDietProgramPage = () => {
     {
       type: "select", id: "day", label: "Meal Day", value: dayFilter,
       onChange: resetToFirstPage(setDayFilter),
-      options: Array.from({ length: 7 }, (_, index) => ({ label: `Day ${index + 1}`, value: String(index + 1) })),
+      options: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
       placeholder: "All Days",
     },
     {

@@ -88,6 +88,7 @@ const AddNutritionPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
   const [isImageRegenerating, setIsImageRegenerating] = useState(false);
+  const [imageDimensions, setImageDimensions] = useState(null);
   const pollTimeoutRef = useRef(null);
   const [formData, setFormData] = useState(() => ({
     title: isEdit ? editData?.Meal_title || editData?.title || "" : "",
@@ -263,6 +264,16 @@ const AddNutritionPage = () => {
     const newErrors = {};
     if (!formData.title?.trim()) newErrors.title = "Food title is required";
     if (!formData.image?.trim()) newErrors.image = "Image URL is required";
+    if (formData.image?.trim()) {
+      try {
+        const imageUrl = new URL(formData.image);
+        if (!['http:', 'https:'].includes(imageUrl.protocol)) {
+          newErrors.image = "Enter a valid public HTTP(S) image URL";
+        }
+      } catch {
+        newErrors.image = "Enter a valid public HTTP(S) image URL";
+      }
+    }
     if (formData.protein === "" || formData.protein === null)
       newErrors.protein = "Proteins are required";
     if (formData.carbs === "" || formData.carbs === null)
@@ -276,7 +287,7 @@ const AddNutritionPage = () => {
     if (!formData.Meal_Type) newErrors.Meal_Type = "Meal Type is required";
     if (!formData.meal_description?.trim())
       newErrors.meal_description = "Meal Instructions are required";
-    if (!formData.meal_ingredients?.trim())
+    if (formData.Meal_Type !== "ingredients" && !formData.meal_ingredients?.trim())
       newErrors.meal_ingredients = "Meal Ingredients are required";
     if (formData.Meal_Serving === "" || formData.Meal_Serving === null)
       newErrors.Meal_Serving = "Meal Serving is required";
@@ -381,11 +392,22 @@ const AddNutritionPage = () => {
                         src={formData.image}
                         alt={formData.title || "Food Image"}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onLoad={(e) => {
+                          setImageDimensions({
+                            width: e.currentTarget.naturalWidth,
+                            height: e.currentTarget.naturalHeight,
+                          });
+                        }}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = "https://placehold.co/400x400?text=Invalid+Image";
                         }}
                       />
+                      {imageDimensions && (
+                        <div className="absolute bottom-3 left-3 rounded-md bg-slate-950/80 backdrop-blur-xs px-2 py-0.5 text-[10px] font-semibold text-white tracking-tight pointer-events-none shadow-xs z-10">
+                          {imageDimensions.width} × {imageDimensions.height}px
+                        </div>
+                      )}
                       <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all">
                         <Eye className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-md" />
                       </div>
@@ -477,12 +499,11 @@ const AddNutritionPage = () => {
                     value={formData.image}
                     onChange={handleChange}
                     placeholder="Enter Image URL"
-                    readOnly={isEdit}
                     className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
                   />
                   {isEdit && (
                     <p className="text-[10px] font-medium text-slate-500">
-                      Use the AI button on the image to replace this photo.
+                      Paste an image URL to replace this photo, or use the AI button.
                     </p>
                   )}
                   {errors.image && (
@@ -595,7 +616,7 @@ const AddNutritionPage = () => {
 
               <div className="space-y-1.5">
                 <Label htmlFor="meal_ingredients" className="text-xs font-semibold text-slate-700 flex items-center gap-1.5 w-max">
-                  Ingredients (one per line)
+                  Ingredients (one per line) {formData.Meal_Type === "ingredients" && <span className="text-[10.5px] font-normal text-slate-400">(Optional)</span>}
                   <TooltipProvider delayDuration={300}>
                     <Tooltip>
                       <TooltipTrigger type="button" className="cursor-help" onClick={(e) => e.preventDefault()}>

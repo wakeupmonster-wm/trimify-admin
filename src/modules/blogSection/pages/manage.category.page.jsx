@@ -241,7 +241,7 @@ const ManageCategoryPage = () => {
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 icon={Plus}
-                label="Create Category"
+                label="Add Category"
                 onClick={() => navigate("/admin/blog-section/add-category")}
               />
             </div>

@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { formatAppDate } from "@/lib/utils";
 
 export const getTransactionManagementColumns = (onAction) => [
   {
@@ -97,13 +98,7 @@ export const getTransactionManagementColumns = (onAction) => [
     cell: ({ row }) => {
       // Optional: Format date here using date-fns if desired
       const rawDate = row.getValue("created_at");
-      const displayDate = rawDate
-        ? new Date(rawDate).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })
-        : "-";
+      const displayDate = formatAppDate(rawDate);
       return (
         <span className="text-[11px] font-medium text-slate-700">
           {displayDate}

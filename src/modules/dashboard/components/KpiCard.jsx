@@ -124,7 +124,7 @@ const KpiCard = ({
   const trendNum = trendValue
     ? parseFloat(String(trendValue).replace(/[^0-9.\-]/g, ""))
     : 0;
-  const isTrendZero = isNaN(trendNum) || trendNum === 0;
+  const isTrendZero = isNaN(trendNum) || Math.abs(trendNum) === 0;
   const isTrendUp = trendNum > 0;
   const isTrendDown = trendNum < 0;
   // Use the backend's `isPositive` flag to determine color.
@@ -132,7 +132,7 @@ const KpiCard = ({
   // `isPositive` from backend already accounts for this inversion.
   const isTrendGood = isTrendZero ? null : isPositive;
 
-  const shouldShowTrend = trendValue && !isValueZero && !isTrendZero;
+  const shouldShowTrend = Boolean(trendValue) && !isTrendZero;
 
   return (
     <div

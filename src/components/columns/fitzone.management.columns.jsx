@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Ellipsis, Edit, Trash2, UsersRound, ClipboardList, UserPlus } from "lucide-react";
+import { Ellipsis, Edit, Trash2, UsersRound, ClipboardList } from "lucide-react";
+import { formatAppDate } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -108,11 +109,7 @@ export const getFitzoneManagementColumns = (onAction) => [
           </div>
         );
       }
-      const formatted = new Date(dateVal).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
+      const formatted = formatAppDate(dateVal);
       return (
         <div className="text-[11px] font-medium text-slate-700 tracking-tight whitespace-nowrap">
           {formatted}
@@ -180,31 +177,13 @@ export const getFitzoneManagementColumns = (onAction) => [
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
-              disabled={!row.original.can_assign_to_all_users || ["queued", "processing", "completed", "completed_with_errors"].includes(row.original.latest_assignment_run?.status)}
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-blue-50 focus:text-app-primary2 font-semibold text-xs disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={() => onAction && onAction(row.original, "assign-all-users")}
-            >
-              <UsersRound className="w-3.5 h-3.5" />
-              {row.original.latest_assignment_run?.status === "queued"
-                ? "Assignment queued"
-                : row.original.latest_assignment_run?.status === "processing"
-                  ? "Assigning users…"
-                  : row.original.latest_assignment_run?.status === "completed"
-                    ? "Already Assigned"
-                    : row.original.latest_assignment_run?.status === "completed_with_errors"
-                      ? "Review assignment logs"
-                      : row.original.can_assign_to_all_users
-                        ? "Assign to all users"
-                        : "Complete setup first"}
-            </DropdownMenuItem>
-            <DropdownMenuItem
               disabled={!row.original.can_assign_to_all_users}
               className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-blue-50 focus:text-app-primary2 font-semibold text-xs disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={() => onAction && onAction(row.original, "assign-selective-users")}
+              onClick={() => onAction && onAction(row.original, "assign")}
             >
-              <UserPlus className="w-3.5 h-3.5" />
+              <UsersRound className="w-3.5 h-3.5" />
               {row.original.can_assign_to_all_users
-                ? "Select users for assignment"
+                ? "Assign"
                 : "Complete setup first"}
             </DropdownMenuItem>
             {row.original.latest_assignment_run && (

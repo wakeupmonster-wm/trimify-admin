@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -12,7 +13,7 @@ import {
 } from "@/components/shared/datatable";
 import { Button } from "@/components/ui/button";
 import { getNutritionFoodColumns } from "@/components/columns/nutrition.food.columns";
-import { fetchNutritionList } from "../store/nutrition.slice";
+import { fetchNutritionList, deleteNutrition } from "../store/nutrition.slice";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../../hooks/useDebounce";
 import CTAButton from "@/components/common/CTAButton";
@@ -67,8 +68,18 @@ const NutritionFoodPage = () => {
     if (!deleteModal.rowData) return;
     setIsDeleting(true);
     try {
-      // Add dispatch for delete action here when API is ready
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const res = await dispatch(deleteNutrition(deleteModal.rowData.id)).unwrap();
+      toast.success(res?.message || "Food item deleted successfully");
+      dispatch(
+        fetchNutritionList({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+          ...(mealTypeFilter && { meal_type: mealTypeFilter }),
+        }),
+      );
+    } catch (error) {
+      toast.error(typeof error === "string" ? error : error?.message || "Failed to delete food item");
     } finally {
       setIsDeleting(false);
       setDeleteModal({ open: false, rowData: null });
@@ -80,14 +91,17 @@ const NutritionFoodPage = () => {
     {
       type: "select",
       id: "mealType",
-      label: "Meal Type",
+      label: "Food Type",
       value: mealTypeFilter,
       onChange: (value) => {
         setMealTypeFilter(value);
         setPagination((current) => ({ ...current, pageIndex: 0 }));
       },
-      options: ["Breakfast", "Lunch", "Dinner", "Snacks"],
-      placeholder: "All Meal Types",
+      options: [
+        { label: "Ingredients", value: "ingredients" },
+        { label: "Recipes", value: "recipes" },
+      ],
+      placeholder: "All Food Types",
     },
   ];
 

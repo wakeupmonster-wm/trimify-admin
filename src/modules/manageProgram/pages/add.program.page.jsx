@@ -4,7 +4,7 @@ import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Save, Loader2, ArrowLeft, UploadCloud } from "lucide-react";
+import { Save, Loader2, ArrowLeft, UploadCloud, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +22,13 @@ import {
 import ConfirmModal from "@/components/common/ConfirmModal";
 import ImageUploadPreview from "@/components/common/ImageUploadPreview";
 
+const normalizeDuration = (duration) => {
+  const weeks = String(duration ?? "").match(/\d+/)?.[0];
+  return weeks ? `${weeks} Weeks` : "";
+};
+
+const STANDARD_DURATIONS = ["4 Weeks", "6 Weeks", "8 Weeks", "12 Weeks", "16 Weeks"];
+
 const AddProgramPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,7 +42,7 @@ const AddProgramPage = () => {
   const [formData, setFormData] = useState({
     title: editData?.title || "",
     description: editData?.description || "",
-    duration: editData?.duration ? `${editData.duration} Weeks` : "",
+    duration: normalizeDuration(editData?.duration),
     bannerImage: null,
   });
 
@@ -210,6 +217,16 @@ const AddProgramPage = () => {
               error={errors.bannerImage}
             />
 
+            <div className="w-full max-w-xs rounded-lg border border-app-primary2/20 bg-app-primary2/[0.05] p-3 text-[11px] leading-relaxed text-slate-600 space-y-1">
+              <div className="flex items-center gap-1.5 font-semibold text-slate-800">
+                <Info className="h-3.5 w-3.5 shrink-0 text-app-primary2" />
+                <span>Mobile App Display Note</span>
+              </div>
+              <p className="text-[10.5px] text-slate-600">
+                Use a <strong>3:2 landscape image</strong>, ideally <strong>600×400 px</strong>. Other ratios may crop differently in the mobile app. Maximum file size: <strong>5 MB</strong>.
+              </p>
+            </div>
+
             {/* Program Duration */}
             <div className="space-y-1.5">
               <Label className="text-xs 3xl:text-sm font-bold text-slate-800">
@@ -226,10 +243,17 @@ const AddProgramPage = () => {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="4 Weeks">4 Weeks</SelectItem>
-                  <SelectItem value="6 Weeks">6 Weeks</SelectItem>
-                  <SelectItem value="8 Weeks">8 Weeks</SelectItem>
-                  <SelectItem value="12 Weeks">12 Weeks</SelectItem>
+                  {STANDARD_DURATIONS.map((duration) => (
+                    <SelectItem key={duration} value={duration}>
+                      {duration}
+                    </SelectItem>
+                  ))}
+                  {formData.duration &&
+                    !STANDARD_DURATIONS.includes(formData.duration) && (
+                      <SelectItem value={formData.duration}>
+                        {formData.duration}
+                      </SelectItem>
+                    )}
                 </SelectContent>
               </Select>
               {errors.duration && (

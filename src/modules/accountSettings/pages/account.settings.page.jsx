@@ -58,6 +58,15 @@ const AccountSettingsPage = () => {
       errors.old_password = "Old password is required";
     if (!passwordForm.new_password)
       errors.new_password = "New password is required";
+    else if (passwordForm.new_password.length < 6)
+      errors.new_password = "New password must be at least 6 characters";
+    else if (
+      passwordForm.old_password &&
+      passwordForm.new_password === passwordForm.old_password
+    ) {
+      errors.new_password = "New password cannot be the same as the current password";
+    }
+
     if (!passwordForm.confirm_password)
       errors.confirm_password = "Confirm password is required";
     else if (passwordForm.new_password !== passwordForm.confirm_password) {
@@ -83,7 +92,11 @@ const AccountSettingsPage = () => {
       });
       setPasswordErrors({});
     } catch (error) {
-      toast.error(error?.message || "Failed to update password.");
+      const errorMessage =
+        typeof error === "string"
+          ? error
+          : error?.message || error?.error || "Failed to update password.";
+      toast.error(errorMessage);
     }
   };
 

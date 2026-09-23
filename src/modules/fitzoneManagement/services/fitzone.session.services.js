@@ -2,73 +2,50 @@ import { apiConnector } from "@/services/axios/axios.connector";
 import { FITZONE_SESSION } from "@/services/api-endpoints/fitzone.endpoints";
 
 export const getFitzoneSessionsAPI = async (id, params = {}) => {
-  try {
-    const response = await apiConnector(
-      "GET",
-      FITZONE_SESSION.FITZONE_SESSION_LIST(id),
-      null,
-      null,
-      params
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return apiConnector(
+    "GET",
+    FITZONE_SESSION.FITZONE_SESSION_LIST(id),
+    null,
+    null,
+    params,
+  );
 };
 
 export const addFitzoneSessionAPI = async (data) => {
-  try {
-    const response = await apiConnector(
-      "POST",
-      FITZONE_SESSION.FITZONE_SESSION_ADD,
-      data,
-      {
-        "Content-Type": "multipart/form-data", // Assuming video/image upload
-      },
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return apiConnector(
+    "POST",
+    FITZONE_SESSION.FITZONE_SESSION_ADD,
+    data,
+    {
+      "Content-Type": "multipart/form-data", // Assuming video/image upload
+    },
+    null,
+    { timeout: 5 * 60 * 1000 },
+  );
 };
 
 export const updateFitzoneSessionAPI = async (id, data) => {
-  try {
-    const response = await apiConnector(
-      "POST",
-      FITZONE_SESSION.FITZONE_SESSION_UPDATE(id),
-      data,
-      {
-        "Content-Type": "multipart/form-data",
-      },
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return apiConnector(
+    "POST",
+    FITZONE_SESSION.FITZONE_SESSION_UPDATE(id),
+    data,
+    {
+      "Content-Type": "multipart/form-data",
+    },
+  );
 };
 
 export const toggleFitzoneSessionStatusAPI = async (id, status) => {
-  try {
-    const response = await apiConnector(
-      "PATCH",
-      FITZONE_SESSION.FITZONE_SESSION_TOGGLE_STATUS(id),
-      { status },
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return apiConnector(
+    "PATCH",
+    FITZONE_SESSION.FITZONE_SESSION_TOGGLE_STATUS(id),
+    { status },
+  );
 };
 
 export const deleteFitzoneSessionAPI = async (id) => {
-  try {
-    const response = await apiConnector(
-      "DELETE",
-      FITZONE_SESSION.FITZONE_SESSION_DELETE(id),
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return apiConnector(
+    "DELETE",
+    FITZONE_SESSION.FITZONE_SESSION_DELETE(id),
+  );
 };

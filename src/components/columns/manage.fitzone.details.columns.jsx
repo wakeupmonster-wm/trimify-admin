@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Ellipsis, Edit3 } from "lucide-react";
+import { Eye } from "lucide-react";
 
 export const getManageFitzoneDetailsColumns = (handleAction) => [
   {
@@ -65,31 +58,20 @@ export const getManageFitzoneDetailsColumns = (handleAction) => [
     minSize: 80,
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
-            >
-              <Ellipsis className="h-4 w-4 text-foreground/90" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm bg-white"
-          >
-            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
-              Actions
-            </DropdownMenuLabel>
-            <DropdownMenuItem
-              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
-              onClick={() => handleAction && handleAction(row.original.id)}
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              Edit
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAction && handleAction(row.original.id);
+          }}
+          title="View"
+          aria-label="View"
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
       </div>
     ),
   },

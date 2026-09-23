@@ -46,6 +46,7 @@ const NotificationManagePage = () => {
   const [pushTitle, setPushTitle] = useState("");
   const [target, setTarget] = useState("all");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   // `campaignPagination.total` is scoped to whatever channel/status/search
   // filters are currently applied (it's the matching row count, not a
   // grand total), so using it directly for "Total Campaigns" makes that
@@ -85,22 +86,24 @@ const NotificationManagePage = () => {
   ]);
 
   const handlePreCheck = () => {
+    const nextErrors = {};
     if (!campaignName.trim()) {
-      toast.error("Please enter a campaign name.");
-      return;
+      nextErrors.campaignName = "Campaign name is required.";
     }
     if (!messageText.trim()) {
-      toast.error("Please enter a message content.");
-      return;
+      nextErrors.messageText = "Message content is required.";
     }
     if (activeTab === "email" && !emailSubject.trim()) {
-      toast.error("Please enter an email subject.");
-      return;
+      nextErrors.emailSubject = "Email subject is required.";
     }
     if (activeTab === "push" && !pushTitle.trim()) {
-      toast.error("Please enter a push notification title.");
+      nextErrors.pushTitle = "Push notification title is required.";
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setFormErrors(nextErrors);
       return;
     }
+    setFormErrors({});
     setIsConfirmOpen(true);
   };
 
@@ -295,9 +298,13 @@ const NotificationManagePage = () => {
                         maxLength={80}
                         placeholder="e.g., Reminder - Riya"
                         value={campaignName}
-                        onChange={(e) => setCampaignName(e.target.value)}
+                        onChange={(e) => {
+                          setCampaignName(e.target.value);
+                          if (formErrors.campaignName) setFormErrors((prev) => ({ ...prev, campaignName: "" }));
+                        }}
                         className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
                       />
+                      {formErrors.campaignName && <p className="text-red-500 text-[11px] font-medium">{formErrors.campaignName}</p>}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4">
@@ -348,9 +355,13 @@ const NotificationManagePage = () => {
                           maxLength={65}
                           placeholder="Enter Push Title Here..."
                           value={pushTitle}
-                          onChange={(e) => setPushTitle(e.target.value)}
+                          onChange={(e) => {
+                            setPushTitle(e.target.value);
+                            if (formErrors.pushTitle) setFormErrors((prev) => ({ ...prev, pushTitle: "" }));
+                          }}
                           className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
                         />
+                        {formErrors.pushTitle && <p className="text-red-500 text-[11px] font-medium">{formErrors.pushTitle}</p>}
                       </div>
                     )}
 
@@ -369,9 +380,13 @@ const NotificationManagePage = () => {
                           maxLength={100}
                           placeholder="Enter Subject Here..."
                           value={emailSubject}
-                          onChange={(e) => setEmailSubject(e.target.value)}
+                          onChange={(e) => {
+                            setEmailSubject(e.target.value);
+                            if (formErrors.emailSubject) setFormErrors((prev) => ({ ...prev, emailSubject: "" }));
+                          }}
                           className="w-full h-11 bg-[#F8FAFC]/50 border-slate-300/60 rounded-lg px-4 text-[13px] font-medium"
                         />
+                        {formErrors.emailSubject && <p className="text-red-500 text-[11px] font-medium">{formErrors.emailSubject}</p>}
                       </div>
                     )}
 
@@ -393,13 +408,17 @@ const NotificationManagePage = () => {
                               : "Enter Push Message Here..."
                           }
                           value={messageText}
-                          onChange={(e) => setMessageText(e.target.value)}
+                          onChange={(e) => {
+                            setMessageText(e.target.value);
+                            if (formErrors.messageText) setFormErrors((prev) => ({ ...prev, messageText: "" }));
+                          }}
                           className="min-h-[160px] bg-[#F8FAFC]/50 border-slate-300/60 resize-none font-medium text-[13px] p-4 pb-7 rounded-lg"
                         />
                         <div className="absolute bottom-2 right-3 text-[10px] font-medium text-slate-400 pointer-events-none">
                           {messageText.length} / {activeTab === "email" ? 2000 : 240}
                         </div>
                       </div>
+                      {formErrors.messageText && <p className="text-red-500 text-[11px] font-medium">{formErrors.messageText}</p>}
                     </div>
 
                     <Button

@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -20,20 +20,23 @@ import {
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { cn } from "@/lib/utils";
+import { STATUS_BADGE_STYLE } from "@/config/theme.config";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import {
   getFitzoneAssignableUsersAPI,
   assignFitzoneToSelectedUsersAPI,
+  assignFitzoneToAllUsersAPI,
   unassignFitzoneUserAPI,
 } from "../services/fitzone.services";
 import { toast } from "sonner";
 import {
   Search,
   Users,
-  CheckCircle2,
+  Mail,
   Loader2,
-  UserCheck,
   UserPlus,
-  Sparkles,
+  UserCheck,
+  UsersRound,
 } from "lucide-react";
 
 export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSuccess }) => {
@@ -46,11 +49,11 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
   const [loading, setLoading] = useState(false);
   const [usersData, setUsersData] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPage: 1 });
-  const [fitzoneMeta, setFitzoneMeta] = useState(null);
-
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [actionInProgress, setActionInProgress] = useState({}); // { [userId]: 'assign' | 'unassign' }
   const [isBulkAssigning, setIsBulkAssigning] = useState(false);
+  const [confirmAssignAll, setConfirmAssignAll] = useState(false);
+  const [isAssigningAll, setIsAssigningAll] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     if (!fitzone?.id) return;
@@ -70,9 +73,6 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
           total: res.pagination?.total || 0,
           totalPage: res.pagination?.totalPage || res.pagination?.last_page || 1,
         });
-        if (res.fitzone) {
-          setFitzoneMeta(res.fitzone);
-        }
       } else {
         toast.error(res?.message || "Failed to load users for assignment.");
       }
@@ -94,7 +94,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
     }
   }, [open, fetchUsers]);
 
-  // Reset page to 1 when search or filter or limit changes
+  // Reset page to 1 when search, filter or limit changes
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch, filter, limit]);
@@ -134,7 +134,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       const res = await assignFitzoneToSelectedUsersAPI(fitzone.id, [userId]);
       if (res && res.status === "success") {
         toast.success(res.message || "User assigned to Fitzone successfully.");
-        // Optimistic update
+        // Optimistic instant status update
         setUsersData((prev) =>
           prev.map((u) =>
             u.id === userId
@@ -150,38 +150,6 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Error assigning Fitzone.");
-    } finally {
-      setActionInProgress((prev) => {
-        const next = { ...prev };
-        delete next[userId];
-        return next;
-      });
-    }
-  };
-
-  // Unassign single user
-  const handleUnassignSingle = async (userId) => {
-    if (!fitzone?.id) return;
-    setActionInProgress((prev) => ({ ...prev, [userId]: "unassign" }));
-    try {
-      const res = await unassignFitzoneUserAPI(fitzone.id, userId);
-      if (res && res.status === "success") {
-        toast.success(res.message || "User unassigned from Fitzone successfully.");
-        // Optimistic update
-        setUsersData((prev) =>
-          prev.map((u) =>
-            u.id === userId
-              ? { ...u, is_assigned: false, assigned_categories_count: 0 }
-              : u
-          )
-        );
-        fetchUsers();
-        if (onSuccess) onSuccess();
-      } else {
-        toast.error(res?.message || "Failed to unassign user.");
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Error unassigning user.");
     } finally {
       setActionInProgress((prev) => {
         const next = { ...prev };
@@ -220,6 +188,59 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
     }
   };
 
+  // Unassign single user
+  const handleUnassignSingle = async (userId) => {
+    if (!fitzone?.id) return;
+    setActionInProgress((prev) => ({ ...prev, [userId]: "unassign" }));
+    try {
+      const res = await unassignFitzoneUserAPI(fitzone.id, userId);
+      if (res && res.status === "success") {
+        toast.success(res.message || "User unassigned from Fitzone successfully.");
+        // Optimistic instant status update
+        setUsersData((prev) =>
+          prev.map((u) =>
+            u.id === userId
+              ? { ...u, is_assigned: false, assigned_categories_count: 0 }
+              : u
+          )
+        );
+        fetchUsers();
+        if (onSuccess) onSuccess();
+      } else {
+        toast.error(res?.message || "Failed to unassign user.");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Error unassigning user.");
+    } finally {
+      setActionInProgress((prev) => {
+        const next = { ...prev };
+        delete next[userId];
+        return next;
+      });
+    }
+  };
+
+  // Assign to All users
+  const handleConfirmAssignAll = async () => {
+    if (!fitzone?.id) return;
+    setIsAssigningAll(true);
+    try {
+      const res = await assignFitzoneToAllUsersAPI(fitzone.id);
+      if (res && (res.status === "success" || res.success)) {
+        toast.success("Assignment queued for all users. Users will be assigned in the background.");
+        setConfirmAssignAll(false);
+        fetchUsers();
+        if (onSuccess) onSuccess();
+      } else {
+        toast.error(res?.message || "Failed to queue all-user assignment.");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Error assigning Fitzone to all users.");
+    } finally {
+      setIsAssigningAll(false);
+    }
+  };
+
   // Pagination calculation matching DataTablePagination
   const totalPages = pagination.totalPage || 1;
   const currentPage = pagination.page || 1;
@@ -244,382 +265,404 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl w-full p-0 gap-0 overflow-hidden rounded-2xl border-slate-200 bg-white shadow-2xl">
-        {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-slate-100 bg-slate-50/60">
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-blue-100 text-app-primary2">
-                  <UserPlus className="w-5 h-5" />
-                </span>
-                <DialogTitle className="text-lg font-bold text-slate-900 tracking-tight">
-                  Assign Fitzone to Users
-                </DialogTitle>
-              </div>
-              <DialogDescription className="text-xs text-slate-600">
-                Fitzone: <span className="font-semibold text-slate-800">{fitzone?.title || "Fitzone"}</span>
-                {fitzoneMeta?.eligible_categories_count !== undefined && (
-                  <span className="ml-2 text-slate-500">
-                    ({fitzoneMeta.eligible_categories_count} active category/categories)
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl w-full p-0 gap-0 overflow-hidden rounded-2xl border-slate-300/60 bg-white shadow-2xl">
+          {/* Clean Header without Ready for Assignment badge */}
+          <DialogHeader className="px-6 pt-6 pb-4 border-b border-slate-300/60 bg-white">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2.5">
+                  <span className="p-2 rounded-xl bg-app-primary2/10 text-app-primary2">
+                    <UserPlus className="w-5 h-5" />
                   </span>
+                  <DialogTitle className="text-base sm:text-lg font-bold text-foreground/90 tracking-tight">
+                    Assign Users to Fitzone
+                  </DialogTitle>
+                </div>
+                <DialogDescription className="text-xs font-medium text-slate-500">
+                  Fitzone: <span className="font-bold text-app-primary2">{fitzone?.title || "Fitzone"}</span>
+                </DialogDescription>
+              </div>
+            </div>
+
+            {/* Search and Filter Bar */}
+            <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative flex-1 w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Search users by name or email..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9 h-9 text-xs bg-white border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2"
+                />
+                {search && (
+                  <button
+                    type="button"
+                    onClick={() => setSearch("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                  >
+                    Clear
+                  </button>
                 )}
-              </DialogDescription>
+              </div>
+
+              {/* Filter Tabs matching theme colors */}
+              <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-300/60 w-full sm:w-auto self-stretch">
+                {[
+                  { id: "all", label: "All Users" },
+                  { id: "unassigned", label: "Not Assigned" },
+                  { id: "assigned", label: "Assigned" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setFilter(tab.id)}
+                    className={cn(
+                      "flex-1 sm:flex-none px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all",
+                      filter === tab.id
+                        ? "bg-white text-app-primary2 shadow-sm"
+                        : "text-slate-500 hover:text-slate-900"
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            {fitzoneMeta && (
-              <Badge
-                variant="outline"
-                className={`text-[11px] px-2.5 py-0.5 font-semibold ${
-                  fitzoneMeta.is_available
-                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-amber-50 text-amber-700 border-amber-200"
-                }`}
-              >
-                {fitzoneMeta.is_available ? "Ready for Assignment" : "Setup Incomplete"}
-              </Badge>
+
+            {/* Selection Count shown directly below Search Bar */}
+            {selectedUserIds.length > 0 && (
+              <div className="mt-3 flex items-center justify-between px-3.5 py-1.5 rounded-lg bg-blue-50/70 border border-blue-200/80">
+                <span className="text-xs font-semibold text-app-primary2 flex items-center gap-1.5">
+                  selected : {selectedUserIds.length} user{selectedUserIds.length > 1 ? "s" : ""}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUserIds([])}
+                  className="text-[11px] font-medium text-slate-500 hover:text-slate-800 underline transition-colors"
+                >
+                  Clear selection
+                </button>
+              </div>
             )}
-          </div>
+          </DialogHeader>
 
-          {/* Search and Filters Bar */}
-          <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
-            <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Search users by name, email, or phone..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-9 text-xs bg-white border-slate-200 rounded-lg focus-visible:ring-1 focus-visible:ring-app-primary2"
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200/80 w-full sm:w-auto self-stretch">
-              {[
-                { id: "all", label: "All Users" },
-                { id: "unassigned", label: "Not Assigned" },
-                { id: "assigned", label: "Assigned" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setFilter(tab.id)}
-                  className={`flex-1 sm:flex-none px-3 py-1 text-[11px] font-semibold rounded-md transition-all ${
-                    filter === tab.id
-                      ? "bg-white text-app-primary2 shadow-sm"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </DialogHeader>
-
-        {/* Selected info row if items selected */}
-        {selectedUserIds.length > 0 && (
-          <div className="px-6 py-2 bg-blue-50/80 border-b border-blue-100 flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-900 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              {selectedUserIds.length} user(s) selected
-            </span>
-            <button
-              type="button"
-              onClick={() => setSelectedUserIds([])}
-              className="text-[11px] font-medium text-blue-700 hover:text-blue-900 underline"
-            >
-              Clear selection
-            </button>
-          </div>
-        )}
-
-        {/* Table Content */}
-        <div className="px-6 py-3 max-h-[360px] min-h-[240px] overflow-y-auto">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-500 gap-2">
-              <Loader2 className="w-6 h-6 animate-spin text-app-primary2" />
-              <span className="text-xs font-medium">Loading users list...</span>
-            </div>
-          ) : usersData.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-14 text-center">
-              <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-2 text-slate-400">
-                <Users className="w-5 h-5" />
+          {/* Table Content styled identically to User Management DataTable */}
+          <div className="max-h-[380px] min-h-[240px] overflow-y-auto">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-2">
+                <Loader2 className="w-6 h-6 animate-spin text-app-primary2" />
+                <span className="text-xs font-semibold text-slate-600">Loading users list...</span>
               </div>
-              <p className="text-xs font-bold text-slate-800">No users found</p>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {search
-                  ? `No matching users found for "${search}"`
-                  : "No users available for the selected filter."}
-              </p>
-            </div>
-          ) : (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 text-[10px] uppercase font-bold text-slate-500">
-                  <th className="py-2 px-2 w-10 text-center">
-                    <Checkbox
-                      checked={isAllUnassignedSelected}
-                      onCheckedChange={handleToggleSelectAll}
-                      disabled={unassignedOnPage.length === 0}
-                      aria-label="Select all unassigned users"
-                    />
-                  </th>
-                  <th className="py-2 px-2">User Details</th>
-                  <th className="py-2 px-2 hidden sm:table-cell">Contact</th>
-                  <th className="py-2 px-2 text-center">Status</th>
-                  <th className="py-2 px-2 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {usersData.map((user) => {
-                  const isChecked = selectedUserIds.includes(user.id);
-                  const isAssigningThis = actionInProgress[user.id] === "assign";
-                  const isUnassigningThis = actionInProgress[user.id] === "unassign";
-
-                  return (
-                    <tr
-                      key={user.id}
-                      className={`hover:bg-slate-50/80 transition-colors ${
-                        isChecked ? "bg-blue-50/40" : ""
-                      }`}
-                    >
-                      {/* Checkbox */}
-                      <td className="py-2.5 px-2 text-center">
-                        <Checkbox
-                          checked={isChecked}
-                          onCheckedChange={() => handleToggleUser(user.id)}
-                          disabled={user.is_assigned}
-                          aria-label={`Select ${user.name}`}
-                        />
-                      </td>
-
-                      {/* Name & Email */}
-                      <td className="py-2.5 px-2">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-bold text-[11px] flex items-center justify-center uppercase shrink-0">
-                            {user.name ? user.name.charAt(0) : "U"}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold text-slate-900 truncate">
-                              {user.name || "-"}
-                            </p>
-                            <p className="text-[10px] text-slate-500 truncate">{user.email || "-"}</p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Contact */}
-                      <td className="py-2.5 px-2 hidden sm:table-cell text-xs text-slate-600">
-                        {user.mobileNo || "-"}
-                      </td>
-
-                      {/* Status */}
-                      <td className="py-2.5 px-2 text-center">
-                        {user.is_assigned ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full whitespace-nowrap">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                            Assigned
-                          </span>
-                        ) : user.partially_assigned ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full whitespace-nowrap">
-                            Partial ({user.assigned_categories_count}/{user.eligible_categories_count})
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full whitespace-nowrap">
-                            Not Assigned
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Action */}
-                      <td className="py-2.5 px-2 text-right">
-                        {user.is_assigned ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleUnassignSingle(user.id)}
-                            disabled={isUnassigningThis}
-                            className="h-7 px-2.5 text-[11px] font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md"
-                          >
-                            {isUnassigningThis ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              "Unassign"
-                            )}
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleAssignSingle(user.id)}
-                            disabled={isAssigningThis}
-                            className="h-7 px-3 text-[11px] font-semibold text-app-primary2 border-blue-200 hover:bg-app-primary2 hover:text-white rounded-md transition-all shadow-xs"
-                          >
-                            {isAssigningThis ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              "Assign"
-                            )}
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Consistent Pagination matching DataTablePagination */}
-        <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:px-6 sm:py-3.5 border-t border-slate-300/60 gap-3 bg-slate-50/60">
-          {/* Left Side: Showing results count */}
-          <div className="text-xs font-medium text-slate-500 text-left w-full sm:w-auto">
-            Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount} users
-          </div>
-
-          {/* Right Side: Rows + Page Controls */}
-          <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto">
-            {/* Rows Select */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
-                Rows
-              </span>
-              <Select
-                value={`${limit}`}
-                onValueChange={(value) => {
-                  setLimit(Number(value));
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="h-7 sm:h-8 w-[60px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
-                  {[10, 20, 50].map((size) => (
-                    <SelectItem
-                      key={size}
-                      value={`${size}`}
-                      className="text-xs font-medium rounded-lg"
-                    >
-                      {size}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-1 sm:gap-1.5">
-              {/* Previous Button */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage <= 1 || loading}
-              >
-                <IconChevronLeft size={16} />
-              </Button>
-
-              {/* Page Numbers */}
-              <div className="flex items-center gap-1">
-                {getPageNumbers().map((p, idx) => {
-                  if (p === "...") {
-                    return (
-                      <span
-                        key={`dots-${idx}`}
-                        className="px-1 text-slate-400 text-xs font-bold"
-                      >
-                        ...
-                      </span>
-                    );
-                  }
-                  const isActive = currentPage === p;
-                  return (
-                    <Button
-                      key={p}
-                      onClick={() => setPage(p)}
-                      disabled={loading}
-                      className={cn(
-                        "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
-                        isActive
-                          ? "bg-app-primary2 text-white hover:bg-app-primary3 shadow-md shadow-blue-100 border-none"
-                          : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none"
-                      )}
-                    >
-                      {p}
-                    </Button>
-                  );
-                })}
+            ) : usersData.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-12 h-12 rounded-full bg-app-primary2/5 flex items-center justify-center mb-2.5 text-slate-400">
+                  <Users className="w-6 h-6 text-app-primary2/60" />
+                </div>
+                <p className="text-xs font-bold text-slate-700">No users found</p>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  {search
+                    ? `No matching users found for "${search}"`
+                    : "No users available for the selected filter."}
+                </p>
               </div>
-
-              {/* Next Button */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage >= totalPages || loading}
-              >
-                <IconChevronRight size={16} />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Modal Footer with Actions */}
-        <div className="px-6 py-3 border-t border-slate-200 bg-white flex items-center justify-between">
-          <span className="text-xs text-slate-500">
-            {selectedUserIds.length > 0 ? (
-              <span className="font-semibold text-blue-700">
-                {selectedUserIds.length} user(s) selected for assignment
-              </span>
             ) : (
-              "Select checkboxes to assign multiple users"
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-app-primary2/5 hover:bg-app-primary2/5 border-b border-slate-300/60">
+                    <th className="w-10 px-3 py-2.5 text-center">
+                      <Checkbox
+                        checked={isAllUnassignedSelected}
+                        onCheckedChange={handleToggleSelectAll}
+                        disabled={unassignedOnPage.length === 0}
+                        aria-label="Select all unassigned users"
+                      />
+                    </th>
+                    <th className="w-14 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-left text-foreground/80">
+                      SR.No
+                    </th>
+                    <th className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-left text-foreground/80">
+                      User Details
+                    </th>
+                    <th className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-center text-foreground/80">
+                      Status
+                    </th>
+                    <th className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-right text-foreground/80">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-300/60">
+                  {usersData.map((user, index) => {
+                    const serialNumber = (currentPage - 1) * limit + index + 1;
+                    const isChecked = selectedUserIds.includes(user.id);
+                    const isAssigningThis = actionInProgress[user.id] === "assign";
+                    const isUnassigningThis = actionInProgress[user.id] === "unassign";
+
+                    return (
+                      <tr
+                        key={user.id}
+                        className={cn(
+                          "even:bg-slate-50/50 hover:bg-slate-100/70 transition-all duration-150",
+                          isChecked ? "bg-blue-50/40" : ""
+                        )}
+                      >
+                        {/* Selection Checkbox */}
+                        <td className="w-10 px-3 py-3 text-center">
+                          <Checkbox
+                            checked={isChecked}
+                            onCheckedChange={() => handleToggleUser(user.id)}
+                            disabled={user.is_assigned}
+                            aria-label={`Select ${user.name}`}
+                          />
+                        </td>
+
+                        {/* SR.No */}
+                        <td className="w-14 px-3 py-3 text-left font-bold text-[11px] text-foreground/90">
+                          {serialNumber}
+                        </td>
+
+                        {/* User Details */}
+                        <td className="px-4 py-3">
+                          <div className="space-y-0.5">
+                            <div className="capitalize font-bold text-slate-700 text-[11px] tracking-tight truncate max-w-[260px]">
+                              {user.name || "-"}
+                            </div>
+                            {user.email && (
+                              <div
+                                className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500 tracking-tight"
+                                title={user.email}
+                              >
+                                <Mail className="w-3 h-3 text-slate-400 shrink-0" />
+                                <span className="truncate max-w-[240px]">{user.email}</span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Status Badge without dot */}
+                        <td className="px-4 py-3 text-center">
+                          {user.is_assigned ? (
+                            <Badge
+                              className={cn(
+                                "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none inline-flex items-center",
+                                STATUS_BADGE_STYLE.active || "bg-emerald-500/10 text-emerald-600"
+                              )}
+                            >
+                              Assigned
+                            </Badge>
+                          ) : (
+                            <Badge
+                              className={cn(
+                                "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full border-none shadow-none inline-flex items-center",
+                                STATUS_BADGE_STYLE.inactive || "bg-slate-500/10 text-slate-600"
+                              )}
+                            >
+                              Not Assigned
+                            </Badge>
+                          )}
+                        </td>
+
+                        {/* Action */}
+                        <td className="px-4 py-3 text-right">
+                          {user.is_assigned ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleUnassignSingle(user.id)}
+                              disabled={isUnassigningThis}
+                              className="h-7 px-3 text-[11px] font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-all"
+                            >
+                              {isUnassigningThis ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                "Unassign"
+                              )}
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleAssignSingle(user.id)}
+                              disabled={isAssigningThis}
+                              className="h-7 px-3.5 text-[11px] font-semibold text-app-primary2 hover:bg-app-primary2 hover:text-white border-slate-300/60 rounded-md transition-all shadow-xs bg-white"
+                            >
+                              {isAssigningThis ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                              ) : (
+                                "Assign"
+                              )}
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             )}
-          </span>
-          <div className="flex items-center gap-2">
+          </div>
+
+          {/* Consistent Pagination matching DataTablePagination */}
+          <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 border-t border-slate-300/60 gap-4 bg-white">
+            {/* Left Side: Showing results count */}
+            <div className="text-xs font-medium text-slate-400 text-left w-full sm:w-auto">
+              Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount} users
+            </div>
+
+            {/* Right Side: Rows + Page Controls */}
+            <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto">
+              {/* Rows Select */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                  Rows
+                </span>
+                <Select
+                  value={`${limit}`}
+                  onValueChange={(value) => {
+                    setLimit(Number(value));
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger className="h-8 w-[65px] border-slate-300/60 rounded-md bg-white text-xs font-semibold focus:ring-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-300/60 shadow-xl">
+                    {[10, 20, 50].map((size) => (
+                      <SelectItem
+                        key={size}
+                        value={`${size}`}
+                        className="text-xs font-medium rounded-lg"
+                      >
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                {/* Previous Button */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage <= 1 || loading}
+                >
+                  <IconChevronLeft size={16} />
+                </Button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1">
+                  {getPageNumbers().map((p, idx) => {
+                    if (p === "...") {
+                      return (
+                        <span
+                          key={`dots-${idx}`}
+                          className="px-1 text-slate-400 text-xs font-bold"
+                        >
+                          ...
+                        </span>
+                      );
+                    }
+                    const isActive = currentPage === p;
+                    return (
+                      <Button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        disabled={loading}
+                        className={cn(
+                          "h-7 min-w-[28px] sm:h-8 sm:min-w-[32px] px-2 text-[10px] sm:text-xs font-bold rounded-md transition-all",
+                          isActive
+                            ? "bg-app-primary2 text-white hover:bg-app-primary3 shadow-md shadow-blue-100 border-none"
+                            : "bg-white border border-slate-300/60 text-slate-600 hover:bg-slate-50 hover:border-slate-300/60 shadow-none"
+                        )}
+                      >
+                        {p}
+                      </Button>
+                    );
+                  })}
+                </div>
+
+                {/* Next Button */}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 sm:h-8 sm:w-8 border-slate-300/60 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-50 disabled:opacity-30 shrink-0"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage >= totalPages || loading}
+                >
+                  <IconChevronRight size={16} />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Modal Footer with Assign All, Assign Selected, and Close */}
+          <div className="px-6 py-3 border-t border-slate-300/60 bg-slate-50/50 flex items-center justify-between gap-3">
+            {/* Left: Assign All Users Option */}
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onOpenChange(false)}
-              className="h-8 text-xs font-semibold rounded-lg px-4"
+              onClick={() => setConfirmAssignAll(true)}
+              disabled={isAssigningAll}
+              className="h-8 text-xs font-semibold text-app-primary2 hover:bg-app-primary2/10 border-slate-300/60 rounded-md flex items-center gap-1.5 transition-all"
             >
-              Close
+              <UsersRound className="w-3.5 h-3.5" />
+              Assign to All Users
             </Button>
-            <Button
-              variant="default"
-              size="sm"
-              disabled={selectedUserIds.length === 0 || isBulkAssigning}
-              onClick={handleBulkAssign}
-              className="h-8 text-xs font-semibold bg-app-primary2 hover:bg-blue-700 text-white rounded-lg px-4 shadow-sm transition-all"
-            >
-              {isBulkAssigning ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                  Assigning...
-                </>
-              ) : (
-                <>
-                  <UserCheck className="w-3.5 h-3.5 mr-1.5" />
-                  Assign Selected {selectedUserIds.length > 0 ? `(${selectedUserIds.length})` : ""}
-                </>
+
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onOpenChange(false)}
+                className="h-8 text-xs font-semibold rounded-md border-slate-300/60 px-5"
+              >
+                Close
+              </Button>
+
+              {selectedUserIds.length > 0 && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  disabled={isBulkAssigning}
+                  onClick={handleBulkAssign}
+                  className="h-8 text-xs font-semibold bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 shadow-sm transition-all flex items-center gap-1.5"
+                >
+                  {isBulkAssigning ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      Assigning...
+                    </>
+                  ) : (
+                    <>
+                      <UserCheck className="w-3.5 h-3.5" />
+                      Assign Selected ({selectedUserIds.length})
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
+            </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Modal for Assign to All Users */}
+      <ConfirmModal
+        isOpen={confirmAssignAll}
+        onClose={() => !isAssigningAll && setConfirmAssignAll(false)}
+        onConfirm={handleConfirmAssignAll}
+        title="Assign Fitzone to All Users"
+        message={`Are you sure you want to assign "${fitzone?.title || "this Fitzone"}" to all users in the background? Existing user assignments will be skipped.`}
+        confirmText="Assign All Users"
+        type="brand"
+        loading={isAssigningAll}
+      />
+    </>
   );
 };
 

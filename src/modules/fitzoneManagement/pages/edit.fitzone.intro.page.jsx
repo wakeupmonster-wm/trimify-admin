@@ -154,7 +154,7 @@ const EditFitzoneIntroPage = () => {
                   if (errors.heading) setErrors({ ...errors, heading: null });
                 }}
                 className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${
-                  errors.heading ? "border-red-500" : "border-slate-300/60"
+                  "border-slate-300/60"
                 }`}
               />
               {errors.heading && (
@@ -174,7 +174,7 @@ const EditFitzoneIntroPage = () => {
                   if (errors.subheading) setErrors({ ...errors, subheading: null });
                 }}
                 className={`w-full h-10 px-4 text-sm border rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2 transition-colors placeholder:font-normal font-medium ${
-                  errors.subheading ? "border-red-500" : "border-slate-300/60"
+                  "border-slate-300/60"
                 }`}
               />
               {errors.subheading && (
@@ -191,7 +191,7 @@ const EditFitzoneIntroPage = () => {
                 content will be displayed to users before they start.
               </p>
             </div>
-            <div className={errors.content ? "rounded-md border border-red-500 overflow-hidden" : ""}>
+            <div className="rounded-md overflow-hidden">
               <RichTextEditor
                 value={content}
                 onChange={(val) => {

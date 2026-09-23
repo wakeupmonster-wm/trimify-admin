@@ -7,12 +7,14 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
+  Info,
 } from "lucide-react";
 import { Pill, EmptyState } from "./UserProfileShared";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   Select,
   SelectContent,
@@ -25,8 +27,18 @@ export function TabTransactions({ data }) {
     transactionsState,
     onTransactionsPageChange,
     onTransactionsStatusChange,
+    onTransactionsPlanChange,
   } = data;
-  const { loading, loaded, transactions, summary, page, totalPages, status } =
+  const {
+    loading,
+    loaded,
+    transactions,
+    summary,
+    page,
+    totalPages,
+    status,
+    plan,
+  } =
     transactionsState;
   const isLoading = loading || !loaded;
 
@@ -50,7 +62,7 @@ export function TabTransactions({ data }) {
     if (!dateString) return "—";
     try {
       return format(new Date(dateString), "dd MMM yyyy, hh:mm a");
-    } catch (e) {
+    } catch {
       return "—";
     }
   };
@@ -119,22 +131,37 @@ export function TabTransactions({ data }) {
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
           />
-          <Select
-            value={status}
-            onValueChange={(val) => onTransactionsStatusChange(val)}
-          >
-            <SelectTrigger className="h-10 w-26 rounded-lg border border-slate-200 bg-white text-xs ml-auto sm:ml-0 font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-app-primary2/20 transition-all hover:bg-slate-50">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="success">Success</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="refunded">Refunded</SelectItem>
-              <SelectItem value="disputed">Disputed</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="ml-auto flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+            <Select
+              value={status}
+              onValueChange={(val) => onTransactionsStatusChange(val)}
+            >
+              <SelectTrigger className="h-10 w-28 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:ring-2 focus:ring-app-primary2/20">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="success">Success</SelectItem>
+                <SelectItem value="failed">Failed</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="refunded">Refunded</SelectItem>
+                <SelectItem value="disputed">Disputed</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={plan}
+              onValueChange={(val) => onTransactionsPlanChange(val)}
+            >
+              <SelectTrigger className="h-10 w-[108px] gap-1 px-2.5 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:ring-2 focus:ring-app-primary2/20">
+                <SelectValue placeholder="All Plans" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Plans</SelectItem>
+                <SelectItem value="basic">Basic</SelectItem>
+                <SelectItem value="premium">Premium</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="p-0 bg-white">
           {isLoading ? (
@@ -220,14 +247,37 @@ export function TabTransactions({ data }) {
                           {formatCurrency(tx.amount)}
                         </td>
                         <td className="whitespace-nowrap px-5 py-4">
-                          <Pill tone={getStatusTone(tx.status)}>
-                            {tx.status}
-                          </Pill>
-                          {tx.refund_reason && (
-                            <div className="mt-1 text-[10px] text-slate-400">
-                              {tx.refund_reason}
-                            </div>
-                          )}
+                          <div className="flex items-center gap-1.5">
+                            <Pill tone={getStatusTone(tx.status)}>
+                              {tx.status}
+                            </Pill>
+                            {tx.refund_reason && (
+                              <TooltipProvider delayDuration={150}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      type="button"
+                                      aria-label="Refund details"
+                                      className="inline-flex items-center justify-center text-violet-500 hover:text-violet-600 transition-colors p-0.5 rounded-full hover:bg-violet-50 focus:outline-none cursor-pointer"
+                                    >
+                                      <Info className="w-3.5 h-3.5" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="top"
+                                    className="max-w-xs p-2.5 bg-slate-900 text-white shadow-xl rounded-lg border border-slate-800 text-left space-y-1 z-50"
+                                  >
+                                    <p className="text-[11px] font-semibold text-violet-400">
+                                      Refund Reason
+                                    </p>
+                                    <p className="text-[10px] text-slate-200 leading-tight">
+                                      {tx.refund_reason}
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </div>
                         </td>
                         <td className="whitespace-nowrap px-5 py-4">
                           {tx.invoice_url ? (

@@ -327,8 +327,18 @@ const manageFoodSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateFood.fulfilled, (state) => {
+      .addCase(updateFood.fulfilled, (state, action) => {
         state.loading = false;
+        const updatedFood = action.payload?.data;
+        if (updatedFood?.id) {
+          const index = state.foods.findIndex((f) => String(f.id) === String(updatedFood.id));
+          if (index !== -1) {
+            state.foods[index] = {
+              ...state.foods[index],
+              ...updatedFood,
+            };
+          }
+        }
       })
       .addCase(updateFood.rejected, (state, action) => {
         state.loading = false;
@@ -339,8 +349,12 @@ const manageFoodSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteFood.fulfilled, (state) => {
+      .addCase(deleteFood.fulfilled, (state, action) => {
         state.loading = false;
+        const deletedId = action.payload;
+        if (deletedId) {
+          state.foods = state.foods.filter((f) => String(f.id) !== String(deletedId));
+        }
       })
       .addCase(deleteFood.rejected, (state, action) => {
         state.loading = false;
@@ -351,8 +365,16 @@ const manageFoodSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(toggleFoodStatus.fulfilled, (state) => {
+      .addCase(toggleFoodStatus.fulfilled, (state, action) => {
         state.loading = false;
+        const { id, status } = action.payload || {};
+        if (id) {
+          const item = state.foods.find((f) => String(f.id) === String(id));
+          if (item) {
+            item.status = status;
+            item.is_active = status === "Active";
+          }
+        }
       })
       .addCase(toggleFoodStatus.rejected, (state, action) => {
         state.loading = false;

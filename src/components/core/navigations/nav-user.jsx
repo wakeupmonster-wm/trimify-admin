@@ -132,6 +132,7 @@ export function NavUser({ user }) {
         confirmText="Log Out"
         type="warning"
         loading={isLoggingOut}
+        closeOnOutsideClick={false}
       />
     </>
   );

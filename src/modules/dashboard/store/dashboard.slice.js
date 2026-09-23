@@ -7,7 +7,8 @@ import {
   buildSecondaryKpis,
   buildAlerts,
 } from "../utils/dashboardExtras.transform";
-import { format, subDays } from "date-fns";
+import { subDays } from "date-fns";
+import { formatAppDate } from "@/lib/utils";
 
 function getGlanceTitle(preset) {
   switch (preset) {
@@ -34,7 +35,7 @@ function getPeriodLabel(dateRange, preset) {
     case "custom": default: {
       const from = dateRange?.from ? new Date(dateRange.from) : subDays(new Date(), 7);
       const to = dateRange?.to ? new Date(dateRange.to) : new Date();
-      return `${format(from, "MMM dd")} – ${format(to, "dd MMM, yyyy")}`;
+      return `${formatAppDate(from)} – ${formatAppDate(to)}`;
     }
   }
 }
