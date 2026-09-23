@@ -29,7 +29,6 @@ const STATUS_FILTER_OPTIONS = [
 
 const ACTIVITY_FILTER_OPTIONS = [
   { label: "New Signups", value: "new_signups" },
-  { label: "New Signups Today", value: "new_today" },
   { label: "Missed Step Goals", value: "missed_step_goals" },
   { label: "Missed Diet Logs", value: "missed_diet_logs" },
   { label: "Missed Water Logs", value: "missed_water_logs" },
@@ -245,7 +244,7 @@ const UsersManagementPage = () => {
         setActivityFilter("new_signups");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: activityFilter === "new_signups" || activityFilter === "new_today",
+      isSelected: activityFilter === "new_signups",
     },
   ];
 

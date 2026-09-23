@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import {
   ComposedChart,
   Line,
@@ -151,12 +151,17 @@ function FocusTimelineUI({
   periodLabel,
   series = [],
   note,
+  height = "flex-1 min-h-[240px]",
 }) {
   const totalValue = data.reduce(
     (sum, point) => sum + (Number(point?.[series[0]?.key]) || 0),
     0,
   );
   const activeUsersText = totalValue === 1 ? "active user" : "active users";
+
+  const hasData =
+    data.length > 0 &&
+    data.some((point) => Number(point?.[series[0]?.key]) > 0);
 
   const maxIndex = useMemo(() => {
     if (!data || data.length === 0 || series.length === 0) return undefined;
@@ -173,12 +178,10 @@ function FocusTimelineUI({
     return maxIdx;
   }, [data, series]);
 
-  const [selectedIndex, setSelectedIndex] = useState(maxIndex);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const [chartKey, setChartKey] = useState(0);
 
-  useEffect(() => {
-    setSelectedIndex(maxIndex);
-  }, [maxIndex]);
+  const selectedIndex = hoveredIndex ?? maxIndex;
 
   // Calculate Y-axis domain
   const values = data.map((d) => Number(d[series[0]?.key] || 0));
@@ -206,31 +209,32 @@ function FocusTimelineUI({
       </div>
 
       <div className="flex-1 flex flex-col px-6 pt-4 pb-3">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              {Number(totalValue).toLocaleString()}
-            </span>
-            <span className="text-xs font-semibold text-slate-500 capitalize">
-              Total {activeUsersText}
-            </span>
-          </div>
-        </div>
+        {hasData ? (
+          <>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                  {Number(totalValue).toLocaleString()}
+                </span>
+                <span className="text-xs font-semibold text-slate-500 capitalize">
+                  Total {activeUsersText}
+                </span>
+              </div>
+            </div>
 
-        <div className="w-full flex-1 min-h-[220px]">
-          {data.length > 0 ? (
-            <ChartContainer config={{}} className="w-full h-full min-h-[220px]">
+            <div className="w-full flex-1 min-h-[220px]">
+              <ChartContainer config={{}} className="w-full h-full min-h-[220px]">
               <ComposedChart
                 key={chartKey}
                 data={data}
                 margin={{ top: 8, right: 16, left: 16, bottom: 4 }}
                 onMouseMove={(state) => {
                   if (state?.activeTooltipIndex !== undefined) {
-                    setSelectedIndex(state.activeTooltipIndex);
+                    setHoveredIndex(state.activeTooltipIndex);
                   }
                 }}
                 onMouseLeave={() => {
-                  setSelectedIndex(maxIndex);
+                  setHoveredIndex(null);
                   setChartKey((prev) => prev + 1);
                 }}
               >
@@ -339,26 +343,29 @@ function FocusTimelineUI({
                 />
               </ComposedChart>
             </ChartContainer>
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl min-h-[220px] select-none">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
-                <BarChart3 className="h-6 w-6" strokeWidth={2} />
-              </div>
-              <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
-                No data for selected period
-              </h4>
-              <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
-                No activity recorded for this timeframe. Try choosing a different date range.
-              </p>
-            </div>
-          )}
+          </div>
+        </>
+      ) : (
+        <div
+          className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl select-none`}
+        >
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+            <BarChart3 className="h-6 w-6" strokeWidth={2} />
+          </div>
+          <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
+            No data for selected period
+          </h4>
+          <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
+            No activity recorded for this timeframe. Try choosing a different date range.
+          </p>
         </div>
-      </div>
+      )}
     </div>
-  );
+  </div>
+);
 }
 
-const TrendChartCard = ({
+function StandardTrendChartUI({
   title,
   subtitle,
   Icon,
@@ -371,26 +378,8 @@ const TrendChartCard = ({
   series = [],
   note,
   height = "flex-1 min-h-[240px]",
-  focusTimeline = false,
   hideLegend = false,
-}) => {
-  if (focusTimeline) {
-    return (
-      <FocusTimelineUI
-        title={title}
-        subtitle={subtitle}
-        Icon={Icon}
-        iconColor={iconColor}
-        iconBg={iconBg}
-        data={data}
-        xKey={xKey}
-        periodLabel={periodLabel}
-        series={series}
-        note={note || tooltipText}
-      />
-    );
-  }
-
+}) {
   const [hoverState, setHoverState] = useState({ index: null, key: null });
 
   const defaultHover = useMemo(() => {
@@ -705,6 +694,13 @@ const TrendChartCard = ({
       </div>
     </div>
   );
+}
+
+const TrendChartCard = ({ focusTimeline = false, ...props }) => {
+  if (focusTimeline) {
+    return <FocusTimelineUI {...props} />;
+  }
+  return <StandardTrendChartUI {...props} />;
 };
 
 export default TrendChartCard;

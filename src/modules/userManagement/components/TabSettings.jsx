@@ -39,7 +39,7 @@ import { LuUserRound } from "react-icons/lu";
 import { resolveSubscriptionStatus } from "../utils/subscriptionStatus";
 
 export function TabSettings({ data }) {
-  const { user, handleCopy, initials, fmtDate, truncMid, deviceTokens = [] } = data;
+  const { user, handleCopy, initials, fmtDate } = data;
   const subscriptionStatus = resolveSubscriptionStatus(user);
   const subscriptionExpiry = user.subscription_expires_at || user.plan_expiry;
   const dispatch = useDispatch();
@@ -110,10 +110,6 @@ export function TabSettings({ data }) {
       setIsLoading(false);
     }
   };
-
-    const deviceToken =
-    user.device_token ||
-    (deviceTokens.length > 0 ? deviceTokens[deviceTokens.length - 1] : null);
 
   return (
     <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.2fr_1fr]">
@@ -252,27 +248,6 @@ export function TabSettings({ data }) {
             icon={Globe}
             label="Timezone"
             value={user.timezone || "Not set"}
-          />
-
-          <KV
-            noBorder
-            icon={Smartphone}
-            label="Device Token"
-            value={
-              deviceToken ? (
-                <button
-                  type="button"
-                  title={deviceToken}
-                  onClick={() => handleCopy(deviceToken, "Device token")}
-                  className="group inline-flex items-center gap-1.5 font-mono text-[12px] font-semibold text-slate-700 hover:text-app-primary2 transition-colors cursor-pointer text-right"
-                >
-                  <span>{truncMid(deviceToken, 12, 8)}</span>
-                  <Copy className="h-3.5 w-3.5 text-slate-400 group-hover:text-app-primary2 opacity-60 group-hover:opacity-100 transition-all shrink-0" />
-                </button>
-              ) : (
-                <span className="text-xs font-medium text-slate-400">—</span>
-              )
-            }
           />
         </Card>
 

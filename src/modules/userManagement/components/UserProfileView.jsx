@@ -128,7 +128,7 @@ const TABS = [
   { key: "health", label: "Health & Activity", icon: HeartPulse },
   { key: "programs", label: "Programs & Fitzone", icon: Dumbbell },
   // { key: "account", label: "Account", icon: User },
-  { key: "transactions", label: "Transactions", icon: CreditCard },
+  { key: "transactions", label: "Billing", icon: CreditCard },
   { key: "settings", label: "Settings", icon: Settings },
 ];
 

@@ -85,6 +85,10 @@ const NotificationManagePage = () => {
     statusFilter,
   ]);
 
+  useEffect(() => {
+    setFormErrors({});
+  }, [activeTab]);
+
   const handlePreCheck = () => {
     const nextErrors = {};
     if (!campaignName.trim()) {
