@@ -1,24 +1,40 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Filter } from "lucide-react";
+import { Filter, Users, TrendingUp, TrendingDown } from "lucide-react";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { APP_COLORS } from "@/config/theme.config";
 
 export const ConversionFunnel = ({ data }) => {
   if (!data) return null;
   const stages = Array.isArray(data.stages) ? data.stages : [];
 
-  // Parameters to control the funnel shape
-  const totalStages = stages.length;
-  // We'll define the width at the very top and very bottom
-  // and interpolate for segments in between.
-  const startWidth = 100; // top of first segment
-  const endWidth = 40; // bottom of last segment
+  const stage0 = stages[0] || { label: "Total Signups", value: 0 };
+  const stage1 = stages[1] || { label: "Paid Users", value: 0 };
 
-  // How much the width decreases across the entire funnel
-  const totalReduction = startWidth - endWidth;
-  // Reduction per segment
-  const reductionPerSegment = totalReduction / totalStages;
+  const stage0Val = stage0.value || 0;
+  const stage1Val = stage1.value || 0;
+
+  const conversionPct =
+    stage0Val > 0
+      ? ((stage1Val / stage0Val) * 100).toFixed(2).replace(/\.00$/, "")
+      : "0";
+  const conversionPctStr = `${conversionPct}%`;
+
+  const notPaidVal =
+    data.notPaidUsers !== undefined
+      ? data.notPaidUsers
+      : Math.max(0, stage0Val - stage1Val);
+
+  const conversionRateDisplay =
+    data.conversionRate !== undefined
+      ? `${data.conversionRate}%`
+      : `${conversionPctStr}`;
+
+  const dropOffRateDisplay =
+    data.dropOffRate !== undefined
+      ? `${data.dropOffRate}%`
+      : stage0Val > 0
+        ? `${(100 - (stage1Val / stage0Val) * 100).toFixed(2).replace(/\.00$/, "")}%`
+        : "0%";
 
   return (
     <Card className="flex flex-col h-full bg-white border-slate-200 hover:border-slate-300 transition-all duration-300 py-5 gap-4 shadow-sm rounded-2xl overflow-hidden">
@@ -33,130 +49,190 @@ export const ConversionFunnel = ({ data }) => {
         />
       </div>
 
-      <CardContent className="flex-1 flex flex-col py-3 px-6">
-        <div className="flex-1 flex flex-col gap-2">
-          {stages.map((stage, idx) => {
-            // Calculate the top and bottom widths for this specific trapezoid
-            const currentTop = startWidth - idx * reductionPerSegment;
-            const currentBottom = startWidth - (idx + 1) * reductionPerSegment;
+      <CardContent className="flex-1 flex flex-col justify-between p-6 gap-6">
+        {/* Main Curved Horizontal Funnel Area */}
+        <div className="w-full flex flex-col gap-2 relative">
+          {/* Main counts ABOVE the funnel */}
+          <div className="w-full flex items-center justify-around px-8">
+            <div className="flex-1 text-center">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
+                {stage0Val.toLocaleString()}
+              </span>
+            </div>
+            <div className="flex-1 text-center">
+              <span className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
+                {stage1Val.toLocaleString()}
+              </span>
+            </div>
+          </div>
 
-            // Convert width to percentage strings for clip-path
-            // We center the trapezoid, so we need to calculate the offset (x)
-            const x1 = (100 - currentTop) / 2;
-            const x2 = 100 - x1;
-            const x3 = 100 - (100 - currentBottom) / 2;
-            const x4 = (100 - currentBottom) / 2;
+          {/* Curved Funnel SVG Diagram with Overlay Percentage Pills */}
+          <div className="relative w-full aspect-[6/2] max-h-[190px] my-2">
+            <svg
+              viewBox="0 0 600 180"
+              className="w-full h-full overflow-visible select-none block"
+            >
+              <defs>
+                {/* Stripe pattern matching exact approved pattern */}
+                <pattern
+                  id="funnel-stripe-dark"
+                  width="7"
+                  height="7"
+                  patternUnits="userSpaceOnUse"
+                  patternTransform="rotate(45)"
+                >
+                  <rect width="7" height="7" fill="#009EE9" />
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="7"
+                    stroke="rgba(255, 255, 255, 0.35)"
+                    strokeWidth="1.8"
+                  />
+                </pattern>
 
-            return (
-              <div
-                key={idx}
-                className="flex items-center justify-center gap-16 min-h-[60px]"
-              >
-                {/* Funnel Segment — Rounded Clip-Path */}
-                <div className="flex-1 relative h-full flex items-center justify-center">
-                  <svg width="0" height="0" className="absolute">
-                    <defs>
-                      <clipPath
-                        id={`funnel-clip-${idx}`}
-                        clipPathUnits="objectBoundingBox"
-                      >
-                        <path
-                          d={`
-                          M ${x1 / 100} 0 
-                          L ${x2 / 100} 0 
-                          L ${x3 / 100} 1.1
-                          L ${x4 / 100} 1.1  
-                          Z 
-                        `}
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
+                <pattern
+                  id="funnel-stripe-light"
+                  width="7"
+                  height="7"
+                  patternUnits="userSpaceOnUse"
+                  patternTransform="rotate(45)"
+                >
+                  <rect width="7" height="7" fill="#3DC1FF" />
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="7"
+                    stroke="rgba(255, 255, 255, 0.35)"
+                    strokeWidth="1.8"
+                  />
+                </pattern>
+              </defs>
 
-                  <div
-                    className="w-full h-full flex items-center justify-center transition-all duration-300 hover:opacity-90 cursor-pointer shadow-sm"
-                    style={{
-                      backgroundColor: APP_COLORS[idx % APP_COLORS.length],
-                      clipPath: `url(#funnel-clip-${idx})`,
-                      WebkitClipPath: `url(#funnel-clip-${idx})`,
-                    }}
-                  >
-                    <span className="text-sm font-bold text-white text-center px-4 leading-tight tracking-tight">
-                      {stage.label}
-                    </span>
-                  </div>
-                </div>
+              {/* --- OUTMOST TRANSLUCENT DEPTH LAYER --- */}
+              <path
+                d="M 15,10 C 130,10 195,50 300,50 L 300,130 C 195,130 130,170 15,170 Z"
+                fill="#B9E9FF"
+                opacity="0.4"
+              />
+              <path
+                d="M 300,50 C 410,50 485,58 585,58 L 585,122 C 485,122 410,130 300,130 Z"
+                fill="#B9E9FF"
+                opacity="0.3"
+              />
 
-                {/* Right Side Stats */}
-                <div className="w-[160px] flex flex-col justify-center shrink-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-slate-900 leading-none tracking-tight">
-                      {stage.value.toLocaleString()}
-                    </span>
-                    {/* {stage.dropOff !== 0 && (
-                      <div className="flex items-center gap-1 px-2 py-0.5 bg-rose-50 border border-rose-100/50 rounded-full text-rose-500 text-[11px] font-bold">
-                        <ArrowDown size={12} strokeWidth={3} />
-                        {Math.abs(stage.dropOff).toFixed(2)}%
-                      </div>
-                    )} */}
-                  </div>
-                  <span className="text-[13px] font-medium text-slate-400 mt-1.5">
-                    {stages[0].value > 0
-                      ? ((stage.value / stages[0].value) * 100)
-                          .toFixed(2)
-                          .replace(/\.00$/, "")
-                      : 0}
-                    %
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+              {/* --- SECOND TRANSLUCENT DEPTH LAYER --- */}
+              <path
+                d="M 17,17 C 132,17 197,55 300,55 L 300,125 C 197,125 132,163 17,163 Z"
+                fill="#90DBFF"
+                opacity="0.55"
+              />
+              <path
+                d="M 300,55 C 410,55 485,62 585,62 L 585,118 C 485,118 410,125 300,125 Z"
+                fill="#90DBFF"
+                opacity="0.45"
+              />
+
+              {/* --- MAIN INNER FUNNEL STAGE 1 (TOTAL SIGNUPS) --- */}
+              <path
+                d="M 20,24 C 135,24 200,60 300,60 L 300,120 C 200,120 135,156 20,156 Z"
+                fill="url(#funnel-stripe-dark)"
+              />
+
+              {/* --- MAIN INNER FUNNEL STAGE 2 (PAID USERS) --- */}
+              <path
+                d="M 300,60 C 410,60 485,66 585,66 L 585,114 C 485,114 410,120 300,120 Z"
+                fill="url(#funnel-stripe-light)"
+              />
+
+              {/* Vertical divider line between Stage 1 & Stage 2 */}
+              <line
+                x1="300"
+                y1="57"
+                x2="300"
+                y2="123"
+                stroke="white"
+                strokeWidth="2.5"
+              />
+            </svg>
+
+            {/* Percentage Pill for Stage 1 (100%) */}
+            <div className="absolute top-1/2 left-[26%] -translate-x-1/2 -translate-y-1/2 px-4 py-1.5 bg-white shadow-md rounded-full border border-slate-100 flex items-center justify-center">
+              <span className="text-xs sm:text-sm font-extrabold text-slate-900 tabular-nums">
+                100%
+              </span>
+            </div>
+
+            {/* Percentage Pill for Stage 2 (Conversion %) */}
+            <div className="absolute top-1/2 left-[73%] -translate-x-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-white shadow-md rounded-full border border-slate-100 flex items-center justify-center">
+              <span className="text-xs sm:text-sm font-extrabold text-[#009EE9] tabular-nums">
+                {conversionPctStr}
+              </span>
+            </div>
+          </div>
+
+          {/* Labels BELOW the funnel */}
+          <div className="w-full flex items-center justify-around px-8">
+            <div className="flex-1 text-center">
+              <span className="text-sm font-medium text-[#6B7785]">
+                {stage0.label}
+              </span>
+            </div>
+            <div className="flex-1 text-center">
+              <span className="text-sm font-medium text-[#6B7785]">
+                {stage1.label}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Full breakdown — the funnel bars above only show the 2 sequential
-            checkpoints (signups -> paid), so notPaidUsers/conversionRate/
-            dropOffRate are surfaced here as their own numbers rather than
-            only being implied by the drop-off badge. */}
-        {(data.notPaidUsers !== undefined ||
-          data.conversionRate !== undefined) && (
-          <div className="mt-6 grid grid-cols-3 gap-4">
-            <div className="rounded-xl bg-slate-100 border border-slate-200/80 px-3 py-3 flex flex-col items-center justify-center text-center">
-              <p className="text-xs font-semibold text-slate-500">
+        {/* Bottom 3 Summary KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div className="bg-[#F8FAFC] border border-slate-200/80 hover:border-slate-300 transition-all duration-200 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+              <Users className="w-5 h-5" strokeWidth={2.2} />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-semibold text-[#6B7785] truncate">
                 Not Paid Yet
-              </p>
-              <p className="text-xl font-extrabold text-orange-600 mt-2 leading-none">
-                {(data.notPaidUsers ?? 0).toLocaleString()}
-              </p>
+              </span>
+              <span className="text-xl font-extrabold text-slate-900 tabular-nums tracking-tight mt-0.5">
+                {notPaidVal.toLocaleString()}
+              </span>
             </div>
-            <div className="rounded-xl bg-slate-100 border border-slate-200/80 px-3 py-3 flex flex-col items-center justify-center text-center">
-              <p className="text-xs font-semibold text-slate-500">
+          </div>
+
+          <div className="bg-[#F8FAFC] border border-slate-200/80 hover:border-slate-300 transition-all duration-200 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+              <TrendingUp className="w-5 h-5" strokeWidth={2.2} />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-semibold text-[#6B7785] truncate">
                 Conversion Rate
-              </p>
-              <p className="text-xl font-extrabold text-emerald-600 mt-2 leading-none">
-                {data.conversionRate ?? 0}%
-              </p>
+              </span>
+              <span className="text-xl font-extrabold text-emerald-600 tabular-nums tracking-tight mt-0.5">
+                {conversionRateDisplay}
+              </span>
             </div>
-            <div className="rounded-xl bg-slate-100 border border-slate-200/80 px-3 py-3 flex flex-col items-center justify-center text-center">
-              <p className="text-xs font-semibold text-slate-500">
+          </div>
+
+          <div className="bg-[#F8FAFC] border border-slate-200/80 hover:border-slate-300 transition-all duration-200 rounded-2xl p-3.5 flex items-center gap-3 shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shrink-0">
+              <TrendingDown className="w-5 h-5" strokeWidth={2.2} />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-semibold text-[#6B7785] truncate">
                 Drop-off Rate
-              </p>
-              <p className="text-xl font-extrabold text-rose-600 mt-2 leading-none">
-                {data.dropOffRate ?? 0}%
-              </p>
+              </span>
+              <span className="text-xl font-extrabold text-rose-600 tabular-nums tracking-tight mt-0.5">
+                {dropOffRateDisplay}
+              </span>
             </div>
           </div>
-        )}
-      </CardContent>
-      {/* Primary Highlight Insight Footnote Container */}
-      {/* <CardFooter className="pt-1">
-        <div className="mt-4 w-full flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl text-foreground/80 text-xs font-medium">
-          <div className="w-5 h-5 rounded-full flex items-center justify-center">
-            <Info size={14} className="text-blue-400 shrink-0" />
-          </div>
-          <span>{data.insight}</span>
         </div>
-      </CardFooter> */}
+      </CardContent>
     </Card>
   );
 };
