@@ -26,3 +26,11 @@ public/tinymce
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright
+/playwright-report/
+/test-results/
+/playwright/.cache/
+playwright.config.js
+tests/
+

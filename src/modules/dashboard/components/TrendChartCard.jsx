@@ -340,7 +340,7 @@ function FocusTimelineUI({
               </ComposedChart>
             </ChartContainer>
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl min-h-[220px] select-none">
+            <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 min-h-[220px] select-none">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
                 <BarChart3 className="h-6 w-6" strokeWidth={2} />
               </div>
@@ -689,7 +689,7 @@ const TrendChartCard = ({
           </ChartContainer>
         ) : (
           <div
-            className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl select-none`}
+            className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 select-none`}
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
               <BarChart3 className="h-6 w-6" strokeWidth={2} />

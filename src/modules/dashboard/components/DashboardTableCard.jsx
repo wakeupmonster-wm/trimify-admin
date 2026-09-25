@@ -55,11 +55,17 @@ const DashboardTableCard = ({
 
       <div
         className={cn(
-          "flex-1 w-full min-h-0 overflow-auto",
+          "flex-1 w-full min-h-0 overflow-auto flex flex-col",
           rows.length === 0 && emptyStateClassName,
         )}
       >
-        <Table className="min-w-[700px] xl:min-w-full">
+        <Table
+          containerClassName={cn(rows.length === 0 && "flex-1 flex flex-col h-full")}
+          className={cn(
+            "min-w-[700px] xl:min-w-full",
+            rows.length === 0 && "flex-1 flex flex-col h-full",
+          )}
+        >
           <TableHeader>
             <TableRow className="border-y border-slate-300/60 bg-app-primary2/5 hover:bg-app-primary2/5">
               {columns.map((col) => (
@@ -77,14 +83,14 @@ const DashboardTableCard = ({
               )}
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className={cn(rows.length === 0 && "flex-1 flex flex-col h-full")}>
             {rows.length === 0 ? (
-              <TableRow>
+              <TableRow className="flex-1 flex items-center justify-center border-0 hover:bg-transparent cursor-default">
                 <TableCell
                   colSpan={columns.length + (actionLabel ? 1 : 0)}
-                  className="h-32 text-center"
+                  className="w-full flex-1 flex items-center justify-center text-center p-6 border-0"
                 >
-                  <div className="flex flex-col items-center justify-center text-center py-6 select-none">
+                  <div className="flex flex-col items-center justify-center text-center py-6 select-none my-auto">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-200/70 text-emerald-600 shadow-sm mb-3">
                       <CheckCircle2 className="h-6 w-6" strokeWidth={2} />
                     </div>

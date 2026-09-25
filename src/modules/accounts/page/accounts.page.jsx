@@ -194,7 +194,7 @@ export default function AccountsPage() {
               <img
                 src={accountBg}
                 alt="accountbg.webp"
-                className="w-full h-full"
+                className="w-full h-full object-cover object-bottom"
               />
             </div>
 
