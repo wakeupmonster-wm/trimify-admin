@@ -120,6 +120,118 @@ function PillBar({
   );
 }
 
+function FitzoneBar({
+  x,
+  y,
+  width,
+  height,
+  value,
+  maxValue,
+  isHighest,
+}) {
+  if (width <= 0 || height <= 0) return null;
+  const actualValue = Array.isArray(value) ? value[1] - value[0] : value;
+
+  const getFitzoneColor = (val, maxVal) => {
+    if (maxVal <= 0 || val <= 0) return "#B9E9FF";
+    if (val === maxVal) return "#009EE9";
+    const ratio = val / maxVal;
+    if (ratio < 0.1) return "#B9E9FF";
+    if (ratio < 0.25) return "#90DBFF";
+    if (ratio < 0.5) return "#66CEFF";
+    if (ratio < 0.8) return "#3DC1FF";
+    return "#0082C0";
+  };
+
+  const color = getFitzoneColor(actualValue, maxValue);
+  const cleanHex = color.replace("#", "");
+  const patternId = `fitzone-bar-stripe-${cleanHex}`;
+  const radius = Math.min(width / 2, 8);
+  const cx = x + width / 2;
+
+  const isLight =
+    color.toLowerCase() === "#b9e9ff" || color.toLowerCase() === "#90dbff";
+  const strokeColor = isLight ? "#94C7E3" : "rgba(255, 255, 255, 0.38)";
+
+  return (
+    <g className="transition-all duration-300">
+      <defs>
+        <pattern
+          id={patternId}
+          width="7"
+          height="7"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45)"
+        >
+          <rect width="7" height="7" fill={color} />
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="7"
+            stroke={strokeColor}
+            strokeWidth="1.8"
+          />
+        </pattern>
+      </defs>
+
+      {/* Rounded Top Vertical Bar */}
+      <path
+        d={topRoundedPath(x, y, width, height, radius)}
+        fill={`url(#${patternId})`}
+      />
+
+      {/* Value Badge & Dot for Highest Bar, or Count Text for other bars */}
+      {isHighest ? (
+        <g>
+          {/* White Dot on Top of Bar */}
+          <circle
+            cx={cx}
+            cy={y}
+            r={4}
+            fill={color}
+            stroke="#ffffff"
+            strokeWidth="2"
+          />
+          {/* Floating Rounded Value Badge above Bar */}
+          <g transform={`translate(${cx - 24}, ${y - 34})`}>
+            <rect
+              width="48"
+              height="24"
+              rx="12"
+              fill={color}
+              className="shadow-md"
+            />
+            <text
+              x="24"
+              y="16"
+              textAnchor="middle"
+              fontSize="12"
+              fontWeight="800"
+              fill="#ffffff"
+            >
+              {actualValue.toLocaleString()}
+            </text>
+          </g>
+        </g>
+      ) : (
+        actualValue > 0 && (
+          <text
+            x={cx}
+            y={y - 8}
+            textAnchor="middle"
+            fontSize="11"
+            fontWeight="600"
+            fill="#6B7785"
+          >
+            {actualValue.toLocaleString()}
+          </text>
+        )
+      )}
+    </g>
+  );
+}
+
 // Compact tick formatter for the pill-bar Y axis (40000 -> "40k"). Only
 // used in pure-bar mode, so charts with small counts elsewhere are
 // unaffected.
@@ -615,6 +727,29 @@ function StandardTrendChartUI({
               {series.map((s) => {
                 const effectiveType = data.length === 1 ? "bar" : s.type;
                 if (effectiveType === "bar") {
+                  if (title === "Fitzone Users Assigned") {
+                    const maxVal = Math.max(
+                      ...data.map((d) => Number(d[s.key]) || 0),
+                    );
+                    return (
+                      <Bar
+                        key={s.key}
+                        dataKey={s.key}
+                        maxBarSize={52}
+                        shape={(shapeProps) => {
+                          const val = Number(shapeProps.value) || 0;
+                          const isHighest = val > 0 && val === maxVal;
+                          return (
+                            <FitzoneBar
+                              {...shapeProps}
+                              maxValue={maxVal}
+                              isHighest={isHighest}
+                            />
+                          );
+                        }}
+                      />
+                    );
+                  }
                   if (isPureBarChart) {
                     return (
                       <Bar
