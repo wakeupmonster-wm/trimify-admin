@@ -51,7 +51,17 @@ export const updateAdminAccount = createAsyncThunk(
       }
       return rejectWithValue(res.message || "Update failed");
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Update failed");
+      const errorMsg =
+        err.response?.data?.message ||
+        (err.response?.data?.errors
+          ? Object.values(err.response.data.errors).flat().join(" ")
+          : null) ||
+        (err.response?.status === 413
+          ? "Uploaded file is too large (maximum 5MB allowed)."
+          : null) ||
+        err.message ||
+        "Update failed";
+      return rejectWithValue(errorMsg);
     }
   },
 );

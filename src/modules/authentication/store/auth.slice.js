@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { adminLoginAPI } from "../services/adminAuth.api";
+import {
+  adminLoginAPI,
+  adminForgotPasswordAPI,
+  adminVerifyForgotOtpAPI,
+  adminResetPasswordAPI,
+} from "../services/adminAuth.api";
 import axios from "axios";
 
 export const loginThunk = createAsyncThunk(
@@ -51,10 +56,19 @@ export const requestOtpThunk = createAsyncThunk(
   "auth/requestOtp",
   async (data, { rejectWithValue }) => {
     try {
-      // Mocked for now - hook up real API endpoint when available
-      return { success: true, message: "OTP requested successfully" };
+      const response = await adminForgotPasswordAPI(data);
+      const success =
+        response.success !== undefined
+          ? response.success
+          : response.status === "success";
+      if (!success) {
+        return rejectWithValue(response.message || "Failed to send OTP");
+      }
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Server error");
+      return rejectWithValue(
+        error.response?.data?.message || error.message || "Failed to send OTP",
+      );
     }
   }
 );
@@ -63,10 +77,46 @@ export const verifyOtpThunk = createAsyncThunk(
   "auth/verifyOtp",
   async (data, { rejectWithValue }) => {
     try {
-      // Mocked for now - hook up real API endpoint when available
-      return { success: true, message: "OTP verified successfully" };
+      const response = await adminVerifyForgotOtpAPI(data);
+      const success =
+        response.success !== undefined
+          ? response.success
+          : response.status === "success";
+      if (!success) {
+        return rejectWithValue(response.message || "Invalid OTP");
+      }
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Server error");
+      return rejectWithValue(
+        error.response?.data?.message ||
+          error.message ||
+          "Invalid or expired OTP",
+      );
+    }
+  }
+);
+
+export const resetPasswordThunk = createAsyncThunk(
+  "auth/resetPassword",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await adminResetPasswordAPI(data);
+      const success =
+        response.success !== undefined
+          ? response.success
+          : response.status === "success";
+      if (!success) {
+        return rejectWithValue(
+          response.message || "Failed to reset password",
+        );
+      }
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to reset password",
+      );
     }
   }
 );
@@ -152,6 +202,18 @@ const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(verifyOtpThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // resetPasswordThunk
+      .addCase(resetPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(resetPasswordThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

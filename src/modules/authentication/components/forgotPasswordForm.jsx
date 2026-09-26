@@ -6,12 +6,14 @@ import { Eye, EyeOff, Lock, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { resetSchema } from "../schemas/auth.schemas";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { resetPasswordThunk } from "../store/auth.slice";
 import { toast } from "sonner";
 
 export default function ForgotPasswordForm() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,26 +35,30 @@ export default function ForgotPasswordForm() {
     if (!email && !otp) {
       navigate("/auth/forgot-password", { replace: true });
     }
-  }, [email, navigate]);
+  }, [email, otp, navigate]);
 
   const onSubmit = async (data) => {
     try {
-      // const response = await dispatch(
-      //   forgotPasswordThunk({ email, otp, newPassword: data.password }),
-      // ).unwrap();
-      const response = {
-        screen: "/auth/login",
-        message: "Password is forgot successful!",
-      };
-      // Pass the email to the next route
-      navigate(response.screen || "/auth/login", { replace: true });
-      toast.success(response.message || "Password is forgot successful!", {
-        description: "Please enter email and password.",
+      const response = await dispatch(
+        resetPasswordThunk({
+          email,
+          otp,
+          password: data.password,
+          password_confirmation: data.confirmPassword,
+        }),
+      ).unwrap();
+
+      navigate("/auth/login", { replace: true });
+      toast.success(response?.message || "Password reset successfully!", {
+        description: "Please log in with your new password.",
       });
     } catch (err) {
-      toast.error(err || "Failed to send OTP", {
-        description: "Please enter correct otp.",
-      });
+      toast.error(
+        typeof err === "string" ? err : (err?.message || "Failed to reset password"),
+        {
+          description: "Please check your credentials and try again.",
+        },
+      );
     }
   };
 

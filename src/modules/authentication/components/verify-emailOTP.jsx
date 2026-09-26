@@ -39,12 +39,12 @@ export default function VerifyEmailOtp() {
       navigate("../new-password", { state: { email, otp } });
 
       toast.success(response.message || "OTP verified!", {
-        description: "Please enter new and confirm password.",
+        description: "Please enter your new password.",
       });
     } catch (err) {
       setOtp(""); // Clear OTP on error
-      toast.error(err || "Failed to send OTP", {
-        description: "Please enter correct otp.",
+      toast.error(typeof err === "string" ? err : (err?.message || "Invalid OTP"), {
+        description: "Please check your OTP and try again.",
       });
     }
   };
@@ -65,11 +65,16 @@ export default function VerifyEmailOtp() {
     if (timer > 0) return; // Guard clause
 
     try {
-      await dispatch(requestOtpThunk({ email })).unwrap();
+      const res = await dispatch(requestOtpThunk({ email })).unwrap();
       setTimer(30); // Reset the clock
       setOtp(""); // Clear old OTP input for fresh start
+      toast.success(res?.message || "OTP Resent!", {
+        description: "A new 6-digit code has been sent to your email.",
+      });
     } catch (err) {
-      console.error("Resend failed:", err);
+      toast.error(typeof err === "string" ? err : (err?.message || "Failed to resend OTP"), {
+        description: "Please try again later.",
+      });
     }
   };
 

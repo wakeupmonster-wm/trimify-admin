@@ -5,11 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 import { schema } from "../schemas/auth.schemas";
+import { requestOtpThunk } from "../store/auth.slice";
 import { toast } from "sonner";
 
 export default function RequestResetEmailForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -21,28 +24,21 @@ export default function RequestResetEmailForm() {
 
   const onSubmit = async (data) => {
     try {
-      // Ensure 'data.email' is what your API expects
-      // const response = await dispatch(
-      //   requestOtpThunk({ email: data.email }),
-      // ).unwrap();
-      const response = {
-        screen: "/auth/forgot-password",
-        message: "OTP sent successfully!",
-      };
+      const response = await dispatch(
+        requestOtpThunk({ email: data.email }),
+      ).unwrap();
 
-      // Pass the email to the next route
-      navigate(response.screen || "/auth/forgot-password", {
+      // Pass the email to the next route (verify OTP step)
+      navigate("/auth/forgot-password/verify-email", {
         state: { email: data.email },
       });
 
-      // Clean and simple call
       toast.success(response.message || "OTP Sent!", {
         description: "Please check your inbox for the 6-digit code.",
       });
     } catch (err) {
-      // console.error("API Request OTP Error:", err); // This will show why it's a 400
-      toast.error(err || "Failed to send OTP", {
-        description: "Please check your credentials.",
+      toast.error(typeof err === "string" ? err : (err?.message || "Failed to send OTP"), {
+        description: "Please check your email address and try again.",
       });
     }
   };

@@ -52,6 +52,10 @@ export default function AdminEditDialog({ children, currentData }) {
           "Invalid file type. Please upload JPEG, PNG, or WebP.",
         );
       }
+      if (file.size > 5 * 1024 * 1024) {
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return toast.error("Image file size is too large (maximum 5MB allowed).");
+      }
       setSelectedFile(file);
       setPreview(URL.createObjectURL(file));
     }
@@ -90,6 +94,10 @@ export default function AdminEditDialog({ children, currentData }) {
     data.append("phone", formData.phone);
 
     if (selectedFile) {
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setLoading(false);
+        return toast.error("Avatar image size must not exceed 5MB.");
+      }
       data.append("avatar", selectedFile);
     }
 

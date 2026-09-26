@@ -73,8 +73,8 @@ export function LoginForm({ className, ...props }) {
   return (
     <div className={cn("w-full flex flex-col items-center", className)} {...props}>
       {/* Header Section: Logo + Heading + Subtitle */}
-      <div className="flex flex-col items-center text-center mb-8">
-        <div className="h-8 mb-4 flex items-center justify-center">
+      <div className="flex flex-col items-center text-center mb-4 sm:mb-5 xl:mb-8">
+        <div className="h-7 sm:h-8 mb-2 sm:mb-3 xl:mb-4 flex items-center justify-center">
           <img
             src={trimifyLogo}
             alt="Trimify"
@@ -82,16 +82,16 @@ export function LoginForm({ className, ...props }) {
             className="h-full w-auto object-contain"
           />
         </div>
-        <h1 className="font-sans font-medium text-[34px] sm:text-[38px] lg:text-[41.67px] leading-[41.67px] tracking-[-0.035em] text-[#121212]">
+        <h1 className="font-sans font-medium text-[26px] sm:text-[32px] xl:text-[40px] leading-tight tracking-[-0.035em] text-[#121212]">
           Welcome Back
         </h1>
-        <p className="font-dmsans font-normal text-[13.89px] leading-[20.83px] text-[#3D3D3D] mt-2">
+        <p className="font-dmsans font-normal text-xs sm:text-[13px] xl:text-[13.89px] leading-snug xl:leading-[20.83px] text-[#3D3D3D] mt-1 sm:mt-2">
           Enter your email and password to access your account
         </p>
       </div>
 
       {/* Form Section */}
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-3.5 sm:gap-4 xl:gap-5">
         {/* Email Field */}
         <div>
           <label
