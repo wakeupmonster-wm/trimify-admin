@@ -33,7 +33,7 @@ import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
 import { cn, formatAppDate } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
-import { ACCENT_COLORS } from "@/config/theme.config.js";
+import { ACCENT_COLORS, SECTION_CHART_COLORS } from "@/config/theme.config.js";
 
 const LoadingOverlay = motion.div;
 
@@ -57,35 +57,141 @@ export default function Dashboard() {
   const hasLoadedDashboard = useRef(false);
 
   // --- Unified Brand Palette imported from theme.config.js ---
-  const mapAccentColors = (dataArray) => {
-    if (!dataArray) return [];
-    return dataArray.map((item, i) => ({
-      ...item,
-      color: ACCENT_COLORS[i % ACCENT_COLORS.length],
-    }));
+  const FRONTEND_USER_GOALS = [
+    "Weight Loss",
+    "Gain Muscle",
+    "Maintain Weight",
+    "Manage Diabetes",
+    "Manage Hypertension",
+    "Prevent Chronic Disease",
+  ];
+
+  const mapUserGoals = (dataArray) => {
+    const counts = {};
+    (dataArray || []).forEach((item) => {
+      const raw = (item.label || item.name || "").trim();
+      if (!raw) return;
+      const lower = raw.toLowerCase().replace(/_/g, " ");
+      if (
+        lower.includes("unspecified") ||
+        lower === "none" ||
+        lower === "other"
+      ) {
+        return; // Exclude Unspecified completely
+      }
+      let matchedGoal = null;
+      if (lower === "lose weight" || lower === "weight loss")
+        matchedGoal = "Weight Loss";
+      else if (lower === "gain muscle" || lower === "muscle gain")
+        matchedGoal = "Gain Muscle";
+      else if (
+        lower === "maintain weight" ||
+        lower === "weight maintenance"
+      )
+        matchedGoal = "Maintain Weight";
+      else if (lower.includes("diabetes"))
+        matchedGoal = "Manage Diabetes";
+      else if (lower.includes("hypertension"))
+        matchedGoal = "Manage Hypertension";
+      else if (lower.includes("chronic"))
+        matchedGoal = "Prevent Chronic Disease";
+      else {
+        matchedGoal =
+          FRONTEND_USER_GOALS.find((g) => g.toLowerCase() === lower) || raw;
+      }
+
+      if (matchedGoal) {
+        counts[matchedGoal] =
+          (counts[matchedGoal] || 0) + (Number(item.value) || 0);
+      }
+    });
+
+    const goalColors = SECTION_CHART_COLORS?.dashboard?.userGoals || [
+      "#007fc0",
+      "#009dee",
+      "#1cb2ff",
+      "#3dc1ff",
+      "#49c1ff",
+      "#77d1ff",
+    ];
+
+    return FRONTEND_USER_GOALS.map((goal) => ({
+      label: goal,
+      value: counts[goal] || 0,
+    }))
+      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
+      .map((item, i) => ({
+        ...item,
+        color: goalColors[i % goalColors.length],
+      }));
   };
 
   const mapGenderColors = (dataArray) => {
-    if (!dataArray) return [];
-    return dataArray.map((item) => {
-      let color = "#cbd5e1"; // Slate for Other/Unspecified
-      if (item.label === "Male")
-        color = "#007FC0"; // Primary 700
-      else if (item.label === "Female") color = "#FE69B0"; // Pink
-      return { ...item, color };
+    const raw = Array.isArray(dataArray) ? dataArray : [];
+    const COLOR_MALE =
+      SECTION_CHART_COLORS?.dashboard?.gender?.male || "#007fc0";
+    const COLOR_FEMALE =
+      SECTION_CHART_COLORS?.dashboard?.gender?.female || "#3dc1ff";
+    const COLOR_OTHER =
+      SECTION_CHART_COLORS?.dashboard?.gender?.other || "#D9E0E6";
+
+    const maleItem = raw.find(
+      (item) => (item.label || item.name || "").toLowerCase() === "male",
+    );
+    const femaleItem = raw.find(
+      (item) => (item.label || item.name || "").toLowerCase() === "female",
+    );
+    const otherItem = raw.find((item) => {
+      const lbl = (item.label || item.name || "").toLowerCase();
+      return (
+        lbl === "other" ||
+        lbl === "others" ||
+        lbl === "unspecified" ||
+        lbl === "unknown" ||
+        lbl === "none"
+      );
     });
+
+    return [
+      {
+        label: "Male",
+        value: maleItem ? Number(maleItem.value) || 0 : 0,
+        color: COLOR_MALE,
+      },
+      {
+        label: "Female",
+        value: femaleItem ? Number(femaleItem.value) || 0 : 0,
+        color: COLOR_FEMALE,
+      },
+      {
+        label: "Other",
+        value: otherItem ? Number(otherItem.value) || 0 : 0,
+        color: COLOR_OTHER,
+      },
+    ];
   };
 
   const mapDietColors = (dataArray) => {
     if (!dataArray) return [];
-    return dataArray.map((item) => {
-      let color = "#94a3b8"; // Slate for Unspecified
-      const lbl = item.label.toLowerCase();
-      if (lbl === "veg" || lbl === "vegetarian")
-        color = "#249C60"; // Green
-      else if (lbl === "non-veg" || lbl === "non-vegetarian") color = "#F2574F"; // Red
-      return { ...item, color };
-    });
+    return dataArray
+      .filter((item) => {
+        const lbl = (item.label || item.name || "").toLowerCase().trim();
+        return (
+          lbl !== "" &&
+          !lbl.includes("unspecified") &&
+          !lbl.includes("other") &&
+          !lbl.includes("none") &&
+          !lbl.includes("unknown")
+        );
+      })
+      .map((item) => {
+        const lbl = item.label.toLowerCase();
+        let color = SECTION_CHART_COLORS?.dashboard?.diet?.veg || "#007fc0";
+        if (lbl.includes("non")) {
+          color = SECTION_CHART_COLORS?.dashboard?.diet?.nonVeg || "#3dc1ff";
+        }
+        return { ...item, color };
+      });
   };
 
   // Backend requires from/to as plain YYYY-MM-DD (per the dashboard API
@@ -312,16 +418,14 @@ export default function Dashboard() {
                     Subscription Dashboard (OverviewView.jsx) — plan/revenue
                     breakdowns belong with the rest of subscription analytics. */}
                 <DonutStatCard
-                  title="User Goal Distribution"
-                  subtitle={`Primary fitness goal by ${dynamicPeriodLabel}`}
-                  Icon={Target}
+                  title="Vegetarian vs Non-veg"
+                  subtitle={`Dietary preference split by ${dynamicPeriodLabel}`}
+                  Icon={Salad}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  // data={displayExtras?.pieCharts?.userGoals || []}
-                  data={mapAccentColors(
-                    displayExtras?.pieCharts?.userGoals || [],
+                  data={mapDietColors(
+                    displayExtras?.pieCharts?.dietPreference || [],
                   )}
-                  scrollableLegend
                 />
                 <DonutStatCard
                   title="Gender Distribution"
@@ -332,15 +436,15 @@ export default function Dashboard() {
                   data={mapGenderColors(displayExtras?.pieCharts?.gender || [])}
                 />
                 <DonutStatCard
-                  title="Vegetarian vs Non-veg"
-                  subtitle={`Dietary preference split by ${dynamicPeriodLabel}`}
-                  Icon={Salad}
+                  title="User Goal Distribution"
+                  subtitle={`Primary fitness goal by ${dynamicPeriodLabel}`}
+                  Icon={Target}
                   iconColor="text-slate-600"
                   iconBg="bg-slate-100/50"
-                  tooltipText="A large share of users haven't filled this field in — tracked as Unspecified rather than dropped."
-                  data={mapDietColors(
-                    displayExtras?.pieCharts?.dietPreference || [],
+                  data={mapUserGoals(
+                    displayExtras?.pieCharts?.userGoals || [],
                   )}
+                  scrollableLegend
                 />
                 <ConversionFunnel data={displayExtras?.funnel} />
               </div>
@@ -389,7 +493,7 @@ export default function Dashboard() {
                     {
                       key: "active_users",
                       label: "Daily Active Users",
-                      color: "#007FC0",
+                      color: SECTION_CHART_COLORS?.dashboard?.dauTrend || "#007fc0",
                       type: "area",
                     },
                   ]}
@@ -408,7 +512,12 @@ export default function Dashboard() {
                   periodLabel={dynamicPeriodLabel}
                   hideLegend={true}
                   series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
-                    const fitzoneColors = ["#8b5cf6", "#a78bfa", "#c4b5fd"];
+                    const fitzoneColors =
+                      SECTION_CHART_COLORS?.dashboard?.fitzone || [
+                        "#009dee",
+                        "#49c1ff",
+                        "#a4e0ff",
+                      ];
                     return {
                       key: status,
                       label: status === "assigned_users" ? "Users Assigned" : status,

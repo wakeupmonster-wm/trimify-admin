@@ -19,7 +19,7 @@ import DashboardTableCard from "@/modules/dashboard/components/DashboardTableCar
 import StatusPill from "@/modules/dashboard/components/StatusPill";
 import { useNavigate } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
-import { APP_COLORS } from "@/config/theme.config";
+import { APP_COLORS, SECTION_CHART_COLORS } from "@/config/theme.config";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { LuUserRoundMinus, LuUsersRound } from "react-icons/lu";
@@ -185,14 +185,7 @@ export default function OverviewView({
             Icon={PieChartIcon}
             iconColor="text-slate-600"
             iconBg="bg-slate-100/50"
-            data={
-              dashboardExtras?.pieCharts?.planType?.length > 0
-                ? dashboardExtras.pieCharts.planType
-                : [
-                  { label: "Premium", value: 0, color: "#007FC0" },
-                  { label: "Basic", value: 0, color: "#3399D1" },
-                ]
-            }
+            data={dashboardExtras?.pieCharts?.planType || []}
             footnote="Yearly plan isn't live in the catalog yet — this chart is ready to pick it up as soon as it has subscribers."
           />
           <DonutStatCard
@@ -220,13 +213,17 @@ export default function OverviewView({
               {
                 key: "activeUsers",
                 label: "Active",
-                color: APP_COLORS[0],
+                color:
+                  SECTION_CHART_COLORS?.subscription?.activeVsChurned?.active ||
+                  "#007fc0",
                 type: "area",
               },
               {
                 key: "churnedUsers",
                 label: "Churned",
-                color: "#ef4444",
+                color:
+                  SECTION_CHART_COLORS?.subscription?.activeVsChurned?.churned ||
+                  "#ef4444",
                 type: "area",
               },
             ]}
@@ -244,7 +241,8 @@ export default function OverviewView({
               {
                 key: "revenue",
                 label: "Revenue",
-                color: "#007FC0", // Primary Blue
+                color:
+                  SECTION_CHART_COLORS?.subscription?.planRevenue || "#007fc0",
                 type: "bar",
               },
             ]}
@@ -277,7 +275,9 @@ export default function OverviewView({
               {
                 key: "total_sold",
                 label: "Units Sold",
-                color: "#007FC0",
+                color:
+                  SECTION_CHART_COLORS?.subscription?.topSellingPlans ||
+                  "#3dc1ff",
                 type: "bar",
               },
             ]}

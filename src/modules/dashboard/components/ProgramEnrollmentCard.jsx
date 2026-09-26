@@ -1,17 +1,15 @@
 import React from "react";
 import DonutStatCard from "./DonutStatCard";
 
-const BAR_COLORS = [
-  "#007FC0", // primary blue
-  "#0ea5e9", // sky-500
-  "#6366f1", // indigo-500
-  "#8b5cf6", // violet-500
-  "#0891b2", // cyan-600
-  "#2563eb", // blue-600
-  "#7c3aed", // violet-600
-  "#0d9488", // teal-600
-  "#4f46e5", // indigo-600
-  "#06b6d4", // cyan-500
+import { SECTION_CHART_COLORS } from "@/config/theme.config";
+
+const BAR_COLORS = SECTION_CHART_COLORS?.dashboard?.programSplit || [
+  "#007fc0",
+  "#009dee",
+  "#1cb2ff",
+  "#3dc1ff",
+  "#49c1ff",
+  "#77d1ff",
 ];
 
 const ProgramEnrollmentCard = ({
