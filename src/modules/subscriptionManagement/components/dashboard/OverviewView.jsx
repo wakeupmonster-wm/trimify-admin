@@ -36,6 +36,7 @@ export default function OverviewView({
   rangeLabel,
   dateRange,
   onRetry,
+  isRefreshing = false,
 }) {
   // Build serialisable from/to strings for navigation state
   const navDateRange = dateRange
@@ -46,7 +47,7 @@ export default function OverviewView({
     : null;
   const navigate = useNavigate();
 
-  if (overviewLoading && !overview) return <DashboardOverviewSkeleton />;
+  if (isRefreshing || (overviewLoading && !overview)) return <DashboardOverviewSkeleton />;
 
   if (overviewError && !overview) {
     return (

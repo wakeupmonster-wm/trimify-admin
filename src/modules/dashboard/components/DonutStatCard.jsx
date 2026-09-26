@@ -284,11 +284,11 @@ const DonutStatCard = ({
 
   const chartData = hasData
     ? processedData.map((d) => ({
-        name: d.label || d.name,
-        value: d.value,
-        fill: d.color,
-        fillColor: d.color,
-      }))
+      name: d.label || d.name,
+      value: d.value,
+      fill: d.color,
+      fillColor: d.color,
+    }))
     : [{ name: "No Data", value: 1, fill: "#f1f5f9", fillColor: "#f1f5f9" }];
 
   return (
@@ -737,11 +737,11 @@ const DonutStatCard = ({
               <span className="text-2xl font-black text-slate-900 leading-tight my-0.5 tabular-nums">
                 {total.toLocaleString()}
               </span>
-              {!isGoals && (
+              {/* {!isGoals && (
                 <span className="text-[9px] font-semibold text-[#6B7785] tracking-wide uppercase leading-none">
                   Enrollments
                 </span>
-              )}
+              )} */}
             </div>
           </div>
 

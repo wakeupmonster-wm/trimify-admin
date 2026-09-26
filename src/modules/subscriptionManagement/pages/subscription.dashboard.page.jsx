@@ -20,8 +20,10 @@ export default function SubscriptionDashboardPage() {
     overviewLoading,
     overviewError,
     charts,
+    chartsLoading,
     dailyPerformance,
     dashboardExtras,
+    dashboardExtrasLoading,
   } = useSelector((state) => state.subscriptionDashboard);
 
   const [scrolled, setScrolled] = useState(false);
@@ -31,6 +33,10 @@ export default function SubscriptionDashboardPage() {
     preset: "today",
   }));
   const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  const isRefreshing = Boolean(
+    overviewLoading || chartsLoading || dashboardExtrasLoading,
+  );
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -100,7 +106,7 @@ export default function SubscriptionDashboardPage() {
           dateRange={dateRange}
           onDateChange={setDateRange}
           onRefresh={handleRefresh}
-          refreshing={overviewLoading}
+          refreshing={isRefreshing}
           lastUpdated={lastUpdated}
           rangeLabel={rangeLabel}
         />
@@ -115,6 +121,7 @@ export default function SubscriptionDashboardPage() {
           rangeLabel={rangeLabel}
           dateRange={dateRange}
           onRetry={handleRefresh}
+          isRefreshing={isRefreshing}
         />
       </div>
     </TooltipProvider>

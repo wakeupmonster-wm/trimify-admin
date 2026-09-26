@@ -1,6 +1,5 @@
 import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   fetchDashboardExtras,
   setDashboardDateRange,
@@ -32,10 +31,7 @@ import ProgramEnrollmentCard from "../components/ProgramEnrollmentCard";
 import DashboardTableCard from "../components/DashboardTableCard";
 import { format } from "date-fns";
 import { cn, formatAppDate } from "@/lib/utils";
-import { TableLoader } from "@/app/loader/table.loader";
 import { ACCENT_COLORS, SECTION_CHART_COLORS } from "@/config/theme.config.js";
-
-const LoadingOverlay = motion.div;
 
 export default function Dashboard() {
   const dispatch = useDispatch();
@@ -323,8 +319,7 @@ export default function Dashboard() {
   }
 
   // Show full-page skeleton until the first backend response populates the dashboard.
-  // After data exists, subsequent date-change refreshes show the TableLoader overlay instead.
-  if (!displayExtras) {
+  if (!displayExtras && !hasLoadedDashboard.current) {
     return (
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] overflow-x-hidden">
         <DashboardSkeleton />
@@ -335,19 +330,6 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex flex-1 flex-col font-sans bg-slate-50 min-h-screen max-w-[100vw] relative">
-        <AnimatePresence>
-          {refreshing && displayExtras && (
-            <LoadingOverlay
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 z-[60]"
-            >
-              <TableLoader text="Updating Results..." />
-            </LoadingOverlay>
-          )}
-        </AnimatePresence>
-
         <div className="@container/main flex flex-1 flex-col w-full">
           {/* Top Dashboard Header - Sticky with Blur */}
           <div
@@ -389,7 +371,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
+          {refreshing || !displayExtras ? (
+            <DashboardSkeleton showHeader={false} />
+          ) : (
+            <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full">
             <div className="w-full flex-col gap-4 md:gap-6 flex min-w-0">
               <SecondaryKpiRow
                 data={displayExtras?.secondaryKpis}
@@ -699,8 +684,9 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
-    </>
+    </div>
+  </>
   );
 }

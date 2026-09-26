@@ -1,17 +1,19 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-export const DashboardSkeleton = () => {
+export const DashboardSkeleton = ({ showHeader = true }) => {
   return (
     <div className="flex flex-col gap-4 3xl:gap-6 py-5 px-4 lg:px-6 w-full max-w-full mx-auto">
       {/* Top Header Skeleton */}
-      <div className="flex sm:items-center justify-between gap-4 w-full">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48 md:w-64" />
-          <Skeleton className="h-4 w-32 md:w-40" />
+      {showHeader && (
+        <div className="flex sm:items-center justify-between gap-4 w-full">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48 md:w-64" />
+            <Skeleton className="h-4 w-32 md:w-40" />
+          </div>
+          <Skeleton className="h-10 w-32 md:w-48 rounded-lg" />
         </div>
-        <Skeleton className="h-10 w-32 md:w-48 rounded-lg" />
-      </div>
+      )}
 
       {/* Today At A Glance Skeleton */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
