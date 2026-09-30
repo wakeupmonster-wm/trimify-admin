@@ -16,8 +16,8 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { Info, TrendingUp, BarChart3, Dumbbell } from "lucide-react";
-import { SECTION_CHART_COLORS } from "@/config/theme.config";
+import { Info, TrendingUp, BarChart3 } from "lucide-react";
+import { SECTION_CHART_COLORS, SECONDARY_COLORS } from "@/config/theme.config";
 import {
   Tooltip,
   TooltipContent,
@@ -117,110 +117,6 @@ function PillBar({
           {label}
         </text>
       </g>
-    </g>
-  );
-}
-
-function FitzoneBar({
-  x,
-  y,
-  width,
-  height,
-  value,
-  maxValue,
-  isHighest,
-  color = "#007fc0",
-}) {
-  if (width <= 0 || height <= 0) return null;
-  const actualValue = Array.isArray(value) ? value[1] - value[0] : value;
-
-  const cleanHex = color.replace("#", "");
-  const patternId = `fitzone-bar-stripe-${cleanHex}`;
-  const radius = Math.min(width / 2, 16);
-  const cx = x + width / 2;
-
-  const isLight =
-    color.toLowerCase() === "#b9e9ff" ||
-    color.toLowerCase() === "#90dbff" ||
-    color.toLowerCase() === "#a4e0ff" ||
-    color.toLowerCase() === "#d2f0ff";
-  const strokeColor = isLight ? "#94C7E3" : "rgba(255, 255, 255, 0.38)";
-
-  return (
-    <g className="transition-all duration-300">
-      <defs>
-        <pattern
-          id={patternId}
-          width="7"
-          height="7"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45)"
-        >
-          <rect width="7" height="7" fill={color} />
-          <line
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="7"
-            stroke={strokeColor}
-            strokeWidth="1.8"
-          />
-        </pattern>
-      </defs>
-
-      {/* Rounded Top Vertical Bar */}
-      <path
-        d={topRoundedPath(x, y, width, height, radius)}
-        fill={`url(#${patternId})`}
-      />
-
-      {/* Value Badge & Dot for Highest Bar, or Count Text for other bars */}
-      {isHighest ? (
-        <g>
-          {/* White Dot on Top of Bar */}
-          <circle
-            cx={cx}
-            cy={y}
-            r={4}
-            fill={color}
-            stroke="#ffffff"
-            strokeWidth="2"
-          />
-          {/* Floating Rounded Value Badge above Bar */}
-          <g transform={`translate(${cx - 24}, ${y - 34})`}>
-            <rect
-              width="48"
-              height="24"
-              rx="12"
-              fill={color}
-              className="shadow-md"
-            />
-            <text
-              x="24"
-              y="16"
-              textAnchor="middle"
-              fontSize="12"
-              fontWeight="800"
-              fill="#ffffff"
-            >
-              {actualValue.toLocaleString()}
-            </text>
-          </g>
-        </g>
-      ) : (
-        actualValue > 0 && (
-          <text
-            x={cx}
-            y={y - 8}
-            textAnchor="middle"
-            fontSize="11"
-            fontWeight="600"
-            fill="#6B7785"
-          >
-            {actualValue.toLocaleString()}
-          </text>
-        )
-      )}
     </g>
   );
 }
@@ -519,40 +415,8 @@ function StandardTrendChartUI({
 
   // Every series is a bar → use the reference-design pill treatment.
   // Any area/line present → fall through to the original chart untouched.
-  const isFitzoneChart = title === "Fitzone Users Assigned";
   const isPureBarChart =
-    !isFitzoneChart && series.length > 0 && series.every((s) => s.type === "bar");
-
-  // Consistent weightage-based color mapping for Fitzone:
-  // The pillar with the most data gets the Primary Color (Rank 1), matching Program Enrollment Split.
-  const fitzoneColorMap = useMemo(() => {
-    if (!isFitzoneChart || !data || data.length === 0 || series.length === 0) return {};
-    const key = series[0]?.key;
-    const palette =
-      SECTION_CHART_COLORS?.dashboard?.fitzone ||
-      SECTION_CHART_COLORS?.dashboard?.programSplit || [
-        "#007fc0",
-        "#009dee",
-        "#1cb2ff",
-        "#3dc1ff",
-        "#49c1ff",
-        "#77d1ff",
-        "#a4e0ff",
-        "#b9e9ff",
-      ];
-
-    const uniqueValues = Array.from(
-      new Set(data.map((d) => Number(d[key]) || 0)),
-    )
-      .filter((v) => v > 0)
-      .sort((a, b) => b - a);
-
-    const map = {};
-    uniqueValues.forEach((val, idx) => {
-      map[val] = palette[idx % palette.length];
-    });
-    return map;
-  }, [isFitzoneChart, data, series]);
+    series.length > 0 && series.every((s) => s.type === "bar");
 
   return (
     <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
@@ -573,7 +437,7 @@ function StandardTrendChartUI({
             <ComposedChart
               data={data}
               margin={
-                isPureBarChart || isFitzoneChart
+                isPureBarChart
                   ? { top: 40, right: 16, left: 16, bottom: 4 }
                   : { top: 8, right: 16, left: 16, bottom: 4 }
               }
@@ -630,6 +494,24 @@ function StandardTrendChartUI({
                         <stop
                           offset="100%"
                           stopColor={s.color}
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id={`bar-gradient-secondary-${s.key}`}
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor={SECONDARY_COLORS.Secondary500}
+                          stopOpacity={1}
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor={SECONDARY_COLORS.Secondary500}
                           stopOpacity={0.1}
                         />
                       </linearGradient>
@@ -691,54 +573,7 @@ function StandardTrendChartUI({
                 width={45}
                 tickFormatter={isPureBarChart ? formatCompact : undefined}
               />
-              {/* Fitzone uses the exact same hover chip UI as Engagement Trend (DAU). */}
-              {isFitzoneChart ? (
-                <ChartTooltip
-                  defaultIndex={defaultHover.index}
-                  cursor={{
-                    stroke: "#cbd5e1",
-                    strokeWidth: 1,
-                    strokeDasharray: "4 4",
-                    fill: "transparent",
-                  }}
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    const dataPoint = payload[0];
-                    const displayLabel =
-                      data.length === 1 &&
-                      String(label).toLowerCase() === "today" &&
-                      periodLabel &&
-                      periodLabel !== "Today"
-                        ? periodLabel
-                        : label;
-                    const ChipIcon = Icon || Dumbbell || TrendingUp;
-                    return (
-                      <div className="relative bg-white rounded-2xl shadow-xl border border-slate-100 p-3.5 flex items-center gap-3.5 ml-2 mt-2 max-w-max z-50">
-                        {/* Left circular blue icon bubble */}
-                        <div className="w-10 h-10 rounded-full bg-blue-50/80 flex items-center justify-center shrink-0 relative z-10">
-                          <ChipIcon
-                            className="w-5 h-5 text-[#007FC0]"
-                            strokeWidth={2.5}
-                          />
-                        </div>
-
-                        {/* Right text */}
-                        <div className="flex flex-col gap-1 relative z-10 pr-2">
-                          <div className="text-[14px] font-bold text-[#007FC0] leading-none">
-                            {Number(dataPoint.value).toLocaleString()}{" "}
-                            {Number(dataPoint.value) === 1
-                              ? "User"
-                              : "Users"}
-                          </div>
-                          <div className="text-[13px] text-slate-500 font-semibold leading-none">
-                            {displayLabel}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  }}
-                />
-              ) : !isPureBarChart ? (
+              {!isPureBarChart ? (
                 <ChartTooltip
                   defaultIndex={defaultHover.index}
                   cursor={{
@@ -796,34 +631,6 @@ function StandardTrendChartUI({
               {series.map((s) => {
                 const effectiveType = data.length === 1 ? "bar" : s.type;
                 if (effectiveType === "bar") {
-                  if (title === "Fitzone Users Assigned") {
-                    const maxVal = Math.max(
-                      ...data.map((d) => Number(d[s.key]) || 0),
-                    );
-                    return (
-                      <Bar
-                        key={s.key}
-                        dataKey={s.key}
-                        maxBarSize={52}
-                        shape={(shapeProps) => {
-                          const val = Number(shapeProps.value) || 0;
-                          const isHighest = val > 0 && val === maxVal;
-                          const barColor =
-                            val <= 0
-                              ? "#b9e9ff"
-                              : fitzoneColorMap[val] || (isHighest ? "#007fc0" : "#3dc1ff");
-                          return (
-                            <FitzoneBar
-                              {...shapeProps}
-                              maxValue={maxVal}
-                              isHighest={isHighest}
-                              color={barColor}
-                            />
-                          );
-                        }}
-                      />
-                    );
-                  }
                   if (isPureBarChart) {
                     return (
                       <Bar
@@ -834,16 +641,30 @@ function StandardTrendChartUI({
                         onMouseEnter={(_, idx) => setHoverState({ index: idx, key: s.key })}
                         onMouseMove={(_, idx) => setHoverState({ index: idx, key: s.key })}
                         onMouseLeave={() => setHoverState({ index: null, key: null })}
-                        shape={(shapeProps) => (
-                          <PillBar
-                            {...shapeProps}
-                            isActive={shapeProps.index === activeIndex && s.key === activeKey}
-                            color={s.color}
-                            gradientId={`bar-gradient-${s.key}`}
-                            patternId={`bar-hatch-${s.key}`}
-                            dataLength={data.length}
-                          />
-                        )}
+                        shape={(shapeProps) => {
+                          const isBasicPlan =
+                            String(shapeProps.payload?.title || "")
+                              .trim()
+                              .toLowerCase() === "basic";
+                          const barColor = isBasicPlan
+                            ? SECONDARY_COLORS.Secondary500
+                            : s.color;
+
+                          return (
+                            <PillBar
+                              {...shapeProps}
+                              isActive={shapeProps.index === activeIndex && s.key === activeKey}
+                              color={barColor}
+                              gradientId={
+                                isBasicPlan
+                                  ? `bar-gradient-secondary-${s.key}`
+                                  : `bar-gradient-${s.key}`
+                              }
+                              patternId={`bar-hatch-${s.key}`}
+                              dataLength={data.length}
+                            />
+                          );
+                        }}
                       />
                     );
                   }

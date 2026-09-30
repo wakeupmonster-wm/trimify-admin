@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 15000,
+  timeout: 60000,
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -14,6 +14,10 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem("access_Token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Increase timeout for file / multipart uploads
+    if (config.data instanceof FormData) {
+      config.timeout = 180000;
     }
     return config;
   },

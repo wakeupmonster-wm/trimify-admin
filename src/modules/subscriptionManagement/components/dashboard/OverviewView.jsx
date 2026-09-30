@@ -277,8 +277,7 @@ export default function OverviewView({
                 key: "total_sold",
                 label: "Units Sold",
                 color:
-                  SECTION_CHART_COLORS?.subscription?.topSellingPlans ||
-                  "#3dc1ff",
+                  SECTION_CHART_COLORS?.subscription?.planRevenue || "#007fc0",
                 type: "bar",
               },
             ]}

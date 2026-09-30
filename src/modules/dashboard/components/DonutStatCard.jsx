@@ -656,7 +656,11 @@ const DonutStatCard = ({
           </div>
         </div>
       ) : isGoals || isProgramSplit ? (
-        <div className="flex-1 flex flex-col md:flex-row gap-8 items-center px-6 py-7">
+        <div
+          className={`flex-1 flex gap-8 items-center px-6 py-7 ${
+            isGoals ? "flex-col" : "flex-col md:flex-row"
+          }`}
+        >
           {/* Donut / Ring chart with diagonal stripe pattern & center total (matches Program Enrollment Split UI) */}
           <div className="relative w-full aspect-square max-w-[210px] mx-auto flex items-center justify-center overflow-visible">
             <ChartContainer config={chartConfig} className="h-full w-full relative z-10">
@@ -745,16 +749,26 @@ const DonutStatCard = ({
             </div>
           </div>
 
-          {/* Right side legend list */}
+          {/* User-goal legend stays below the chart in two columns; program split keeps its side list. */}
           <div className="w-full my-auto flex-1 h-max min-h-0 overflow-y-auto pr-1">
-            <div className="divide-y divide-slate-100">
+            <div
+              className={
+                isGoals
+                  ? "grid grid-flow-col grid-cols-2 grid-rows-3 gap-x-6"
+                  : "divide-y divide-slate-100"
+              }
+            >
               {processedData.map((item, idx) => {
                 const pct =
                   total > 0 ? Math.round((item.value / total) * 100) : 0;
                 return (
                   <div
                     key={idx}
-                    className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+                    className={`flex items-center justify-between gap-3 py-2.5 ${
+                      isGoals
+                        ? "border-b border-slate-100"
+                        : "first:pt-0 last:pb-0"
+                    }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <div

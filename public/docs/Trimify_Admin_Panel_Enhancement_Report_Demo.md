@@ -23,6 +23,7 @@ Document purpose: To explain the screens and features available in the admin pan
 13. Admin Account and Security
 14. Common Features
 15. Summary
+16. Common Workflows
 
 **1. Overview**
 
@@ -449,21 +450,27 @@ Nutrition Food features:
 
 AI Food Upload features:
 
-- Upload food data through the AI food workflow
-- Enter or update the food name
-- Use an image prompt panel where needed
-- View the upload/result details
-- Regenerate food information when required
-- Check the processing status through the upload flow
+- Generate nutrition data and a food image with AI
+- Enter one or more food names for AI generation
+- Review generated food information before saving it to the food catalogue
+- Enter or update the food name when needed
+- Generate or regenerate a food image using a custom text prompt
+- Generate or regenerate a food image using an audio prompt/recording
+- Replace the generated image with a public image URL when needed
+- View and edit generated food details on the result screen
+- Regenerate the food image when required
+- Check nutrition/image generation and processing status
+- Select generated items and remove one or multiple items when required
 
 Details of the AI food-upload flow:
 
-1. Start a food upload.
-2. Enter the food name and related input details.
-3. Add image-prompt details when needed.
-4. Wait for the food-processing result.
-5. Open the result-detail screen to review the information.
-6. Use regenerate if the information needs to be generated again.
+1. Enter the required food name or food names.
+2. Start AI generation for nutrition information and food images.
+3. Wait for the generated result and check its processing status.
+4. Open the result-detail screen to review and edit the food information.
+5. Regenerate the image normally, with a text prompt, or with an audio prompt when required.
+6. Save approved generated items to the food catalogue.
+7. Remove generated items that are not required.
 
 How it is used:
 
@@ -483,7 +490,10 @@ Why this section is important:
 - Add and edit options are included because food values and records may need updates over time.
 - Search is included because a food database can grow large and records must be found quickly.
 - AI Food Upload is included to support a faster food-data processing flow.
-- Result review and regenerate options are included so the generated food information can be checked before use.
+- AI generation is included to create nutrition data and food images from food names, reducing manual entry work.
+- Text and audio image prompts are included so the food image can be adjusted when the first generated image is not suitable.
+- Result review, editing, and regenerate options are included so generated information can be checked before use.
+- Save-to-catalogue is included so only reviewed food records are added to the main food database.
 
 Screenshots to include:
 
@@ -612,33 +622,45 @@ This section is used for notification campaigns and notification tracking.
 
 Available features:
 
-- Create and manage notification campaigns
+- Send an individual push notification from a user profile
+- Send an individual email from a user profile
+- Create and send bulk push-notification campaigns
+- Create and send bulk email campaigns
+- Add a campaign name, title, and message before sending a bulk campaign
 - View campaign history
+- Search and filter campaign history
 - View campaign delivery logs
 - Check notification-related records
 
 How it is used:
 
-- Send reminders, updates, and engagement messages.
+- Send an individual push notification or email when one user needs a direct update.
+- Send a bulk push notification or email campaign when the same message needs to reach many users.
 - Check what was sent through campaign history and delivery logs.
 
 Suggested notification flow:
 
-1. Open Notification Management.
-2. Create or review a notification campaign.
-3. Check campaign history for previous campaigns.
-4. Open delivery logs to review delivery information.
+1. For one user, open that user's profile and use the notification action to send an email or push notification.
+2. For many users, open Notification Management and select a push or email campaign.
+3. Add the campaign name, notification title, and message.
+4. Confirm the campaign before sending it.
+5. Open Campaign History to review previous bulk campaigns.
+6. Open Delivery Logs to review delivery information for a selected campaign.
 
 Why this section is important:
 
 - Notifications are included to send reminders, updates, and engagement messages to users.
-- Campaigns are included so communication can be organised instead of sending messages one by one.
+- Individual sending is included for user-specific messages, such as support updates or direct reminders.
+- Bulk campaigns are included so the same push notification or email can be sent to many users without sending messages one by one.
+- Push and email channels are included so communication can be sent in the most suitable format.
 - Campaign history is included to check what has already been sent.
 - Delivery logs are included to review the delivery result of a campaign.
 
 Screenshots to include:
 
-- Notification Campaign screen
+- Individual Notification dialog from User Profile
+- Push Notification Campaign screen
+- Email Campaign screen
 - Campaign History
 - Delivery Logs
 
@@ -772,6 +794,116 @@ The Trimify Admin Panel now covers the main daily work needed to run the platfor
 The panel keeps these tasks in organised sections, so information is easier to find and updates can be made from one system.
 
 This report can be used as the base document for a Notion page, PDF report, or presentation. Add the real screenshot below each relevant section to make the final document complete.
+
+**16. Common Workflows**
+
+This section explains how different features work together during normal admin work.
+
+**Daily platform review**
+
+1. Open the Dashboard.
+2. Select the required date range.
+3. Check revenue, new programs, blogs, and Fitzone sessions.
+4. Check missed step, diet, and water logs to see if user activity needs attention.
+5. Check expiring subscriptions and unpaid users for payment follow-up.
+6. Open alerts for ghosting users, old content, or zero-enrolment programs.
+
+Benefit:
+
+- The most important daily information is checked from one starting screen.
+- The admin can decide which section needs attention first.
+
+**User support and profile review**
+
+1. Open User Management.
+2. Search for the required user.
+3. Open the user profile.
+4. Check account, health, activity, program, subscription, and transaction details.
+5. Add or edit Fitzone assignment if needed.
+6. Use the notification action if a reminder or update is required.
+
+Benefit:
+
+- The user's complete context is available in one place.
+- There is less need to move between different sections to answer a user-related question.
+
+**Creating or updating a wellness program**
+
+1. Open Program Management.
+2. Add a new program or select an existing program.
+3. Update the program introduction and details.
+4. Add food categories and food items if needed.
+5. Add or edit the diet plan.
+6. Review the users assigned to that program.
+
+Benefit:
+
+- All content related to one wellness program stays together.
+- Program content can be updated without changing unrelated records.
+
+**Adding workout content**
+
+1. Open Fitzone Management.
+2. Add a new Fitzone or open an existing one.
+3. Create or update the workout category.
+4. Add or update individual workout sessions.
+5. Use user assignment when the content needs to be linked with users.
+
+Benefit:
+
+- Workout content follows a clear structure.
+- New categories and sessions can be added without making the workout library difficult to manage.
+
+**Maintaining nutrition data**
+
+1. Open Nutrition Food to search for an existing food record.
+2. Add a new record manually or edit an existing record if needed.
+3. Use AI Food Upload when food data is being processed through the AI workflow.
+4. Review the generated result.
+5. Regenerate the information if the result needs another attempt.
+
+Benefit:
+
+- Food data can be reviewed before it is used.
+- The manual and AI-based food-data workflows are kept in the same Data Management section.
+
+**Reviewing subscriptions and payments**
+
+1. Open the Subscription Dashboard.
+2. Check revenue trends, subscriber growth, and top-selling plans.
+3. Open Plans to update plan details when required.
+4. Open Subscribers to find a specific subscriber or update their plan.
+5. Open Transactions to review payment records.
+6. Export subscriber or transaction data when an external report is needed.
+
+Benefit:
+
+- Subscription and payment work is kept together.
+- Revenue data and individual records can be checked from the same module.
+
+**Sending and checking notifications**
+
+1. Open Notification Management.
+2. Create or review a campaign.
+3. Check campaign history before sending a similar message.
+4. Open delivery logs after the campaign to review delivery information.
+
+Benefit:
+
+- Communication records are organised in one place.
+- Previous campaigns and delivery details can be reviewed when needed.
+
+**Updating website content**
+
+1. Open Blog Management for blog categories and posts.
+2. Open FAQ Management for commonly asked questions.
+3. Open CMS Management for About Us, Privacy Policy, and Terms and Conditions.
+4. Update the required content and save it.
+
+Benefit:
+
+- Normal content changes can be handled from the admin panel.
+- Different content types are separated, making them easier to maintain.
 
 **How to use this report in Notion, PDF, or a presentation**
 
