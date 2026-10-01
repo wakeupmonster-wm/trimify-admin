@@ -1,35 +1,3 @@
-/**
- * Theme & Color Configuration
- * 
- * This file centralizes the color palettes used across the application's dashboards
- * and charts to ensure a consistent, premium UI/UX.
- */
-
-// ─── Previous Brand Palettes (Commented Out for Testing) ──────────────────────
-/*
-export const APP_COLORS = [
-  "#007FC0", // Base Primary Blue (700)
-  "#006193", // Primary 800
-  "#009DEE", // Primary 600
-  "#3399D1", // Light Blue
-  "#005986", // Dark Blue
-  "#66B2E3", // Lighter Blue
-  "#004060", // Darkest Blue
-  "#99CCF4", // Soft Blue
-  "#cce6ff", // Lightest Blue
-];
-
-export const ACCENT_COLORS = [
-  "#0069A5", // User Goal 1
-  "#7956F8", // User Goal 2
-  "#019CFD", // User Goal 3
-  "#f59e0b", // Amber 
-  "#f43f5e", // Rose
-  "#0ea5e9", // Sky
-];
-*/
-
-// ─── New Primary Colors Palette (Testing) ────────────────────────────────────
 export const PRIMARY_COLORS = {
   Primary800: "#006193",
   Primary700: "#007fc0",
@@ -52,7 +20,6 @@ export const PRIMARY_PALETTE = [
   PRIMARY_COLORS.Primary100, // #d2f0ff
 ];
 
-// ─── New Secondary Colors Palette (Testing) ──────────────────────────────────
 export const SECONDARY_COLORS = {
   Secondary900: "#006696",
   Secondary800: "#0082c0",
@@ -77,16 +44,13 @@ export const SECONDARY_PALETTE = [
   SECONDARY_COLORS.Secondary100, // #f1fbff
 ];
 
-// ─── Backward Compatibility Aliases ──────────────────────────────────────────
 export const APP_COLORS = PRIMARY_PALETTE;
 export const ACCENT_COLORS = SECONDARY_PALETTE;
 
-// ─── Dynamic Section-wise Chart Colors for Testing ───────────────────────────
-// Testing ke liye aap yahan har chart/graph ka color aasani se switch kar sakte hain.
 export const SECTION_CHART_COLORS = {
-  // ── 1. Main Dashboard Charts ──
+
   dashboard: {
-    // Composition: User Goal Distribution (Donut — ordered by weightage)
+  
     userGoals: [
       PRIMARY_COLORS.Primary700,     // #007fc0 (Rank 1 - Highest Weightage)
       PRIMARY_COLORS.Primary600,     // #009dee (Rank 2)
@@ -95,28 +59,28 @@ export const SECTION_CHART_COLORS = {
       PRIMARY_COLORS.Primary400,     // #49c1ff (Rank 5)
       PRIMARY_COLORS.Primary300,     // #77d1ff (Rank 6)
     ],
-    // Composition: Gender Distribution (Donut)
+  
     gender: {
       male: PRIMARY_COLORS.Primary700,       // #007fc0
       female: SECONDARY_COLORS.Secondary500, // #3dc1ff
       other: "#D9E0E6",
     },
-    // Composition: Vegetarian vs Non-veg (Donut)
+
     diet: {
       veg: PRIMARY_COLORS.Primary700,        // #007fc0 (Primary — matches Male)
       nonVeg: SECONDARY_COLORS.Secondary500, // #3dc1ff (Secondary — matches Female)
       unspecified: "#D9E0E6",
     },
-    // Composition: Conversion Funnel (SVG Diagram)
+
     funnel: {
       primaryStripe: PRIMARY_COLORS.Primary700,       // #007fc0 (Primary)
       secondaryStripe: SECONDARY_COLORS.Secondary500, // #3dc1ff (Secondary)
       depthOuter: PRIMARY_COLORS.Primary200,          // #a4e0ff
       depthInner: PRIMARY_COLORS.Primary300,          // #77d1ff
     },
-    // Trends: Engagement Trend DAU (Area Chart)
+   
     dauTrend: PRIMARY_COLORS.Primary700, // #007fc0 (Primary)
-    // Trends: Fitzone Users Assigned (Bar Chart — ordered by weightage)
+
     fitzone: [
       PRIMARY_COLORS.Primary700,     // #007fc0 (Rank 1 - Highest Weightage / Primary)
       SECONDARY_COLORS.Secondary500, // #3dc1ff (Rank 2 - Secondary)
@@ -125,7 +89,7 @@ export const SECTION_CHART_COLORS = {
       PRIMARY_COLORS.Primary300,     // #77d1ff (Rank 5)
       PRIMARY_COLORS.Primary200,     // #a4e0ff (Rank 6)
     ],
-    // Trends: Program Enrollment Split (Donut Chart — ordered by weightage)
+ 
     programSplit: [
       PRIMARY_COLORS.Primary700,     // #007fc0 (Rank 1 - Highest Weightage / Primary)
       SECONDARY_COLORS.Secondary500, // #3dc1ff (Rank 2 - Secondary)
