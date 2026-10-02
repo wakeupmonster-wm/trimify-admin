@@ -203,7 +203,14 @@ const UsersManagementPage = () => {
       onClick: () => {
         setStatusFilter("");
         setActivityFilter("");
+        setDateRangeFilter(null);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
+        if (location.state?.filterId || location.state?.dateRange) {
+          const newState = { ...location.state };
+          delete newState.filterId;
+          delete newState.dateRange;
+          navigate(location.pathname, { replace: true, state: newState });
+        }
       },
       isSelected: selectedServerFilter === "",
     },
@@ -216,7 +223,14 @@ const UsersManagementPage = () => {
       onClick: () => {
         setStatusFilter("Active");
         setActivityFilter("");
+        setDateRangeFilter(null);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
+        if (location.state?.filterId || location.state?.dateRange) {
+          const newState = { ...location.state };
+          delete newState.filterId;
+          delete newState.dateRange;
+          navigate(location.pathname, { replace: true, state: newState });
+        }
       },
       isSelected: statusFilter === "Active",
     },
@@ -229,7 +243,14 @@ const UsersManagementPage = () => {
       onClick: () => {
         setStatusFilter("Inactive");
         setActivityFilter("");
+        setDateRangeFilter(null);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
+        if (location.state?.filterId || location.state?.dateRange) {
+          const newState = { ...location.state };
+          delete newState.filterId;
+          delete newState.dateRange;
+          navigate(location.pathname, { replace: true, state: newState });
+        }
       },
       isSelected: statusFilter === "Inactive",
     },
@@ -242,7 +263,14 @@ const UsersManagementPage = () => {
       onClick: () => {
         setStatusFilter("");
         setActivityFilter("new_signups");
+        setDateRangeFilter(null);
         setPagination((p) => ({ ...p, pageIndex: 0 }));
+        if (location.state?.filterId || location.state?.dateRange) {
+          const newState = { ...location.state };
+          delete newState.filterId;
+          delete newState.dateRange;
+          navigate(location.pathname, { replace: true, state: newState });
+        }
       },
       isSelected: activityFilter === "new_signups",
     },
@@ -251,10 +279,12 @@ const UsersManagementPage = () => {
   const handleStatusFilterChange = (v) => {
     setStatusFilter(v);
     setActivityFilter("");
+    setDateRangeFilter(null);
     setPagination((p) => ({ ...p, pageIndex: 0 }));
-    if (location.state?.filterId) {
+    if (location.state?.filterId || location.state?.dateRange) {
       const newState = { ...location.state };
       delete newState.filterId;
+      delete newState.dateRange;
       navigate(location.pathname, { replace: true, state: newState });
     }
   };
@@ -262,10 +292,12 @@ const UsersManagementPage = () => {
   const handleActivityFilterChange = (v) => {
     setActivityFilter(v);
     setStatusFilter("");
+    setDateRangeFilter(null);
     setPagination((p) => ({ ...p, pageIndex: 0 }));
-    if (location.state?.filterId) {
+    if (location.state?.filterId || location.state?.dateRange) {
       const newState = { ...location.state };
       delete newState.filterId;
+      delete newState.dateRange;
       navigate(location.pathname, { replace: true, state: newState });
     }
   };

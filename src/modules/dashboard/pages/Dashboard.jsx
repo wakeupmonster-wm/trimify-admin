@@ -499,9 +499,8 @@ export default function Dashboard() {
                   series={(displayExtras?.trends?.fitzoneStatuses || []).map((status, i) => {
                     const fitzoneColors =
                       SECTION_CHART_COLORS?.dashboard?.fitzone || [
-                        "#009dee",
-                        "#49c1ff",
-                        "#a4e0ff",
+                        "#007fc0",
+                        "#3dc1ff",
                       ];
                     return {
                       key: status,

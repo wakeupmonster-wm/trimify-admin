@@ -10,16 +10,7 @@ const UserProfileSkeleton = ({ onBack }) => {
         {/* Navigation Bar Skeleton */}
         <header className="flex md:items-center justify-between gap-4 pt-2">
           <div className="flex flex-row items-center gap-3 min-w-0">
-            {onBack ? (
-              <button
-                onClick={onBack}
-                className="w-9 h-9 shrink-0 flex items-center justify-center bg-white border border-slate-200 rounded-lg shadow-sm transition-all text-slate-600 hover:bg-slate-50 active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            ) : (
-              <Skeleton className="w-9 h-9 rounded-lg shrink-0" />
-            )}
+            <Skeleton className="w-9 h-9 rounded-lg shrink-0" />
             <div className="flex flex-col sm:flex-row sm:items-center gap-x-1.5 gap-y-0 min-w-0">
               <div className="flex items-center gap-1.5 min-w-0">
                 <Skeleton className="h-6 sm:h-7 w-32 sm:w-40 rounded-md" />

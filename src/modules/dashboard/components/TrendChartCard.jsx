@@ -519,9 +519,24 @@ function StandardTrendChartUI({
 
   // Every series is a bar → use the reference-design pill treatment.
   // Any area/line present → fall through to the original chart untouched.
-  const isFitzoneChart = title === "Fitzone Users Assigned";
+  const isFitzoneChart = false;
   const isPureBarChart =
-    !isFitzoneChart && series.length > 0 && series.every((s) => s.type === "bar");
+    series.length > 0 && series.every((s) => s.type === "bar");
+
+  const getPillarColor = (d, index, fallbackColor) => {
+    const label = String(
+      d?.title || d?.name || d?.label || d?.[xKey] || "",
+    ).toLowerCase();
+    if (label.includes("premium")) {
+      return "#007fc0"; // Primary
+    }
+    if (label.includes("basic")) {
+      return "#3dc1ff"; // Secondary
+    }
+    if (index === 0) return "#007fc0";
+    if (index === 1) return "#3dc1ff";
+    return fallbackColor || (index % 2 === 0 ? "#007fc0" : "#3dc1ff");
+  };
 
   // Consistent weightage-based color mapping for Fitzone:
   // The pillar with the most data gets the Primary Color (Rank 1), matching Program Enrollment Split.
@@ -617,41 +632,50 @@ function StandardTrendChartUI({
                   return null;
                 })}
                 {isPureBarChart &&
-                  series.map((s) => (
-                    <React.Fragment key={`bar-defs-${s.key}`}>
-                      <linearGradient
-                        id={`bar-gradient-${s.key}`}
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop offset="0%" stopColor={s.color} stopOpacity={1} />
-                        <stop
-                          offset="100%"
-                          stopColor={s.color}
-                          stopOpacity={0.1}
-                        />
-                      </linearGradient>
-                      <pattern
-                        id={`bar-hatch-${s.key}`}
-                        width="6"
-                        height="6"
-                        patternTransform="rotate(45)"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <rect width="6" height="6" fill="#eef1f5" />
-                        <line
+                  Array.from(
+                    new Set([
+                      "#007fc0",
+                      "#3dc1ff",
+                      ...series.map((s) => s.color).filter(Boolean),
+                    ]),
+                  ).map((col) => {
+                    const cleanHex = col.replace("#", "");
+                    return (
+                      <React.Fragment key={`bar-defs-${cleanHex}`}>
+                        <linearGradient
+                          id={`bar-gradient-${cleanHex}`}
                           x1="0"
                           y1="0"
                           x2="0"
-                          y2="6"
-                          stroke="#dbe2ea"
-                          strokeWidth="2.5"
-                        />
-                      </pattern>
-                    </React.Fragment>
-                  ))}
+                          y2="1"
+                        >
+                          <stop offset="0%" stopColor={col} stopOpacity={1} />
+                          <stop
+                            offset="100%"
+                            stopColor={col}
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                        <pattern
+                          id={`bar-hatch-${cleanHex}`}
+                          width="6"
+                          height="6"
+                          patternTransform="rotate(45)"
+                          patternUnits="userSpaceOnUse"
+                        >
+                          <rect width="6" height="6" fill="#eef1f5" />
+                          <line
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="6"
+                            stroke="#dbe2ea"
+                            strokeWidth="2.5"
+                          />
+                        </pattern>
+                      </React.Fragment>
+                    );
+                  })}
               </defs>
               <CartesianGrid
                 vertical={false}
@@ -796,34 +820,6 @@ function StandardTrendChartUI({
               {series.map((s) => {
                 const effectiveType = data.length === 1 ? "bar" : s.type;
                 if (effectiveType === "bar") {
-                  if (title === "Fitzone Users Assigned") {
-                    const maxVal = Math.max(
-                      ...data.map((d) => Number(d[s.key]) || 0),
-                    );
-                    return (
-                      <Bar
-                        key={s.key}
-                        dataKey={s.key}
-                        maxBarSize={52}
-                        shape={(shapeProps) => {
-                          const val = Number(shapeProps.value) || 0;
-                          const isHighest = val > 0 && val === maxVal;
-                          const barColor =
-                            val <= 0
-                              ? "#b9e9ff"
-                              : fitzoneColorMap[val] || (isHighest ? "#007fc0" : "#3dc1ff");
-                          return (
-                            <FitzoneBar
-                              {...shapeProps}
-                              maxValue={maxVal}
-                              isHighest={isHighest}
-                              color={barColor}
-                            />
-                          );
-                        }}
-                      />
-                    );
-                  }
                   if (isPureBarChart) {
                     return (
                       <Bar
@@ -831,19 +827,37 @@ function StandardTrendChartUI({
                         dataKey={s.key}
                         stackId="pill"
                         maxBarSize={56}
-                        onMouseEnter={(_, idx) => setHoverState({ index: idx, key: s.key })}
-                        onMouseMove={(_, idx) => setHoverState({ index: idx, key: s.key })}
-                        onMouseLeave={() => setHoverState({ index: null, key: null })}
-                        shape={(shapeProps) => (
-                          <PillBar
-                            {...shapeProps}
-                            isActive={shapeProps.index === activeIndex && s.key === activeKey}
-                            color={s.color}
-                            gradientId={`bar-gradient-${s.key}`}
-                            patternId={`bar-hatch-${s.key}`}
-                            dataLength={data.length}
-                          />
-                        )}
+                        onMouseEnter={(_, idx) =>
+                          setHoverState({ index: idx, key: s.key })
+                        }
+                        onMouseMove={(_, idx) =>
+                          setHoverState({ index: idx, key: s.key })
+                        }
+                        onMouseLeave={() =>
+                          setHoverState({ index: null, key: null })
+                        }
+                        shape={(shapeProps) => {
+                          const d = data[shapeProps.index];
+                          const barColor = getPillarColor(
+                            d,
+                            shapeProps.index,
+                            s.color,
+                          );
+                          const cleanHex = barColor.replace("#", "");
+                          return (
+                            <PillBar
+                              {...shapeProps}
+                              isActive={
+                                shapeProps.index === activeIndex &&
+                                s.key === activeKey
+                              }
+                              color={barColor}
+                              gradientId={`bar-gradient-${cleanHex}`}
+                              patternId={`bar-hatch-${cleanHex}`}
+                              dataLength={data.length}
+                            />
+                          );
+                        }}
                       />
                     );
                   }

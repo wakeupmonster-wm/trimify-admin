@@ -655,7 +655,166 @@ const DonutStatCard = ({
             })}
           </div>
         </div>
-      ) : isGoals || isProgramSplit ? (
+      ) : isGoals ? (
+        <div className="flex-1 flex flex-col justify-between p-6 gap-6">
+          {/* Donut / Ring chart centered vertically in top half parallel to Funnel diagram */}
+          <div className="w-full flex-1 flex flex-col items-center justify-center my-auto min-h-[180px]">
+            <div className="relative w-full aspect-square max-w-[200px] mx-auto flex items-center justify-center overflow-visible">
+              <ChartContainer config={chartConfig} className="h-full w-full relative z-10">
+                <PieChart>
+                  <defs>
+                    {chartData.map((entry) => {
+                      const cleanHex = (entry.fillColor || entry.fill || "#000").replace(
+                        "#",
+                        "",
+                      );
+                      const patternId = `ring-stripe-${cleanHex}`;
+                      const isGrey =
+                        (entry.fillColor || entry.fill || "").toLowerCase() ===
+                        "#d9e0e6";
+                      const strokeColor = isGrey
+                        ? "#C2CBD3"
+                        : "rgba(255, 255, 255, 0.35)";
+                      return (
+                        <pattern
+                          key={patternId}
+                          id={patternId}
+                          width="7"
+                          height="7"
+                          patternUnits="userSpaceOnUse"
+                          patternTransform="rotate(45)"
+                        >
+                          <rect
+                            width="7"
+                            height="7"
+                            fill={entry.fillColor || entry.fill}
+                          />
+                          <line
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="7"
+                            stroke={strokeColor}
+                            strokeWidth="1.8"
+                          />
+                        </pattern>
+                      );
+                    })}
+                  </defs>
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={false}
+                    allowEscapeViewBox={{ x: true, y: true }}
+                    wrapperStyle={{ zIndex: 100, pointerEvents: "none" }}
+                  />
+                  <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={3}
+                    cornerRadius={5}
+                    stroke="none"
+                    animationDuration={800}
+                  >
+                    {chartData.map((entry, idx) => (
+                      <Cell
+                        key={idx}
+                        fill={`url(#ring-stripe-${(
+                          entry.fillColor || entry.fill || ""
+                        ).replace("#", "")})`}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+
+              {/* Center label inside donut */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none select-none px-2 z-0">
+                <span className="text-[10px] font-bold text-[#6B7785] tracking-[0.08em] uppercase leading-none">
+                  Total
+                </span>
+                <span className="text-2xl font-black text-slate-900 leading-tight my-0.5 tabular-nums">
+                  {total.toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Goals list below in 2 columns: 3 in first, 3 in second, parallel to bottom KPI cards with generous gaps */}
+          <div className="w-full pt-4 border-t border-slate-100">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+              <div className="flex flex-col gap-3 min-w-0">
+                {processedData.slice(0, 3).map((item, idx) => {
+                  const pct =
+                    total > 0 ? Math.round((item.value / total) * 100) : 0;
+                  return (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between gap-2 min-w-0 py-0.5"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className="w-3 h-3 rounded-full shrink-0 shadow-sm"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span
+                          className="text-xs font-semibold text-slate-700 truncate"
+                          title={item.label}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-xs font-bold text-slate-900 tabular-nums">
+                          {item.value.toLocaleString()}
+                        </span>
+                        <span className="text-[11px] font-medium text-slate-400 tabular-nums">
+                          ({pct}%)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex flex-col gap-3 min-w-0">
+                {processedData.slice(3, 6).map((item, idx) => {
+                  const pct =
+                    total > 0 ? Math.round((item.value / total) * 100) : 0;
+                  return (
+                    <div
+                      key={idx + 3}
+                      className="flex items-center justify-between gap-2 min-w-0 py-0.5"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className="w-3 h-3 rounded-full shrink-0 shadow-sm"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span
+                          className="text-xs font-semibold text-slate-700 truncate"
+                          title={item.label}
+                        >
+                          {item.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-xs font-bold text-slate-900 tabular-nums">
+                          {item.value.toLocaleString()}
+                        </span>
+                        <span className="text-[11px] font-medium text-slate-400 tabular-nums">
+                          ({pct}%)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : isProgramSplit ? (
         <div className="flex-1 flex flex-col md:flex-row gap-8 items-center px-6 py-7">
           {/* Donut / Ring chart with diagonal stripe pattern & center total (matches Program Enrollment Split UI) */}
           <div className="relative w-full aspect-square max-w-[210px] mx-auto flex items-center justify-center overflow-visible">
