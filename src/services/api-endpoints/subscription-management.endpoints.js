@@ -12,6 +12,9 @@ export const SUBSCRIPTION_PLAN = {
   /** GET — Paginated, searchable list of all subscription plans */
   LIST: `${ADMIN}/subscription`,
 
+  /** POST — Create a new subscription plan */
+  CREATE: `${ADMIN}/add-subscription`,
+
   /** POST — Updates only price + features on an existing plan */
   UPDATE: (id) => `${ADMIN}/update-subscription/${id}`,
 };

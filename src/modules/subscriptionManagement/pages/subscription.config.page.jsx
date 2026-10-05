@@ -8,16 +8,12 @@ import { getSubscriptionColumns } from "@/components/columns/subscription.column
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSubscriptionPlans,
+  createSubscriptionPlan,
   updateSubscriptionPlan,
 } from "../store/subscription.slice";
 import { SubscriptionEditDialog } from "../components/config/subscription.edit.dialog";
+import { SubscriptionAddDialog } from "../components/config/subscription.add.dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -26,6 +22,7 @@ const SubscriptionConfigPage = () => {
   const {
     plans,
     loading,
+    createLoading,
     updateLoading,
     pagination: serverPagination,
   } = useSelector((state) => state.subscriptionManagement);
@@ -34,8 +31,12 @@ const SubscriptionConfigPage = () => {
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  // Edit dialog state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState(null);
+
+  // Add dialog state
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -55,22 +56,51 @@ const SubscriptionConfigPage = () => {
   const handleAction = (row, action) => {
     if (action === "edit") {
       setEditData(row);
-      setDialogOpen(true);
+      setEditDialogOpen(true);
     }
   };
 
-  const handleDialogSubmit = async ({ id, price, features }) => {
-    const result = await dispatch(
-      updateSubscriptionPlan({ id, price, features }),
-    );
-    if (updateSubscriptionPlan.fulfilled.match(result)) {
-      toast.success("Subscription plan updated successfully");
-      setDialogOpen(false);
+  // ── Add Plan ──────────────────────────────────────────────────────
+  const handleAddSubmit = async (data) => {
+    const result = await dispatch(createSubscriptionPlan(data));
+    if (createSubscriptionPlan.fulfilled.match(result)) {
+      toast.success("Subscription plan created successfully!");
+      setAddDialogOpen(false);
+      // Refresh to get the server-generated record
+      dispatch(
+        fetchSubscriptionPlans({
+          page: 1,
+          limit: pagination.pageSize,
+          search: debouncedSearchTerm,
+        }),
+      );
     } else {
       const payload = result.payload;
-      const message = payload?.errors
-        ? Object.values(payload.errors).flat().join(" ")
-        : payload?.message || "Failed to update subscription plan";
+      // Show the most specific error available
+      const message =
+        payload?.message ||
+        (payload?.errors
+          ? Object.values(payload.errors).flat().join(" ")
+          : null) ||
+        "Failed to create subscription plan. Please try again.";
+      toast.error(message);
+    }
+  };
+
+  // ── Edit Plan ─────────────────────────────────────────────────────
+  const handleEditSubmit = async ({ id, subtitle, price, features }) => {
+    const result = await dispatch(updateSubscriptionPlan({ id, subtitle, price, features }));
+    if (updateSubscriptionPlan.fulfilled.match(result)) {
+      toast.success("Subscription plan updated successfully!");
+      setEditDialogOpen(false);
+    } else {
+      const payload = result.payload;
+      const message =
+        payload?.message ||
+        (payload?.errors
+          ? Object.values(payload.errors).flat().join(" ")
+          : null) ||
+        "Failed to update subscription plan.";
       toast.error(message);
     }
   };
@@ -78,7 +108,7 @@ const SubscriptionConfigPage = () => {
   const columns = useMemo(() => getSubscriptionColumns(handleAction), []);
 
   return (
-    <TooltipProvider>
+    <>
       <Container>
         <div className="w-full flex flex-col space-y-6 min-w-0">
           <Header>
@@ -93,27 +123,13 @@ const SubscriptionConfigPage = () => {
               </div>
 
               <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="w-full sm:w-auto flex-1 md:flex-none">
-                      <Button
-                        disabled
-                        className="w-full sm:w-auto flex-1 md:flex-none bg-slate-50 hover:bg-app-primary2 text-muted-foreground hover:text-white border border-slate-300/80 hover:border-none rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
-                      >
-                        <Plus className="w-4 h-4 shrink-0" />
-                        <span className="whitespace-nowrap">
-                          Add Subscription
-                        </span>
-                      </Button>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="bottom"
-                    className="text-xs max-w-[220px]"
-                  >
-                    Plan creation isn't supported by the API yet.
-                  </TooltipContent>
-                </Tooltip>
+                <Button
+                  onClick={() => setAddDialogOpen(true)}
+                  className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
+                >
+                  <Plus className="w-4 h-4 shrink-0" />
+                  <span className="whitespace-nowrap">Add Subscription</span>
+                </Button>
               </div>
             </div>
           </Header>
@@ -134,20 +150,29 @@ const SubscriptionConfigPage = () => {
               isLoading={loading}
               manualPagination={!!serverPagination}
               manualFiltering={!!serverPagination}
-            onRowClick={(row) => handleAction(row.original, "edit")}
-          />
+              onRowClick={(row) => handleAction(row.original, "edit")}
+            />
           </div>
         </div>
 
+        {/* Edit Dialog */}
         <SubscriptionEditDialog
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-          onSubmit={handleDialogSubmit}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSubmit={handleEditSubmit}
           editData={editData}
           loading={updateLoading}
         />
+
+        {/* Add Dialog */}
+        <SubscriptionAddDialog
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          onSubmit={handleAddSubmit}
+          loading={createLoading}
+        />
       </Container>
-    </TooltipProvider>
+    </>
   );
 };
 

@@ -344,52 +344,29 @@ export function RecentUsersTable({ recentActivityData }) {
 
                         {/* Actions */}
                         <TableCell className="py-2 text-center transition-all">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button
-                                onClick={(e) => e.stopPropagation()}
-                                className="p-1 px-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100/50 transition-all border border-transparent hover:border-slate-300/60 shadow-none bg-transparent"
-                              >
-                                <MoreHorizontal size={18} />
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="w-44 p-2 rounded-2xl shadow-lg border-slate-300/60"
-                            >
-                              <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5">
-                                Actions
-                              </DropdownMenuLabel>
-
-                              <DropdownMenuItem
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(
-                                    `/admin/users/view-user/${user._id}`,
-                                    {
-                                      state: {
-                                        from:
-                                          location.pathname ||
-                                          "/admin/dashboard",
-                                      },
-                                    },
-                                  );
-                                }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer hover:bg-app-primary3 transition-colors group"
-                              >
-                                <Eye
-                                  size={16}
-                                  strokeWidth={2.0}
-                                  className="text-slate-500 group-hover:text-app-primary2"
-                                />
-                                <span className="text-xs font-semibold text-slate-700 group-hover:text-app-primary2">
-                                  View Profile
-                                </span>
-                              </DropdownMenuItem>
-
-                              {/* Only view profile is available here. Delete/Edit can be managed from the main user management page. */}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors mx-auto"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(
+                                `/admin/users/view-user/${user._id}`,
+                                {
+                                  state: {
+                                    from:
+                                      location.pathname ||
+                                      "/admin/dashboard",
+                                  },
+                                },
+                              );
+                            }}
+                            title="View Profile"
+                            aria-label="View Profile"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );

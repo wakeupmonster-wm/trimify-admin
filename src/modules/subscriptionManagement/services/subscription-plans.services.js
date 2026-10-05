@@ -5,6 +5,10 @@ export const getSubscriptionPlansAPI = async (params = {}) => {
   return apiConnector("GET", SUBSCRIPTION_PLAN.LIST, null, null, params);
 };
 
+export const createSubscriptionPlanAPI = async (data) => {
+  return apiConnector("POST", SUBSCRIPTION_PLAN.CREATE, data);
+};
+
 export const updateSubscriptionPlanAPI = async (id, data) => {
   return apiConnector("POST", SUBSCRIPTION_PLAN.UPDATE(id), data);
 };

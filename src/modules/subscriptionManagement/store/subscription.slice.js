@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getSubscriptionPlansAPI,
+  createSubscriptionPlanAPI,
   updateSubscriptionPlanAPI,
 } from "../services/subscription-plans.services";
 
@@ -28,11 +29,26 @@ export const fetchSubscriptionPlans = createAsyncThunk(
   }
 );
 
+export const createSubscriptionPlan = createAsyncThunk(
+  "subscriptionManagement/createSubscriptionPlan",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await createSubscriptionPlanAPI(data);
+      if (response?.status === "success") {
+        return response.data;
+      }
+      return rejectWithValue(response);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const updateSubscriptionPlan = createAsyncThunk(
   "subscriptionManagement/updateSubscriptionPlan",
-  async ({ id, price, features }, { rejectWithValue }) => {
+  async ({ id, subtitle, price, features }, { rejectWithValue }) => {
     try {
-      const response = await updateSubscriptionPlanAPI(id, { price, features });
+      const response = await updateSubscriptionPlanAPI(id, { subtitle, price, features });
       if (response?.status === "success") {
         return response.data;
       }
@@ -48,6 +64,8 @@ const initialState = {
   pagination: null,
   loading: false,
   error: null,
+  createLoading: false,
+  createError: null,
   updateLoading: false,
   updateError: null,
 };
@@ -70,6 +88,20 @@ const subscriptionSlice = createSlice({
       .addCase(fetchSubscriptionPlans.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(createSubscriptionPlan.pending, (state) => {
+        state.createLoading = true;
+        state.createError = null;
+      })
+      .addCase(createSubscriptionPlan.fulfilled, (state, action) => {
+        state.createLoading = false;
+        if (action.payload) {
+          state.plans = [action.payload, ...state.plans];
+        }
+      })
+      .addCase(createSubscriptionPlan.rejected, (state, action) => {
+        state.createLoading = false;
+        state.createError = action.payload;
       })
       .addCase(updateSubscriptionPlan.pending, (state) => {
         state.updateLoading = true;

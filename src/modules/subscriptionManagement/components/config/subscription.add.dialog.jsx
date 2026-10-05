@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,47 +7,35 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Loader2, Save, CreditCard } from "lucide-react";
+import { Loader2, Plus, CreditCard } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 const EMPTY_FORM = {
+  title: "",
   subtitle: "",
   price: "",
+  duration: "",
   features: "",
 };
 
 const FIELD_ERRORS = {
+  title: "",
   subtitle: "",
   price: "",
+  duration: "",
   features: "",
 };
 
-export function SubscriptionEditDialog({
-  open,
-  onOpenChange,
-  onSubmit,
-  editData,
-  loading,
-}) {
+export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [fieldErrors, setFieldErrors] = useState(FIELD_ERRORS);
-
-  useEffect(() => {
-    if (open && editData) {
-      setFormData({
-        subtitle: editData.subtitle || "",
-        price: editData.price !== undefined && editData.price !== null ? String(editData.price) : "",
-        features: editData.features || "",
-      });
-      setFieldErrors(FIELD_ERRORS);
-    }
-  }, [open, editData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear field error on change
     if (fieldErrors[name]) {
       setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -57,6 +45,10 @@ export function SubscriptionEditDialog({
     const errors = { ...FIELD_ERRORS };
     let isValid = true;
 
+    if (!formData.title.trim()) {
+      errors.title = "Plan title is required.";
+      isValid = false;
+    }
     if (!formData.subtitle.trim()) {
       errors.subtitle = "Sub title is required.";
       isValid = false;
@@ -64,6 +56,11 @@ export function SubscriptionEditDialog({
     const price = parseFloat(formData.price);
     if (!formData.price || isNaN(price) || price < 0) {
       errors.price = "Enter a valid price (e.g. 29.99).";
+      isValid = false;
+    }
+    const dur = parseInt(formData.duration, 10);
+    if (!formData.duration || isNaN(dur) || dur < 1) {
+      errors.duration = "Enter duration in months (e.g. 1, 3, 6, 12).";
       isValid = false;
     }
     if (!formData.features.trim()) {
@@ -78,20 +75,27 @@ export function SubscriptionEditDialog({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-    if (onSubmit && editData) {
+    if (onSubmit) {
       onSubmit({
-        id: editData.id,
+        title: formData.title.trim(),
         subtitle: formData.subtitle.trim(),
         price: parseFloat(formData.price),
+        duration: parseInt(formData.duration, 10),
         features: formData.features.trim(),
       });
     }
   };
 
-  if (!editData) return null;
+  const handleOpenChange = (isOpen) => {
+    if (!isOpen) {
+      setFormData(EMPTY_FORM);
+      setFieldErrors(FIELD_ERRORS);
+    }
+    onOpenChange(isOpen);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-white border-slate-300/60 rounded-xl shadow-2xl">
         <DialogHeader className="px-6 py-5 border-b border-slate-300/60 flex flex-row items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-app-primary2/10 flex items-center justify-center shrink-0">
@@ -99,29 +103,34 @@ export function SubscriptionEditDialog({
           </div>
           <div>
             <DialogTitle className="text-slate-900 text-lg font-bold text-left">
-              Edit Subscription
+              Add Subscription Plan
             </DialogTitle>
             <DialogDescription className="text-slate-500 text-xs mt-1 text-left">
-              Modify the existing subscription plan details.
+              Create a new subscription plan that will be available for users.
             </DialogDescription>
           </div>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="p-6 pt-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            {/* Plan Title — read only */}
+            {/* Plan Title */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                Plan Title
+                Plan Title <span className="text-red-500">*</span>
               </Label>
               <Input
-                value={editData.title || ""}
-                disabled
-                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500 cursor-not-allowed"
+                name="title"
+                placeholder="e.g. Premium Plan"
+                value={formData.title}
+                onChange={handleChange}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.title ? "border-red-400 focus-visible:ring-red-400" : ""}`}
               />
+              {fieldErrors.title && (
+                <p className="text-[11px] text-red-500 font-medium">{fieldErrors.title}</p>
+              )}
             </div>
 
-            {/* Sub Title — editable */}
+            {/* Sub Title */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
                 Sub Title <span className="text-red-500">*</span>
@@ -138,7 +147,7 @@ export function SubscriptionEditDialog({
               )}
             </div>
 
-            {/* Price — editable */}
+            {/* Price */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
                 Price ($) <span className="text-red-500">*</span>
@@ -158,26 +167,34 @@ export function SubscriptionEditDialog({
               )}
             </div>
 
-            {/* Duration — read only */}
+            {/* Duration */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                Duration (in Months)
+                Duration (Months) <span className="text-red-500">*</span>
               </Label>
               <Input
-                value={editData.duration || ""}
-                disabled
-                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500 cursor-not-allowed"
+                name="duration"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="e.g. 1 for Monthly, 3 for Quarterly"
+                value={formData.duration}
+                onChange={handleChange}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.duration ? "border-red-400 focus-visible:ring-red-400" : ""}`}
               />
+              {fieldErrors.duration && (
+                <p className="text-[11px] text-red-500 font-medium">{fieldErrors.duration}</p>
+              )}
             </div>
 
-            {/* Features — editable */}
+            {/* Features */}
             <div className="space-y-1.5 md:col-span-2">
               <Label className="text-xs font-bold text-slate-800">
                 Features (comma separated) <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 name="features"
-                placeholder="e.g. Unlimited Projects, Priority Support, Advanced Analytics"
+                placeholder="e.g. Unlimited Access, Priority Support, Advanced Analytics"
                 value={formData.features}
                 onChange={handleChange}
                 className={`min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3 ${fieldErrors.features ? "border-red-400 focus-visible:ring-red-400" : ""}`}
@@ -189,15 +206,15 @@ export function SubscriptionEditDialog({
           </div>
 
           <p className="mt-4 text-[11px] text-slate-400 font-medium">
-            Plan title and duration are fixed. Sub title, price, and features can be updated.
+            After creation, plan title and duration cannot be changed. Sub title, price, and features can be updated.
           </p>
 
-          <div className="mt-8 flex justify-end gap-3">
+          <div className="mt-6 flex justify-end gap-3">
             <Button
               type="button"
               variant="outline"
               className="rounded-md px-6 py-2 h-auto text-xs font-semibold border-slate-300/60"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
               disabled={loading}
             >
               Cancel
@@ -209,11 +226,11 @@ export function SubscriptionEditDialog({
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Updating...
+                  <Loader2 className="w-4 h-4 animate-spin" /> Creating...
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" /> Update Plan
+                  <Plus className="w-4 h-4" /> Create Plan
                 </>
               )}
             </Button>

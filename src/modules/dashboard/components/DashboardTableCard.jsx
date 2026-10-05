@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardHead from "@/components/shared/dashboard.head";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Eye } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -10,14 +10,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Ellipsis, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -37,10 +29,18 @@ const DashboardTableCard = ({
   rows = [],
   emptyMessage = "Nothing to show here.",
   actionLabel,
+  actionIcon: ActionIcon = Eye,
   onAction,
   footerStat,
   emptyStateClassName,
 }) => {
+  const titleText =
+    actionLabel === "View"
+      ? "View User"
+      : typeof actionLabel === "string"
+        ? actionLabel
+        : "View User";
+
   return (
     <div className="bg-white border border-slate-200 hover:border-slate-300 transition-all duration-300 rounded-2xl shadow-sm flex flex-col h-full overflow-hidden">
       <div className="pt-5 pb-4 px-6 border-b border-slate-100">
@@ -71,8 +71,8 @@ const DashboardTableCard = ({
                 </TableHead>
               ))}
               {actionLabel && (
-                <TableHead className="text-[11px] font-bold uppercase tracking-wider text-slate-500 h-10 first:pl-6 last:pr-6 whitespace-nowrap">
-                  <div className="flex justify-start w-full">Action</div>
+                <TableHead className="text-[10px] font-bold uppercase tracking-wider text-slate-600 h-10 px-4 whitespace-nowrap text-center">
+                  <div className="flex justify-center w-full">Action</div>
                 </TableHead>
               )}
             </TableRow>
@@ -113,33 +113,22 @@ const DashboardTableCard = ({
                     </TableCell>
                   ))}
                   {actionLabel && (
-                    <TableCell className="py-3 first:pl-6 last:pr-9 w-1/12">
+                    <TableCell className="py-2.5 px-4 w-1/12 text-center">
                       <div className="flex items-center justify-center w-full">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
-                            >
-                              <Ellipsis className="h-4 w-4 text-foreground/90" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm bg-white"
-                          >
-                            <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
-                              Actions
-                            </DropdownMenuLabel>
-                            <DropdownMenuItem
-                              className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
-                              onClick={() => onAction?.(row)}
-                            >
-                              <Eye className="w-3.5 h-3.5" />
-                              {actionLabel}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAction?.(row);
+                          }}
+                          title={titleText}
+                          aria-label={titleText}
+                        >
+                          <ActionIcon className="h-4 w-4" />
+                        </Button>
                       </div>
                     </TableCell>
                   )}
