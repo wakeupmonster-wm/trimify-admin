@@ -258,7 +258,7 @@ export function TabTransactions({ data }) {
                                     <button
                                       type="button"
                                       aria-label="Refund details"
-                                      className="inline-flex items-center justify-center text-violet-500 hover:text-violet-600 transition-colors p-0.5 rounded-full hover:bg-violet-50 focus:outline-none cursor-pointer"
+                                      className="inline-flex items-center justify-center text-rose-500 hover:text-rose-600 transition-colors p-0.5 rounded-full hover:bg-rose-50 focus:outline-none cursor-pointer"
                                     >
                                       <Info className="w-3.5 h-3.5" />
                                     </button>
@@ -267,7 +267,7 @@ export function TabTransactions({ data }) {
                                     side="top"
                                     className="max-w-xs p-2.5 bg-slate-900 text-white shadow-xl rounded-lg border border-slate-800 text-left space-y-1 z-50"
                                   >
-                                    <p className="text-[11px] font-semibold text-violet-400">
+                                    <p className="text-[11px] font-semibold text-rose-400">
                                       Refund Reason
                                     </p>
                                     <p className="text-[10px] text-slate-200 leading-tight">

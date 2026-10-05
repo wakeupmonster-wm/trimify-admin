@@ -54,6 +54,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getNutritionListAPI } from "../services/nutrition.services";
+import {
+  generateAiFoodAPI,
+  getAiFoodBatchAPI,
+  getAiFoodListAPI,
+  regenerateAiFoodImageAPI,
+} from "../../aiFoodUpload/services/ai.food.services";
 import { toast } from "sonner";
 
 const AddNutritionPage = () => {
@@ -235,10 +241,175 @@ const AddNutritionPage = () => {
   };
 
   const handleCancelRegenerate = () => {
+    if (pollTimeoutRef.current) {
+      clearTimeout(pollTimeoutRef.current);
+    }
     setIsImageRegenerating(false);
     toast.info(
       "Stopped waiting — the image will still update once generation finishes.",
     );
+  };
+
+  const pollForAiBatchImage = async (batchId, itemId, attempt = 0) => {
+    try {
+      const response = await getAiFoodBatchAPI(batchId);
+      const items = response?.data?.items || response?.items || [];
+      const item =
+        items.find((it) => String(it.id) === String(itemId)) || items[0];
+
+      if (item) {
+        if (item.image_status === "failed" || item.status === "failed") {
+          setIsImageRegenerating(false);
+          toast.error(item.error_message || "Failed to generate food image.");
+          return;
+        }
+
+        const imageUrl = getImageUrlFromResponse(item);
+        if (
+          imageUrl &&
+          (item.image_status === "success" ||
+            item.status === "pending_review" ||
+            item.status === "approved")
+        ) {
+          applyGeneratedImage(imageUrl);
+          return;
+        }
+      }
+    } catch {
+      // Continue polling
+    }
+
+    if (attempt >= 24) {
+      setIsImageRegenerating(false);
+      toast.info(
+        "Image generation is taking longer than expected. Please check back shortly.",
+      );
+      return;
+    }
+
+    await new Promise((resolve) => {
+      pollTimeoutRef.current = setTimeout(resolve, 2500);
+    });
+    return pollForAiBatchImage(batchId, itemId, attempt + 1);
+  };
+
+  const pollForExistingAiImage = async (
+    foodName,
+    existingId,
+    previousImage,
+    attempt = 0,
+  ) => {
+    try {
+      const response = await getAiFoodListAPI({ search: foodName, limit: 10 });
+      const items = response?.data?.items || response?.items || [];
+      const item =
+        items.find((it) => String(it.id) === String(existingId)) || items[0];
+
+      if (item) {
+        if (item.image_status === "failed" || item.status === "failed") {
+          setIsImageRegenerating(false);
+          toast.error(item.error_message || "Failed to generate food image.");
+          return;
+        }
+
+        const imageUrl = getImageUrlFromResponse(item);
+        if (
+          imageUrl &&
+          imageUrl !== previousImage &&
+          (item.image_status === "success" ||
+            item.status === "pending_review" ||
+            item.status === "approved")
+        ) {
+          applyGeneratedImage(imageUrl);
+          return;
+        }
+      }
+    } catch {
+      // Continue polling
+    }
+
+    if (attempt >= 24) {
+      setIsImageRegenerating(false);
+      toast.info(
+        "Image generation is taking longer than expected. Please check back shortly.",
+      );
+      return;
+    }
+
+    await new Promise((resolve) => {
+      pollTimeoutRef.current = setTimeout(resolve, 2500);
+    });
+    return pollForExistingAiImage(
+      foodName,
+      existingId,
+      previousImage,
+      attempt + 1,
+    );
+  };
+
+  const handleGenerateAiImage = async (prompt) => {
+    if (isImageRegenerating) return;
+    const foodName = formData.title?.trim();
+    if (!foodName) {
+      toast.error("Please enter a food name before generating an image.");
+      return;
+    }
+    const previousImage = formData.image;
+    setIsImageRegenerating(true);
+    toast.success("Generating image with AI…");
+
+    try {
+      const payload = prompt
+        ? { items: [{ food_name: foodName, image_prompt: prompt }] }
+        : { food_names: [foodName] };
+
+      const response = await generateAiFoodAPI(payload);
+      const batchData = response?.data || response;
+      const batchId = batchData?.batch_id;
+      const createdItem = batchData?.items?.[0];
+
+      if (!batchId || !createdItem) {
+        setIsImageRegenerating(false);
+        toast.error("Failed to start image generation. Please try again.");
+        return;
+      }
+
+      if (createdItem.status === "duplicate_skipped") {
+        const match = createdItem.error_message?.match(/generation #(\d+)/);
+        if (match && match[1]) {
+          const existingId = match[1];
+          try {
+            await regenerateAiFoodImageAPI(existingId, prompt);
+            await pollForExistingAiImage(foodName, existingId, previousImage);
+            return;
+          } catch {
+            // Fall through to show error message
+          }
+        }
+        setIsImageRegenerating(false);
+        toast.error(createdItem.error_message || "This food already exists.");
+        return;
+      }
+
+      const immediateImage = getImageUrlFromResponse(createdItem);
+      if (
+        immediateImage &&
+        immediateImage !== previousImage &&
+        createdItem.image_status === "success"
+      ) {
+        applyGeneratedImage(immediateImage);
+        return;
+      }
+
+      await pollForAiBatchImage(batchId, createdItem.id);
+    } catch (error) {
+      setIsImageRegenerating(false);
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to generate food image.";
+      toast.error(msg);
+    }
   };
 
   const handleRemoveItem = async () => {
@@ -375,9 +546,6 @@ const AddNutritionPage = () => {
                       Photo
                     </h3>
                   </div>
-                  <span className="text-[10px] font-medium text-slate-400">
-                    Centered Dish
-                  </span>
                 </div>
 
                 <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
@@ -418,37 +586,37 @@ const AddNutritionPage = () => {
                     </div>
                   )}
 
-                  {isEdit && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          aria-label="Generate or replace food image with AI"
-                          disabled={isImageRegenerating}
-                          className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-app-primary2 shadow-md transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {isImageRegenerating ? (
-                            <Loader2 className="h-5 w-5 animate-spin" />
-                          ) : (
-                            <Bot className="h-5 w-5" />
-                          )}
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56 p-2">
-                        <DropdownMenuItem
-                          onClick={() => setIsAutoRegenerateOpen(true)}
-                          className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
-                        >
-                          <RefreshCcw className="h-4 w-4 text-slate-500" />
-                          Auto Regenerate
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setIsCustomRegenerateOpen(true)}
-                          className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
-                        >
-                          <Sparkles className="h-4 w-4 text-app-primary2" />
-                          Custom Regenerate
-                        </DropdownMenuItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label="Generate or replace food image with AI"
+                        disabled={isImageRegenerating}
+                        className="absolute bottom-4 right-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white text-app-primary2 shadow-md transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {isImageRegenerating ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <Bot className="h-5 w-5" />
+                        )}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 p-2">
+                      <DropdownMenuItem
+                        onClick={() => setIsAutoRegenerateOpen(true)}
+                        className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
+                      >
+                        <RefreshCcw className="h-4 w-4 text-slate-500" />
+                        {isEdit ? "Auto Regenerate" : "Auto Generate"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setIsCustomRegenerateOpen(true)}
+                        className="cursor-pointer gap-2 text-xs font-medium hover:!bg-app-primary2/10"
+                      >
+                        <Sparkles className="h-4 w-4 text-app-primary2" />
+                        {isEdit ? "Custom Regenerate" : "Custom Generate"}
+                      </DropdownMenuItem>
+                      {isEdit && (
                         <DropdownMenuItem
                           onClick={() => setIsDeleteModalOpen(true)}
                           className="cursor-pointer gap-2 text-xs font-medium text-red-600 focus:text-red-700 hover:!bg-red-100"
@@ -456,9 +624,9 @@ const AddNutritionPage = () => {
                           <Trash2 className="h-4 w-4" />
                           Remove Entire Item
                         </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
                   {isImageRegenerating && (
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/70 px-6 text-center backdrop-blur-sm">
@@ -738,11 +906,15 @@ const AddNutritionPage = () => {
         foodName={formData.title || "this food"}
         onGenerateFromPrompt={(prompt) => {
           setIsCustomRegenerateOpen(false);
-          handleRegenerateImage(prompt);
+          isEdit ? handleRegenerateImage(prompt) : handleGenerateAiImage(prompt);
         }}
         onGenerateFromAudio={(audioBlob) => {
           setIsCustomRegenerateOpen(false);
-          handleRegenerateImageFromAudio(audioBlob);
+          if (isEdit) {
+            handleRegenerateImageFromAudio(audioBlob);
+          } else {
+            toast.info("Audio generation is only available for existing items.");
+          }
         }}
         busy={loading || isImageRegenerating}
       />
@@ -752,11 +924,14 @@ const AddNutritionPage = () => {
         onClose={() => setIsAutoRegenerateOpen(false)}
         onConfirm={() => {
           setIsAutoRegenerateOpen(false);
-          handleRegenerateImage();
+          isEdit ? handleRegenerateImage() : handleGenerateAiImage();
         }}
-        title="Replace Food Image"
-        message="Generate a new AI image for this food? The new image will replace the current one."
-        confirmText="Regenerate"
+        title={isEdit ? "Replace Food Image" : "Generate Food Image"}
+        message={isEdit
+          ? "Generate a new AI image for this food? The new image will replace the current one."
+          : "Generate an AI image for this food item?"
+        }
+        confirmText={isEdit ? "Regenerate" : "Generate"}
         type="brand"
         loading={isImageRegenerating}
       />

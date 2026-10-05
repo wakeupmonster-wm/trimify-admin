@@ -44,13 +44,25 @@ const EditSubAdminPage = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isCustomDesignation, setIsCustomDesignation] = useState(false);
 
-  const fitnessDesignations = [
+  const defaultDesignations = [
     "Fitness Trainer",
     "Nutritionist",
     "Health Coach",
     "Wellness Advisor",
     "Gym Manager",
   ];
+
+  const fitnessDesignations = React.useMemo(() => {
+    try {
+      const raw = localStorage.getItem("trimify_custom_designations");
+      const stored = raw ? JSON.parse(raw) : [];
+      const seen = new Set(defaultDesignations.map((d) => d.toLowerCase()));
+      const custom = stored.filter((d) => d && !seen.has(d.toLowerCase()));
+      return [...defaultDesignations, ...custom];
+    } catch {
+      return defaultDesignations;
+    }
+  }, []);
 
   useEffect(() => {
     if (!editData) {
@@ -152,6 +164,20 @@ const EditSubAdminPage = () => {
       await dispatch(
         updateSubAdmin({ id: editData.id || editData._id, data: submitData }),
       ).unwrap();
+
+      if (submitData.designation?.trim()) {
+        try {
+          const raw = localStorage.getItem("trimify_custom_designations");
+          const stored = raw ? JSON.parse(raw) : [];
+          const trimmed = submitData.designation.trim();
+          if (!stored.some((item) => item.toLowerCase() === trimmed.toLowerCase())) {
+            stored.push(trimmed);
+            localStorage.setItem("trimify_custom_designations", JSON.stringify(stored));
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
 
       toast.success("Sub-admin updated successfully.");
       navigate("/admin/sub-admin-management");

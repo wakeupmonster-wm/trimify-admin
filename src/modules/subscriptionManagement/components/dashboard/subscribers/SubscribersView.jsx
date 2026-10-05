@@ -292,23 +292,6 @@ export default function SubscribersView() {
         [],
       placeholder: "All Plans",
     },
-    {
-      type: "select",
-      id: "dateSort",
-      label: "Date Sort",
-      value: dateSort,
-      onChange: (v) => {
-        setDateSort(v);
-        setPagination((p) => ({ ...p, pageIndex: 0 }));
-      },
-      options: [
-        { label: "Start: Oldest First", value: "started_at:asc" },
-        { label: "Start: Newest First", value: "started_at:desc" },
-        { label: "Expiry: Oldest First", value: "expires_at:asc" },
-        { label: "Expiry: Newest First", value: "expires_at:desc" },
-      ],
-      placeholder: "Start / Expiry Date",
-    },
   ];
 
   if (subscribersError && !subscribersPagination) {

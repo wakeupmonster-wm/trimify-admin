@@ -3,7 +3,8 @@ import { Container } from "@/components/common/container";
 import { PageHeader } from "@/components/common/headSubhead";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
-import { Info, Eye, Loader2, Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Info, Eye, Loader2, Save, ArrowLeft } from "lucide-react";
 import { RichTextEditor } from "@/components/shared/RichTextEditor";
 import { toast } from "sonner";
 import { htmlContent } from "@/constants/htmlContent";
@@ -13,6 +14,7 @@ import CTAButton from "@/components/common/CTAButton";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
 const AboutUsPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.cmsManagement);
 
@@ -102,6 +104,11 @@ const AboutUsPage = () => {
             </div>
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+              <CTAButton
+                icon={ArrowLeft}
+                label="Back"
+                onClick={() => navigate(-1)}
+              />
               <CTAButton
                 icon={Eye}
                 label="Preview"

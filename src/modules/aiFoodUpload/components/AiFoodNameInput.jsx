@@ -114,7 +114,21 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
     setDraft("");
   };
 
-  const addName = (value) => addNames(value);
+  const addName = (value) => {
+    const trimmed = String(value || "").trim();
+    if (!trimmed) return;
+
+    setNames((previousNames) => {
+      const normalizedName = trimmed.toLowerCase();
+      if (
+        previousNames.some((n) => n.toLowerCase() === normalizedName) ||
+        previousNames.length >= MAX_NAMES
+      )
+        return previousNames;
+      return [...previousNames, trimmed];
+    });
+    setDraft("");
+  };
 
   const removeName = (index) => {
     setNames((prev) => prev.filter((_, i) => i !== index));

@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useDispatch, useSelector } from "react-redux";
 import { addSubAdmin, fetchSubAdminList } from "../store/sub.admin.slice";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/common/container";
 import Header from "@/components/common/header";
@@ -41,13 +42,25 @@ const AddSubAdminPage = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [confirmSuccess, setConfirmSuccess] = useState(false);
 
-  const fitnessDesignations = [
+  const defaultDesignations = [
     "Fitness Trainer",
     "Nutritionist",
     "Health Coach",
     "Wellness Advisor",
     "Gym Manager",
   ];
+
+  const fitnessDesignations = React.useMemo(() => {
+    try {
+      const raw = localStorage.getItem("trimify_custom_designations");
+      const stored = raw ? JSON.parse(raw) : [];
+      const seen = new Set(defaultDesignations.map((d) => d.toLowerCase()));
+      const custom = stored.filter((d) => d && !seen.has(d.toLowerCase()));
+      return [...defaultDesignations, ...custom];
+    } catch {
+      return defaultDesignations;
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,11 +115,27 @@ const AddSubAdminPage = () => {
 
       const result = await dispatch(addSubAdmin(submitData));
       if (addSubAdmin.fulfilled.match(result)) {
+        if (submitData.designation?.trim()) {
+          try {
+            const raw = localStorage.getItem("trimify_custom_designations");
+            const stored = raw ? JSON.parse(raw) : [];
+            const trimmed = submitData.designation.trim();
+            if (!stored.some((item) => item.toLowerCase() === trimmed.toLowerCase())) {
+              stored.push(trimmed);
+              localStorage.setItem("trimify_custom_designations", JSON.stringify(stored));
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }
         setConfirmSuccess(true);
         setTimeout(() => {
           setIsConfirmModalOpen(false);
           navigate("/admin/sub-admin-management");
         }, 1000);
+      } else {
+        setIsConfirmModalOpen(false);
+        toast.error(result.payload || "Failed to add sub admin");
       }
     } finally {
       setIsSubmitting(false);

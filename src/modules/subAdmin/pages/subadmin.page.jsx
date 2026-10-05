@@ -104,6 +104,7 @@ const SubAdminManagementPage = () => {
   const {
     subAdmins,
     kpis,
+    designations,
     loading,
     pagination: serverPagination,
   } = useSelector((state) => state.subAdmin);
@@ -121,6 +122,7 @@ const SubAdminManagementPage = () => {
   }, []);
   const [roleFilter, setRoleFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [designationFilter, setDesignationFilter] = useState("");
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const navigate = useNavigate();
@@ -207,6 +209,39 @@ const SubAdminManagementPage = () => {
   ];
 
   useEffect(() => {
+    if (subAdmins?.length) {
+      try {
+        const presets = new Set([
+          "fitness trainer",
+          "nutritionist",
+          "health coach",
+          "wellness advisor",
+          "gym manager",
+        ]);
+        const raw = localStorage.getItem("trimify_custom_designations");
+        const stored = raw ? JSON.parse(raw) : [];
+        const storedLower = new Set(stored.map((s) => s.toLowerCase()));
+        let updated = false;
+
+        subAdmins.forEach((admin) => {
+          const d = (admin?.designation || "").trim();
+          if (d && !presets.has(d.toLowerCase()) && !storedLower.has(d.toLowerCase())) {
+            stored.push(d);
+            storedLower.add(d.toLowerCase());
+            updated = true;
+          }
+        });
+
+        if (updated) {
+          localStorage.setItem("trimify_custom_designations", JSON.stringify(stored));
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [subAdmins]);
+
+  useEffect(() => {
     dispatch(
       fetchSubAdminList({
         page: pagination.pageIndex + 1,
@@ -214,6 +249,7 @@ const SubAdminManagementPage = () => {
         search: debouncedSearchTerm,
         role: roleFilter,
         status: statusFilter,
+        designation: designationFilter,
       }),
     );
   }, [
@@ -223,6 +259,7 @@ const SubAdminManagementPage = () => {
     debouncedSearchTerm,
     roleFilter,
     statusFilter,
+    designationFilter,
   ]);
 
   const handleAction = useCallback(
@@ -324,8 +361,15 @@ const SubAdminManagementPage = () => {
           String(admin.status).toLowerCase() === statusFilter.toLowerCase(),
       );
     }
+    if (designationFilter) {
+      list = list.filter(
+        (admin) =>
+          String(admin.designation || "").toLowerCase() ===
+          designationFilter.toLowerCase(),
+      );
+    }
     return list;
-  }, [subAdmins, roleFilter, statusFilter]);
+  }, [subAdmins, roleFilter, statusFilter, designationFilter]);
 
   const filterConfig = [
     {
@@ -357,6 +401,56 @@ const SubAdminManagementPage = () => {
         { label: "Inactive", value: "Inactive" },
       ],
       placeholder: "All Status",
+    },
+    {
+      type: "select",
+      id: "designationFilter",
+      label: "Designation",
+      value: designationFilter,
+      onChange: setDesignationFilter,
+      options: (() => {
+        const presets = [
+          "Fitness Trainer",
+          "Nutritionist",
+          "Health Coach",
+          "Wellness Advisor",
+          "Gym Manager",
+        ];
+
+        let storedCustom = [];
+        try {
+          const raw = localStorage.getItem("trimify_custom_designations");
+          if (raw) storedCustom = JSON.parse(raw);
+        } catch {
+          // ignore
+        }
+
+        const seen = new Set();
+        const optionsList = [];
+
+        const addOption = (val) => {
+          const trimmed = (val || "").trim();
+          if (trimmed && !seen.has(trimmed.toLowerCase())) {
+            seen.add(trimmed.toLowerCase());
+            optionsList.push({ label: trimmed, value: trimmed });
+          }
+        };
+
+        // 1. Presets always first
+        presets.forEach(addOption);
+
+        // 2. From Redux designations (backend API)
+        (designations || []).forEach(addOption);
+
+        // 3. From currently loaded subAdmins in table
+        (subAdmins || []).forEach((sa) => addOption(sa?.designation));
+
+        // 4. From saved custom designations
+        (storedCustom || []).forEach(addOption);
+
+        return optionsList;
+      })(),
+      placeholder: "All Designations",
     },
   ];
 
@@ -420,6 +514,7 @@ const SubAdminManagementPage = () => {
                 onClearAll={() => {
                   setRoleFilter("");
                   setStatusFilter("");
+                  setDesignationFilter("");
                 }}
               />
             }

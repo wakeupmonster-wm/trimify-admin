@@ -18,6 +18,13 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function DataTableFilters({ filterConfig = [] }) {
   if (!filterConfig || filterConfig.length === 0) return null;
@@ -30,19 +37,97 @@ export function DataTableFilters({ filterConfig = [] }) {
             filter.value !== undefined &&
             filter.value !== null &&
             filter.value !== "";
+
+          if (filter.variant !== "dropdown") {
+            const allValue = "__all__";
+
+            return (
+              <div key={filter.id || idx} className="w-full md:w-auto">
+                <Select
+                  value={isActive ? String(filter.value) : allValue}
+                  onValueChange={(selectedVal) => {
+                    if (selectedVal === allValue) {
+                      filter.onChange("");
+                      return;
+                    }
+                    const matchedOpt = filter.options?.find((opt) => {
+                      const v = typeof opt === "object" ? opt.value : opt;
+                      return String(v) === selectedVal;
+                    });
+                    const finalVal = matchedOpt
+                      ? typeof matchedOpt === "object"
+                        ? matchedOpt.value
+                        : matchedOpt
+                      : selectedVal;
+                    filter.onChange(finalVal);
+                  }}
+                >
+                  <SelectTrigger
+                    className={cn(
+                      "h-10 w-fit min-w-0 justify-start gap-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus:border-app-primary2 focus-visible:border-app-primary2 data-[state=open]:border-app-primary2 data-[state=open]:text-app-primary2 focus:ring-2 focus:ring-app-primary2/20",
+                      filter.triggerClassName,
+                      isActive &&
+                        "border-app-primary2 text-app-primary2 hover:border-app-primary3 hover:text-app-primary3",
+                    )}
+                  >
+                    <SelectValue placeholder={filter.placeholder || `Select ${filter.label}`} />
+                  </SelectTrigger>
+                  <SelectContent
+                    align={filter.contentAlign || "start"}
+                    className={cn("w-auto min-w-36 rounded-xl", filter.contentClassName)}
+                  >
+                    <SelectItem
+                      value={allValue}
+                      className={cn("rounded-lg text-xs font-medium", filter.optionClassName)}
+                    >
+                      {filter.placeholder || `All ${filter.label}`}
+                    </SelectItem>
+                    {filter.options
+                      ?.filter((opt) => {
+                        const val = typeof opt === "object" ? opt.value : opt;
+                        return val !== "" && val !== null && val !== undefined;
+                      })
+                      .map((opt) => {
+                        const value = typeof opt === "object" ? opt.value : opt;
+                        const label =
+                          typeof opt === "object"
+                            ? opt.label
+                            : filter.getDisplayValue
+                              ? filter.getDisplayValue(opt)
+                              : opt;
+
+                        return (
+                          <SelectItem
+                            key={String(value)}
+                            value={String(value)}
+                            className={cn(
+                              "rounded-lg text-xs font-medium",
+                              filter.optionClassName,
+                            )}
+                          >
+                            {label}
+                          </SelectItem>
+                        );
+                      })}
+                  </SelectContent>
+                </Select>
+              </div>
+            );
+          }
+
           return (
-            <div key={filter.id || idx} className="flex-1 md:w-auto">
+            <div key={filter.id || idx} className="w-full md:w-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
                       isActive &&
                         "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
                   >
-                    <span className="text-xs capitalize">
+                    <span className="text-xs">
                       {isActive && filter.getDisplayValue
                         ? filter.getDisplayValue(filter.value)
                         : isActive
@@ -68,8 +153,11 @@ export function DataTableFilters({ filterConfig = [] }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  align="end"
-                  className="w-auto min-w-36 p-1.5 rounded-xl"
+                  align={filter.contentAlign || "end"}
+                  className={cn(
+                    "w-auto min-w-36 p-1.5 rounded-xl",
+                    filter.contentClassName,
+                  )}
                 >
                   <DropdownMenuLabel className="text-[10px] font-bold text-slate-400 uppercase px-2 py-1.5">
                     {filter.label}
@@ -82,7 +170,10 @@ export function DataTableFilters({ filterConfig = [] }) {
                     return (
                       <DropdownMenuCheckboxItem
                         key={val}
-                        className="rounded-lg capitalize text-xs"
+                        className={cn(
+                          "rounded-lg capitalize text-xs",
+                          filter.optionClassName,
+                        )}
                         checked={filter.value === val}
                         onCheckedChange={() =>
                           filter.onChange(filter.value === val ? "" : val)
@@ -120,7 +211,7 @@ export function DataTableFilters({ filterConfig = [] }) {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
                       isActive &&
                         "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}
@@ -159,13 +250,13 @@ export function DataTableFilters({ filterConfig = [] }) {
               opt.value !== "",
           );
           return (
-            <div key={filter.id || idx} className="flex-1 md:w-auto">
+            <div key={filter.id || idx} className="w-full md:w-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto justify-between",
+                      "h-9 3xl:h-10 px-3 3xl:px-4 gap-2 bg-white border-slate-300/60 text-slate-600 font-medium rounded-md hover:bg-slate-50 transition-all w-full md:w-auto",
                       isActive &&
                         "border-app-primary2 text-app-primary2 hover:text-app-primary3",
                     )}

@@ -104,31 +104,38 @@ const UsersManagementPage = () => {
 
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const selectedServerFilter = activityFilter || statusFilter;
 
   useEffect(() => {
-    dispatch(
-      fetchUsersList({
-        page: pagination.pageIndex + 1,
-        limit: pagination.pageSize,
-        search: debouncedSearchTerm,
-        status: selectedServerFilter,
-        // Backend expects 'preset', 'from', 'to' at the root query level, not nested
-        ...(dateRangeFilter?.preset ? { preset: dateRangeFilter.preset } : {}),
-        ...(dateRangeFilter?.from
-          ? { from: formatApiDate(dateRangeFilter.from) }
-          : {}),
-        ...(dateRangeFilter?.to
-          ? { to: formatApiDate(dateRangeFilter.to) }
-          : {}),
-      }),
-    );
+    const params = {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+      search: debouncedSearchTerm,
+    };
+
+    if (statusFilter && activityFilter) {
+      params.status = statusFilter;
+      params.activity = activityFilter;
+      params.activityFilter = activityFilter;
+    } else if (statusFilter) {
+      params.status = statusFilter;
+    } else if (activityFilter) {
+      params.status = activityFilter;
+      params.activity = activityFilter;
+      params.activityFilter = activityFilter;
+    }
+
+    if (dateRangeFilter?.preset) params.preset = dateRangeFilter.preset;
+    if (dateRangeFilter?.from) params.from = formatApiDate(dateRangeFilter.from);
+    if (dateRangeFilter?.to) params.to = formatApiDate(dateRangeFilter.to);
+
+    dispatch(fetchUsersList(params));
   }, [
     dispatch,
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
-    selectedServerFilter,
+    statusFilter,
+    activityFilter,
     dateRangeFilter,
   ]);
 
@@ -205,7 +212,7 @@ const UsersManagementPage = () => {
         setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: selectedServerFilter === "",
+      isSelected: !statusFilter && !activityFilter,
     },
     {
       icon: LuUserRoundCheck,
@@ -218,7 +225,7 @@ const UsersManagementPage = () => {
         setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: statusFilter === "Active",
+      isSelected: statusFilter === "Active" && !activityFilter,
     },
     {
       icon: LuUserRoundX,
@@ -231,7 +238,7 @@ const UsersManagementPage = () => {
         setActivityFilter("");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: statusFilter === "Inactive",
+      isSelected: statusFilter === "Inactive" && !activityFilter,
     },
     {
       icon: LuUserRoundPlus,
@@ -244,13 +251,12 @@ const UsersManagementPage = () => {
         setActivityFilter("new_signups");
         setPagination((p) => ({ ...p, pageIndex: 0 }));
       },
-      isSelected: activityFilter === "new_signups",
+      isSelected: activityFilter === "new_signups" && !statusFilter,
     },
   ];
 
   const handleStatusFilterChange = (v) => {
     setStatusFilter(v);
-    setActivityFilter("");
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     if (location.state?.filterId) {
       const newState = { ...location.state };
@@ -261,7 +267,6 @@ const UsersManagementPage = () => {
 
   const handleActivityFilterChange = (v) => {
     setActivityFilter(v);
-    setStatusFilter("");
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     if (location.state?.filterId) {
       const newState = { ...location.state };
@@ -279,6 +284,7 @@ const UsersManagementPage = () => {
       onChange: handleStatusFilterChange,
       options: STATUS_FILTER_OPTIONS,
       placeholder: "All Status",
+      variant: "standard-select",
     },
     {
       type: "select",
@@ -288,6 +294,7 @@ const UsersManagementPage = () => {
       onChange: handleActivityFilterChange,
       options: ACTIVITY_FILTER_OPTIONS,
       placeholder: "All Activity",
+      variant: "standard-select",
     },
     {
       type: "dateRange",

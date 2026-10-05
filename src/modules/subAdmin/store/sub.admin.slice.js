@@ -17,6 +17,7 @@ export const fetchSubAdminList = createAsyncThunk(
         return {
           subAdmins: response.subAdmins || [],
           kpis: response.kpis || null,
+          designations: response.designations || [],
           pagination: {
             page: response.pagination?.current_page || response.pagination?.page || 1,
             limit: response.pagination?.per_page || 10,
@@ -45,8 +46,14 @@ export const addSubAdmin = createAsyncThunk(
       }
       return rejectWithValue(response.message || "Failed to add sub admin");
     } catch (error) {
+      const validationErrors = error.response?.data?.errors;
+      const firstValidationError = validationErrors
+        ? Object.values(validationErrors).flat()[0]
+        : null;
       return rejectWithValue(
-        error.response?.data?.message || "Failed to add sub admin"
+        firstValidationError ||
+          error.response?.data?.message ||
+          "Failed to add sub admin"
       );
     }
   }
@@ -117,6 +124,7 @@ const subAdminSlice = createSlice({
   initialState: {
     subAdmins: [],
     kpis: null,
+    designations: [],
     loading: false,
     error: null,
     pagination: {
@@ -146,6 +154,18 @@ const subAdminSlice = createSlice({
         state.loading = false;
         state.subAdmins = action.payload.subAdmins;
         state.kpis = action.payload.kpis;
+        const serverDesigs = action.payload.designations || [];
+        const tableDesigs = (action.payload.subAdmins || [])
+          .map((s) => s.designation?.trim())
+          .filter(Boolean);
+        const existingDesigs = state.designations || [];
+        const mergedMap = new Map();
+        [...existingDesigs, ...serverDesigs, ...tableDesigs].forEach((d) => {
+          if (d && !mergedMap.has(d.toLowerCase())) {
+            mergedMap.set(d.toLowerCase(), d);
+          }
+        });
+        state.designations = Array.from(mergedMap.values());
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchSubAdminList.rejected, (state, action) => {
@@ -156,9 +176,17 @@ const subAdminSlice = createSlice({
       .addCase(addSubAdmin.pending, (state) => {
         state.loading = true;
       })
-      .addCase(addSubAdmin.fulfilled, (state) => {
+      .addCase(addSubAdmin.fulfilled, (state, action) => {
         state.loading = false;
-        // Let the component dispatch fetch again to get accurate pagination
+        const newDesig = action.meta?.arg?.designation?.trim();
+        if (newDesig) {
+          const exists = (state.designations || []).some(
+            (d) => d.toLowerCase() === newDesig.toLowerCase()
+          );
+          if (!exists) {
+            state.designations.push(newDesig);
+          }
+        }
       })
       .addCase(addSubAdmin.rejected, (state, action) => {
         state.loading = false;
@@ -168,8 +196,17 @@ const subAdminSlice = createSlice({
       .addCase(updateSubAdmin.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateSubAdmin.fulfilled, (state) => {
+      .addCase(updateSubAdmin.fulfilled, (state, action) => {
         state.loading = false;
+        const newDesig = action.meta?.arg?.data?.designation?.trim();
+        if (newDesig) {
+          const exists = (state.designations || []).some(
+            (d) => d.toLowerCase() === newDesig.toLowerCase()
+          );
+          if (!exists) {
+            state.designations.push(newDesig);
+          }
+        }
       })
       .addCase(updateSubAdmin.rejected, (state, action) => {
         state.loading = false;

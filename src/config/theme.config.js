@@ -176,8 +176,8 @@ export const STATUS_COLORS = {
   expired: "hsl(0, 84%, 60%)",
   churned: "hsl(0, 84%, 60%)",
   pending: "hsl(38, 92%, 50%)",  // Amber / Yellow
-  revoked: "hsl(215, 16%, 65%)", // Gray
-  refunded: "hsl(258, 90%, 66%)", // Violet
+  revoked: "hsl(0, 84%, 60%)", // Red
+  refunded: "hsl(0, 84%, 60%)", // Red
   disputed: "hsl(24, 94%, 50%)",  // Orange
 };
 
@@ -192,7 +192,7 @@ export const STATUS_BADGE_STYLE = {
   churned: "bg-rose-500/10 text-rose-600",
   pending: "bg-amber-500/10 text-amber-600",
   revoked: "bg-rose-500/10 text-rose-600",
-  refunded: "bg-violet-500/10 text-violet-600",
+  refunded: "bg-rose-500/10 text-rose-600",
   disputed: "bg-orange-500/10 text-orange-600",
   inactive: "bg-slate-500/10 text-slate-600",
 };

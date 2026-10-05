@@ -3,14 +3,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Ellipsis, Eye, Undo2, Mail } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Eye, Mail } from "lucide-react";
 
 const STATUS_STYLE = {
   success: "bg-emerald-50 text-emerald-600",
@@ -217,49 +210,25 @@ export const getTransactionColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 160,
-    minSize: 150,
-    cell: ({ row }) => {
-      const txn = row.original;
-      const revokeDisabled =
-        txn.status === "refunded" || txn.status === "failed";
-      return (
-        <div className="flex justify-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
-              >
-                <Ellipsis className="h-4 w-4 text-foreground/90" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
-            >
-              <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
-                Actions
-              </DropdownMenuLabel>
-              <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
-                onClick={() => onAction && onAction(txn, "view")}
-              >
-                <Eye className="w-3.5 h-3.5" />
-                View User
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
-                disabled={revokeDisabled}
-                onClick={() => onAction && onAction(txn, "revoke")}
-              >
-                <Undo2 className="w-3.5 h-3.5" />
-                Revoke
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
+    size: 100,
+    minSize: 80,
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            onAction && onAction(row.original, "view");
+          }}
+          title="View User"
+          aria-label="View User"
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
+      </div>
+    ),
   },
 ];

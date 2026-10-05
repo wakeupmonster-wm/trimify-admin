@@ -1,10 +1,9 @@
 import { apiConnector } from "@/services/axios/axios.connector";
 import { AI_FOOD_ENDPOINTS } from "@/services/api-endpoints/ai-food.endpoints";
 
-export const generateAiFoodAPI = async (foodNames) => {
-  return apiConnector("POST", AI_FOOD_ENDPOINTS.GENERATE, {
-    food_names: foodNames,
-  });
+export const generateAiFoodAPI = async (payload) => {
+  const body = Array.isArray(payload) ? { food_names: payload } : payload;
+  return apiConnector("POST", AI_FOOD_ENDPOINTS.GENERATE, body);
 };
 
 export const getAiFoodBatchAPI = async (batchId) => {

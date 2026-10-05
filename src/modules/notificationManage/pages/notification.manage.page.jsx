@@ -300,7 +300,7 @@ const NotificationManagePage = () => {
                       <Input
                         type="text"
                         maxLength={80}
-                        placeholder="e.g., Reminder - Riya"
+                        placeholder="e.g., Weekly Workout Reminder"
                         value={campaignName}
                         onChange={(e) => {
                           setCampaignName(e.target.value);

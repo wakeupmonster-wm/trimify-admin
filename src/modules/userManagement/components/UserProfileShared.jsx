@@ -7,7 +7,7 @@ const PILL_TONES = {
   expired: "bg-[#E11D48]/10 text-[#E11D48] border-[#E11D48]/20",
   danger: "bg-red-50 text-red-600 border-red-200",
   warning: "bg-amber-50 text-amber-600 border-amber-200",
-  refunded: "bg-violet-50 text-violet-700 border-violet-200",
+  refunded: "bg-rose-50 text-rose-600 border-rose-200",
   neutral: "bg-slate-100 text-slate-500 border-slate-300/60",
 };
 
