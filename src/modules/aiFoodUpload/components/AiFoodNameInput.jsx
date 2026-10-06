@@ -139,7 +139,7 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
       setShowSuggestions(false);
       return;
     }
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === "Enter") {
       e.preventDefault();
       addName(draft);
     } else if (e.key === "Backspace" && !draft && names.length > 0) {
@@ -159,13 +159,15 @@ const AiFoodNameInput = ({ onGenerate, loading }) => {
   };
 
   const handleSubmit = () => {
-    const uniqueNames = [...new Set([...names, ...splitFoodNames(draft)])];
+    const trimmedDraft = draft.trim();
+    const uniqueNames = [...new Set([...names, ...(trimmedDraft ? [trimmedDraft] : [])])];
     if (uniqueNames.length === 0 || loading) return;
     setIsConfirmModalOpen(true);
   };
 
   const handleConfirmGenerate = () => {
-    const uniqueNames = [...new Set([...names, ...splitFoodNames(draft)])];
+    const trimmedDraft = draft.trim();
+    const uniqueNames = [...new Set([...names, ...(trimmedDraft ? [trimmedDraft] : [])])];
     if (uniqueNames.length === 0 || loading) return;
     onGenerate(uniqueNames.slice(0, MAX_NAMES));
     setNames([]);
