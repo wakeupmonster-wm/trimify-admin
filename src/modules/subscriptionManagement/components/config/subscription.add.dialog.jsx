@@ -7,9 +7,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Loader2, Plus, CreditCard } from "lucide-react";
+import { Loader2, Plus, CreditCard, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 const EMPTY_FORM = {
@@ -17,7 +16,6 @@ const EMPTY_FORM = {
   subtitle: "",
   price: "",
   duration: "",
-  features: "",
 };
 
 const FIELD_ERRORS = {
@@ -30,6 +28,8 @@ const FIELD_ERRORS = {
 
 export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
+  const [featuresList, setFeaturesList] = useState([]);
+  const [featureInput, setFeatureInput] = useState("");
   const [fieldErrors, setFieldErrors] = useState(FIELD_ERRORS);
 
   const handleChange = (e) => {
@@ -38,6 +38,32 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
     // Clear field error on change
     if (fieldErrors[name]) {
       setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleAddFeature = (e) => {
+    e?.preventDefault();
+    const trimmed = featureInput.trim();
+    if (!trimmed) return;
+    if (featuresList.length >= 5) return;
+
+    setFeaturesList((prev) => [...prev, trimmed]);
+    setFeatureInput("");
+    if (fieldErrors.features) {
+      setFieldErrors((prev) => ({ ...prev, features: "" }));
+    }
+  };
+
+  const handleRemoveFeature = (indexToRemove) => {
+    setFeaturesList((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleFeatureKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (featureInput.trim() && featuresList.length < 5) {
+        handleAddFeature();
+      }
     }
   };
 
@@ -63,8 +89,8 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
       errors.duration = "Enter duration in months (e.g. 1, 3, 6, 12).";
       isValid = false;
     }
-    if (!formData.features.trim()) {
-      errors.features = "Please provide at least one feature.";
+    if (featuresList.length === 0) {
+      errors.features = "Please add at least one feature (max 5).";
       isValid = false;
     }
 
@@ -81,7 +107,7 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
         subtitle: formData.subtitle.trim(),
         price: parseFloat(formData.price),
         duration: parseInt(formData.duration, 10),
-        features: formData.features.trim(),
+        features: featuresList.join(", "),
       });
     }
   };
@@ -89,10 +115,14 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
   const handleOpenChange = (isOpen) => {
     if (!isOpen) {
       setFormData(EMPTY_FORM);
+      setFeaturesList([]);
+      setFeatureInput("");
       setFieldErrors(FIELD_ERRORS);
     }
     onOpenChange(isOpen);
   };
+
+  const isAddFeatureDisabled = !featureInput.trim() || featuresList.length >= 5;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -102,25 +132,25 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
             <CreditCard className="w-5 h-5 text-app-primary2" />
           </div>
           <div>
-            <DialogTitle className="text-slate-900 text-lg font-bold text-left">
+            <DialogTitle className="text-base font-bold text-slate-800">
               Add Subscription Plan
             </DialogTitle>
-            <DialogDescription className="text-slate-500 text-xs mt-1 text-left">
-              Create a new subscription plan that will be available for users.
+            <DialogDescription className="text-xs text-slate-500 mt-0.5">
+              Fill in the details below to create a new subscription plan.
             </DialogDescription>
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-6 pt-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            {/* Plan Title */}
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Title */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
                 Plan Title <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="title"
-                placeholder="e.g. Premium Plan"
+                placeholder="e.g. Pro Plan, Basic Plan"
                 value={formData.title}
                 onChange={handleChange}
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.title ? "border-red-400 focus-visible:ring-red-400" : ""}`}
@@ -137,7 +167,7 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
               </Label>
               <Input
                 name="subtitle"
-                placeholder="e.g. Best value for individuals"
+                placeholder="e.g. Best for individuals"
                 value={formData.subtitle}
                 onChange={handleChange}
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.subtitle ? "border-red-400 focus-visible:ring-red-400" : ""}`}
@@ -155,9 +185,8 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
               <Input
                 name="price"
                 type="number"
-                min="0"
                 step="0.01"
-                placeholder="e.g. 34.99"
+                placeholder="e.g. 29.99"
                 value={formData.price}
                 onChange={handleChange}
                 className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.price ? "border-red-400 focus-visible:ring-red-400" : ""}`}
@@ -170,13 +199,12 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
             {/* Duration */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                Duration (Months) <span className="text-red-500">*</span>
+                Duration (in Months) <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="duration"
                 type="number"
                 min="1"
-                step="1"
                 placeholder="e.g. 1 for Monthly, 3 for Quarterly"
                 value={formData.duration}
                 onChange={handleChange}
@@ -187,18 +215,64 @@ export function SubscriptionAddDialog({ open, onOpenChange, onSubmit, loading })
               )}
             </div>
 
-            {/* Features */}
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs font-bold text-slate-800">
-                Features (comma separated) <span className="text-red-500">*</span>
-              </Label>
-              <Textarea
-                name="features"
-                placeholder="e.g. Unlimited Access, Priority Support, Advanced Analytics"
-                value={formData.features}
-                onChange={handleChange}
-                className={`min-h-[80px] text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 resize-none p-3 ${fieldErrors.features ? "border-red-400 focus-visible:ring-red-400" : ""}`}
-              />
+            {/* Features (Max 5) */}
+            <div className="space-y-2 md:col-span-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold text-slate-800">
+                  Features <span className="text-red-500">*</span>
+                </Label>
+                <span className="text-[11px] font-semibold text-slate-500">
+                  {featuresList.length}/5 features added
+                </span>
+              </div>
+
+              {/* Input + Add button */}
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder={
+                    featuresList.length >= 5
+                      ? "Maximum 5 features reached"
+                      : "Type a feature (e.g. Unlimited Access)..."
+                  }
+                  value={featureInput}
+                  disabled={featuresList.length >= 5}
+                  onChange={(e) => setFeatureInput(e.target.value)}
+                  onKeyDown={handleFeatureKeyDown}
+                  className="h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60"
+                />
+                <Button
+                  type="button"
+                  onClick={handleAddFeature}
+                  disabled={isAddFeatureDisabled}
+                  className="h-10 px-4 bg-app-primary2 hover:bg-app-primary3 text-white text-xs font-semibold rounded-md flex items-center gap-1.5 shrink-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Feature</span>
+                </Button>
+              </div>
+
+              {/* Added Features list/tags */}
+              {featuresList.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {featuresList.map((feat, idx) => (
+                    <div
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium rounded-full animate-in fade-in duration-200"
+                    >
+                      <span className="max-w-[280px] truncate">{feat}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFeature(idx)}
+                        className="w-4 h-4 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {fieldErrors.features && (
                 <p className="text-[11px] text-red-500 font-medium">{fieldErrors.features}</p>
               )}

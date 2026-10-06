@@ -44,3 +44,17 @@ export const addFitzoneAssignmentAPI = async (userId, data) => {
 export const getAvailableFitzoneCategoriesAPI = async (userId) => {
   return apiConnector("GET", USER.AVAILABLE_FITZONE_CATEGORIES(userId));
 };
+
+// ───────────── Per-user Program Assignment CRUD ────────────────────
+
+export const deleteProgramAssignmentAPI = async (userId, programId) => {
+  return apiConnector("DELETE", USER.DELETE_PROGRAM_ASSIGNMENT(userId, programId));
+};
+
+export const addProgramAssignmentAPI = async (userId, data) => {
+  return apiConnector("POST", USER.ADD_PROGRAM_ASSIGNMENT(userId), data);
+};
+
+export const getAvailableProgramsAPI = async (userId) => {
+  return apiConnector("GET", USER.AVAILABLE_PROGRAMS(userId));
+};

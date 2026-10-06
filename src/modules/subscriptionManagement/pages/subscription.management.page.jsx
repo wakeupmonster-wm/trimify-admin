@@ -92,6 +92,7 @@ const SubscriptionManagementPage = () => {
                 subheading="Manage subscription plans and their details."
               />
             </div>
+            {/* 
 
             <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full xl:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <Button
@@ -104,7 +105,7 @@ const SubscriptionManagementPage = () => {
                 <Plus className="w-4 h-4 shrink-0" />
                 <span className="whitespace-nowrap">Add Subscription</span>
               </Button>
-            </div>
+            </div> */}
           </div>
         </Header>
 

@@ -225,7 +225,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
     [kpiSummary, avgTransactionValue, statusFilter],
   );
 
-  const goToUserTransactions = (txn) => {
+  const goToUserBilling = (txn) => {
     const userId =
       txn?.user_id || txn?.userId || txn?.user?.id || txn?.user?.user_id;
     if (!userId) {
@@ -243,8 +243,14 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
   const handleAction = (txn, action) => {
     if (action === "revoke") {
       setRevokeTransactionData(txn);
-    } else if (action === "view") {
-      goToUserTransactions(txn);
+    } else if (action === "view-billing") {
+      goToUserBilling(txn);
+    } else if (action === "view-invoice") {
+      if (txn?.invoice_url) {
+        window.open(txn.invoice_url, "_blank", "noreferrer");
+      } else {
+        toast.error("No invoice available for this transaction.");
+      }
     }
   };
 
@@ -352,7 +358,7 @@ export default function TransactionsView({ exportRef, onExportLoadingChange }) {
         isLoading={transactionsLoading}
         manualPagination
         manualFiltering
-        onRowClick={(row) => goToUserTransactions(row.original)}
+
         toolbarChildren={
           <>
             <DataTableFilters filterConfig={filterConfig} />

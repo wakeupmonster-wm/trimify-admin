@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight, IconSearch, IconX } from "@tabler/icons-react";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { cn } from "@/lib/utils";
 import { STATUS_BADGE_STYLE } from "@/config/theme.config";
@@ -27,16 +27,20 @@ import {
   assignFitzoneToSelectedUsersAPI,
   assignFitzoneToAllUsersAPI,
   unassignFitzoneUserAPI,
+  getFitzoneAssignmentRunsAPI,
 } from "../services/fitzone.services";
 import { toast } from "sonner";
 import {
-  Search,
   Users,
   Mail,
   Loader2,
   UserPlus,
   UserCheck,
   UsersRound,
+  ClipboardList,
+  CheckCircle2,
+  XCircle,
+  Clock,
 } from "lucide-react";
 
 export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSuccess }) => {
@@ -47,7 +51,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
   const [limit, setLimit] = useState(10);
   
   const [loading, setLoading] = useState(false);
-  const [usersData, setUsersData] = useState([]);
+  const [allUsers, setAllUsers] = useState([]); // raw data — all tabs filter from this
   const [pagination, setPagination] = useState({ page: 1, total: 0, totalPage: 1 });
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [actionInProgress, setActionInProgress] = useState({}); // { [userId]: 'assign' | 'unassign' }
@@ -55,19 +59,42 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
   const [confirmAssignAll, setConfirmAssignAll] = useState(false);
   const [isAssigningAll, setIsAssigningAll] = useState(false);
 
+  // Assignment Logs state
+  const [showLogs, setShowLogs] = useState(false);
+  const [logsData, setLogsData] = useState({ runs: [], loading: false, fetched: false });
+
+  const fetchAssignmentLogs = useCallback(async () => {
+    if (!fitzone?.id) return;
+    setLogsData((prev) => ({ ...prev, loading: true }));
+    try {
+      const response = await getFitzoneAssignmentRunsAPI(fitzone.id);
+      setLogsData({ runs: response?.runs || [], loading: false, fetched: true });
+    } catch {
+      setLogsData({ runs: [], loading: false, fetched: true });
+    }
+  }, [fitzone?.id]);
+
+  const handleToggleLogs = () => {
+    if (!showLogs && !logsData.fetched) {
+      fetchAssignmentLogs();
+    }
+    setShowLogs((prev) => !prev);
+  };
+
   const fetchUsers = useCallback(async () => {
     if (!fitzone?.id) return;
     setLoading(true);
     try {
+      // Always fetch ALL (no filter) — tabs filter client-side from this data
       const res = await getFitzoneAssignableUsersAPI(fitzone.id, {
         search: debouncedSearch,
-        filter,
+        filter: "all",
         page,
         limit,
       });
 
       if (res && res.status === "success") {
-        setUsersData(res.users || []);
+        setAllUsers(res.users || []);
         setPagination({
           page: res.pagination?.page || res.pagination?.current_page || page,
           total: res.pagination?.total || 0,
@@ -81,7 +108,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
     } finally {
       setLoading(false);
     }
-  }, [fitzone?.id, debouncedSearch, filter, page, limit]);
+  }, [fitzone?.id, debouncedSearch, page, limit]); // ← filter removed from deps
 
   useEffect(() => {
     if (open) {
@@ -91,13 +118,23 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       setFilter("all");
       setPage(1);
       setSelectedUserIds([]);
+      setAllUsers([]);
+      setShowLogs(false);
+      setLogsData({ runs: [], loading: false, fetched: false });
     }
   }, [open, fetchUsers]);
 
-  // Reset page to 1 when search, filter or limit changes
+  // Reset page to 1 only when search or limit changes (NOT filter — it's client-side now)
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filter, limit]);
+  }, [debouncedSearch, limit]);
+
+  // Client-side tab filtering — zero API calls on tab switch
+  const usersData = useMemo(() => {
+    if (filter === "assigned") return allUsers.filter((u) => u.is_assigned);
+    if (filter === "unassigned") return allUsers.filter((u) => !u.is_assigned);
+    return allUsers; // "all"
+  }, [allUsers, filter]);
 
   // Available unassigned users on current page
   const unassignedOnPage = useMemo(() => {
@@ -135,7 +172,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       if (res && res.status === "success") {
         toast.success(res.message || "User assigned to Fitzone successfully.");
         // Optimistic instant status update
-        setUsersData((prev) =>
+        setAllUsers((prev) =>
           prev.map((u) =>
             u.id === userId
               ? { ...u, is_assigned: true, assigned_categories_count: u.eligible_categories_count || 1 }
@@ -168,7 +205,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       if (res && res.status === "success") {
         toast.success(res.message || `Assigned Fitzone to ${selectedUserIds.length} user(s).`);
         const setIds = new Set(selectedUserIds);
-        setUsersData((prev) =>
+        setAllUsers((prev) =>
           prev.map((u) =>
             setIds.has(u.id)
               ? { ...u, is_assigned: true, assigned_categories_count: u.eligible_categories_count || 1 }
@@ -197,7 +234,7 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
       if (res && res.status === "success") {
         toast.success(res.message || "User unassigned from Fitzone successfully.");
         // Optimistic instant status update
-        setUsersData((prev) =>
+        setAllUsers((prev) =>
           prev.map((u) =>
             u.id === userId
               ? { ...u, is_assigned: false, assigned_categories_count: 0 }
@@ -288,46 +325,62 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
 
             {/* Search and Filter Bar */}
             <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
-              <div className="relative flex-1 w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <div className="relative flex-1 min-w-0 w-full">
+                <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
                 <Input
                   placeholder="Search users by name or email..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 h-9 text-xs bg-white border-slate-300/60 rounded-md focus-visible:ring-1 focus-visible:ring-app-primary2"
+                  className="pl-10 pr-10 bg-white border-slate-300/60 h-9 placeholder:text-slate-400 placeholder:font-normal shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-app-primary2 rounded-md w-full transition-all outline-none"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => setSearch("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
                   >
-                    Clear
+                    <IconX className="h-3.5 w-3.5 text-slate-500" />
                   </button>
                 )}
               </div>
 
-              {/* Filter Tabs matching theme colors */}
-              <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-300/60 w-full sm:w-auto self-stretch">
-                {[
-                  { id: "all", label: "All Users" },
-                  { id: "unassigned", label: "Not Assigned" },
-                  { id: "assigned", label: "Assigned" },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setFilter(tab.id)}
-                    className={cn(
-                      "flex-1 sm:flex-none px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all",
-                      filter === tab.id
-                        ? "bg-white text-app-primary2 shadow-sm"
-                        : "text-slate-500 hover:text-slate-900"
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+              {/* Filter Tabs + Assignment Logs button */}
+              <div className="flex items-center gap-2 w-full sm:w-auto self-stretch">
+                <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-300/60 flex-1 sm:flex-none">
+                  {[
+                    { id: "all", label: "All Users" },
+                    { id: "unassigned", label: "Not Assigned" },
+                    { id: "assigned", label: "Assigned" },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => { setFilter(tab.id); setShowLogs(false); }}
+                      className={cn(
+                        "flex-1 sm:flex-none px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all",
+                        !showLogs && filter === tab.id
+                          ? "bg-white text-app-primary2 shadow-sm"
+                          : "text-slate-500 hover:text-slate-900"
+                      )}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Assignment Logs Tab Button */}
+                <button
+                  type="button"
+                  onClick={handleToggleLogs}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold uppercase tracking-wider transition-all shrink-0 h-full",
+                    showLogs
+                      ? "bg-app-primary2 text-white border-app-primary2 shadow-sm"
+                      : "bg-white text-slate-500 border-slate-300/60 hover:text-app-primary2 hover:border-app-primary2/40"
+                  )}
+                >
+                  Logs
+                </button>
               </div>
             </div>
 
@@ -348,8 +401,110 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
             )}
           </DialogHeader>
 
-          {/* Table Content styled identically to User Management DataTable */}
-          <div className="max-h-[380px] min-h-[240px] overflow-y-auto">
+          {/* === LOGS VIEW (replaces table when active) === */}
+          {showLogs && (
+            <div className="bg-slate-50/70">
+              <div className="px-5 py-3 flex items-center justify-between border-b border-slate-200/60">
+                <div className="flex items-center gap-2">
+                  <ClipboardList className="w-4 h-4 text-app-primary2" />
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Assignment Logs</span>
+                  <span className="text-[10px] font-semibold text-slate-400">— {fitzone?.title}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={fetchAssignmentLogs}
+                  disabled={logsData.loading}
+                  className="flex items-center gap-1 text-[10px] font-semibold text-app-primary2 hover:underline disabled:opacity-50 transition-all"
+                >
+                  {logsData.loading ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                  Refresh
+                </button>
+              </div>
+              <div className="max-h-[500px] min-h-[240px] overflow-y-auto px-5 py-3 space-y-2.5">
+                {logsData.loading ? (
+                  <div className="flex items-center justify-center py-8 gap-2 text-slate-500">
+                    <Loader2 className="w-4 h-4 animate-spin text-app-primary2" />
+                    <span className="text-xs font-medium">Loading assignment logs...</span>
+                  </div>
+                ) : logsData.runs.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <div className="w-9 h-9 rounded-full bg-slate-200/70 flex items-center justify-center mb-2">
+                      <ClipboardList className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <p className="text-xs font-semibold text-slate-600">No assignment runs recorded yet</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Runs will appear here after using "Assign to All Users"</p>
+                  </div>
+                ) : (
+                  logsData.runs.map((run) => {
+                    const statusStyles = {
+                      completed: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200/60" },
+                      failed: { icon: XCircle, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200/60" },
+                      processing: { icon: Loader2, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200/60" },
+                      queued: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200/60" },
+                    };
+                    const statusKey = String(run.status || "queued").toLowerCase().replace(/\s+/g, "_");
+                    const style = statusStyles[statusKey] || statusStyles.queued;
+                    const IconComp = style.icon;
+                    return (
+                      <div key={run.id} className={cn("rounded-lg border p-3", style.bg, style.border)}>
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <div className="flex items-center gap-1.5">
+                            <IconComp className={cn("w-3.5 h-3.5", style.color, statusKey === "processing" ? "animate-spin" : "")} />
+                            <span className={cn("text-[11px] font-bold capitalize", style.color)}>
+                              {String(run.status || "queued").replace(/_/g, " ")}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-medium text-slate-500">
+                            {run.processed_users || 0} / {run.total_users || 0} processed
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="flex flex-col items-center bg-white/70 rounded-md py-1.5 px-2">
+                            <span className="text-[10px] font-bold text-emerald-600">{run.assigned_users || 0}</span>
+                            <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wide">Assigned</span>
+                          </div>
+                          <div className="flex flex-col items-center bg-white/70 rounded-md py-1.5 px-2">
+                            <span className="text-[10px] font-bold text-amber-600">{run.skipped_users || 0}</span>
+                            <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wide">Skipped</span>
+                          </div>
+                          <div className="flex flex-col items-center bg-white/70 rounded-md py-1.5 px-2">
+                            <span className="text-[10px] font-bold text-rose-600">{run.failed_users || 0}</span>
+                            <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wide">Failed</span>
+                          </div>
+                        </div>
+                        {run.failure_message && (
+                          <p className="mt-2 text-[10px] text-rose-600 font-medium">{run.failure_message}</p>
+                        )}
+                        {run.recent_failures?.length > 0 && (
+                          <div className="mt-2 rounded-md bg-rose-100/60 p-2">
+                            <p className="text-[10px] font-bold text-rose-700 mb-1">Failed Users</p>
+                            {run.recent_failures.map((f) => (
+                              <p key={`${run.id}-f-${f.user_id}`} className="text-[10px] text-rose-600">
+                                {f.name || `User ${f.user_id}`}{f.email ? ` (${f.email})` : ""}: {f.error_message}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                        {run.recent_skips?.length > 0 && (
+                          <div className="mt-2 rounded-md bg-amber-100/60 p-2">
+                            <p className="text-[10px] font-bold text-amber-700 mb-1">Skipped Users</p>
+                            {run.recent_skips.map((s) => (
+                              <p key={`${run.id}-s-${s.user_id}`} className="text-[10px] text-amber-700">
+                                {s.name || `User ${s.user_id}`}{s.email ? ` (${s.email})` : ""}: {s.error_message || "Already assigned"}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* === USERS TABLE (hidden when logs tab is active) === */}
+          {!showLogs && <div className="max-h-[380px] min-h-[240px] overflow-y-auto">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-2">
                 <Loader2 className="w-6 h-6 animate-spin text-app-primary2" />
@@ -502,10 +657,10 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
                 </tbody>
               </table>
             )}
-          </div>
+          </div>}
 
-          {/* Consistent Pagination matching DataTablePagination */}
-          <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 border-t border-slate-300/60 gap-4 bg-white">
+          {/* Consistent Pagination matching DataTablePagination — hidden on logs tab */}
+          {!showLogs && <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 border-t border-slate-300/60 gap-4 bg-white">
             {/* Left Side: Showing results count */}
             <div className="text-xs font-medium text-slate-400 text-left w-full sm:w-auto">
               Showing {rowCount > 0 ? startRow : 0}-{endRow} of {rowCount} users
@@ -598,9 +753,9 @@ export const AssignSelectiveUsersDialog = ({ open, onOpenChange, fitzone, onSucc
                 </Button>
               </div>
             </div>
-          </div>
+          </div>}
 
-          {/* Modal Footer with Assign All, Assign Selected, and Close */}
+          {/* Modal Footer with Assign All, Assign Selected, and Close — always visible */}
           <div className="px-6 py-3 border-t border-slate-300/60 bg-slate-50/50 flex items-center justify-between gap-3">
             {/* Left: Assign All Users Option */}
             <Button

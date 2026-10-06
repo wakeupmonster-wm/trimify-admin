@@ -21,9 +21,8 @@ import {
   deleteFitzone,
 } from "../store/fitzone.slice";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { getFitzoneManagementAPI, getFitzoneAssignmentRunsAPI } from "../services/fitzone.services";
+import { getFitzoneManagementAPI } from "../services/fitzone.services";
 import AssignSelectiveUsersDialog from "../components/AssignSelectiveUsersDialog";
 
 const formatLocalDateParam = (value) => {
@@ -97,7 +96,6 @@ const FitzoneManagementPage = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectiveAssignModal, setSelectiveAssignModal] = useState({ open: false, rowData: null });
   const [globalKpisData, setGlobalKpisData] = useState(null);
-  const [assignmentLogs, setAssignmentLogs] = useState({ open: false, row: null, runs: [], loading: false });
 
   useEffect(() => {
     let isMounted = true;
@@ -164,11 +162,6 @@ const FitzoneManagementPage = () => {
       setDeleteModal({ open: true, rowData: row });
     } else if (action === "assign") {
       setSelectiveAssignModal({ open: true, rowData: row });
-    } else if (action === "assignment-logs") {
-      setAssignmentLogs({ open: true, row, runs: [], loading: true });
-      getFitzoneAssignmentRunsAPI(row.id)
-        .then((response) => setAssignmentLogs({ open: true, row, runs: response?.runs || [], loading: false }))
-        .catch(() => setAssignmentLogs({ open: true, row, runs: [], loading: false }));
     }
   }, [navigate]);
 
@@ -397,22 +390,6 @@ const FitzoneManagementPage = () => {
         loading={isUpdating}
       />
 
-      <Dialog open={assignmentLogs.open} onOpenChange={(open) => setAssignmentLogs((current) => ({ ...current, open }))}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>Fitzone Assignment Logs — {assignmentLogs.row?.title}</DialogTitle></DialogHeader>
-          {assignmentLogs.loading ? <p className="text-sm text-slate-500">Loading assignment status…</p> : assignmentLogs.runs.length ? (
-            <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-1">
-              {assignmentLogs.runs.map((run) => <div key={run.id} className="rounded-lg border border-slate-200 p-3 text-xs">
-                <div className="flex items-center justify-between gap-3"><strong className="capitalize">{String(run.status || "queued").replace(/_/g, " ")}</strong><span className="text-slate-500">{run.processed_users || 0} / {run.total_users || 0} processed</span></div>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-slate-600"><span>Assigned: <b>{run.assigned_users || 0}</b></span><span>Skipped: <b>{run.skipped_users || 0}</b></span><span>Failed: <b className="text-red-600">{run.failed_users || 0}</b></span></div>
-                {run.failure_message && <p className="mt-2 text-red-600">{run.failure_message}</p>}
-                {run.recent_failures?.length > 0 && <div className="mt-3 rounded-md bg-red-50 p-2 text-red-700"><p className="font-semibold">Failed users</p>{run.recent_failures.map((failure) => <p key={`${run.id}-failed-${failure.user_id}`} className="mt-1">{failure.name || `User ${failure.user_id}`}{failure.email ? ` (${failure.email})` : ""}: {failure.error_message}</p>)}</div>}
-                {run.recent_skips?.length > 0 && <div className="mt-3 rounded-md bg-amber-50 p-2 text-amber-800"><p className="font-semibold">Skipped users</p>{run.recent_skips.map((skip) => <p key={`${run.id}-skipped-${skip.user_id}`} className="mt-1">{skip.name || `User ${skip.user_id}`}{skip.email ? ` (${skip.email})` : ""}: {skip.error_message || "Already assigned"}</p>)}</div>}
-              </div>)}
-            </div>
-          ) : <p className="text-sm text-slate-500">No assignment run has been recorded yet.</p>}
-        </DialogContent>
-      </Dialog>
       <AssignSelectiveUsersDialog
         open={selectiveAssignModal.open}
         onOpenChange={(open) => setSelectiveAssignModal((prev) => ({ ...prev, open }))}

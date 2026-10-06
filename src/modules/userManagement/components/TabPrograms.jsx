@@ -7,16 +7,30 @@ import {
   Pencil,
   Plus,
   Eye,
+  Trash2,
+  Ellipsis,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Pill, EmptyState } from "./UserProfileShared";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import EditFitzoneDialogForm from "./profile/EditFitzoneDialogForm";
 import AddFitzoneDialogForm from "./profile/AddFitzoneDialogForm";
+import AddProgramDialogForm from "./profile/AddProgramDialogForm";
+import ConfirmModal from "@/components/common/ConfirmModal";
 import { useDispatch } from "react-redux";
 import { fetchSingleUserProfile } from "../store/user.slice";
 import DashboardHead from "@/components/shared/dashboard.head";
 import { DataTablePagination } from "@/components/shared/datatable/DataTablePagination";
+import { deleteProgramAssignmentAPI } from "../services/user.services";
+import { toast } from "sonner";
 
 const getStatusTone = (status) => {
   switch (status?.toLowerCase()) {
@@ -41,6 +55,12 @@ export function TabPrograms({ data }) {
   const [editFitzoneOpen, setEditFitzoneOpen] = useState(false);
   const [addFitzoneOpen, setAddFitzoneOpen] = useState(false);
   const [selectedFitzone, setSelectedFitzone] = useState(null);
+
+  // Program assignment states
+  const [addProgramOpen, setAddProgramOpen] = useState(false);
+  const [confirmDeleteProgramOpen, setConfirmDeleteProgramOpen] = useState(false);
+  const [selectedProgramToDelete, setSelectedProgramToDelete] = useState(null);
+  const [deletingProgram, setDeletingProgram] = useState(false);
 
   // Pagination states
   const [fitzonePage, setFitzonePage] = useState(1);
@@ -101,6 +121,33 @@ export function TabPrograms({ data }) {
   const handleSuccess = () => {
     if (user?.id) {
       dispatch(fetchSingleUserProfile(user.id));
+    }
+  };
+
+  const handleDeleteProgram = async () => {
+    if (!selectedProgramToDelete || !user?.id) return;
+    const programId = selectedProgramToDelete.program_id ?? selectedProgramToDelete.id;
+    if (!programId) {
+      toast.error("Invalid program identifier");
+      return;
+    }
+    try {
+      setDeletingProgram(true);
+      const res = await deleteProgramAssignmentAPI(user.id, programId);
+      if (res?.status === "success") {
+        toast.success("Program assignment removed successfully");
+        setConfirmDeleteProgramOpen(false);
+        setSelectedProgramToDelete(null);
+        handleSuccess();
+      } else {
+        toast.error(res?.message || "Failed to remove program assignment");
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to remove program assignment",
+      );
+    } finally {
+      setDeletingProgram(false);
     }
   };
 
@@ -226,9 +273,17 @@ export function TabPrograms({ data }) {
               iconColor="text-slate-600"
               iconBg="bg-slate-100/50"
             />
-            <span className="inline-flex items-center ml-auto sm:ml-0 w-max border border-slate-200 bg-slate-100/50 rounded-xl text-muted-foreground px-3 py-1 font-bold text-[10px] shadow-sm">
-              {programs.length} Programs
-            </span>
+            <div className="flex items-center ml-auto sm:ml-0 gap-2">
+              <span className="inline-flex items-center w-max border border-slate-200 bg-slate-100/50 rounded-xl text-muted-foreground px-3 py-1 font-bold text-[10px] shadow-sm">
+                {programs.length} Programs
+              </span>
+              <button
+                onClick={() => setAddProgramOpen(true)}
+                className="inline-flex items-center justify-center rounded-md border border-app-primary2/30 bg-app-primary2/10 px-2 py-1 text-[11px] font-semibold text-app-primary2 hover:bg-app-primary2 hover:text-white transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1" /> Assign
+              </button>
+            </div>
           </div>
           <div className="p-0 bg-white">
             {programs.length > 0 ? (
@@ -288,18 +343,52 @@ export function TabPrograms({ data }) {
                             </Pill>
                           </td>
                           <td className="whitespace-nowrap px-5 py-3 text-center">
-                            <button
-                              onClick={() =>
-                                navigate(
-                                  `/admin/manage-program?search=${encodeURIComponent(p.title)}`,
-                                )
-                              }
-                              title="View Program"
-                              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
-                            >
-                              <Eye className="w-3 h-3 text-slate-500" />
-                              View
-                            </button>
+                            <div className="flex justify-center">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+                                  >
+                                    <Ellipsis className="h-4 w-4 text-foreground/90" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="w-36 p-2 rounded-xl border-slate-300/60 shadow-sm"
+                                >
+                                  <DropdownMenuLabel className="text-[11px] 3xl:text-xs text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                                    Actions
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuItem
+                                    className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
+                                    onClick={() =>
+                                      navigate(
+                                        `/admin/manage-program?search=${encodeURIComponent(p.title)}`,
+                                      )
+                                    }
+                                  >
+                                    <Eye className="w-3.5 h-3.5" />
+                                    View Program
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
+                                    onSelect={(e) => {
+                                      e.preventDefault();
+                                      setSelectedProgramToDelete(p);
+                                      setConfirmDeleteProgramOpen(true);
+                                    }}
+                                    onClick={() => {
+                                      setSelectedProgramToDelete(p);
+                                      setConfirmDeleteProgramOpen(true);
+                                    }}
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -327,6 +416,7 @@ export function TabPrograms({ data }) {
         </div>
       </div>
 
+      {/* Fitzone Dialogs */}
       <Dialog open={editFitzoneOpen} onOpenChange={setEditFitzoneOpen}>
         <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
           <EditFitzoneDialogForm
@@ -347,6 +437,33 @@ export function TabPrograms({ data }) {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Program Assignment Dialog */}
+      <Dialog open={addProgramOpen} onOpenChange={setAddProgramOpen}>
+        <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
+          <AddProgramDialogForm
+            userId={user?.id}
+            onClose={() => setAddProgramOpen(false)}
+            onSuccess={handleSuccess}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Remove Program Assignment Modal */}
+      <ConfirmModal
+        isOpen={confirmDeleteProgramOpen}
+        open={confirmDeleteProgramOpen}
+        onClose={() => {
+          setConfirmDeleteProgramOpen(false);
+          setSelectedProgramToDelete(null);
+        }}
+        onConfirm={handleDeleteProgram}
+        title="Delete Program Assignment"
+        message={`Are you sure you want to remove the enrollment for "${selectedProgramToDelete?.title || "this program"}" from this user?`}
+        type="danger"
+        confirmText="Delete"
+        loading={deletingProgram}
+      />
     </>
   );
 }

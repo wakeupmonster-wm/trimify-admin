@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Ellipsis, Edit, Trash2, UsersRound, ClipboardList } from "lucide-react";
+import { Ellipsis, Edit, Trash2, UsersRound } from "lucide-react";
 import { formatAppDate } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -186,15 +186,6 @@ export const getFitzoneManagementColumns = (onAction) => [
                 ? "Assign"
                 : "Complete setup first"}
             </DropdownMenuItem>
-            {row.original.latest_assignment_run && (
-              <DropdownMenuItem
-                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
-                onClick={() => onAction && onAction(row.original, "assignment-logs")}
-              >
-                <ClipboardList className="w-3.5 h-3.5" />
-                Assignment Logs
-              </DropdownMenuItem>
-            )}
             <DropdownMenuItem
               className="gap-2 cursor-pointer py-1.5 rounded-lg text-red-600 focus:bg-red-50 focus:text-red-700 font-semibold text-xs"
               onClick={() => onAction && onAction(row.original, "delete")}

@@ -122,7 +122,7 @@ const SubscriptionConfigPage = () => {
                 />
               </div>
 
-              <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
+            {/* <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto shrink-0 mt-2 sm:mt-4 md:mt-0">
                 <Button
                   onClick={() => setAddDialogOpen(true)}
                   className="w-full sm:w-auto flex-1 md:flex-none bg-app-primary2 hover:bg-app-primary3 text-white rounded-md px-4 h-10 flex items-center justify-center gap-2 text-xs font-semibold shadow-sm transition-all"
@@ -130,7 +130,7 @@ const SubscriptionConfigPage = () => {
                   <Plus className="w-4 h-4 shrink-0" />
                   <span className="whitespace-nowrap">Add Subscription</span>
                 </Button>
-              </div>
+              </div> */}
             </div>
           </Header>
 

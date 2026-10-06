@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Eye, Mail } from "lucide-react";
+import { Mail, Copy, Check, Ellipsis, Receipt, FileText } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 const STATUS_STYLE = {
   success: "bg-emerald-50 text-emerald-600",
@@ -13,6 +21,33 @@ const STATUS_STYLE = {
   disputed: "bg-orange-50 text-orange-600",
 };
 
+// Small copy button that shows a tick briefly after copying
+function CopyButton({ value }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = (e) => {
+    e.stopPropagation();
+    if (!value) return;
+    navigator.clipboard?.writeText(String(value)).catch(() => {});
+    setCopied(true);
+    toast.success("Transaction ID copied");
+    setTimeout(() => setCopied(false), 1800);
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title="Copy Transaction ID"
+      className="ml-1 shrink-0 inline-flex items-center justify-center w-5 h-5 rounded text-slate-400 hover:text-app-primary2 hover:bg-app-primary2/10 transition-colors"
+    >
+      {copied ? (
+        <Check className="w-3 h-3 text-emerald-500" />
+      ) : (
+        <Copy className="w-3 h-3" />
+      )}
+    </button>
+  );
+}
+
 export const getTransactionColumns = (onAction) => [
   {
     id: "sno",
@@ -21,7 +56,7 @@ export const getTransactionColumns = (onAction) => [
         SR.No
       </div>
     ),
-    size: 80,
+    size: 70,
     minSize: 60,
     cell: ({ row, table }) => {
       const { pageIndex = 0, pageSize = 10 } =
@@ -33,6 +68,32 @@ export const getTransactionColumns = (onAction) => [
       );
     },
     enableSorting: false,
+  },
+  {
+    id: "transaction_id",
+    accessorKey: "transaction_id",
+    header: () => (
+      <div className="text-[10px] font-bold uppercase tracking-wider text-left">
+        Transaction ID
+      </div>
+    ),
+    size: 180,
+    minSize: 140,
+    cell: ({ row }) => {
+      const txId = row.original.transaction_id;
+      if (!txId) return <span className="text-slate-400 text-[11px]">—</span>;
+      return (
+        <div className="flex items-center gap-0.5 min-w-0">
+          <span
+            className="text-[11px] font-semibold text-slate-700 truncate max-w-[130px]"
+            title={txId}
+          >
+            {txId}
+          </span>
+          <CopyButton value={txId} />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "created_at",
@@ -128,8 +189,8 @@ export const getTransactionColumns = (onAction) => [
         Amount
       </div>
     ),
-    size: 160,
-    minSize: 150,
+    size: 130,
+    minSize: 110,
     cell: ({ row }) => (
       <div className="text-[13px] font-black text-slate-900 tabular-nums">
         $
@@ -210,25 +271,59 @@ export const getTransactionColumns = (onAction) => [
         Action
       </div>
     ),
-    size: 100,
-    minSize: 80,
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-slate-600 hover:text-app-primary2 hover:bg-app-primary2/10 rounded-full transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            onAction && onAction(row.original, "view");
-          }}
-          title="View User"
-          aria-label="View User"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
-      </div>
-    ),
+    size: 80,
+    minSize: 70,
+    cell: ({ row }) => {
+      const txn = row.original;
+      const hasInvoice = !!txn.invoice_url;
+      return (
+        <div className="flex justify-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Ellipsis className="h-4 w-4 text-foreground/90" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-40 p-2 rounded-xl border-slate-300/60 shadow-sm"
+            >
+              <DropdownMenuLabel className="text-[11px] text-foreground/80 font-bold uppercase tracking-widest mb-1 px-2">
+                Actions
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer py-1.5 rounded-lg focus:bg-slate-100 focus:text-slate-900 font-semibold text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAction && onAction(txn, "view-billing");
+                }}
+              >
+                <Receipt className="w-3.5 h-3.5" />
+                View Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className={cn(
+                  "gap-2 cursor-pointer py-1.5 rounded-lg font-semibold text-xs",
+                  hasInvoice
+                    ? "focus:bg-slate-100 focus:text-slate-900"
+                    : "opacity-40 pointer-events-none",
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (hasInvoice) onAction && onAction(txn, "view-invoice");
+                }}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                View Invoice
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
   },
 ];

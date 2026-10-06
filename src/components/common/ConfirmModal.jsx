@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 const ConfirmModal = ({
   isOpen,
+  open,
   onClose,
   onConfirm,
   title = "Are you sure?",
@@ -24,7 +25,8 @@ const ConfirmModal = ({
   closeOnOutsideClick = true,
   closeOnBackdropClick,
 }) => {
-  if (!isOpen) return null;
+  const isModalOpen = isOpen !== undefined ? isOpen : Boolean(open);
+  if (!isModalOpen) return null;
 
   const isOutsideClickAllowed =
     closeOnBackdropClick !== undefined

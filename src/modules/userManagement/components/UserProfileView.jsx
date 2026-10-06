@@ -135,8 +135,8 @@ const TABS = [
 /* =========================================================================
    Main component
 ========================================================================= */
-export default function UserProfileView({ user, onBack, loading }) {
-  const [tab, setTab] = useState("overview");
+export default function UserProfileView({ user, onBack, loading, initialTab }) {
+  const [tab, setTab] = useState(initialTab || "overview");
   const dispatch = useDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

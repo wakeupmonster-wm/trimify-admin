@@ -31,4 +31,12 @@ export const USER = {
   ADD_FITZONE_ASSIGNMENT: (userId) => `${ADMIN}/users/${userId}/fitzone-assignments`,
   /** GET — Get available (unassigned) fitzone categories */
   AVAILABLE_FITZONE_CATEGORIES: (userId) => `${ADMIN}/users/${userId}/available-fitzone-categories`,
-}
+
+  // ───────────── Per-user Program Assignment CRUD ────────────────────
+  /** DELETE — Remove a program assignment */
+  DELETE_PROGRAM_ASSIGNMENT: (userId, programId) => `${ADMIN}/users/${userId}/program-assignments/${programId}`,
+  /** POST — Add a new program assignment */
+  ADD_PROGRAM_ASSIGNMENT: (userId) => `${ADMIN}/users/${userId}/program-assignments`,
+  /** GET — Get available (unassigned) programs */
+  AVAILABLE_PROGRAMS: (userId) => `${ADMIN}/users/${userId}/available-programs`,
+};
