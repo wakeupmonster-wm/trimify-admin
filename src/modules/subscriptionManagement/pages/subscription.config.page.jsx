@@ -88,8 +88,8 @@ const SubscriptionConfigPage = () => {
   };
 
   // ── Edit Plan ─────────────────────────────────────────────────────
-  const handleEditSubmit = async ({ id, subtitle, price, features }) => {
-    const result = await dispatch(updateSubscriptionPlan({ id, subtitle, price, features }));
+  const handleEditSubmit = async ({ id, title, subtitle, price, features }) => {
+    const result = await dispatch(updateSubscriptionPlan({ id, title, subtitle, price, features }));
     if (updateSubscriptionPlan.fulfilled.match(result)) {
       toast.success("Subscription plan updated successfully!");
       setEditDialogOpen(false);

@@ -12,11 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 const EMPTY_FORM = {
+  title: "",
   subtitle: "",
   price: "",
 };
 
 const FIELD_ERRORS = {
+  title: "",
   subtitle: "",
   price: "",
   features: "",
@@ -37,6 +39,7 @@ export function SubscriptionEditDialog({
   useEffect(() => {
     if (open && editData) {
       setFormData({
+        title: editData.title || "",
         subtitle: editData.subtitle || "",
         price:
           editData.price !== undefined && editData.price !== null
@@ -99,6 +102,10 @@ export function SubscriptionEditDialog({
     const errors = { ...FIELD_ERRORS };
     let isValid = true;
 
+    if (!formData.title.trim()) {
+      errors.title = "Plan title is required.";
+      isValid = false;
+    }
     if (!formData.subtitle.trim()) {
       errors.subtitle = "Sub title is required.";
       isValid = false;
@@ -123,6 +130,7 @@ export function SubscriptionEditDialog({
     if (onSubmit && editData) {
       onSubmit({
         id: editData.id,
+        title: formData.title.trim(),
         subtitle: formData.subtitle.trim(),
         price: parseFloat(formData.price),
         features: featuresList.join(", "),
@@ -153,16 +161,23 @@ export function SubscriptionEditDialog({
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Plan Title — read only */}
+            {/* Plan Title — editable */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold text-slate-800">
-                Plan Title
+                Plan Title <span className="text-red-500">*</span>
               </Label>
               <Input
-                value={editData.title || ""}
-                disabled
-                className="h-10 text-sm font-medium border-slate-300/60 bg-slate-50 text-slate-500 cursor-not-allowed"
+                name="title"
+                placeholder="e.g. 1 Month Plan"
+                value={formData.title}
+                onChange={handleChange}
+                className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 font-medium border-slate-300/60 ${fieldErrors.title ? "border-red-400 focus-visible:ring-red-400" : ""}`}
               />
+              {fieldErrors.title && (
+                <p className="text-[11px] text-red-500 font-medium">
+                  {fieldErrors.title}
+                </p>
+              )}
             </div>
 
             {/* Sub Title — editable */}
@@ -284,7 +299,7 @@ export function SubscriptionEditDialog({
           </div>
 
           <p className="mt-4 text-[11px] text-slate-400 font-medium">
-            Plan title and duration are fixed. Sub title, price, and features can be updated.
+            Duration is fixed. Plan title, sub title, price, and features can be updated.
           </p>
 
           <div className="mt-8 flex justify-end gap-3">

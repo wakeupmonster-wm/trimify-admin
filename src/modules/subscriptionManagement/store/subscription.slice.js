@@ -46,9 +46,11 @@ export const createSubscriptionPlan = createAsyncThunk(
 
 export const updateSubscriptionPlan = createAsyncThunk(
   "subscriptionManagement/updateSubscriptionPlan",
-  async ({ id, subtitle, price, features }, { rejectWithValue }) => {
+  async ({ id, title, subtitle, price, features }, { rejectWithValue }) => {
     try {
-      const response = await updateSubscriptionPlanAPI(id, { subtitle, price, features });
+      const payload = { subtitle, price, features };
+      if (title !== undefined) payload.title = title;
+      const response = await updateSubscriptionPlanAPI(id, payload);
       if (response?.status === "success") {
         return response.data;
       }

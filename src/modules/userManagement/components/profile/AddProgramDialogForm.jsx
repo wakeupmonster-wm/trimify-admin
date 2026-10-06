@@ -128,7 +128,7 @@ const AddProgramDialogForm = ({ userId, onClose, onSuccess }) => {
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs font-bold text-slate-700">
-              End Date <span className="text-[10px] text-slate-400 font-normal">(Optional)</span>
+              End Date
             </Label>
             <input
               type="date"
