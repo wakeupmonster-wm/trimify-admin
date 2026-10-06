@@ -24,13 +24,14 @@ export default function RequestResetEmailForm() {
 
   const onSubmit = async (data) => {
     try {
+      const email = data.email?.trim() || "";
       const response = await dispatch(
-        requestOtpThunk({ email: data.email }),
+        requestOtpThunk({ email }),
       ).unwrap();
 
       // Pass the email to the next route (verify OTP step)
       navigate("/auth/forgot-password/verify-email", {
-        state: { email: data.email },
+        state: { email },
       });
 
       toast.success(response.message || "OTP Sent!", {
