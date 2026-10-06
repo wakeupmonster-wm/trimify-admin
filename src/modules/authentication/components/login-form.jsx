@@ -179,7 +179,7 @@ export function LoginForm({ className, ...props }) {
             to="/auth/forgot-password"
             className="text-[#3D3D3D] hover:text-[#121212] hover:underline transition-colors"
           >
-            Forgot Password
+            Forgot Password?
           </Link>
         </div>
 
