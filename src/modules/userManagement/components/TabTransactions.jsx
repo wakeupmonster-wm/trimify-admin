@@ -47,8 +47,9 @@ export function TabTransactions({ data }) {
       case "success":
         return "success";
       case "failed":
-      case "disputed":
         return "danger";
+      case "disputed":
+        return "disputed";
       case "pending":
         return "warning";
       case "refunded":

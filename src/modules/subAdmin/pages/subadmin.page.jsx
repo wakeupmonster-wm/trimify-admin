@@ -29,6 +29,7 @@ import {
   toggleSubAdminStatus,
   deleteSubAdmin,
 } from "../store/sub.admin.slice";
+import { getSubAdminManagementAPI } from "../services/sub.admin.services";
 import { Button } from "@/components/ui/button";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { formatAppDate } from "@/lib/utils";
@@ -49,7 +50,8 @@ const downloadCSV = (data, filename = "sub_admins.csv") => {
   ];
   const rows = data.map((item, index) => {
     let displayRole = "-";
-    if (item.role == 1) displayRole = "WhiteListing User";
+    if (item.role_name) displayRole = item.role_name;
+    else if (item.role == 1) displayRole = "WhiteListing User";
     else if (item.role == 0) displayRole = "Sub-Admin User";
     else if (item.role) displayRole = item.role;
 
@@ -141,31 +143,87 @@ const SubAdminManagementPage = () => {
   const [exportLoading, setExportLoading] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     setExportLoading(true);
-    setExportProgress(0);
+    setExportProgress(15);
 
-    const duration = 1500;
-    const intervalTime = 50;
-    const steps = duration / intervalTime;
-    let currentStep = 0;
+    try {
+      const exportParams = {
+        all: 1,
+        search: debouncedSearchTerm || undefined,
+        role: roleFilter || undefined,
+        status: statusFilter || undefined,
+        designation: designationFilter || undefined,
+      };
 
-    const interval = setInterval(() => {
-      currentStep++;
-      const progress = Math.min(Math.round((currentStep / steps) * 100), 100);
-      setExportProgress(progress);
+      setExportProgress(35);
+      const response = await getSubAdminManagementAPI(exportParams);
 
-      if (progress === 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          downloadCSV(subAdmins);
-          setTimeout(() => {
-            setExportLoading(false);
-            setExportProgress(0);
-          }, 2000);
-        }, 300);
+      if (!response || response.status !== "success") {
+        throw new Error(
+          response?.message || "Failed to fetch sub-admin records for export."
+        );
       }
-    }, intervalTime);
+
+      let allData = Array.isArray(response.subAdmins)
+        ? [...response.subAdmins]
+        : [];
+      setExportProgress(65);
+
+      // In case backend is strictly paginated and total items exceed returned count
+      const totalCount = response.pagination?.total || allData.length;
+      const totalPages =
+        response.pagination?.totalPage ||
+        response.pagination?.last_page ||
+        1;
+
+      if (allData.length < totalCount && totalPages > 1) {
+        const remainingPagePromises = [];
+        for (let p = 2; p <= totalPages; p++) {
+          remainingPagePromises.push(
+            getSubAdminManagementAPI({
+              ...exportParams,
+              page: p,
+              limit: 50,
+            })
+          );
+        }
+
+        const remainingResults = await Promise.all(remainingPagePromises);
+        remainingResults.forEach((res) => {
+          if (res?.status === "success" && Array.isArray(res.subAdmins)) {
+            allData = allData.concat(res.subAdmins);
+          }
+        });
+      }
+
+      setExportProgress(90);
+
+      if (!allData.length) {
+        toast.error("No sub-admin data found to export.");
+        setExportLoading(false);
+        setExportProgress(0);
+        return;
+      }
+
+      setExportProgress(100);
+
+      setTimeout(() => {
+        downloadCSV(allData);
+        toast.success(
+          `Successfully exported ${allData.length} sub-admin records.`
+        );
+        setTimeout(() => {
+          setExportLoading(false);
+          setExportProgress(0);
+        }, 1200);
+      }, 400);
+    } catch (error) {
+      console.error("Export sub-admin error:", error);
+      toast.error(error.message || "An error occurred while exporting CSV.");
+      setExportLoading(false);
+      setExportProgress(0);
+    }
   };
 
   // KPIs come straight from the backend (`response.kpis`) — they're computed

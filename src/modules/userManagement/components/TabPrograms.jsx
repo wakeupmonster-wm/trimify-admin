@@ -443,6 +443,7 @@ export function TabPrograms({ data }) {
         <DialogContent className="sm:max-w-[450px] p-0 border-none bg-transparent shadow-none">
           <AddProgramDialogForm
             userId={user?.id}
+            enrolledPrograms={programs}
             onClose={() => setAddProgramOpen(false)}
             onSuccess={handleSuccess}
           />

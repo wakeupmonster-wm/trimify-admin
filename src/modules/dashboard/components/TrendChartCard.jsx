@@ -181,6 +181,7 @@ function FocusTimelineUI({
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [chartKey, setChartKey] = useState(0);
+  const isSinglePoint = data.length === 1;
 
   const selectedIndex = hoveredIndex ?? maxIndex;
 
@@ -190,9 +191,12 @@ function FocusTimelineUI({
   const max = Math.max(...values, 0);
   const spread = max - min;
   const domainMin = Math.max(0, min - spread * 0.35);
-  const domainMax = max + spread * 0.2;
+  // A one-day range has no spread, so reserve headroom for the value label
+  // instead of pinning the only value to the top of the chart.
+  const domainMax = max + (spread * 0.2 || Math.max(max * 0.2, 1));
 
   // X-axis label interval
+  const EmptyIcon = Icon || BarChart3;
   const xInterval =
     data.length <= 8 ? 0 : Math.max(0, Math.ceil(data.length / 7) - 1);
 
@@ -209,8 +213,20 @@ function FocusTimelineUI({
         />
       </div>
 
-      <div className="flex-1 flex flex-col px-6 pt-4 pb-3">
-        {hasData ? (
+      {!hasData ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[220px] select-none">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+            <EmptyIcon className="h-6 w-6" strokeWidth={2} />
+          </div>
+          <h4 className="text-sm font-bold text-slate-800 tracking-tight">
+            No data for selected period
+          </h4>
+          <p className="mt-1 max-w-[280px] text-xs font-medium text-slate-500 leading-relaxed">
+            No activity recorded for this timeframe. Try choosing a different date range.
+          </p>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col px-6 pt-4 pb-3">
           <>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-baseline gap-2">
@@ -245,6 +261,20 @@ function FocusTimelineUI({
                     <stop offset="50%" stopColor="#007FC0" stopOpacity={0.05} />
                     <stop offset="100%" stopColor="#007FC0" stopOpacity={0} />
                   </linearGradient>
+                  <linearGradient id="dauBarGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#007FC0" stopOpacity={1} />
+                    <stop offset="100%" stopColor="#007FC0" stopOpacity={0.1} />
+                  </linearGradient>
+                  <pattern
+                    id="dauBarHatch"
+                    width="6"
+                    height="6"
+                    patternTransform="rotate(45)"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect width="6" height="6" fill="#eef1f5" />
+                    <line x1="0" y1="0" x2="0" y2="6" stroke="#dbe2ea" strokeWidth="2.5" />
+                  </pattern>
                 </defs>
                 <CartesianGrid
                   vertical={false}
@@ -287,7 +317,7 @@ function FocusTimelineUI({
                 />
                 <ChartTooltip
                   defaultIndex={selectedIndex ?? maxIndex}
-                  cursor={{
+                  cursor={isSinglePoint ? false : {
                     stroke: "#cbd5e1",
                     strokeWidth: 1,
                     strokeDasharray: "4 4",
@@ -327,43 +357,47 @@ function FocusTimelineUI({
                     );
                   }}
                 />
-                <Area
-                  type="monotone"
-                  dataKey={series[0]?.key}
-                  stroke="#007FC0"
-                  strokeWidth={2.5}
-                  fill="url(#dauGradient)"
-                  dot={false}
-                  isAnimationActive={false}
-                  activeDot={{
-                    r: 5,
-                    fill: "#007FC0",
-                    stroke: "#ffffff",
-                    strokeWidth: 2.5,
-                  }}
-                />
+                {isSinglePoint ? (
+                  <Bar
+                    dataKey={series[0]?.key}
+                    maxBarSize={56}
+                    isAnimationActive={false}
+                    shape={(shapeProps) => (
+                      <PillBar
+                        {...shapeProps}
+                        isActive={shapeProps.index === selectedIndex}
+                        color="#007FC0"
+                        gradientId="dauBarGradient"
+                        patternId="dauBarHatch"
+                        dataLength={data.length}
+                      />
+                    )}
+                  />
+                ) : (
+                  <Area
+                    type="monotone"
+                    dataKey={series[0]?.key}
+                    stroke="#007FC0"
+                    strokeWidth={2.5}
+                    fill="url(#dauGradient)"
+                    dot={false}
+                    isAnimationActive={false}
+                    activeDot={{
+                      r: 5,
+                      fill: "#007FC0",
+                      stroke: "#ffffff",
+                      strokeWidth: 2.5,
+                    }}
+                  />
+                )}
               </ComposedChart>
-            </ChartContainer>
-          </div>
-        </>
-      ) : (
-        <div
-          className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl select-none`}
-        >
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
-            <BarChart3 className="h-6 w-6" strokeWidth={2} />
-          </div>
-          <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
-            No data for selected period
-          </h4>
-          <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
-            No activity recorded for this timeframe. Try choosing a different date range.
-          </p>
+              </ChartContainer>
+            </div>
+          </>
         </div>
       )}
     </div>
-  </div>
-);
+  );
 }
 
 function StandardTrendChartUI({
@@ -415,6 +449,7 @@ function StandardTrendChartUI({
 
   // Every series is a bar → use the reference-design pill treatment.
   // Any area/line present → fall through to the original chart untouched.
+  const EmptyIcon = Icon || BarChart3;
   const isPureBarChart =
     series.length > 0 && series.every((s) => s.type === "bar");
 
@@ -431,8 +466,20 @@ function StandardTrendChartUI({
         />
       </div>
 
-      <div className="flex-1 flex flex-col px-6 pt-4 pb-3">
-        {hasData ? (
+      {!hasData ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[220px] select-none">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
+            <EmptyIcon className="h-6 w-6" strokeWidth={2} />
+          </div>
+          <h4 className="text-sm font-bold text-slate-800 tracking-tight">
+            No data for selected period
+          </h4>
+          <p className="mt-1 max-w-[280px] text-xs font-medium text-slate-500 leading-relaxed">
+            No records found for this timeframe. Try choosing a different date range.
+          </p>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col px-6 pt-4 pb-3">
           <ChartContainer config={chartConfig} className={`w-full ${height}`}>
             <ComposedChart
               data={data}
@@ -706,22 +753,8 @@ function StandardTrendChartUI({
               })}
             </ComposedChart>
           </ChartContainer>
-        ) : (
-          <div
-            className={`w-full ${height} flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-200/80 rounded-2xl select-none`}
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-app-primary2/10 border border-app-primary2/20 text-app-primary2 shadow-sm mb-3">
-              <BarChart3 className="h-6 w-6" strokeWidth={2} />
-            </div>
-            <h4 className="text-xs sm:text-sm font-bold text-slate-800 tracking-tight">
-              No data for selected period
-            </h4>
-            <p className="mt-1 max-w-[260px] text-[11px] font-medium text-slate-500 leading-relaxed">
-              No records found for this timeframe. Try choosing a different date range.
-            </p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

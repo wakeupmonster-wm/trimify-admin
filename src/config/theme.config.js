@@ -128,11 +128,11 @@ export const SECTION_CHART_COLORS = {
     // Trends: Program Enrollment Split (Donut Chart — ordered by weightage)
     programSplit: [
       PRIMARY_COLORS.Primary700,     // #007fc0 (Rank 1 - Highest Weightage / Primary)
-      SECONDARY_COLORS.Secondary500, // #3dc1ff (Rank 2 - Secondary)
+      PRIMARY_COLORS.Primary600,     // #009dee (Rank 2)
       PRIMARY_COLORS.Primary500,     // #1cb2ff (Rank 3)
       PRIMARY_COLORS.Primary400,     // #49c1ff (Rank 4)
       PRIMARY_COLORS.Primary300,     // #77d1ff (Rank 5)
-      PRIMARY_COLORS.Primary200,     // #a4e0ff (Rank 6)
+      PRIMARY_COLORS.Primary200,     // #a4e0ff (Rank 6 - Lowest Weightage)
     ],
   },
 
@@ -177,7 +177,7 @@ export const STATUS_COLORS = {
   churned: "hsl(0, 84%, 60%)",
   pending: "hsl(38, 92%, 50%)",  // Amber / Yellow
   revoked: "hsl(0, 84%, 60%)", // Red
-  refunded: "hsl(0, 84%, 60%)", // Red
+  refunded: "hsl(258, 90%, 66%)", // Violet / Purple
   disputed: "hsl(24, 94%, 50%)",  // Orange
 };
 
@@ -192,7 +192,7 @@ export const STATUS_BADGE_STYLE = {
   churned: "bg-rose-500/10 text-rose-600",
   pending: "bg-amber-500/10 text-amber-600",
   revoked: "bg-rose-500/10 text-rose-600",
-  refunded: "bg-rose-500/10 text-rose-600",
+  refunded: "bg-violet-500/10 text-violet-600",
   disputed: "bg-orange-500/10 text-orange-600",
   inactive: "bg-slate-500/10 text-slate-600",
 };

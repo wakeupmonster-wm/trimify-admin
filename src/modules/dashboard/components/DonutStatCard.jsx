@@ -183,8 +183,15 @@ const DonutStatCard = ({
     const GREY = "#D9E0E6";
 
     const sorted = [...data].sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+    // Assign colours by enrollment-count tier, not by list position. Programs
+    // with the same enrollment count should share the same visual weight.
+    const enrollmentTiers = [
+      ...new Set(sorted.map((d) => Number(d.value) || 0)),
+    ].sort((a, b) => b - a);
+    const tierIndexByCount = new Map(
+      enrollmentTiers.map((count, index) => [count, index]),
+    );
 
-    let activeCount = 0;
     processedData = sorted.map((d) => {
       const lbl = (d.label || d.name || "").toLowerCase();
       const isOther =
@@ -198,8 +205,9 @@ const DonutStatCard = ({
         color = GREY;
       } else {
         color =
-          PROGRAM_BLUES[activeCount % PROGRAM_BLUES.length] || "#007fc0";
-        activeCount++;
+          PROGRAM_BLUES[
+            tierIndexByCount.get(Number(d.value) || 0) % PROGRAM_BLUES.length
+          ] || "#007fc0";
       }
       return { ...d, color };
     });
@@ -616,7 +624,7 @@ const DonutStatCard = ({
 
               {/* Total Users Label in the center bottom of the semi-circle */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center pointer-events-none select-none flex flex-col items-center justify-center z-0">
-                <span className="text-3xl font-extrabold text-[#007fc0] tracking-tight leading-none">
+                <span className="text-2xl font-black text-slate-900 tracking-tight leading-none tabular-nums">
                   {total.toLocaleString()}
                 </span>
                 <span className="text-[10px] font-bold text-[#6B7785] tracking-[0.12em] uppercase mt-1">
