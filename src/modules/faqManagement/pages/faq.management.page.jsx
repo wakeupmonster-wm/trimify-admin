@@ -1,6 +1,6 @@
 import { Container } from "@/components/common/container";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import {
   DataTable,
   DataTableFilters,
@@ -44,6 +44,7 @@ const FaqManagementPage = () => {
     loading,
     error,
     pagination: serverPagination,
+    kpis,
   } = useSelector((state) => state.faqManagement);
 
   const [globalFilter, setGlobalFilter] = useState("");
@@ -70,23 +71,35 @@ const FaqManagementPage = () => {
   const deleteLoading = isDeleting;
   const toggleLoading = isUpdating;
 
-  const refetchFaqs = () =>
+  const refetchFaqs = useCallback(() => {
     dispatch(
       fetchFaqList({
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         search: debouncedSearchTerm,
+        status: statusFilter,
       }),
     );
-
-  useEffect(() => {
-    refetchFaqs();
   }, [
     dispatch,
     pagination.pageIndex,
     pagination.pageSize,
     debouncedSearchTerm,
+    statusFilter,
   ]);
+
+  useEffect(() => {
+    refetchFaqs();
+  }, [refetchFaqs]);
+
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }, [debouncedSearchTerm]);
+
+  const handleStatusFilterChange = (val) => {
+    setStatusFilter(val);
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  };
 
   useEffect(() => {
     if (error) {
@@ -212,29 +225,13 @@ const FaqManagementPage = () => {
 
   const columns = useMemo(() => getFaqManagementColumns(handleAction), []);
 
-  const displayFaqs = useMemo(() => {
-    let list = faqs && faqs.length > 0 ? faqs : [];
-    if (statusFilter === "Active") {
-      list = list.filter((f) => f.status === "Active");
-    } else if (statusFilter === "Inactive") {
-      list = list.filter((f) => f.status !== "Active");
-    } else if (statusFilter === "Recent") {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      list = list.filter(
-        (f) => new Date(f.updatedAt || f.createdAt) >= thirtyDaysAgo,
-      );
-    }
-    return list;
-  }, [faqs, statusFilter]);
-
   const filterConfig = [
     {
       type: "select",
       id: "statusFilter",
       label: "Status",
       value: statusFilter,
-      onChange: setStatusFilter,
+      onChange: handleStatusFilterChange,
       options: [
         { label: "Active", value: "Active" },
         { label: "Inactive", value: "Inactive" },
@@ -244,61 +241,55 @@ const FaqManagementPage = () => {
     },
   ];
 
-  // KPI Calculations
+  // All-time KPI Calculations from server
   const kpiItems = useMemo(() => {
-    const list = faqs || [];
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const total = serverPagination?.total || list.length;
-    const active = list.filter((f) => f.status === "Active").length;
-    const inactive = list.filter((f) => f.status !== "Active").length;
-    const recent = list.filter(
-      (f) => new Date(f.updatedAt || f.createdAt) >= thirtyDaysAgo,
-    ).length;
+    const total = kpis?.total ?? serverPagination?.total ?? (faqs?.length || 0);
+    const active = kpis?.active ?? 0;
+    const inactive = kpis?.inactive ?? 0;
+    const recent = kpis?.recent ?? 0;
 
     return [
       {
         label: "Total FAQs",
-        value: total,
+        value: total.toLocaleString(),
         icon: MessageCircle,
         tone: "blue",
         description: "All questions & answers",
-        onClick: () => setStatusFilter(""),
+        onClick: () => handleStatusFilterChange(""),
         isSelected: statusFilter === "",
       },
       {
         label: "Active FAQs",
-        value: active,
+        value: active.toLocaleString(),
         icon: CheckCircle,
         tone: "emerald",
         description: "Currently visible",
         onClick: () =>
-          setStatusFilter((prev) => (prev === "Active" ? "" : "Active")),
+          handleStatusFilterChange(statusFilter === "Active" ? "" : "Active"),
         isSelected: statusFilter === "Active",
       },
       {
         label: "Inactive FAQs",
-        value: inactive,
+        value: inactive.toLocaleString(),
         icon: EyeOff,
         tone: "amber",
         description: "Hidden from users",
         onClick: () =>
-          setStatusFilter((prev) => (prev === "Inactive" ? "" : "Inactive")),
+          handleStatusFilterChange(statusFilter === "Inactive" ? "" : "Inactive"),
         isSelected: statusFilter === "Inactive",
       },
       {
         label: "Recently Updated",
-        value: recent,
+        value: recent.toLocaleString(),
         icon: RefreshCw,
         tone: "indigo",
         description: "Modified in last 30 days",
         onClick: () =>
-          setStatusFilter((prev) => (prev === "Recent" ? "" : "Recent")),
+          handleStatusFilterChange(statusFilter === "Recent" ? "" : "Recent"),
         isSelected: statusFilter === "Recent",
       },
     ];
-  }, [faqs, serverPagination?.total, statusFilter]);
+  }, [kpis, serverPagination?.total, faqs?.length, statusFilter]);
 
   return (
     <Container>
@@ -434,14 +425,8 @@ const FaqManagementPage = () => {
         <div className="w-full min-w-0 flex-1">
           <DataTable
             columns={columns}
-            data={displayFaqs}
-            rowCount={
-              statusFilter
-                ? displayFaqs?.length || 0
-                : serverPagination
-                  ? serverPagination.total
-                  : displayFaqs?.length || 0
-            }
+            data={faqs || []}
+            rowCount={serverPagination ? serverPagination.total : faqs?.length || 0}
             pagination={pagination}
             onPaginationChange={setPagination}
             globalFilter={globalFilter}
@@ -456,7 +441,7 @@ const FaqManagementPage = () => {
             activeFiltersChildren={
               <DataTableActiveChips
                 filterConfig={filterConfig}
-                onClearAll={() => setStatusFilter("")}
+                onClearAll={() => handleStatusFilterChange("")}
               />
             }
           />

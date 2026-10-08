@@ -9,6 +9,7 @@ export const fetchFaqList = createAsyncThunk(
       if (response && response.status === "success") {
         return {
           faqs: response.faqs || response.data?.faqs || [],
+          kpis: response.kpis || response.data?.kpis || null,
           pagination: {
             page: response.pagination?.current_page || response.data?.pagination?.current_page || 1,
             limit: 10,
@@ -83,6 +84,7 @@ export const deleteFaq = createAsyncThunk(
 
 const initialState = {
   faqs: [],
+  kpis: null,
   pagination: null,
   loading: false,
   error: null,
@@ -104,9 +106,11 @@ const faqSlice = createSlice({
         if (resData.faqs) {
           state.faqs = resData.faqs;
           state.pagination = resData.pagination || null;
+          state.kpis = resData.kpis || null;
         } else {
           state.faqs = resData.data?.data || resData.data || [];
           state.pagination = resData.data?.pagination || resData.pagination || null;
+          state.kpis = resData.data?.kpis || resData.kpis || null;
         }
       })
       .addCase(fetchFaqList.rejected, (state, action) => {
