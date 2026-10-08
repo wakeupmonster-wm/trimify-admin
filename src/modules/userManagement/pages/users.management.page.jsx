@@ -34,7 +34,7 @@ const ACTIVITY_FILTER_OPTIONS = [
   { label: "Missed Water Logs", value: "missed_water_logs" },
 ];
 
-const USER_SEARCH_STORAGE_KEY = "userManagementGlobalFilter";
+let inMemoryUserSearch = "";
 
 const getFilterValue = (filterId, options) =>
   options.find(
@@ -65,14 +65,15 @@ const UsersManagementPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [globalFilter, setGlobalFilterState] = useState(
-    () => sessionStorage.getItem(USER_SEARCH_STORAGE_KEY) || "",
-  );
+  const [globalFilter, setGlobalFilterState] = useState(() => {
+    sessionStorage.removeItem("userManagementGlobalFilter");
+    return inMemoryUserSearch;
+  });
   const setGlobalFilter = useCallback((nextValue) => {
     setGlobalFilterState((currentValue) => {
       const value =
         typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
-      sessionStorage.setItem(USER_SEARCH_STORAGE_KEY, value || "");
+      inMemoryUserSearch = value || "";
       return value || "";
     });
   }, []);
