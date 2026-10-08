@@ -160,6 +160,53 @@ const AddNutritionPage = () => {
     toast.success("Food image replaced successfully.");
   };
 
+  const applyGeneratedData = (item) => {
+    const imageUrl = getImageUrlFromResponse(item);
+    setFormData((current) => {
+      const next = { ...current };
+      if (imageUrl) next.image = imageUrl;
+
+      const p = item.Meal_Protien_In_gm ?? item.protein;
+      if (p !== undefined && p !== null && p !== '') next.protein = String(p);
+
+      const c = item.Meal_Carbs_In_gm ?? item.carbs;
+      if (c !== undefined && c !== null && c !== '') next.carbs = String(c);
+
+      const cal = item.Meal_Calories_In_gm ?? item.calories;
+      if (cal !== undefined && cal !== null && cal !== '') next.calories = String(cal);
+
+      const f = item.Meal_Fats_In_gm ?? item.fats;
+      if (f !== undefined && f !== null && f !== '') next.fats = String(f);
+
+      const desc = item.Meal_Description ?? item.description;
+      if (desc) next.description = desc;
+
+      const type = item.Meal_Type ?? item.meal_type;
+      if (type) next.Meal_Type = String(type).toLowerCase();
+
+      const serving = item.Meal_Serving ?? item.meal_serving;
+      if (serving !== undefined && serving !== null && serving !== '') next.Meal_Serving = String(serving);
+
+      const ingredients = item.Meal_ingredients ?? item.meal_ingredients;
+      if (ingredients) {
+        const parsedIng = parseArrayToString(ingredients);
+        if (parsedIng) next.meal_ingredients = parsedIng;
+      }
+
+      const instructions = item.Meal_instructions ?? item.meal_instructions ?? item.Meal_description ?? item.meal_description;
+      if (instructions) {
+        const parsedInst = parseArrayToString(instructions);
+        if (parsedInst) next.meal_description = parsedInst;
+      }
+
+      return next;
+    });
+
+    setErrors({});
+    setIsImageRegenerating(false);
+    toast.success('Food details and image generated successfully.');
+  };
+
   const pollForGeneratedImage = async (previousImage, attempt = 0) => {
     try {
       const response = await getNutritionListAPI({
@@ -271,7 +318,7 @@ const AddNutritionPage = () => {
             item.status === "pending_review" ||
             item.status === "approved")
         ) {
-          applyGeneratedImage(imageUrl);
+          applyGeneratedData(item);
           return;
         }
       }
@@ -320,7 +367,7 @@ const AddNutritionPage = () => {
             item.status === "pending_review" ||
             item.status === "approved")
         ) {
-          applyGeneratedImage(imageUrl);
+          applyGeneratedData(item);
           return;
         }
       }
@@ -397,7 +444,7 @@ const AddNutritionPage = () => {
         immediateImage !== previousImage &&
         createdItem.image_status === "success"
       ) {
-        applyGeneratedImage(immediateImage);
+        applyGeneratedData(createdItem);
         return;
       }
 

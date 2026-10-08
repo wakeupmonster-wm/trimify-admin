@@ -49,6 +49,7 @@ import {
   regenerateAiFoodImageFromAudio,
   deleteAiFoodItem,
   generateAiFood,
+  saveAiFoodItems,
 } from "../store/ai.food.slice";
 import { useAiFoodPolling } from "../hooks/useAiFoodPolling";
 import { getNutritionListAPI } from "@/modules/dataManagement/services/nutrition.services";
@@ -215,6 +216,9 @@ const AiFoodViewPage = () => {
   const showReviewForm = isReviewEditable;
   const previewImageUrl = fields.Meal_Image_url || item.Meal_Image_url;
 
+    const [isSavingToCatalog, setIsSavingToCatalog] = useState(false);
+  const [isSavingEdits, setIsSavingEdits] = useState(false);
+
   const handleChange = (name, value) => {
     setFields((prev) => ({ ...prev, [name]: value }));
   };
@@ -251,12 +255,44 @@ const AiFoodViewPage = () => {
       }
     });
 
-    if (!hasChanges) return;
+    if (!hasChanges) return Promise.resolve();
 
-    dispatch(updateAiFoodItem({ id: item.id, data }))
-      .unwrap()
-      .then(() => toast.success("Changes saved successfully."))
-      .catch((error) => toast.error(error || "Failed to save changes."));
+    return dispatch(updateAiFoodItem({ id: item.id, data })).unwrap();
+  };
+
+  const onSaveDraft = async () => {
+    setIsSavingEdits(true);
+    try {
+      await handleSaveEdits();
+      toast.success("Draft changes saved successfully.");
+    } catch (error) {
+      toast.error(error || "Failed to save changes.");
+    } finally {
+      setIsSavingEdits(false);
+    }
+  };
+
+  const onSaveToCatalog = async () => {
+    setIsSavingToCatalog(true);
+    try {
+      if (isDirty) {
+        await handleSaveEdits();
+      }
+      const results = await dispatch(saveAiFoodItems([item.id])).unwrap();
+      const firstRes = Array.isArray(results) ? results[0] : null;
+      if (firstRes?.outcome === "saved" || firstRes?.outcome === "already_saved") {
+        toast.success("Food item saved to live catalog successfully!");
+        navigate(BACK_TO_LIST);
+      } else if (firstRes?.outcome === "duplicate") {
+        toast.error("This food item already exists in catalog.");
+      } else {
+        toast.error(firstRes?.reason || "Failed to save item to catalog.");
+      }
+    } catch (error) {
+      toast.error(error || "Failed to save item to catalog.");
+    } finally {
+      setIsSavingToCatalog(false);
+    }
   };
 
   const handleRetry = () => {
@@ -409,7 +445,7 @@ const AiFoodViewPage = () => {
               />
             </div>
 
-            <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
+                        <div className="flex flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full max-w-max shrink-0 mt-2 sm:mt-4 md:mt-0 xl:mt-0">
               <CTAButton
                 type="button"
                 onClick={() => navigate(BACK_TO_LIST)}
@@ -417,13 +453,31 @@ const AiFoodViewPage = () => {
                 label="Back"
               />
               {isReviewEditable && (
-                <CTAButton
-                  onClick={handleSaveEdits}
-                  disabled={isBusy || !isDirty}
-                  icon={isBusy ? Spinner : Save}
-                  label="Save"
-                  className="flex-1"
-                />
+                <>
+                  {isDirty && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={onSaveDraft}
+                      disabled={isBusy || isSavingEdits || isSavingToCatalog || saveLoading}
+                      className="h-10 px-4 text-xs font-semibold rounded-md border-slate-300/80 hover:bg-slate-50"
+                    >
+                      {isSavingEdits ? (
+                        <Spinner className="w-4 h-4 mr-1" />
+                      ) : (
+                        <Save className="w-4 h-4 mr-1 text-slate-500" />
+                      )}
+                      Save Draft
+                    </Button>
+                  )}
+                  <CTAButton
+                    onClick={onSaveToCatalog}
+                    disabled={isBusy || isSavingEdits || isSavingToCatalog || saveLoading}
+                    icon={isSavingToCatalog || saveLoading ? Spinner : Save}
+                    label={isSavingToCatalog || saveLoading ? "Saving..." : "Save"}
+                    className="flex-1"
+                  />
+                </>
               )}
             </div>
           </div>
