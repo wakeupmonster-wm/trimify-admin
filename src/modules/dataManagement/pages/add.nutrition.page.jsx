@@ -62,6 +62,18 @@ import {
 } from "../../aiFoodUpload/services/ai.food.services";
 import { toast } from "sonner";
 
+
+const isValidImageUrl = (url) => {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (!trimmed || trimmed === 'none' || trimmed === 'null' || trimmed === 'undefined') return false;
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/');
+};
+
+const sanitizeImageUrl = (url) => {
+  return isValidImageUrl(url) ? url.trim() : '';
+};
+
 const AddNutritionPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -98,11 +110,7 @@ const AddNutritionPage = () => {
   const pollTimeoutRef = useRef(null);
   const [formData, setFormData] = useState(() => ({
     title: isEdit ? editData?.Meal_title || editData?.title || "" : "",
-    image: isEdit
-      ? editData?.Meal_Image_url && editData.Meal_Image_url !== "none"
-        ? editData.Meal_Image_url
-        : editData?.image || ""
-      : "",
+    image: isEdit ? (sanitizeImageUrl(editData?.Meal_Image_url) || sanitizeImageUrl(editData?.image)) : "",
     protein: isEdit
       ? editData?.Meal_Protien_In_gm || editData?.protein || ""
       : "",
@@ -117,16 +125,52 @@ const AddNutritionPage = () => {
     Meal_Type: isEdit ? editData?.Meal_Type || editData?.meal_type || "" : "",
     meal_description: isEdit
       ? parseArrayToString(editData?.Meal_instructions) ||
-        editData?.meal_description ||
-        ""
+      editData?.meal_description ||
+      ""
       : "",
     meal_ingredients: isEdit
       ? parseArrayToString(editData?.Meal_ingredients) ||
-        editData?.meal_ingredients ||
-        ""
+      editData?.meal_ingredients ||
+      ""
       : "",
     Meal_Serving: isEdit ? editData?.Meal_Serving || "" : "",
   }));
+
+  
+  useEffect(() => {
+    if (!isEdit || !id) return;
+    const loadDetails = async () => {
+      try {
+        let item = null;
+        try {
+          const res = await getNutritionByIdAPI(id);
+          item = res?.nutrition || res?.data?.nutrition || res?.data || res;
+        } catch {}
+
+        if (!item || !item.id) {
+          const listRes = await getNutritionListAPI({ limit: 100 });
+          const items = listRes?.nutrition || listRes?.data || [];
+          item = items.find((n) => String(n.id) === String(id));
+        }
+
+        if (item && item.id) {
+          setFormData((prev) => ({
+            ...prev,
+            title: prev.title || item.Meal_title || item.title || "",
+            image: isValidImageUrl(prev.image) ? prev.image : sanitizeImageUrl(item.Meal_Image_url || item.image),
+            protein: prev.protein || String(item.Meal_Protien_In_gm ?? item.protein ?? ""),
+            carbs: prev.carbs || String(item.Meal_Carbs_In_gm ?? item.carbs ?? ""),
+            calories: prev.calories || String(item.Meal_Calories_In_gm ?? item.calories ?? ""),
+            fats: prev.fats || String(item.Meal_Fats_In_gm ?? item.fats ?? ""),
+            description: prev.description || item.Meal_Description || item.description || "",
+            Meal_Type: prev.Meal_Type || item.Meal_Type || item.meal_type || "",
+            Meal_Serving: prev.Meal_Serving || String(item.Meal_Serving ?? ""),
+          }));
+        }
+      } catch {}
+    };
+    loadDetails();
+  }, [id, isEdit]);
 
   useEffect(
     () => () => {
@@ -208,35 +252,40 @@ const AddNutritionPage = () => {
   };
 
   const pollForGeneratedImage = async (previousImage, attempt = 0) => {
+    const cleanPrevious = sanitizeImageUrl(previousImage);
     try {
-      const response = await getNutritionListAPI({
-        search: formData.title,
-        limit: 100,
-      });
-      const nutritionItems = response?.nutrition || response?.data || [];
-      const item = nutritionItems.find(
-        (nutrition) => String(nutrition.id) === String(id),
-      );
-      const generatedImage = getImageUrlFromResponse(item);
-
-      if (generatedImage && generatedImage !== previousImage) {
+      // 1. Try single item endpoint
+      const response = await getNutritionByIdAPI(id);
+      const item = response?.nutrition || response?.data?.nutrition || response?.data || response;
+      const generatedImage = sanitizeImageUrl(getImageUrlFromResponse(item));
+      if (generatedImage && generatedImage !== cleanPrevious) {
         applyGeneratedImage(generatedImage);
         return;
       }
-    } catch {
-      // Keep polling: image generation may still be completing asynchronously.
-    }
+    } catch {}
 
-    if (attempt >= 11) {
+    try {
+      // 2. Try list
+      const listResponse = await getNutritionListAPI({ limit: 100 });
+      const nutritionItems = listResponse?.nutrition || listResponse?.data || [];
+      const item = nutritionItems.find((n) => String(n.id) === String(id));
+      if (item) {
+        const generatedImage = sanitizeImageUrl(getImageUrlFromResponse(item));
+        if (generatedImage && generatedImage !== cleanPrevious) {
+          applyGeneratedImage(generatedImage);
+          return;
+        }
+      }
+    } catch {}
+
+    if (attempt >= 25) {
       setIsImageRegenerating(false);
-      toast.info(
-        "Image generation is still processing. Reopen this item shortly to see the replacement.",
-      );
+      toast.info("Image generation is still processing. It will update shortly.");
       return;
     }
 
     await new Promise((resolve) => {
-      pollTimeoutRef.current = setTimeout(resolve, 2500);
+      pollTimeoutRef.current = setTimeout(resolve, 2000);
     });
     return pollForGeneratedImage(previousImage, attempt + 1);
   };
@@ -596,7 +645,7 @@ const AddNutritionPage = () => {
                 </div>
 
                 <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group w-full border border-slate-100">
-                  {formData.image ? (
+                  {isValidImageUrl(formData.image) ? (
                     <button
                       type="button"
                       onClick={() => setPreviewOpen(true)}
@@ -613,9 +662,9 @@ const AddNutritionPage = () => {
                             height: e.currentTarget.naturalHeight,
                           });
                         }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "https://placehold.co/400x400?text=Invalid+Image";
+                        onError={() => {
+                          setImageDimensions(null);
+                          setFormData((prev) => ({ ...prev, image: "" }));
                         }}
                       />
                       {imageDimensions && (
@@ -628,8 +677,9 @@ const AddNutritionPage = () => {
                       </div>
                     </button>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
                       <ImageIcon className="w-12 h-12 opacity-50" />
+                      <span className="text-[11px] font-medium text-slate-400">No image yet</span>
                     </div>
                   )}
 
@@ -663,15 +713,7 @@ const AddNutritionPage = () => {
                         <Sparkles className="h-4 w-4 text-app-primary2" />
                         {isEdit ? "Custom Regenerate" : "Custom Generate"}
                       </DropdownMenuItem>
-                      {isEdit && (
-                        <DropdownMenuItem
-                          onClick={() => setIsDeleteModalOpen(true)}
-                          className="cursor-pointer gap-2 text-xs font-medium text-red-600 focus:text-red-700 hover:!bg-red-100"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Remove Entire Item
-                        </DropdownMenuItem>
-                      )}
+                      
                     </DropdownMenuContent>
                   </DropdownMenu>
 
@@ -711,7 +753,7 @@ const AddNutritionPage = () => {
                   <Input
                     id="image"
                     name="image"
-                    value={formData.image}
+                    value={formData.image === "none" ? "" : formData.image}
                     onChange={handleChange}
                     placeholder="Enter Image URL"
                     className={`h-10 text-sm focus-visible:ring-1 focus-visible:ring-app-primary2 placeholder:font-normal font-medium ${errors.image ? "border-red-500" : "border-slate-300/60"}`}
@@ -801,7 +843,7 @@ const AddNutritionPage = () => {
                   </Select>
                   {errors.Meal_Type && <p className="text-red-500 text-[10px] 3xl:text-[11px] mt-1">{errors.Meal_Type}</p>}
                 </div>
-                
+
                 <div className="space-y-1.5">
                   <Label htmlFor="Meal_Serving" className="text-xs font-semibold text-slate-700">Meal Serving</Label>
                   <Input id="Meal_Serving" name="Meal_Serving" type="number" min="1" value={formData.Meal_Serving} onChange={handleChange} placeholder="e.g. 2" className={`h-10 text-xs border-slate-300/60 placeholder:font-normal placeholder:text-xs ${errors.Meal_Serving ? "border-red-500" : "border-slate-300/60"}`} />
@@ -895,7 +937,7 @@ const AddNutritionPage = () => {
 
             </div>
           </div>
-          
+
           <div className="mt-8 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 w-full">
             <Button
               type="button"
@@ -983,7 +1025,7 @@ const AddNutritionPage = () => {
         loading={isImageRegenerating}
       />
 
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleRemoveItem}
@@ -992,7 +1034,7 @@ const AddNutritionPage = () => {
         confirmText="Remove"
         type="danger"
         loading={isRemoving}
-      />
+      /> */}
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

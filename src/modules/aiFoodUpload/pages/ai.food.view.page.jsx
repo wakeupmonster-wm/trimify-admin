@@ -689,12 +689,7 @@ const AiFoodViewPage = () => {
                           <Sparkles className="w-4 h-4 text-app-primary2" />{" "}
                           Custom Regenerate
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setIsDeleteModalOpen(true)}
-                          className="gap-2 text-xs 3xl:text-sm font-medium text-red-600 focus:text-red-700 cursor-pointer hover:!bg-red-100"
-                        >
-                          <Trash2 className="w-4 h-4" /> Remove Entire Item
-                        </DropdownMenuItem>
+                        
                       </DropdownMenuContent>
                     </DropdownMenu>
 
