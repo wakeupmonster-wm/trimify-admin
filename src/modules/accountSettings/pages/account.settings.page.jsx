@@ -3,6 +3,8 @@ import { Container } from "@/components/common/container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ownerImg from "@/assets/web/owner.png";
 import { Eye, EyeOff, Settings, Loader2, Calendar, Clock } from "lucide-react";
 import Header from "@/components/common/header";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -18,6 +20,19 @@ const AccountSettingsPage = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.accountSettings);
   const { account } = useSelector((state) => state.account);
+
+  const displayName = account?.name || account?.nickname || "Admin";
+  const avatarSrc =
+    typeof account?.avatar === "string"
+      ? account.avatar
+      : account?.avatar?.url;
+  const initials = displayName
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((name) => name[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const [activeTab, setActiveTab] = useState("password");
 
@@ -159,6 +174,27 @@ const AccountSettingsPage = () => {
             />
           </div>
         </Header>
+
+        <div className="flex items-center gap-3 rounded-md border border-slate-300/60 bg-white px-4 py-3.5 shadow-sm">
+          <Avatar className="h-12 w-12 shrink-0 rounded-full border border-slate-200">
+            <AvatarImage
+              src={avatarSrc || ownerImg}
+              alt={displayName}
+              className="object-cover"
+            />
+            <AvatarFallback className="bg-app-primary2 text-sm font-bold text-white">
+              {initials || "A"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-slate-800">
+              {displayName}
+            </p>
+            <p className="truncate text-xs text-slate-500">
+              {account?.email || "admin@example.com"}
+            </p>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex items-center gap-3 rounded-md border border-slate-300/60 bg-white px-4 py-3.5 shadow-sm">

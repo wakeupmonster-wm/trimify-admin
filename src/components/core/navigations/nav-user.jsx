@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import dummyImg from "@/assets/web/dummyImg.webp";
+import ownerImg from "@/assets/web/owner.png";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { useDispatch } from "react-redux";
 import { logout } from "@/modules/authentication/store/auth.slice";
@@ -33,6 +33,10 @@ export function NavUser({ user }) {
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const roleLabel =
+    typeof user?.role === "string" && user.role.trim()
+      ? user.role.toLowerCase()
+      : "Admin";
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -59,7 +63,7 @@ export function NavUser({ user }) {
               >
                 <Avatar className="h-9 w-9 rounded-full">
                   <AvatarImage
-                    src={user?.avatar || dummyImg}
+                    src={user?.avatar || ownerImg}
                     alt={user?.name || "Admin"}
                   />
                   <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">
@@ -69,7 +73,7 @@ export function NavUser({ user }) {
                 <div className="flex flex-col text-left text-[13px] ml-1 leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
                   <span className="text-foreground/50 font-medium text-[11px] capitalize">
-                    {user.role ? user.role.toLowerCase() : "Admin"}
+                    {roleLabel}
                   </span>
                 </div>
                 <IconDotsVertical className="ml-auto size-4" />
@@ -85,7 +89,7 @@ export function NavUser({ user }) {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
-                      src={user?.avatar || dummyImg}
+                      src={user?.avatar || ownerImg}
                       alt={user?.name || "Admin"}
                     />
                     <AvatarFallback className="rounded-lg font-bold text-slate-600 bg-slate-100">

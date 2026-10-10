@@ -38,6 +38,10 @@ export function AppSidebar({ ...props }) {
     "Admin";
   const displayEmail =
     account?.email || user?.email || localUser?.email || "admin@example.com";
+  const getAvatarUrl = (profile) =>
+    typeof profile?.avatar === "string"
+      ? profile.avatar
+      : profile?.avatar?.url || "";
 
   const role =
     user?.role !== undefined
@@ -53,7 +57,7 @@ export function AppSidebar({ ...props }) {
     name: displayName,
     email: displayEmail,
     avatar:
-      account?.avatar?.url || user?.avatar?.url || localUser?.avatar?.url || "",
+      getAvatarUrl(account) || getAvatarUrl(user) || getAvatarUrl(localUser),
     initial: displayName.charAt(0).toUpperCase(),
     role: role || localUser?.role || 0,
   };

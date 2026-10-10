@@ -152,7 +152,16 @@ export const getUserManagementColumns = (onAction) => [
     size: 100,
     minSize: 80,
     cell: ({ row }) => {
-      const status = resolveSubscriptionStatus(row.original);
+      // The list filter is based on the user's account status. Prefer that
+      // explicit API value instead of deriving a subscription state from
+      // `paid`, which can still be 1 for an inactive account.
+      const accountStatus = row.original.status;
+      const status =
+        accountStatus === 1 || accountStatus === "1"
+          ? "Active"
+          : accountStatus === 0 || accountStatus === "0"
+            ? "Inactive"
+            : accountStatus || resolveSubscriptionStatus(row.original);
       const style =
         STATUS_BADGE_STYLE[status.toLowerCase()] || STATUS_BADGE_STYLE.active;
       return (

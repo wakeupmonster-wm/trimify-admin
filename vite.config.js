@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://api.matchatfirstswipe.com.au",
+        target: "https://adminbackend.trimify.com.au",
         changeOrigin: true,
       },
     },

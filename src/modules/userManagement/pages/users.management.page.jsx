@@ -69,6 +69,8 @@ const UsersManagementPage = () => {
     sessionStorage.removeItem("userManagementGlobalFilter");
     return inMemoryUserSearch;
   });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
   const setGlobalFilter = useCallback((nextValue) => {
     setGlobalFilterState((currentValue) => {
       const value =
@@ -76,6 +78,11 @@ const UsersManagementPage = () => {
       inMemoryUserSearch = value || "";
       return value || "";
     });
+    setPagination((currentPagination) =>
+      currentPagination.pageIndex === 0
+        ? currentPagination
+        : { ...currentPagination, pageIndex: 0 },
+    );
   }, []);
 
   const [statusFilter, setStatusFilter] = useState(() =>
@@ -104,7 +111,6 @@ const UsersManagementPage = () => {
   }, [location.state]);
 
   const debouncedSearchTerm = useDebounce(globalFilter, 500);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   useEffect(() => {
     const params = {
