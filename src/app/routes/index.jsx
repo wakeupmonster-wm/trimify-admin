@@ -51,6 +51,7 @@ const AddFitzoneSessionPage = lazy(() => import("@/modules/fitzoneManagement/pag
 const AddCategoryPage = lazy(() => import("@/modules/blogSection/pages/add.category.page"));
 const AddPostPage = lazy(() => import("@/modules/blogSection/pages/add.post.page"));
 const PrivacyAndPolicyPage = lazy(() => import("@/modules/cmsManagement/pages/privacy-policy.page"));
+const PublicPrivacyPolicyPage = lazy(() => import("@/modules/cmsManagement/pages/public-privacy-policy.page"));
 const TermAndConditionsPage = lazy(() => import("@/modules/cmsManagement/pages/terms-conditions.page"));
 const AboutUsPage = lazy(() => import("@/modules/cmsManagement/pages/about-us.page"));
 
@@ -84,6 +85,14 @@ export const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PreLoader />}>
             <Navigate to="/auth/login" replace />
+          </Suspense>
+        ),
+      },
+      {
+        path: "privacypolicypage",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <PublicPrivacyPolicyPage />
           </Suspense>
         ),
       },
