@@ -24,6 +24,7 @@ import {
   toggleProgramStatus,
   toggleFoodVisibility,
   deleteProgram,
+  replicateProgram,
 } from "../store/program.slice";
 import { getProgramManagementAPI } from "../services/program.services";
 import { useDebounce } from "../../../hooks/useDebounce";
@@ -59,6 +60,8 @@ const ManageProgramPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [duplicateTarget, setDuplicateTarget] = useState(null);
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [globalKpisData, setGlobalKpisData] = useState(null);
@@ -149,6 +152,8 @@ const ManageProgramPage = () => {
       navigate(`manage/${row.id}`);
     } else if (action === "edit") {
       navigate("edit-program", { state: { editData: row } });
+    } else if (action === "duplicate") {
+      setDuplicateTarget(row);
     } else if (action === "delete") {
       setDeleteTarget(row);
     }
@@ -173,6 +178,32 @@ const ManageProgramPage = () => {
     } finally {
       setIsDeleting(false);
       setDeleteTarget(null);
+    }
+  };
+
+  const handleConfirmDuplicate = async () => {
+    if (!duplicateTarget?.id) return;
+
+    setIsDuplicating(true);
+    try {
+      const result = await dispatch(replicateProgram(duplicateTarget.id));
+      if (replicateProgram.fulfilled.match(result)) {
+        toast.success("Program duplicated successfully. You can now edit the copy.");
+        await dispatch(
+          fetchProgramList({
+            page: pagination.pageIndex + 1,
+            limit: pagination.pageSize,
+            search: debouncedSearchTerm,
+            duration: durationFilter,
+            status: statusFilter,
+          }),
+        );
+      } else {
+        toast.error(result.payload || "Failed to duplicate program.");
+      }
+    } finally {
+      setIsDuplicating(false);
+      setDuplicateTarget(null);
     }
   };
 
@@ -400,6 +431,17 @@ const ManageProgramPage = () => {
           />
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={!!duplicateTarget}
+        onClose={() => !isDuplicating && setDuplicateTarget(null)}
+        onConfirm={handleConfirmDuplicate}
+        title="Duplicate Program"
+        message={`Create a complete copy of ${duplicateTarget?.title || "this program"}.`}
+        type="brand"
+        confirmText="Duplicate"
+        loading={isDuplicating}
+      />
 
       <ConfirmModal
         isOpen={!!deleteTarget}
